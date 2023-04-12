@@ -14,7 +14,7 @@ int main (){
 
 	//config
 	t_config* config;
-	config = iniciar_config();
+	//config = iniciar_config();
 
 	//lo de la ip y puerto
 	//ip = config_get_string_value(config,"IP");
