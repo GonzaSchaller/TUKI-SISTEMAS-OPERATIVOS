@@ -3,6 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../home/utnso/Desktop/tp-2023-1c-Kernel-Masters/Shared/sockets.h"
+#include "sockets.h"
+
+int iniciar_servidor (t_log* , char* , char* );
+int esperar_cliente(t_log* ,int);
+int crear_conexicon(t_log* , char* , char* );
 
 #endif
