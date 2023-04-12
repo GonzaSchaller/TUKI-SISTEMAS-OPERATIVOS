@@ -1,0 +1,24 @@
+[INFO] 19:46:40:900 consola/(2657:2657): Se creo todo bien
+[INFO] 19:48:01:480 consola/(2767:2767): Se creo todo bien
+[INFO] 19:48:17:177 consola/(2791:2791): Se creo todo bien
+[INFO] 19:48:20:743 consola/(2807:2807): Se creo todo bien
+[INFO] 19:52:21:648 consola/(2936:2936): Se creo todo bien
+[INFO] 21:56:15:787 consola/(2091:2091): Se creo todo bien
+[INFO] 21:56:51:939 consola/(2110:2110): Se creo todo bien
+[INFO] 21:59:13:328 consola/(2156:2156): Se creo todo bien
+[INFO] 22:00:41:271 consola/(2271:2271): Se creo todo bien
+[INFO] 22:00:51:120 consola/(2303:2303): Se creo todo bien
+[INFO] 22:03:01:224 consola/(2454:2454): Se creo todo bien
+[INFO] 22:03:45:940 consola/(2512:2512): Se creo todo bien
+[INFO] 22:03:47:555 consola/(2512:2512): Se sacaron las cosas bien
+[ERROR] 22:03:47:924 consola/(2512:2512): Error creando el socket para 127.0.0.1:8002 
+[INFO] 22:03:48:237 consola/(2512:2512): Se creo la conexion
+[INFO] 22:05:29:534 consola/(2588:2588): Se creo todo bien
+[INFO] 22:05:29:534 consola/(2588:2588): Se sacaron las cosas bien
+[ERROR] 22:05:29:534 consola/(2588:2588): Error creando el socket para 127.0.0.1:8002 
+[INFO] 22:05:29:534 consola/(2588:2588): Se creo la conexion
+[INFO] 22:08:33:709 consola/(2650:2650): Se creo todo bien
+[INFO] 22:08:33:709 consola/(2650:2650): Se sacaron las cosas bien
+[INFO] 22:08:33:710 consola/(2650:2650): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 22:08:33:710 consola/(2650:2650): Se creo la conexion
