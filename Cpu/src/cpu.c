@@ -14,27 +14,27 @@ int main (){
 
 	//config
 	t_config* config;
-	//config = iniciar_config();
+	config = iniciar_config();
 
 	//lo de la ip y puerto
-	//ip = config_get_string_value(config,"IP");
-	//puerto = config_get_string_value(config,"PUERTO");
+	ip = config_get_string_value(config,"IP");
+	puerto = config_get_string_value(config,"PUERTO");
 
 	//crear conexion
-	conexion = crear_conexion("127.0.0.1","50150");
+	conexion = crear_conexion(ip,puerto);
 
 	//cuando el cpu es server del kernel
-	//int cliente = esperar_cliente();
+	int cliente = esperar_cliente();
 
 
 
 
-	//terminar_programa(conexion, logger, config);
+	terminar_programa(conexion, logger, config);
 
 
 	//para recv()
-	//uint32_t handshake = 1;
-	//uint32_t result;
+	uint32_t handshake = 1;
+	uint32_t result;
 
 
 
@@ -81,15 +81,15 @@ int crear_conexion(char *ip, char* puerto)
 	return socket_cliente;
 }
 
-//int esperar_cliente(int socket_servidor)
-//{
-//	// Quitar esta línea cuando hayamos terminado de implementar la funcion
-//	//assert(!"no implementado!");
-//
-//	// Aceptamos un nuevo cliente
-//	int socket_cliente = accept(socket_servidor,NULL, NULL);
-//
-//	log_info(logger, "Se conecto un cliente!");
-//
-//	return socket_cliente;
-//}
+int esperar_cliente(int socket_servidor)
+{
+	// Quitar esta línea cuando hayamos terminado de implementar la funcion
+	//assert(!"no implementado!");
+
+	// Aceptamos un nuevo cliente
+	int socket_cliente = accept(socket_servidor,NULL, NULL);
+
+	log_info(logger, "Se conecto un cliente!");
+
+	return socket_cliente;
+}
