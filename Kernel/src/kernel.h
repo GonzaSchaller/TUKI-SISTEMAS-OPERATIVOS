@@ -3,5 +3,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../home/utnso/Desktop/tp-2023-1c-Kernel-Masters/Shared/sockets.h"
 
 #endif
