@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sockets.h>
+#include <../../home/utnso/tp-2023-1c-Kernel-Masters/Shared/sockets.h>
 
 
 t_log* log_kernel;

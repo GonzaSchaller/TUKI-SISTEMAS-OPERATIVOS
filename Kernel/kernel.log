@@ -6,3 +6,43 @@
 [INFO] 16:31:01:543 Kernel/(9760:9760): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
 
 [INFO] 16:31:01:556 Kernel/(9760:9760): Servidor listo para recibir cliente
+[INFO] 19:37:00:070 Kernel/(2105:2105): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+
+[INFO] 19:37:00:070 Kernel/(2105:2105): Servidor listo para recibir cliente
+[INFO] 19:37:40:813 Kernel/(2129:2129): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+
+[INFO] 19:37:40:813 Kernel/(2129:2129): Servidor listo para recibir cliente
+[INFO] 19:38:23:027 Kernel/(2156:2156): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+
+[INFO] 19:38:23:027 Kernel/(2156:2156): Servidor listo para recibir cliente
+[INFO] 19:43:04:437 Kernel/(2415:2415): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+
+[INFO] 19:43:04:438 Kernel/(2415:2415): Servidor listo para recibir cliente
+[INFO] 19:44:06:826 Kernel/(2460:2460): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+
+[INFO] 19:44:06:826 Kernel/(2460:2460): Servidor listo para recibir cliente                 
+[INFO] 19:49:02:347 Kernel/(2832:2832): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+
+[INFO] 19:49:02:348 Kernel/(2832:2832): Servidor listo para recibir cliente
+[INFO] 19:50:39:651 Kernel/(2880:2880): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+
+[INFO] 19:50:39:651 Kernel/(2880:2880): Servidor listo para recibir cliente
+[INFO] 19:51:29:699 Kernel/(2901:2901): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+
+[INFO] 19:51:29:699 Kernel/(2901:2901): Servidor listo para recibir cliente
+[INFO] 21:54:49:515 Kernel/(2065:2065): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+
+[INFO] 21:54:49:516 Kernel/(2065:2065): Servidor listo para recibir cliente
+[INFO] 22:04:07:718 Kernel/(2562:2562): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+
+[INFO] 22:04:07:718 Kernel/(2562:2562): Servidor listo para recibir cliente
+[INFO] 22:08:22:079 Kernel/(2629:2629): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+
+[INFO] 22:08:22:088 Kernel/(2629:2629): Servidor listo para recibir cliente
+[INFO] 22:08:33:709 Kernel/(2629:2629): Se conecto un cliente
+[ERROR] 22:08:33:709 Kernel/(2629:2629): Error al conectar (a Memoria)
+
+[ERROR] 22:08:33:709 Kernel/(2629:2629): Error al conectar (a CPU)
+
+[ERROR] 22:08:33:709 Kernel/(2629:2629): Error al conectar (a FileSystem)
+

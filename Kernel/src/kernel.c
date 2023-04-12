@@ -5,7 +5,7 @@ void iniciar_config(t_config* config){
 	puerto_escucha = config_get_string_value(config, "PUERTO_ESCUCHA");
 	ip_memoria = config_get_string_value(config,"IP_MEMORIA");
 	puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
-	log_info(log_kernel, "Memoria: Lei la ip %s y el puerto %s\n", ip_memoria, puerto_memoria); // hacer con cada uno
+	//log_info(log_kernel, "Memoria: Lei la ip %s y el puerto %s\n", ip_memoria, puerto_memoria); // hacer con cada uno
 	ip_cpu= config_get_string_value(config,"IP_CPU");
 	puerto_cpu = config_get_string_value(config,"PUERTO_CPU");
 	ip_fileSystem = config_get_string_value(config,"IP_FILESYSTEM");
