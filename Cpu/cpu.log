@@ -1,0 +1,90 @@
+[ERROR] 19:46:08:613 Cpu/(3724:3724): Error al conectar (a Memoria)
+
+[TRACE] 19:46:09:066 Cpu/(3724:3724): Listo para escuchar
+[TRACE] 19:48:40:171 Cpu/(3909:3909): Listo para escuchar
+[TRACE] 19:49:07:000 Cpu/(3982:3982): Listo para escuchar
+[INFO] 19:49:07:504 Cpu/(3982:3982): Cliente conectado en 127.0.0.1:8001 (a Memoria)
+
+[INFO] 19:49:08:021 Cpu/(3982:3982): Se conecto un cliente
+[TRACE] 19:52:03:971 Cpu/(4144:4144): Listo para escuchar
+[INFO] 19:52:04:831 Cpu/(4144:4144): Cliente conectado en 127.0.0.1:8001 (a Memoria)
+
+[INFO] 19:52:05:470 Cpu/(4144:4144): Se conecto un cliente
+[TRACE] 19:52:39:402 Cpu/(4178:4178): Listo para escuchar
+[INFO] 19:52:39:402 Cpu/(4178:4178): Cliente conectado en 127.0.0.1:8001 (a Memoria)
+
+[TRACE] 19:53:18:500 Cpu/(4197:4197): Listo para escuchar
+[INFO] 19:53:18:500 Cpu/(4197:4197): Cliente conectado en 127.0.0.1:8001 (a Memoria)
+
+[INFO] 19:53:18:500 Cpu/(4197:4197): Se conecto un cliente
+[TRACE] 19:53:44:476 Cpu/(4250:4250): Listo para escuchar
+[INFO] 19:53:44:476 Cpu/(4250:4250): Cliente conectado en 127.0.0.1:8001 (a Memoria)
+
+[INFO] 19:53:44:476 Cpu/(4250:4250): Se conecto un cliente
+[TRACE] 19:57:54:028 Cpu/(4497:4497): Listo para escuchar
+[INFO] 19:57:54:028 Cpu/(4497:4497): Cliente conectado en 127.0.0.1:8001 (a Memoria)
+
+[INFO] 19:57:54:028 Cpu/(4497:4497): Se conecto un cliente
+[TRACE] 19:59:17:311 Cpu/(4682:4682): Listo para escuchar
+[INFO] 19:59:17:312 Cpu/(4682:4682): Servidor listo para recibir cliente
+[INFO] 19:59:17:312 Cpu/(4682:4682): Cliente conectado en 127.0.0.1:8001 (a Memoria)
+
+[INFO] 19:59:17:312 Cpu/(4682:4682): Se conecto un cliente
+[TRACE] 19:59:31:136 Cpu/(4714:4714): Listo para escuchar
+[INFO] 19:59:31:138 Cpu/(4714:4714): Servidor listo para recibir cliente
+[INFO] 19:59:31:138 Cpu/(4714:4714): Cliente conectado en 127.0.0.1:8001 (a Memoria)
+
+[INFO] 19:59:31:138 Cpu/(4714:4714): Se conecto un cliente
+[TRACE] 20:00:02:603 Cpu/(4737:4737): Listo para escuchar
+[INFO] 20:00:02:603 Cpu/(4737:4737): Servidor listo para recibir cliente
+[INFO] 20:00:02:603 Cpu/(4737:4737): Cliente conectado en 127.0.0.1:8001 (a Memoria)
+
+[INFO] 20:00:02:603 Cpu/(4737:4737): Se conecto un cliente
+[TRACE] 20:01:41:518 Cpu/(4860:4860): Listo para escuchar
+[INFO] 20:01:41:519 Cpu/(4860:4860): Servidor listo para recibir cliente
+[INFO] 20:01:41:519 Cpu/(4860:4860): Cliente conectado en 127.0.0.1:8001 (a Memoria)
+
+[INFO] 20:01:41:519 Cpu/(4860:4860): Se conecto un cliente
+[TRACE] 20:03:20:421 Cpu/(5074:5074): Listo para escuchar
+[INFO] 20:03:20:421 Cpu/(5074:5074): Servidor listo para recibir cliente
+[INFO] 20:03:20:422 Cpu/(5074:5074): Cliente conectado en 127.0.0.1:8001 (a Memoria)
+
+[INFO] 20:03:20:422 Cpu/(5074:5074): Se conecto un cliente
+[TRACE] 20:05:53:174 Cpu/(5405:5405): Listo para escuchar
+[INFO] 20:05:53:174 Cpu/(5405:5405): Servidor listo para recibir cliente
+[TRACE] 20:07:28:937 Cpu/(5494:5494): Listo para escuchar
+[INFO] 20:07:28:938 Cpu/(5494:5494): Servidor listo para recibir cliente
+[TRACE] 20:27:51:692 Cpu/(7362:7362): Listo para escuchar
+[INFO] 20:27:51:693 Cpu/(7362:7362): Servidor listo para recibir cliente
+[TRACE] 20:27:55:629 Cpu/(7381:7381): Listo para escuchar
+[INFO] 20:27:55:634 Cpu/(7381:7381): Servidor listo para recibir cliente
+[TRACE] 20:28:52:184 Cpu/(7512:7512): Listo para escuchar
+[INFO] 20:28:52:185 Cpu/(7512:7512): Servidor listo para recibir cliente
+[TRACE] 20:29:21:876 Cpu/(7546:7546): Listo para escuchar
+[INFO] 20:29:22:500 Cpu/(7546:7546): Servidor listo para recibir cliente
+[TRACE] 20:32:34:882 Cpu/(7760:7760): Listo para escuchar
+[TRACE] 20:35:02:751 Cpu/(8046:8046): Listo para escuchar
+[INFO] 20:35:02:754 Cpu/(8046:8046): Servidor listo para recibir cliente
+[ERROR] 20:35:02:754 Cpu/(8046:8046): Error al conectar (a Memoria)
+
+[TRACE] 20:39:31:101 Cpu/(8266:8266): Listo para escuchar
+[INFO] 20:39:31:101 Cpu/(8266:8266): Servidor listo para recibir cliente
+[ERROR] 20:39:31:101 Cpu/(8266:8266): Error al conectar (a Memoria)
+
+[TRACE] 20:41:31:206 Cpu/(8439:8439): Listo para escuchar
+[INFO] 20:45:05:084 Cpu/(8439:8439): Se conecto un cliente
+[INFO] 20:45:05:084 Cpu/(8439:8439): Servidor listo para recibir cliente
+[ERROR] 20:45:05:084 Cpu/(8439:8439): Error al conectar (a Memoria)
+
+[TRACE] 20:48:20:728 Cpu/(8772:8772): Listo para escuchar
+[INFO] 20:48:20:731 Cpu/(8772:8772): Servidor listo para recibir cliente
+[INFO] 20:48:36:923 Cpu/(8772:8772): Se conecto un cliente
+[ERROR] 20:48:36:923 Cpu/(8772:8772): Error al conectar (a Memoria)
+
+[TRACE] 20:49:29:640 Cpu/(8828:8828): Listo para escuchar
+[INFO] 20:49:29:640 Cpu/(8828:8828): Servidor listo para recibir cliente
+[TRACE] 20:51:23:853 Cpu/(9123:9123): Listo para escuchar
+[INFO] 20:51:23:853 Cpu/(9123:9123): Servidor listo para recibir cliente
+[INFO] 20:51:31:979 Cpu/(9123:9123): Se conecto un cliente
+[INFO] 20:51:31:979 Cpu/(9123:9123): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+

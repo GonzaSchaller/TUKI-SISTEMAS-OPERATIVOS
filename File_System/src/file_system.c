@@ -2,30 +2,41 @@
 
 int main (){
 	int conexion;
-	char* ip;
-	char* puerto;
+	char* ip = "127.0.0.1";
+	char* puerto_fileSystem, puerto_memoria;
 
 	//crear un logger
 	t_log* logger;
-	logger = iniciar_logger();
+	logger = log_create("fileSystem.log","FileSystem",1,LOG_LEVEL_TRACE);
 
 	//config
 	t_config* config;
-	config = iniciar_config();
+	config =config_create("fileSystem.config");
 
 	//lo de la ip y puerto
-	ip = config_get_string_value(config,"IP");
-	puerto = config_get_string_value(config,"PUERTO");
+	ip = config_get_string_value(config,"IP_MEMORIA");
+	puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
+	puerto_fileSystem = config_get_string_value(config,"PUERTO_ESCUCHA");
 
-	//crear conexion para memoria
-	conexion = crear_conexion(logger,"Memoria",ip,puerto);
 
+	int server_fd = iniciar_servidor(logger, "fileSystem", ip, puerto_fileSystem);
+
+	log_info(logger , "Servidor listo para recibir cliente");
+	int cliente_fd = esperar_cliente(logger, server_fd);
+
+	conexion = crear_conexion(logger,"Memoria", ip, puerto_memoria );
 	//cuando el cpu es server del kernel
+
+
 	//problema de index, arreglar
-	int cliente = esperar_cliente(logger,server_fd);
 
-	terminar_programa(server_fd,conexion, logger, config);
+	terminar_programa(conexion, logger, config);
+
+	//para recv()
+//	uint32_t handshake = 1;
+//	uint32_t result;
 
 
+	return EXIT_SUCCESS;
 
 }

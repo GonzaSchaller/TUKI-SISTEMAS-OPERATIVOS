@@ -110,6 +110,3 @@ liberar_conexion(conexion);
 void liberar_conexion(int socket_cliente){
 	close(socket_cliente);
 }
-
-
-

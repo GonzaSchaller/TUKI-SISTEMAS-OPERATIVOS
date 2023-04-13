@@ -19,14 +19,7 @@ void iniciar_config(t_config* config){
 }
 
 
-void terminar_kernel(t_log* logger,t_config* config){
-	if(logger !=NULL){
-		log_destroy(logger);
-	}
-	if(config != NULL){
-		config_destroy(config);
-	}
-}
+
 void liberarConexiones(int socket1, int socket2, int socket3){
 	if(socket1 != -1){
 		close(socket1);
@@ -50,9 +43,10 @@ int main (){
 
 
 
-		int conexion1 = crear_conexion(log_kernel, "Memoria", ip_memoria, puerto_memoria);
-		int conexion2 = crear_conexion(log_kernel, "CPU", ip_cpu, puerto_cpu);
-		int conexion3 = crear_conexion(log_kernel, "FileSystem", ip_fileSystem, puerto_fileSystem);
+
+		int conexion1 = crear_conexion(log_kernel, "CPU", ip_cpu, puerto_cpu);
+		int conexion2 = crear_conexion(log_kernel, "FileSystem", ip_fileSystem, puerto_fileSystem);
+		int conexion3 = crear_conexion(log_kernel, "Memoria", ip_memoria, puerto_memoria);
 
 		terminar_kernel(log_kernel, config_kernel);
 		liberarConexiones(conexion1, conexion2, conexion3);
@@ -60,5 +54,13 @@ int main (){
 	    return EXIT_SUCCESS;
 }
 
+void terminar_kernel(t_log* logger,t_config* config){
+	if(logger !=NULL){
+		log_destroy(logger);
+	}
+	if(config != NULL){
+		config_destroy(config);
+	}
+}
 
 

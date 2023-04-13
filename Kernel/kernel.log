@@ -46,3 +46,38 @@
 
 [ERROR] 22:08:33:709 Kernel/(2629:2629): Error al conectar (a FileSystem)
 
+[INFO] 19:58:40:970 Kernel/(4578:4578): Servidor listo para recibir cliente
+[INFO] 20:01:13:442 Kernel/(4803:4803): Servidor listo para recibir cliente
+[INFO] 20:26:14:269 Kernel/(7299:7299): Servidor listo para recibir cliente
+[INFO] 20:26:50:380 Kernel/(7299:7299): Se conecto un cliente
+[ERROR] 20:26:50:380 Kernel/(7299:7299): Error al conectar (a Memoria)
+
+[ERROR] 20:26:50:381 Kernel/(7299:7299): Error al conectar (a CPU)
+
+[ERROR] 20:26:50:381 Kernel/(7299:7299): Error al conectar (a FileSystem)
+
+[INFO] 20:38:21:000 Kernel/(8217:8217): Servidor listo para recibir cliente
+[INFO] 20:44:48:634 Kernel/(8688:8688): Servidor listo para recibir cliente
+[INFO] 20:45:05:082 Kernel/(8688:8688): Se conecto un cliente
+[INFO] 20:45:05:083 Kernel/(8688:8688): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+
+[INFO] 20:45:05:083 Kernel/(8688:8688): Cliente conectado en 127.0.0.1:8001 (a CPU)
+
+[INFO] 20:45:05:084 Kernel/(8688:8688): Cliente conectado en 127.0.0.1:8003 (a FileSystem)
+
+[INFO] 20:48:30:815 Kernel/(8784:8784): Servidor listo para recibir cliente
+[INFO] 20:48:36:923 Kernel/(8784:8784): Se conecto un cliente
+[INFO] 20:48:36:923 Kernel/(8784:8784): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+
+[INFO] 20:48:36:923 Kernel/(8784:8784): Cliente conectado en 127.0.0.1:8001 (a CPU)
+
+[ERROR] 20:48:36:923 Kernel/(8784:8784): Error al conectar (a FileSystem)
+
+[INFO] 20:51:28:464 Kernel/(9137:9137): Servidor listo para recibir cliente
+[INFO] 20:51:31:979 Kernel/(9137:9137): Se conecto un cliente
+[INFO] 20:51:31:979 Kernel/(9137:9137): Cliente conectado en 127.0.0.1:8001 (a CPU)
+
+[ERROR] 20:51:31:979 Kernel/(9137:9137): Error al conectar (a FileSystem)
+
+[INFO] 20:51:31:979 Kernel/(9137:9137): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+

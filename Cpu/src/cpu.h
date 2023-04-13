@@ -14,11 +14,13 @@
 #include<sys/socket.h>
 #include<netdb.h>
 #include<string.h>
+#include "../../home/utnso/tp-2023-1c-Kernel-Masters/Shared/sockets.h"
 
 t_log* iniciar_logger(void);
 t_config* iniciar_config(void);
 void leer_consola(t_log*);
 void paquete(int);
 void terminar_programa(int, t_log*, t_config*);
+
 
 #endif

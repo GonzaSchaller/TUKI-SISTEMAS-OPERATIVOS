@@ -1,0 +1,16 @@
+[TRACE] 19:56:51:245 FileSystem/(4414:4414): Listo para escuchar
+[INFO] 19:56:51:873 FileSystem/(4414:4414): Cliente conectado en 127.0.0.1:8003 (a Memoria)
+
+[INFO] 19:56:52:609 FileSystem/(4414:4414): Se conecto un cliente
+[TRACE] 19:56:58:789 FileSystem/(4453:4453): Listo para escuchar
+[INFO] 19:56:58:789 FileSystem/(4453:4453): Cliente conectado en 127.0.0.1:8003 (a Memoria)
+
+[TRACE] 20:08:17:802 FileSystem/(5659:5659): Listo para escuchar
+[INFO] 20:08:17:802 FileSystem/(5659:5659): Servidor listo para recibir cliente
+[TRACE] 20:08:26:245 FileSystem/(5692:5692): Listo para escuchar
+[INFO] 20:08:26:358 FileSystem/(5692:5692): Servidor listo para recibir cliente
+[TRACE] 20:43:14:889 FileSystem/(8533:8533): Listo para escuchar
+[INFO] 20:43:14:889 FileSystem/(8533:8533): Servidor listo para recibir cliente
+[TRACE] 20:43:58:420 FileSystem/(8617:8617): Listo para escuchar
+[INFO] 20:43:58:420 FileSystem/(8617:8617): Servidor listo para recibir cliente
+[INFO] 20:45:05:084 FileSystem/(8617:8617): Se conecto un cliente
