@@ -42,12 +42,12 @@ int socket_servidor;
 	return socket_servidor;
 }
 
-
+//server se queda escuchando hasta que se conecta un cliente
 int esperar_cliente(t_log* logger,int socket_servidor)
 {
 
 	// Aceptamos un nuevo cliente
-	int socket_cliente = accept(socket_servidor, NULL, NULL);
+	int socket_cliente = accept(socket_servidor, NULL, NULL); //acepta creando un nuevo socket
 	log_info(logger, "Se conecto un cliente");
 
 	return socket_cliente;

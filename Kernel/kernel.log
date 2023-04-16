@@ -91,3 +91,52 @@
 [INFO] 13:50:18:441 Kernel/(66689:66689): Cliente conectado en 127.0.0.1:8002 (a Memoria)
 
 [INFO] 13:52:32:674 Kernel/(66878:66878): Servidor listo para recibir cliente
+[INFO] 15:13:20:514 Kernel/(68285:68285): Servidor listo para recibir cliente
+[INFO] 15:14:08:988 Kernel/(68285:68285): Se conecto un cliente
+[INFO] 15:14:57:141 Kernel/(68285:68285): Se conecto un cliente
+[INFO] 15:15:17:868 Kernel/(68285:68285): Se conecto un cliente
+[INFO] 15:17:43:884 Kernel/(68436:68436): Servidor listo para recibir cliente
+[INFO] 15:18:00:550 Kernel/(68436:68436): Se conecto un cliente
+[INFO] 15:20:34:642 Kernel/(68436:68436): Se conecto un cliente
+[INFO] 15:20:34:642 Kernel/(68436:68436): Se conecto un cliente
+[INFO] 15:49:48:439 Kernel/(69584:69584): Servidor listo para recibir cliente
+[ERROR] 15:49:48:439 Kernel/(69584:69584): Error al conectar (a CPU)
+
+[ERROR] 15:49:48:439 Kernel/(69584:69584): Error al conectar (a FileSystem)
+
+[INFO] 15:49:48:439 Kernel/(69584:69584): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+
+[INFO] 15:50:22:691 Kernel/(69584:69584): Se conecto un cliente
+[INFO] 15:50:22:691 Kernel/(69584:69584): Se conecto un cliente
+[INFO] 16:04:03:421 Kernel/(70620:70620): Servidor listo para recibir cliente
+[ERROR] 16:04:03:422 Kernel/(70620:70620): Error al conectar (a CPU)
+
+[ERROR] 16:04:03:422 Kernel/(70620:70620): Error al conectar (a FileSystem)
+
+[ERROR] 16:04:03:422 Kernel/(70620:70620): Error al conectar (a Memoria)
+
+[INFO] 16:04:09:577 Kernel/(70638:70638): Servidor listo para recibir cliente
+[ERROR] 16:04:09:577 Kernel/(70638:70638): Error al conectar (a CPU)
+
+[ERROR] 16:04:09:577 Kernel/(70638:70638): Error al conectar (a FileSystem)
+
+[ERROR] 16:04:09:577 Kernel/(70638:70638): Error al conectar (a Memoria)
+
+[INFO] 16:04:22:585 Kernel/(70638:70638): Se conecto un cliente
+[INFO] 16:04:39:867 Kernel/(70682:70682): Servidor listo para recibir cliente
+[ERROR] 16:04:39:868 Kernel/(70682:70682): Error al conectar (a CPU)
+
+[ERROR] 16:04:39:868 Kernel/(70682:70682): Error al conectar (a FileSystem)
+
+[ERROR] 16:04:39:868 Kernel/(70682:70682): Error al conectar (a Memoria)
+
+[INFO] 16:06:57:786 Kernel/(70731:70731): Servidor listo para recibir cliente
+[ERROR] 16:06:57:786 Kernel/(70731:70731): Error al conectar (a CPU)
+
+[ERROR] 16:06:57:786 Kernel/(70731:70731): Error al conectar (a FileSystem)
+
+[INFO] 16:06:57:786 Kernel/(70731:70731): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+
+[INFO] 16:07:07:411 Kernel/(70731:70731): Se conecto un cliente
+[INFO] 16:07:10:987 Kernel/(70731:70731): Se conecto un cliente
+[INFO] 16:07:13:359 Kernel/(70731:70731): Se conecto un cliente
