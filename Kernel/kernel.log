@@ -140,3 +140,26 @@
 [INFO] 16:07:07:411 Kernel/(70731:70731): Se conecto un cliente
 [INFO] 16:07:10:987 Kernel/(70731:70731): Se conecto un cliente
 [INFO] 16:07:13:359 Kernel/(70731:70731): Se conecto un cliente
+[INFO] 20:40:40:363 Kernel/(3077:3077): Servidor listo para recibir cliente
+[ERROR] 20:40:40:365 Kernel/(3077:3077): Error al conectar (a CPU)
+
+[ERROR] 20:40:40:365 Kernel/(3077:3077): Error al conectar (a FileSystem)
+
+[ERROR] 20:40:40:365 Kernel/(3077:3077): Error al conectar (a Memoria)
+
+[INFO] 20:41:03:388 Kernel/(3117:3117): Servidor listo para recibir cliente
+[ERROR] 20:41:03:388 Kernel/(3117:3117): Error al conectar (a CPU)
+
+[ERROR] 20:41:03:389 Kernel/(3117:3117): Error al conectar (a FileSystem)
+
+[ERROR] 20:41:03:389 Kernel/(3117:3117): Error al conectar (a Memoria)
+
+[INFO] 20:42:16:262 Kernel/(3077:3077): Se conecto un cliente
+[INFO] 20:43:04:806 Kernel/(3077:3077): Se conecto un cliente
+[INFO] 21:10:13:992 Kernel/(5298:5298): Servidor listo para recibir cliente
+[ERROR] 21:10:13:992 Kernel/(5298:5298): Error al conectar (a CPU)
+
+[ERROR] 21:10:13:993 Kernel/(5298:5298): Error al conectar (a FileSystem)
+
+[ERROR] 21:10:13:993 Kernel/(5298:5298): Error al conectar (a Memoria)
+
