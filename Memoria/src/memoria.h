@@ -9,13 +9,14 @@
 #include <commons/string.h>
 #include <commons/config.h>
 #include <readline/readline.h>
+#include <sockets.h>
 
 #include<signal.h>
 #include<unistd.h>
 #include<sys/socket.h>
 #include<netdb.h>
 #include<string.h>
-#include "../../home/utnso/tp-2023-1c-Kernel-Masters/Shared/sockets.h"
+
 
 t_log* iniciar_logger(void);
 t_config* iniciar_config(void);

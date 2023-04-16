@@ -31,6 +31,14 @@ void liberarConexiones(int socket1, int socket2, int socket3){
 		close(socket3);
 	}
 }
+void terminar_kernel(t_log* logger,t_config* config){
+	if(logger !=NULL){
+		log_destroy(logger);
+	}
+	if(config != NULL){
+		config_destroy(config);
+	}
+}
 
 int main (){
 	 	log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
@@ -54,13 +62,6 @@ int main (){
 	    return EXIT_SUCCESS;
 }
 
-void terminar_kernel(t_log* logger,t_config* config){
-	if(logger !=NULL){
-		log_destroy(logger);
-	}
-	if(config != NULL){
-		config_destroy(config);
-	}
-}
+
 
 

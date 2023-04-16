@@ -12,7 +12,6 @@
 #include <netdb.h>
 
 t_log* iniciar_logger(void);
-
 int iniciar_servidor (t_log* , char* , char*, char*);
 int esperar_cliente(t_log* ,int);
 int crear_conexion(t_log* , char*, char* , char* );

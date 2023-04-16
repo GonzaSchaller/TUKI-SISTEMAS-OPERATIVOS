@@ -25,3 +25,9 @@
 [TRACE] 20:51:13:527 Memoria/(9111:9111): Listo para escuchar
 [INFO] 20:51:13:527 Memoria/(9111:9111): Servidor listo para recibir al cliente
 [INFO] 20:51:31:981 Memoria/(9111:9111): Se conecto un cliente
+[TRACE] 13:43:05:572 Memoria/(66277:66277): Listo para escuchar
+[INFO] 13:43:05:572 Memoria/(66277:66277): Servidor listo para recibir al cliente
+[INFO] 13:45:16:837 Memoria/(66452:66452): Servidor listo para recibir al cliente
+[INFO] 13:49:25:539 Memoria/(66678:66678): Servidor listo para recibir al cliente
+[INFO] 13:50:18:441 Memoria/(66678:66678): Se conecto un cliente
+[INFO] 13:52:02:300 Memoria/(66802:66802): Servidor listo para recibir al cliente

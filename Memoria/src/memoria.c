@@ -1,10 +1,17 @@
 #include "memoria.h"
 
-
+void terminar_memoria(t_log* logger,t_config* config){
+	if(logger !=NULL){
+		log_destroy(logger);
+	}
+	if(config != NULL){
+		config_destroy(config);
+	}
+}
 
 int main (){
 	t_log* log_memoria;
-	log_memoria = log_create("memoria.log","Memoria",1,LOG_LEVEL_TRACE);
+	log_memoria = log_create("memoria.log","Memoria",1, LOG_LEVEL_DEBUG);
 	//puerto e ip: tirar a otra carpeta
 	config_memoria =config_create("memoria.config");
 
@@ -20,12 +27,5 @@ int main (){
 	    return EXIT_SUCCESS;
 
 }
-// GONZA ARREGLA ESTO
-void terminar_memoria(t_log* logger,t_config* config){
-	if(logger !=NULL){
-		log_destroy(logger);
-	}
-	if(config != NULL){
-		config_destroy(config);
-	}
-}
+
+

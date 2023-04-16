@@ -7,7 +7,7 @@ int main (){
 
 	//crear un logger
 	t_log* logger;
-	logger = log_create("fileSystem.log","FileSystem",1,LOG_LEVEL_TRACE);
+	logger = log_create("fileSystem.log","FileSystem",1, LOG_LEVEL_DEBUG);
 
 	//config
 	t_config* config;

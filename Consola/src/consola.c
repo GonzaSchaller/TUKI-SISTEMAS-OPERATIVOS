@@ -3,7 +3,7 @@
 int main (){
 	int conexion;
 
-	log_consola = log_create("consola.log","consola",1,LOG_LEVEL_TRACE);
+	log_consola = log_create("consola.log","consola",1, LOG_LEVEL_DEBUG);
 
 	config_consola = config_create("consola.config");
 

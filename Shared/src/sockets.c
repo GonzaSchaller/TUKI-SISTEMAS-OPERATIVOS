@@ -1,4 +1,4 @@
-#include <../../home/utnso/tp-2023-1c-Kernel-Masters/Shared/sockets.h>
+#include "sockets.h"
 //LOG
 
 //t_log* iniciar_logger(void)
@@ -110,5 +110,4 @@ liberar_conexion(conexion);
 void liberar_conexion(int socket_cliente){
 	close(socket_cliente);
 }
-
 
