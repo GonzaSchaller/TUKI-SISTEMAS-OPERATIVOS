@@ -61,9 +61,22 @@ typedef enum {
 	EXEC,
 	BLOCK,
 	EXIT
-
 }estado;
 
+//----------------------------------------------------------COLAS-------------------------------------------------------------
+t_queue* colaNew;
+t_list*  colaReady;
+t_list*  listaExe;
+t_list*  listaBlock;
+t_list*  listaExit;
 
+t_queue* colaReadySuspended;
+
+
+//sem_t contadorNew;
+//sem_t largoPlazo;
+
+
+pthread_mutex_t mutexNew;
 
 #endif KERNEL_INCLUDE_PLANIFICACION_H_
