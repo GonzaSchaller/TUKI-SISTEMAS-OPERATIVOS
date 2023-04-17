@@ -41,7 +41,15 @@ void terminar_kernel(t_log* logger,t_config* config){
 }
 //TODO
 //seguramente el socket_cliente tenga que estar dentor de una estructura
-void atender_cliente(void* socket_cliente){ //lo que hago por cada cliente conectado
+void atender_cliente(void* socket_cliente){ //lo que hago por cada consola conectada
+	t_list* listaInstrucciones;
+	pcb_t *pcb = malloc(sizeof(pcb_t));
+
+
+	recv(socket_cliente,listaInstrucciones,sizeof(t_list*),MSG_WAITALL);
+	contadorProcesos++;
+	inicializarPCB(listaInstrucciones);
+	agregarANew(pcb);
 
 	free(socket_cliente);
 };

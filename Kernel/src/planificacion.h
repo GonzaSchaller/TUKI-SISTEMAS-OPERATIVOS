@@ -1,6 +1,7 @@
 #ifndef KERNEL_INCLUDE_PLANIFICACION_H_
 #define KERNEL_INCLUDE_PLANIFICACION_H_
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,8 +11,9 @@
 #include <commons/collections/queue.h>
 #include <semaphore.h>
 #include <time.h>
-#include <kernel.h>
-//#include "utils.h"
+
+int contadorProcesos = 0 ;
+
 
 typedef struct{
 	uint32_t PID; // Debe ser unico en todo el sistema
@@ -23,7 +25,7 @@ typedef struct{
 	uint32_t estimacionRafaga;
 	uint32_t tiempReady; // Seria el timestamp en que el proceso llego a ready cambiar nombre
 	tablaArchivosAbiertos tablaArchivos ;// No se si conviene esto o una estructura
-	//	uint32_t estado;
+	estado state ;
 
 //	float rafagaAnterior;
 	float estimacionActual;
@@ -42,6 +44,7 @@ typedef struct{
 	uint32_t tamanio;
 }tablaDeSegmentos;
 
+
 typedef struct{
         int posicion_puntero;
         t_list* archivosAbiertos;
@@ -52,5 +55,15 @@ typedef struct  {
         int tamano;     // tamaño en bytes del registro (4, 8, 16)
        // char* direccion; // dirección de memoria del registro
     }registroCpu;
+typedef enum {
+	NEW,
+	READY,
+	EXEC,
+	BLOCK,
+	EXIT
+
+}estado;
+
+
 
 #endif KERNEL_INCLUDE_PLANIFICACION_H_

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <sockets.h>
 #include <pthread.h>
+#include "planificacion.h"
 
 t_log* log_kernel;
 char* ip = "127.0.0.1";
