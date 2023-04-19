@@ -18,4 +18,4 @@ int crear_conexion(t_log* , char*, char* , char* );
 void terminar_programa(int , t_log*, t_config* );
 void liberar_conexion(int);
 
-#endif SOCKETS_H
+#endif

@@ -45,4 +45,4 @@ bool recv_F_READ(int socket_cliente, uint32_t* parametro1, uint32_t* parametro2,
 bool recv_DELETE_SEGMENT(int socket_cliente, uint32_t* parametro1);
 bool recv_DELETE_SEGMENT(int socket_cliente, uint32_t*parametro1);
 
-#endif SEND_RCVS_H_
+#endif
