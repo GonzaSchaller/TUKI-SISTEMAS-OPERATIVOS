@@ -29,6 +29,7 @@ typedef enum{ 	//parametros
 	EXIT
 }op_code;
 
+bool recv_YIELD(int socket_cliente);
 bool recv_SET(int socket_cliente, uint32_t* parametro1, uint32_t* parametro2);
 bool recv_MOV_OUT(int socket_cliente, uint32_t* parametro1, uint32_t* parametro2);
 bool recv_WAIT(int socket_cliente, uint32_t* parametro1);

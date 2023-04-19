@@ -70,8 +70,8 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		}
 		//creo que va aca
 		contadorProcesos++;
-		inicializarPCB(lista_instrucciones,pcb); //inicializamos el pcb que le vamos a mandar al cpu
-		agregarANew(pcb, log_kernel); //agregamos cada proceso a NEW
+		inicializarPCB(contadorProcesos,lista_instrucciones,pcb); //inicializamos el pcb que le vamos a mandar al cpu
+		//agregarANew(pcb, log_kernel); //agregamos cada proceso a NEW
 		//me fijo que instruccion es segun el codigo de operacion
 		 switch (cop) {
 		 	case SET:
@@ -82,7 +82,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		 		     log_error(log_kernel, "Fallo recibiendo SET");
 		 		     break;
 		 		            	}
-		 		cargar_intruccion(SET, "SET", parametro1, parametro2, 0, lista_instrucciones);
+		 		cargar_instruccion(SET, "SET", parametro1, parametro2, 0, lista_instrucciones);
 				break;
 		 	}
 		 	case MOV_OUT:
@@ -92,7 +92,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		 		if (!recv_MOV_OUT(socket_cliente, &parametro1, &parametro2)) {
 		 			log_error(log_kernel, "Fallo recibiendo MOV_OUT");
 		 			break;		 			 		            	}
-		 		cargar_intruccion(MOV_OUT, "MOV_OUT", parametro1, parametro2 , 0 , lista_instrucciones);
+		 		cargar_instruccion(MOV_OUT, "MOV_OUT", parametro1, parametro2 , 0 , lista_instrucciones);
 		 		break;
 		 			 	}
 		 	case WAIT:
@@ -101,7 +101,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		 		if (!recv_WAIT(socket_cliente, &parametro1)) {
 		 			log_error(log_kernel, "Fallo recibiendo WAIT");
 		 			break;	            	}
-		 			cargar_intruccion(WAIT, "WAIT", parametro1 , 0 , 0 ,lista_instrucciones);
+		 			cargar_instruccion(WAIT, "WAIT", parametro1 , 0 , 0 ,lista_instrucciones);
 		 			break;
 		 			 	}
             case IO:
@@ -122,7 +122,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             		log_error(log_kernel, "Fallo recibiendo SIGNAL");
             		break;
             		 			}
-            	cargar_intruccion(SIGNAL, "SIGNAL", parametro1, 0 , 0 , lista_instrucciones);
+            	cargar_instruccion(SIGNAL, "SIGNAL", parametro1, 0 , 0 , lista_instrucciones);
             		break;
             		 	}
             case MOV_IN:
@@ -133,7 +133,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             		log_error(log_kernel, "Fallo recibiendo MOV_IN");
             		break;
             		 		            	}
-            	cargar_intruccion(MOV_IN, "MOV_IN", parametro1 , parametro2 , 0, lista_instrucciones);
+            	cargar_instruccion(MOV_IN, "MOV_IN", parametro1 , parametro2 , 0, lista_instrucciones);
             		break;
             		 	}
             case F_OPEN:
@@ -143,16 +143,12 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             		  log_error(log_kernel, "Fallo recibiendo F_OPEN");
             		  break;
             	  }
-            		cargar_intruccion(F_OPEN, "F_OPEN", parametro1, 0 , 0 , lista_instrucciones);
+            		cargar_instruccion(F_OPEN, "F_OPEN", parametro1, 0 , 0 , lista_instrucciones);
             		break;
             	 }
              case YIELD:
              {
-            	 if (!recv_YIELD(socket_cliente)) {
-            		 log_error(log_kernel, "Fallo recibiendo YIELD");
-                   	 break;
-                  }
-                  cargar_intruccion(YIELD, "YIELD", 0 , 0 , 0 , lista_instrucciones);
+                  cargar_instruccion(YIELD, "YIELD", 0 , 0 , 0 , lista_instrucciones);
                   break;
                    		 	}
 
@@ -317,6 +313,7 @@ void generar_conexiones(t_log* log_kernel){
 }
 
 int main (){
+	char* ip = "127.0.0.1";
 	 	t_log* log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
 		t_config* config_kernel = config_create("kernel.config");
 		iniciar_config(config_kernel);

@@ -1,9 +1,16 @@
 #include "send_rcvs.h"
 
+
+bool recv_YIELD(int socket_cliente){
+
+	return true;
+}
+
 bool recv_SET(int socket_cliente, uint32_t* parametro1,uint32_t* parametro2){
 
 	return true;
 }
+
 bool recv_MOV_OUT(int socket_cliente, uint32_t* parametro1,uint32_t* parametro2){
 
 	return true;

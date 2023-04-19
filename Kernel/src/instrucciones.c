@@ -13,3 +13,16 @@ void cargar_instruccion(int id, char* nombre, uint32_t parametro1, uint32_t para
 	list_add(lista, estructura_instrucciones);
 }
 
+void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb){
+
+    pcb->PID = contadorProceso;
+    pcb->instrucciones = listaInstrucciones;
+    pcb->PC = 0;
+    //pcb->regCpu;
+    //pcb->TSegmento;
+    //pcb->estimacionRafaga;
+    //pcb->tiempReady;
+    //pcb->tablaArchivos;
+    pcb->state= NEW;
+
+}
