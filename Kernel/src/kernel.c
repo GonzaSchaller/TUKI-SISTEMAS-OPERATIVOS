@@ -62,10 +62,16 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 	op_code cop;
 	while(socket_cliente != -1){
 		if(recv(socket_cliente, &cop, sizeof(op_code), 0) != sizeof(op_code)){
-			contadorProcesos++;
-			inicializarPCB(lista_instrucciones,pcb); //inicializamos el pcb que le vamos a mandar al cpu
-			agregarANew(pcb); //agregamos cada proceso a NEW
+			//aca irian las cosas que recibo que no son una instruccion
+//			contadorProcesos++;
+//			inicializarPCB(lista_instrucciones,pcb); //inicializamos el pcb que le vamos a mandar al cpu
+//			agregarANew(pcb); //agregamos cada proceso a NEW
+			log_info(log_kernel, "No recibí una instruccion");
 		}
+		//creo que va aca
+		contadorProcesos++;
+		inicializarPCB(lista_instrucciones,pcb); //inicializamos el pcb que le vamos a mandar al cpu
+		agregarANew(pcb, log_kernel); //agregamos cada proceso a NEW
 		//me fijo que instruccion es segun el codigo de operacion
 		 switch (cop) {
 		 	case SET:
@@ -76,7 +82,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		 		     log_error(log_kernel, "Fallo recibiendo SET");
 		 		     break;
 		 		            	}
-		 		cargar_intruccion2(SET, "SET", parametro1, parametro2, (uint32_t)NULL, lista_instrucciones);
+		 		cargar_intruccion(SET, "SET", parametro1, parametro2, 0, lista_instrucciones);
 				break;
 		 	}
 		 	case MOV_OUT:
@@ -86,7 +92,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		 		if (!recv_MOV_OUT(socket_cliente, &parametro1, &parametro2)) {
 		 			log_error(log_kernel, "Fallo recibiendo MOV_OUT");
 		 			break;		 			 		            	}
-		 		cargar_intruccion2(MOV_OUT, "MOV_OUT", parametro1, parametro2, (uint32_t)NULL, lista_instrucciones);
+		 		cargar_intruccion(MOV_OUT, "MOV_OUT", parametro1, parametro2 , 0 , lista_instrucciones);
 		 		break;
 		 			 	}
 		 	case WAIT:
@@ -95,7 +101,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		 		if (!recv_WAIT(socket_cliente, &parametro1)) {
 		 			log_error(log_kernel, "Fallo recibiendo WAIT");
 		 			break;	            	}
-		 			cargar_intruccion1(WAIT, "WAIT", parametro1, (uint32_t)NULL, lista_instrucciones);
+		 			cargar_intruccion(WAIT, "WAIT", parametro1 , 0 , 0 ,lista_instrucciones);
 		 			break;
 		 			 	}
             case IO:
@@ -106,7 +112,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             	     log_error(log_kernel, "Fallo recibiendo IO");
             	     break;
             	}
-            	cargar_instruccion1(IO,"I\O",parametro1,(uint32_t)NULL,lista_instrucciones);
+            	cargar_instruccion(IO,"I\O",parametro1 , 0 , 0 ,lista_instrucciones);
             	break;
             }
             case SIGNAL:
@@ -116,7 +122,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             		log_error(log_kernel, "Fallo recibiendo SIGNAL");
             		break;
             		 			}
-            	cargar_intruccion1(SIGNAL, "SIGNAL", parametro1, (uint32_t)NULL, lista_instrucciones);
+            	cargar_intruccion(SIGNAL, "SIGNAL", parametro1, 0 , 0 , lista_instrucciones);
             		break;
             		 	}
             case MOV_IN:
@@ -127,7 +133,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             		log_error(log_kernel, "Fallo recibiendo MOV_IN");
             		break;
             		 		            	}
-            	cargar_intruccion2(MOV_IN, "MOV_IN", parametro1, parametro2, (uint32_t)NULL, lista_instrucciones);
+            	cargar_intruccion(MOV_IN, "MOV_IN", parametro1 , parametro2 , 0, lista_instrucciones);
             		break;
             		 	}
             case F_OPEN:
@@ -137,16 +143,16 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             		  log_error(log_kernel, "Fallo recibiendo F_OPEN");
             		  break;
             	  }
-            		cargar_intruccion2(F_OPEN, "F_OPEN", parametro1,(uint32_t)NULL, lista_instrucciones);
+            		cargar_intruccion(F_OPEN, "F_OPEN", parametro1, 0 , 0 , lista_instrucciones);
             		break;
             	 }
              case YIELD:
              {
-        if (!recv_YIELD(socket_cliente)) {
-           log_error(log_kernel, "Fallo recibiendo YIELD");
+            	 if (!recv_YIELD(socket_cliente)) {
+            		 log_error(log_kernel, "Fallo recibiendo YIELD");
                    	 break;
                   }
-                  cargar_intruccion(YIELD, "YIELD",(uint32_t)NULL, lista_instrucciones);
+                  cargar_intruccion(YIELD, "YIELD", 0 , 0 , 0 , lista_instrucciones);
                   break;
                    		 	}
 
@@ -158,22 +164,10 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             	   log_error(log_kernel, "Fallo recibiendo F_TRUNCATE");
             	   break;
             	}
-            	cargar_instruccion2( F_TRUNCATE,"F_TRUNCATE",parametro1,parametro2,lista_instrucciones);
-            	//log_warning(log_kernel, "Deserialice WRITE el parametro1 es: %d",parametro1);
-            	//log_warning(log_kernel, "Deserialice WRITE el parametro2 es: %d",parametro2);
+            	cargar_instruccion( F_TRUNCATE,"F_TRUNCATE", parametro1 , parametro2 , 0 ,lista_instrucciones);
             	break;
 			}
 
-			case CREATE_SEGMENT:
-            {
-            	uint32_t parametro1, parametro2;
-            	if (!recv_CREATE_SEGMENT(socket_cliente, &parametro1, &parametro2)) {
-            	   log_error(log_kernel, "Fallo recibiendo CREATE_SEGMENT");
-            	   break;
-            	}
-            	cargar_instruccion2( CREATE_SEGMENT,"CREATE_SEGMENT",parametro1,parametro2,lista_instrucciones);
-            	break;
-			}
 			case F_SEEK:
             {
             	uint32_t parametro1, parametro2;
@@ -181,7 +175,17 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             	   log_error(log_kernel, "Fallo recibiendo F_SEEK");
             	   break;
             	}
-            	cargar_instruccion2( F_SEEK,"F_SEEK",parametro1,parametro2,lista_instrucciones);
+            	cargar_instruccion( F_SEEK,"F_SEEK", parametro1 , parametro2 , 0 ,lista_instrucciones);
+            	break;
+			}
+			case CREATE_SEGMENT:
+            {
+            	uint32_t parametro1, parametro2;
+            	if (!recv_CREATE_SEGMENT(socket_cliente, &parametro1, &parametro2)) {
+            	   log_error(log_kernel, "Fallo recibiendo CREATE_SEGMENT");
+            	   break;
+            	}
+            	cargar_instruccion( CREATE_SEGMENT,"CREATE_SEGMENT", parametro1 , parametro2 , 0 ,lista_instrucciones);
             	break;
 			}
 			case F_WRITE:
@@ -191,7 +195,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             	   log_error(log_kernel, "Fallo recibiendo F_WRITE");
             	   break;
             	}
-            	cargar_instruccion3( F_WRITE,"F_WRITE",parametro1,parametro2,parametro3,lista_instrucciones);
+            	cargar_instruccion( F_WRITE,"F_WRITE", parametro1 , parametro2 , parametro3 ,lista_instrucciones);
             	break;
 			}
 			case F_READ:
@@ -201,7 +205,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             	   log_error(log_kernel, "Fallo recibiendo F_READ");
             	   break;
             	}
-            	cargar_instruccion3( F_READ,"F_READ",parametro1,parametro2,parametro3,lista_instrucciones);
+            	cargar_instruccion( F_READ,"F_READ", parametro1 , parametro2 , parametro3 ,lista_instrucciones);
 
             	break;
 			}
@@ -213,7 +217,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             	     log_error(log_kernel, "Fallo recibiendo DELETE_SEGMENT");
             	     break;
             	}
-            	cargar_instruccion1(DELETE_SEGMENT,"DELETE_SEGMENT",parametro1,(uint32_t)NULL,lista_instrucciones);
+            	cargar_instruccion(DELETE_SEGMENT,"DELETE_SEGMENT", parametro1 , 0 , 0 ,lista_instrucciones);
 
             	break;
             }
@@ -225,13 +229,13 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             	     log_error(log_kernel, "Fallo recibiendo F_CLOSE");
             	     break;
             	}
-            	cargar_instruccion1(F_CLOSE,"F_CLOSE",parametro1,(uint32_t)NULL,lista_instrucciones);
+            	cargar_instruccion(F_CLOSE,"F_CLOSE", parametro1 , 0 , 0 ,lista_instrucciones);
 
             	break;
             }
 		    case EXIT:
             {
-            	cargar_instruccion2(EXIT,"EXIT",(uint32_t)NULL,(uint32_t)NULL,lista_instrucciones);
+            	cargar_instruccion(EXIT,"EXIT", 0 , 0 , 0 ,lista_instrucciones);
 				break;
 			}
 
@@ -285,31 +289,31 @@ void procesar_conexion_memoria(void* socket_cliente){
 	free(socket_cliente);
 }
 //genero y proceso cada conexion
-void generar_conexiones(t_log* logger){
-	int* conexion1 = malloc(sizeof(int));
-	int* conexion2 = malloc(sizeof(int));
-	int* conexion3 = malloc(sizeof(int));
+void generar_conexiones(t_log* log_kernel){
+	int conexion1;
+	int conexion2;
+	int conexion3;
 
 	pthread_t thread1, thread2, thread3;
 	//creo conexiones
-	*conexion1 = crear_conexion(log_kernel, "CPU", ip_cpu, puerto_cpu);
-	*conexion2 = crear_conexion(log_kernel, "FileSystem", ip_fileSystem, puerto_fileSystem);
-	*conexion3 = crear_conexion(log_kernel, "Memoria", ip_memoria, puerto_memoria);
+	conexion1 = crear_conexion(log_kernel, "CPU", ip_cpu, puerto_cpu);
+	conexion2 = crear_conexion(log_kernel, "FileSystem", ip_fileSystem, puerto_fileSystem);
+	conexion3 = crear_conexion(log_kernel, "Memoria", ip_memoria, puerto_memoria);
 	//proceso conexiones
-	if(*conexion1 != -1){
-		pthread_create(&thread1, NULL, (void*) procesar_conexion_cpu, conexion1);
+	if(conexion1 != -1){
+		pthread_create(&thread1, NULL, (void*) procesar_conexion_cpu, &conexion1);
 		pthread_detach(thread1);
 	}
-	if(*conexion2 != -1){
-		pthread_create(&thread2, NULL, (void*) procesar_conexion_fileSystem, conexion2);
+	if(conexion2 != -1){
+		pthread_create(&thread2, NULL, (void*) procesar_conexion_fileSystem, &conexion2);
 		pthread_detach(thread2);
 	}
-	if(*conexion3 != -1){
-		pthread_create(&thread3, NULL, (void*) procesar_conexion_memoria, conexion3);
+	if(conexion3 != -1){
+		pthread_create(&thread3, NULL, (void*) procesar_conexion_memoria, &conexion3);
 		pthread_detach(thread3);
 	}
 
-	liberarConexiones(*conexion1, *conexion2, conexion3);
+	liberarConexiones(conexion1, conexion2, conexion3);
 }
 
 int main (){

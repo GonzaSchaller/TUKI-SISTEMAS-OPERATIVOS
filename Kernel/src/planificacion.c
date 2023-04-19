@@ -1,7 +1,7 @@
 #include "planificacion.h"
 pthread_mutex_t mutexNew;
 
-void inicializarPCB(t_list* listaInstrucciones,pcb_t *pcb){
+void inicializarPCB(t_list* listaInstrucciones, pcb_t *pcb){
 
 	pcb->PID = contadorProcesos;
 	pcb->instrucciones = listaInstrucciones;
@@ -15,7 +15,7 @@ void inicializarPCB(t_list* listaInstrucciones,pcb_t *pcb){
 
 }
 
-void agregarANew(pcb_t* pcb_proceso){
+void agregarANew(pcb_t* pcb_proceso, t_log* log_kernel){
 		pthread_mutex_lock(&mutexNew);
 
 		queue_push(colaNew, pcb_proceso);

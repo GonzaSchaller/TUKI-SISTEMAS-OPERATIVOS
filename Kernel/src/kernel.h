@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <sockets.h>
 #include <pthread.h>
-#include "planificacion.h"
 #include <send_rcvs.h>
-
+#include "planificacion.h"
+#include "instrucciones.h"
 
 char* ip = "127.0.0.1";
 char* puerto_escucha;

@@ -11,6 +11,7 @@
 #include <commons/collections/queue.h>
 #include <semaphore.h>
 #include <time.h>
+#include <inttypes.h>
 
 int contadorProcesos = 0 ;
 
@@ -79,5 +80,8 @@ t_queue* colaReadySuspended;
 
 
 pthread_mutex_t mutexNew;
+
+void inicializarPCB(t_list*, pcb_t *);
+void agregarANew(pcb_t*, t_log*);
 
 #endif
