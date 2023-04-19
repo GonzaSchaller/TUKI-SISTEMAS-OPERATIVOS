@@ -6,8 +6,9 @@
 #include <sockets.h>
 #include <pthread.h>
 #include "planificacion.h"
+#include <send_rcvs.h>
 
-t_log* log_kernel;
+
 char* ip = "127.0.0.1";
 char* puerto_escucha;
 
@@ -21,6 +22,8 @@ char* algoritmo_planificacion;
 uint32_t estimacion_inicial;
 
 uint32_t grado_max_multiprogramacion;
+
+
 
 
 #endif

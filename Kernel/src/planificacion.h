@@ -14,25 +14,6 @@
 
 int contadorProcesos = 0 ;
 
-
-typedef struct{
-	uint32_t PID; // Debe ser unico en todo el sistema
-	t_list* instrucciones; // Lista de instrucciones a ejecutar
-	uint32_t PC; // Program counter
-	registroCpu regCpu;
-	tablaDeSegmentos TSegmento;
-	//uint32_t indice_tabla_segmentos;
-	uint32_t estimacionRafaga;
-	uint32_t tiempReady; // Seria el timestamp en que el proceso llego a ready cambiar nombre
-	tablaArchivosAbiertos tablaArchivos ;// No se si conviene esto o una estructura
-	estado state ;
-
-//	float rafagaAnterior;
-	float estimacionActual;
-	float estimacionAnterior;
-	//float horaDeIngresoAExe;
-}pcb_t;
-
 typedef enum{
 	HRRN,
 	FIFO
@@ -55,13 +36,33 @@ typedef struct  {
         int tamano;     // tamaño en bytes del registro (4, 8, 16)
        // char* direccion; // dirección de memoria del registro
     }registroCpu;
+
 typedef enum {
 	NEW,
 	READY,
 	EXEC,
 	BLOCK,
-	EXIT
+	FINISH
 }estado;
+
+typedef struct{
+	uint32_t PID; // Debe ser unico en tod el sistema
+	t_list* instrucciones; // Lista de instrucciones a ejecutar
+	uint32_t PC; // Program counter
+	registroCpu regCpu;
+	tablaDeSegmentos TSegmento;
+	//uint32_t indice_tabla_segmentos;
+	uint32_t estimacionRafaga;
+	uint32_t tiempReady; // Seria el timestamp en que el proceso llego a ready cambiar nombre
+	tablaArchivosAbiertos tablaArchivos ;// No se si conviene esto o una estructura
+	estado state ;
+
+//	float rafagaAnterior;
+	float estimacionActual;
+	float estimacionAnterior;
+	//float horaDeIngresoAExe;
+}pcb_t;
+
 
 //----------------------------------------------------------COLAS-------------------------------------------------------------
 t_queue* colaNew;
@@ -79,4 +80,4 @@ t_queue* colaReadySuspended;
 
 pthread_mutex_t mutexNew;
 
-#endif KERNEL_INCLUDE_PLANIFICACION_H_
+#endif

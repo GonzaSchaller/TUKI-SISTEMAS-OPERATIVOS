@@ -1,4 +1,4 @@
-#include <planificacion.h>
+#include "planificacion.h"
 pthread_mutex_t mutexNew;
 
 void inicializarPCB(t_list* listaInstrucciones,pcb_t *pcb){

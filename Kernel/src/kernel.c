@@ -39,29 +39,232 @@ void terminar_kernel(t_log* logger,t_config* config){
 		config_destroy(config);
 	}
 }
-//TODO
+
+typedef struct{
+	int socket;
+	t_log* log;
+	char* server_name;
+}args_atender_cliente;
+
 //seguramente el socket_cliente tenga que estar dentor de una estructura
-void atender_cliente(void* socket_cliente){ //lo que hago por cada consola conectada
-	t_list* listaInstrucciones;
+void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
+	args_atender_cliente* args = (args_atender_cliente*) void_args;
+	t_log* log_kernel = args->log;
+	int socket_cliente = args->socket;
+	char* server_name = args->server_name;
+	free(args);
+
 	pcb_t *pcb = malloc(sizeof(pcb_t));
+	t_list* lista_instrucciones = list_create();
 
 
-	recv(socket_cliente,listaInstrucciones,sizeof(t_list*),MSG_WAITALL);
-	contadorProcesos++;
-	inicializarPCB(listaInstrucciones);
-	agregarANew(pcb);
 
-	free(socket_cliente);
-};
+	op_code cop;
+	while(socket_cliente != -1){
+		if(recv(socket_cliente, &cop, sizeof(op_code), 0) != sizeof(op_code)){
+			contadorProcesos++;
+			inicializarPCB(lista_instrucciones,pcb); //inicializamos el pcb que le vamos a mandar al cpu
+			agregarANew(pcb); //agregamos cada proceso a NEW
+		}
+		//me fijo que instruccion es segun el codigo de operacion
+		 switch (cop) {
+		 	case SET:
+		 	{
+		 		uint32_t parametro1;
+		 		uint32_t parametro2;
+		 		if (!recv_SET(socket_cliente, &parametro1, &parametro2)) {
+		 		     log_error(log_kernel, "Fallo recibiendo SET");
+		 		     break;
+		 		            	}
+		 		cargar_intruccion2(SET, "SET", parametro1, parametro2, (uint32_t)NULL, lista_instrucciones);
+				break;
+		 	}
+		 	case MOV_OUT:
+		 			 	{
+		 		uint32_t parametro1;
+		 		uint32_t parametro2;
+		 		if (!recv_MOV_OUT(socket_cliente, &parametro1, &parametro2)) {
+		 			log_error(log_kernel, "Fallo recibiendo MOV_OUT");
+		 			break;		 			 		            	}
+		 		cargar_intruccion2(MOV_OUT, "MOV_OUT", parametro1, parametro2, (uint32_t)NULL, lista_instrucciones);
+		 		break;
+		 			 	}
+		 	case WAIT:
+		 			{
+		 		uint32_t parametro1;
+		 		if (!recv_WAIT(socket_cliente, &parametro1)) {
+		 			log_error(log_kernel, "Fallo recibiendo WAIT");
+		 			break;	            	}
+		 			cargar_intruccion1(WAIT, "WAIT", parametro1, (uint32_t)NULL, lista_instrucciones);
+		 			break;
+		 			 	}
+            case IO:
+            {
+            	uint32_t parametro1;
+
+            	if (!recv_IO(socket_cliente, &parametro1)) {
+            	     log_error(log_kernel, "Fallo recibiendo IO");
+            	     break;
+            	}
+            	cargar_instruccion1(IO,"I\O",parametro1,(uint32_t)NULL,lista_instrucciones);
+            	break;
+            }
+            case SIGNAL:
+            {
+            	uint32_t parametro1;
+            	if (!recv_SIGNAL(socket_cliente, &parametro1)) {
+            		log_error(log_kernel, "Fallo recibiendo SIGNAL");
+            		break;
+            		 			}
+            	cargar_intruccion1(SIGNAL, "SIGNAL", parametro1, (uint32_t)NULL, lista_instrucciones);
+            		break;
+            		 	}
+            case MOV_IN:
+            		 	{
+            	uint32_t parametro1;
+            	uint32_t parametro2;
+            	if (!recv_MOV_IN(socket_cliente, &parametro1, &parametro2)) {
+            		log_error(log_kernel, "Fallo recibiendo MOV_IN");
+            		break;
+            		 		            	}
+            	cargar_intruccion2(MOV_IN, "MOV_IN", parametro1, parametro2, (uint32_t)NULL, lista_instrucciones);
+            		break;
+            		 	}
+            case F_OPEN:
+             {
+            		uint32_t parametro1;
+            		if (!recv_F_OPEN(socket_cliente, &parametro1)) {
+            		  log_error(log_kernel, "Fallo recibiendo F_OPEN");
+            		  break;
+            	  }
+            		cargar_intruccion2(F_OPEN, "F_OPEN", parametro1,(uint32_t)NULL, lista_instrucciones);
+            		break;
+            	 }
+             case YIELD:
+             {
+        if (!recv_YIELD(socket_cliente)) {
+           log_error(log_kernel, "Fallo recibiendo YIELD");
+                   	 break;
+                  }
+                  cargar_intruccion(YIELD, "YIELD",(uint32_t)NULL, lista_instrucciones);
+                  break;
+                   		 	}
+
+			// ACA VOY YO
+			  case F_TRUNCATE:
+            {
+            	uint32_t parametro1, parametro2;
+            	if (!recv_F_TRUNCATE(socket_cliente, &parametro1, &parametro2)) {
+            	   log_error(log_kernel, "Fallo recibiendo F_TRUNCATE");
+            	   break;
+            	}
+            	cargar_instruccion2( F_TRUNCATE,"F_TRUNCATE",parametro1,parametro2,lista_instrucciones);
+            	//log_warning(log_kernel, "Deserialice WRITE el parametro1 es: %d",parametro1);
+            	//log_warning(log_kernel, "Deserialice WRITE el parametro2 es: %d",parametro2);
+            	break;
+			}
+
+			case CREATE_SEGMENT:
+            {
+            	uint32_t parametro1, parametro2;
+            	if (!recv_CREATE_SEGMENT(socket_cliente, &parametro1, &parametro2)) {
+            	   log_error(log_kernel, "Fallo recibiendo CREATE_SEGMENT");
+            	   break;
+            	}
+            	cargar_instruccion2( CREATE_SEGMENT,"CREATE_SEGMENT",parametro1,parametro2,lista_instrucciones);
+            	break;
+			}
+			case F_SEEK:
+            {
+            	uint32_t parametro1, parametro2;
+            	if (!recv_F_SEEK(socket_cliente, &parametro1, &parametro2)) {
+            	   log_error(log_kernel, "Fallo recibiendo F_SEEK");
+            	   break;
+            	}
+            	cargar_instruccion2( F_SEEK,"F_SEEK",parametro1,parametro2,lista_instrucciones);
+            	break;
+			}
+			case F_WRITE:
+            {
+            	uint32_t parametro1, parametro2, parametro3 ;
+            	if (!recv_F_WRITE(socket_cliente, &parametro1, &parametro2, &parametro3)) {
+            	   log_error(log_kernel, "Fallo recibiendo F_WRITE");
+            	   break;
+            	}
+            	cargar_instruccion3( F_WRITE,"F_WRITE",parametro1,parametro2,parametro3,lista_instrucciones);
+            	break;
+			}
+			case F_READ:
+            {
+            	uint32_t parametro1, parametro2, parametro3 ;
+            	if (!recv_F_READ(socket_cliente, &parametro1, &parametro2, &parametro3)) {
+            	   log_error(log_kernel, "Fallo recibiendo F_READ");
+            	   break;
+            	}
+            	cargar_instruccion3( F_READ,"F_READ",parametro1,parametro2,parametro3,lista_instrucciones);
+
+            	break;
+			}
+			case DELETE_SEGMENT:
+            {
+            	uint32_t parametro1;
+
+            	if (!recv_DELETE_SEGMENT(socket_cliente, &parametro1)) {
+            	     log_error(log_kernel, "Fallo recibiendo DELETE_SEGMENT");
+            	     break;
+            	}
+            	cargar_instruccion1(DELETE_SEGMENT,"DELETE_SEGMENT",parametro1,(uint32_t)NULL,lista_instrucciones);
+
+            	break;
+            }
+			case F_CLOSE:
+            {
+            	uint32_t parametro1;
+
+            	if (!recv_F_CLOSE(socket_cliente, &parametro1)) {
+            	     log_error(log_kernel, "Fallo recibiendo F_CLOSE");
+            	     break;
+            	}
+            	cargar_instruccion1(F_CLOSE,"F_CLOSE",parametro1,(uint32_t)NULL,lista_instrucciones);
+
+            	break;
+            }
+		    case EXIT:
+            {
+            	cargar_instruccion2(EXIT,"EXIT",(uint32_t)NULL,(uint32_t)NULL,lista_instrucciones);
+				break;
+			}
+
+            // Errores
+            case -1:
+                log_error(log_kernel, "Cliente desconectado de %s...", server_name);
+                return;
+
+            default:
+                log_error(log_kernel, "Algo anduvo mal en el server de %s", server_name);
+                log_info(log_kernel, "Cop: %d", cop);
+                return;
+        }
+    }
+    log_warning(log_kernel, "El cliente se desconecto de %s server", server_name);
+
+
+    return;
+}
+
 //crea un hilo por cada cliente que se conecta
 void escuchar_clientes(t_log* logger, int socket_servidor){
 
+	args_atender_cliente* args = malloc(sizeof(args_atender_cliente));
+	args->log = logger;
+	args->socket = socket_servidor;
+	args->server_name = "Kernel";
 	while (1) {
 	   pthread_t thread;
 	   int *socket_cliente = malloc(sizeof(int));
 	   *socket_cliente = esperar_cliente(logger, socket_servidor); //el server acepta al cliente y devuelve un socket_cliente
 	   if(*socket_cliente != -1){ //si se establece la conexion
-		   pthread_create(&thread, NULL, (void*) atender_cliente, socket_cliente);
+		   pthread_create(&thread, NULL, (void*) atender_cliente, (void*) args);
 		   pthread_detach(thread);
 	   }
 	}
@@ -106,11 +309,11 @@ void generar_conexiones(t_log* logger){
 		pthread_detach(thread3);
 	}
 
-	liberarConexiones(conexion1, conexion2, conexion3);
+	liberarConexiones(*conexion1, *conexion2, conexion3);
 }
 
 int main (){
-	 	log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
+	 	t_log* log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
 		t_config* config_kernel = config_create("kernel.config");
 		iniciar_config(config_kernel);
 
