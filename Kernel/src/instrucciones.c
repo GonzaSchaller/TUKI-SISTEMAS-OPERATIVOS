@@ -1,5 +1,6 @@
 #include "instrucciones.h"
 
+//carga la lista de instrucciones para el pcb
 void cargar_instruccion(int id, char* nombre, uint32_t parametro1, uint32_t parametro2,uint32_t parametro3,t_list* lista){
 
 	instruccion* estructura_instrucciones = malloc(sizeof(instruccion));

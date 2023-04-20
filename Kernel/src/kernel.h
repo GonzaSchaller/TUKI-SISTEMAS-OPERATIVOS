@@ -6,10 +6,13 @@
 #include <sockets.h>
 #include <pthread.h>
 #include <send_rcvs.h>
-//#include "planificacion.h"
+
+#include "conexiones_kernel.h"
+#include "planificador.h"
 #include "instrucciones.h"
 
-int contadorProcesos = 0 ;
+char* ip;
+
 char* puerto_escucha;
 
 char* ip_cpu;
@@ -25,12 +28,8 @@ uint32_t grado_max_multiprogramacion;
 void iniciar_config(t_config* );
 void liberarConexiones(int , int , int );
 void terminar_kernel(t_log*,t_config*);
-void atender_cliente(void*);
-void escuchar_clientes(t_log*, int);
-void procesar_conexion_cpu(void*);
-void procesar_conexion_fileSystem(void*);
-void procesar_conexion_memoria(void*);
 void generar_conexiones(t_log* );
+
 
 
 

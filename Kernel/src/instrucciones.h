@@ -5,10 +5,6 @@
 #include <send_rcvs.h>
 #include <commons/collections/list.h>
 
-
-//Codigo de operacions instrucciones
-
-
 typedef struct{
 	int id;
 	char* nombre;
@@ -16,6 +12,7 @@ typedef struct{
 	uint32_t parametro2;
 	uint32_t parametro3;
 }instruccion;
+
 typedef enum {
     NEW,
     READY,
@@ -33,18 +30,18 @@ typedef struct{
 typedef struct{
         int posicion_puntero;
         t_list* archivosAbiertos;
-    } tablaArchivosAbiertos;
+} tablaArchivosAbiertos;
 
 typedef struct  {
         char nombre[4]; // nombre del registro (AX, BX, CX, DX, EAX, EBX, ECX, EDX, RAX, RBX, RCX, RDX)
         int tamano;     // tamaño en bytes del registro (4, 8, 16)
        // char* direccion; // dirección de memoria del registro
-    }registroCpu;
+} registroCpu;
 
 typedef enum{
     HRRN,
     FIFO
-}t_algoritmo_planificacion;
+} t_algoritmo_planificacion;
 
 
 typedef struct{
@@ -65,9 +62,7 @@ typedef struct{
     //float horaDeIngresoAExe;
 }pcb_t;
 
-
-
 void cargar_instruccion(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
-
+void inicializarPCB(int, t_list*, pcb_t *);
 
 #endif
