@@ -1,7 +1,7 @@
 #include "planificador.h"
 
 int contadorProcesos = 0 ;
-
+//recibimos instrucciones, creamos pcb y lo mandamos a new
 void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 	args_atender_cliente* args = (args_atender_cliente*) void_args;
 	t_log* log_kernel = args->log;
