@@ -32,7 +32,7 @@ bool send_SET(int socket_cliente, uint32_t  parametro1, char* parametro2){
     return true;
 }
 static void* serializar_SET(size_t* size, uint32_t  parametro1, char* parametro2 ){
-	size_t size_parametro2 = strlen(parametro2); // No sabemos si agregar +1 PREGUNTAR
+	size_t size_parametro2 = strlen(parametro2) +1; // No sabemos si agregar +1 PREGUNTAR
 	*size =sizeof(op_code) + 2*sizeof(size_t) + sizeof(uint32_t)+ size_parametro2;
 	size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
 	void* stream = malloc(*size);
@@ -234,7 +234,7 @@ bool send_F_OPEN(int socket_cliente, char* archivo){
     return true;
 }
 static void* serializar_F_OPEN(size_t* size,char* archivo){
-		size_t size_archivo = strlen(archivo); // No sabemos si agregar +1 PREGUNTAR
+		size_t size_archivo = strlen(archivo)+1; // No sabemos si agregar +1 PREGUNTAR
 		*size =sizeof(op_code) + 2*sizeof(size_t)+ size_archivo;
 		size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
 		void* stream = malloc(*size);
@@ -324,7 +324,7 @@ bool send_F_TRUNCATE(int socket_cliente, char*  parametro1,uint32_t  parametro2)
     return true;
 }
 static void* serializar_F_TRUNCATE(size_t* size, char* parametro1 ,uint32_t  parametro2 ){
-	size_t size_parametro1 = strlen(parametro1); // No sabemos si agregar +1 PREGUNTAR
+	size_t size_parametro1 = strlen(parametro1) +1; // No sabemos si agregar +1 PREGUNTAR
 	*size =sizeof(op_code) + 2*sizeof(size_t) + sizeof(uint32_t)+ size_parametro1;
 	size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
 	void* stream = malloc(*size);
