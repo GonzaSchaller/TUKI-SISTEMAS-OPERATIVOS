@@ -30,7 +30,7 @@ typedef enum{ 	//parametros
 	EXIT
 }op_code;
 bool send_SET(int, uint32_t, char*);
-bool recv_SET(int,uint32_t, char**);
+bool recv_SET(int,uint32_t*, char**);
 static void* serializar_SET(size_t*, uint32_t, char*);
 static void deserializar_SET(void*,uint32_t,char**);
 
@@ -53,7 +53,7 @@ bool recv_SIGNAL();
 
 
 bool send_MOV_IN(int, uint32_t, uint32_t);
-bool recv_MOV_IN(int, uint32_t*, uint32_t);
+bool recv_MOV_IN(int, uint32_t*, uint32_t*);
 static void* serializar_MOV_IN(uint32_t , uint32_t );
 static void deserializar_MOV_IN(void* , uint32_t* , uint32_t* );
 
@@ -79,10 +79,10 @@ bool recv_CREATE_SEGMENT(int, uint32_t*, uint32_t*);
 static void* serializar_CREATE_SEGMENT(uint32_t , uint32_t );
 static void deserializar_CREATE_SEGMENT(void* , uint32_t* , uint32_t* );
 
-bool send_F_WRITE(int, char*,uint32_t, uint32_t* parametro);
+bool send_F_WRITE(int, char*,uint32_t, uint32_t parametro);
 bool recv_F_WRITE(int, char**,uint32_t*, uint32_t*);
 
-bool send_F_READ(int, char*,uint32_t, uint32_t*);
+bool send_F_READ(int, char*,uint32_t, uint32_t);
 bool recv_F_READ(int, char**,uint32_t*, uint32_t*);
 
 bool send_DELETE_SEGMENT(int, uint32_t);

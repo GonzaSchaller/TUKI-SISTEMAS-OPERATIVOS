@@ -32,7 +32,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		 	{
 		 		uint32_t parametro1;
 		 		char* parametro2;
-		 		if (!recv_SET(socket_cliente, &parametro1, parametro2)) {
+		 		if (!recv_SET(socket_cliente, parametro1,parametro2)) {
 		 		     log_error(log_kernel, "Fallo recibiendo SET");
 		 		     break;
 		 		            	}

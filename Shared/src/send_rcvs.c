@@ -1,6 +1,6 @@
 #include "send_rcvs.h"
 
-bool recv_SET(int socket_cliente,uint32_t  parametro1, char** parametro2){
+bool recv_SET(int socket_cliente,uint32_t*  parametro1, char** parametro2){
     size_t size_payload ;
 // Cuando recibo la instruccion set, voy a tener el op_code(Cosa que ya recibi antes de llegar aca),
 // ahora recibo el payload (Que es el tamanio de los parametros que mando),
@@ -48,7 +48,7 @@ static void* serializar_SET(size_t* size, uint32_t  parametro1, char* parametro2
 // ahora le sumo el offset de otro size_t , copio el parametrto2, cont amanio size p2 YA LO CAMBIE PERO HABLARLO
 	    return stream;
 }
-static void deserializar_SET(void* stream,uint32_t parametro1 ,char** parametro2){
+static void deserializar_SET(void* stream,uint32_t* parametro1 ,char** parametro2){
 	size_t size_parametro2;
 	memcpy(&parametro1,stream,sizeof(uint32_t));
 
@@ -409,7 +409,7 @@ bool recv_F_WRITE(int socket_cliente, char** parametro1,uint32_t* parametro2, ui
 		return true;
 
 }
-bool send_F_WRITE(int socket_cliente, char*  parametro1,uint32_t  parametro2, uint32_t* parametro3){
+bool send_F_WRITE(int socket_cliente, char*  parametro1,uint32_t  parametro2, uint32_t parametro3){
 	//printf("Entre en send_COPY \n");
 
     return true;
@@ -420,7 +420,7 @@ bool recv_F_READ(int socket_cliente, char** parametro1,uint32_t* parametro2, uin
 		return true;
 
 }
-bool send_F_READ(int socket_cliente, char*  parametro1,uint32_t  parametro2, uint32_t* parametro3){
+bool send_F_READ(int socket_cliente, char*  parametro1,uint32_t  parametro2, uint32_t parametro3){
 
     return true;
 }
