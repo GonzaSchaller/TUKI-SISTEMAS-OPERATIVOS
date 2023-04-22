@@ -32,7 +32,7 @@ typedef struct{
         t_list* archivosAbiertos;
 } tablaArchivosAbiertos;
 
-//hay que ver como se implementa en el cpu (coordinar)
+//enum para mandar las instrucciones
 typedef enum{
 	AX,
 	BX,
@@ -47,11 +47,29 @@ typedef enum{
 	RCX,
 	RDX
 }Registro;
+
+//Valores de registros que voy a guardar en el pcb
+typedef struct{
+	   char AX[4]; // Registro AX de 4 bytes
+	   char BX[4];
+	   char CX[4];
+	   char DX[4];
+	   char EAX[8]; // Registro EAX de 8 bytes
+	   char EBX[8];
+	   char ECX[8];
+	   char EDX[8];
+	   char RAX[16]; // Registro RAX de 16 bytes
+	   char RBX[16];
+	   char RCX[16];
+	   char RDX[16];
+
+}registros_cpu;
+
 //---------------------------------------------HASTA ACA--------------------------
-typedef struct  {
-        Registro registro;
-        char* valor;
-} registroCpu;
+//typedef struct  {
+//        Registro registro;
+//        char* valor;
+//} registroCpu;
 
 typedef enum{
     HRRN,
@@ -63,7 +81,7 @@ typedef struct{
     uint32_t PID; // Debe ser unico en tod el sistema
     t_list* instrucciones; // Lista de instrucciones a ejecutar
     uint32_t PC; // Program counter
-    registroCpu regCpu;
+    registros_cpu regCpu;
     tablaDeSegmentos TSegmento;
     //uint32_t indice_tabla_segmentos;
     uint32_t estimacionRafaga;
