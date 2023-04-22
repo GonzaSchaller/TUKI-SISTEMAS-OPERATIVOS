@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+
 //Codigo de operacions instrucciones
 typedef enum{ 	//parametros
 	SET,  // 2
@@ -28,22 +29,73 @@ typedef enum{ 	//parametros
 	F_CLOSE,//1
 	EXIT
 }op_code;
+bool send_SET(int, uint32_t, char*);
+bool recv_SET(int,uint32_t, char**);
+static void* serializar_SET(size_t*, uint32_t, char*);
+static void deserializar_SET(void*,uint32_t,char**);
 
-bool recv_YIELD(int socket_cliente);
-bool recv_SET(int socket_cliente, uint32_t* parametro1, uint32_t* parametro2);
-bool recv_MOV_OUT(int socket_cliente, uint32_t* parametro1, uint32_t* parametro2);
-bool recv_WAIT(int socket_cliente, uint32_t* parametro1);
-bool recv_IO(int socket_cliente, uint32_t* parametro1);
-bool recv_SIGNAL(int socket_cliente, uint32_t* parametro1);
-bool recv_MOV_IN(int socket_cliente, uint32_t* parametro1, uint32_t* parametro2);
-bool recv_F_OPEN(int socket_cliente, uint32_t* parametro);
+bool send_MOV_OUT(int, uint32_t, uint32_t);
+bool recv_MOV_OUT(int, uint32_t*, uint32_t*);
+static void* serializar_MOV_OUT(uint32_t , uint32_t );
+static void deserializar_MOV_OUT(void* , uint32_t* , uint32_t* );
 
-bool recv_F_TRUNCATE(int socket_cliente, uint32_t* parametro1, uint32_t* parametro2);
-bool recv_CREATE_SEGMENT(int socket_cliente, uint32_t* parametro1, uint32_t* parametro2);
-bool recv_F_SEEK(int socket_cliente, uint32_t* parametro1, uint32_t* parametro2);
-bool recv_F_WRITE(int socket_cliente, uint32_t* parametro1, uint32_t* parametro2, uint32_t* parametro3);
-bool recv_F_READ(int socket_cliente, uint32_t* parametro1, uint32_t* parametro2, uint32_t* parametro3);
-bool recv_DELETE_SEGMENT(int socket_cliente, uint32_t* parametro1);
-bool recv_DELETE_SEGMENT(int socket_cliente, uint32_t*parametro1);
+
+bool send_WAIT();
+bool recv_WAIT();
+
+bool send_IO(int, uint32_t);
+bool recv_IO(int, uint32_t*);
+static void* serializar_IO(uint32_t);
+static void deserializar_IO(void* , uint32_t* );
+
+bool send_SIGNAL();
+bool recv_SIGNAL();
+
+
+bool send_MOV_IN(int, uint32_t, uint32_t);
+bool recv_MOV_IN(int, uint32_t*, uint32_t* );
+static void* serializar_MOV_IN(uint32_t , uint32_t );
+static void deserializar_MOV_IN(void* , uint32_t* , uint32_t* );
+
+bool send_F_OPEN(int, char*);
+bool recv_F_OPEN(int, char**);
+static void* serializar_F_OPEN(size_t* ,char* );
+static void deserializar_F_OPEN(void* ,char** );
+
+bool send_YIELD(int);
+bool recv_YIELD(int);
+static void* serializar_YIELD();
+
+bool send_F_TRUNCATE(int, char*, uint32_t);
+bool recv_F_TRUNCATE(int, char**, uint32_t*);
+static void* serializar_F_TRUNCATE(size_t* , char*  ,uint32_t );
+static void deserializar_F_TRUNCATE(void* ,char**  , uint32_t* );
+
+bool send_F_SEEK(int, char*, uint32_t);
+bool recv_F_SEEK(int, char**, uint32_t*);
+
+bool send_CREATE_SEGMENT(int, uint32_t, uint32_t);
+bool recv_CREATE_SEGMENT(int, uint32_t*, uint32_t*);
+static void* serializar_CREATE_SEGMENT(uint32_t , uint32_t );
+static void deserializar_CREATE_SEGMENT(void* , uint32_t* , uint32_t* );
+
+bool send_F_WRITE(int, char*,uint32_t, uint32_t* parametro);
+bool recv_F_WRITE(int, char**,uint32_t*, uint32_t*);
+
+bool send_F_READ(int, char*,uint32_t, uint32_t*);
+bool recv_F_READ(int, char**,uint32_t*, uint32_t*);
+
+bool send_DELETE_SEGMENT(int, uint32_t);
+bool recv_DELETE_SEGMENT(int, uint32_t*);
+static void* serializar_DELETE_SEGMENT(uint32_t );
+static void deserializar_DELETE_SEGMENT(void* , uint32_t* );
+
+bool send_F_CLOSE(int , char*);
+bool recv_F_CLOSE(int , char**);
+
+bool send_EXIT(int);
+bool recv_EXIT(int);
+static void* serializar_EXIT();
+
 
 #endif

@@ -7,12 +7,12 @@
 
 typedef struct{
 	int id;
-	char* nombre;
-	uint32_t parametro1;
-	uint32_t parametro2;
+	char* nombre; //set
+	uint32_t parametro1; //ax
+	uint32_t parametro2; // "ASfas"
 	uint32_t parametro3;
 }instruccion;
-
+//
 typedef enum {
     NEW,
     READY,
@@ -32,10 +32,25 @@ typedef struct{
         t_list* archivosAbiertos;
 } tablaArchivosAbiertos;
 
+//hay que ver como se implementa en el cpu (coordinar)
+typedef enum{
+	AX,
+	BX,
+	CX,
+	DX,
+	EAX,
+	EBX,
+	ECX,
+	EDX,
+	RAX,
+	RBX,
+	RCX,
+	RDX
+}Registro;
+//---------------------------------------------HASTA ACA--------------------------
 typedef struct  {
-        char nombre[4]; // nombre del registro (AX, BX, CX, DX, EAX, EBX, ECX, EDX, RAX, RBX, RCX, RDX)
-        int tamano;     // tamaño en bytes del registro (4, 8, 16)
-       // char* direccion; // dirección de memoria del registro
+        Registro registro;
+        char* valor;
 } registroCpu;
 
 typedef enum{
