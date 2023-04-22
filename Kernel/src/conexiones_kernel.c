@@ -18,6 +18,9 @@ void escuchar_clientes(t_log* logger, int socket_servidor){
 	   }
 	}
 }
+
+
+
 void procesar_conexion_cpu(void* socket_cliente){
 
 	free(socket_cliente);

@@ -280,11 +280,11 @@ bool send_YIELD(int socket_cliente){
 
 
     if (send(socket_cliente, stream, size, 0) != size) { //ACA EN EL SEND PUSE EL EXIT, ANTES HABIA UN STREAM
-      //  free(stream);
+        free(stream);
         return false;
     }
 
-   // free(stream);
+    free(stream);
     return true;
 }
 static void* serializar_YIELD() {
@@ -438,7 +438,6 @@ bool recv_DELETE_SEGMENT(int socket_cliente, uint32_t* parametro1){
 
     free(stream);
     return true;
-	return true;
 }
 bool send_DELETE_SEGMENT(int socket_cliente, uint32_t  parametro1){
 	//printf("Entre en send_COPY \n");
@@ -497,11 +496,11 @@ bool send_EXIT(int socket_cliente) {
 
 
     if (send(socket_cliente, stream, size, 0) != size) { //ACA EN EL SEND PUSE EL EXIT, ANTES HABIA UN STREAM
-      //  free(stream);
+        free(stream);
         return false;
     }
 
-   // free(stream);
+    free(stream);
     return true;
 }
 static void* serializar_EXIT() {

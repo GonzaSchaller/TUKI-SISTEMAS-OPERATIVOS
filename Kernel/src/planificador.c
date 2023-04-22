@@ -23,15 +23,16 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		}
 		//creo que va aca
 		contadorProcesos++;
-		inicializarPCB(contadorProcesos,lista_instrucciones,pcb); //inicializamos el pcb que le vamos a mandar al cpu
-		//agregarANew(pcb, log_kernel); //agregamos cada proceso a NEW
+		inicializarPCB(contadorProcesos,lista_instrucciones, pcb); //inicializamos el pcb que le vamos a mandar al cpu
+		agregarANew(pcb, log_kernel); //agregamos cada proceso a NEW
+
 		//me fijo que instruccion es segun el codigo de operacion
 		 switch (cop) {
 		 	case SET:
 		 	{
 		 		uint32_t parametro1;
-		 		uint32_t parametro2;
-		 		if (!recv_SET(socket_cliente, &parametro1, &parametro2)) {
+		 		char* parametro2;
+		 		if (!recv_SET(socket_cliente, &parametro1, parametro2)) {
 		 		     log_error(log_kernel, "Fallo recibiendo SET");
 		 		     break;
 		 		            	}
@@ -65,7 +66,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             	     log_error(log_kernel, "Fallo recibiendo IO");
             	     break;
             	}
-            	cargar_instruccion(IO,"I\O",parametro1 , 0 , 0 ,lista_instrucciones);
+            	cargar_instruccion(IO,"IO",parametro1 , 0 , 0 ,lista_instrucciones);
             	break;
             }
             case SIGNAL:
@@ -199,3 +200,63 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 
     return;
 }
+void agregarANew(pcb_t* pcb_proceso, t_log* log_kernel) {
+
+	pthread_mutex_lock(&mutexNew);
+
+	queue_push(colaNew, pcb_proceso);
+	log_info(log_kernel, "[NEW] Entra el proceso de PID: %d a la cola.", pcb_proceso->PID);
+
+	pthread_mutex_unlock(&mutexNew);
+
+
+	sem_post(&contadorNew); // Despierta al planificador de largo plazo
+	sem_post(&largoPlazo); // Verifica que se haya despertado el planificador de largo plazo
+
+	//log_error(log_kernel,"Salgo de agregar a NEW tranqu
+}
+pcb_t* sacarDeNew(pcb_t* pcb_proceso,t_log*log_kernel){
+
+	sem_wait(&contadorNew);
+	pthread_mutex_lock(&mutexNew);
+
+	pcb_t* proceso = queue_pop(colaNew);
+	log_info(log_kernel, "[NEW] Se saca el proceso de PID: %d de la cola", pcb_proceso->PID);
+
+	pthread_mutex_unlock(&mutexNew);
+
+	return pcb_proceso;
+}
+
+void agregarAReady(pcb_t* pcb,t_log* log_kernel){ // Tendria mas sentido que log_kernel no sea pasado por parametro
+	//log_trace(log_kernel,"Entre en agregar a ready");
+
+	time_t a = time(NULL);
+
+	pthread_mutex_lock(&mutexReady);
+
+
+	list_add(listaReady, pcb);
+
+	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->PID);
+//	send_TAM(server_memoria,METER_EN_MEM_PRINCIPAL);
+//	send_TAM(server_memoria,proceso->indice_tabla_paginas);
+
+	uint32_t indice_proceso; //ESTE RECV ES PARA SABER SI MEMORIA YA TERMINO DE PASAR A SWAP AL PROCESO SUSPENDIDO
+	if (recv(server_memoria, &indice_proceso, sizeof(uint32_t), 0) != sizeof(uint32_t)) {
+	log_info(log_kernel, "fallo al recibir nro de pagina!");
+	return;
+	}if(indice_proceso == 5555){
+		log_trace(log_kernel,"Memoria termino de meter al proceso");
+	}
+
+
+	//printf("PROCESOS EN READY: %d \n", list_size(colaReady));
+	log_debug(log_kernel,"[----------------PROCESOS EN READY: %d --------------------]\n", list_size(listaReady));
+
+	pthread_mutex_unlock(&mutexReady);
+	sem_post(&contadorReady);
+	//sem_post(&contadorProcesosEnMemoria); Lo sacamos de aca para usarlo en el contexto en el que se llama a la funcion, porque no siempre que se agrega a ready, se toca la multiprogramacion
+}
+
+

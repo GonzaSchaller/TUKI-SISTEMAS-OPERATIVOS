@@ -17,6 +17,69 @@ void iniciar_config(t_config* config){
 	//RECURSOS=[DISCO, RECURSO_1]
 	//INSTANCIAS_RECURSOS=[1, 2]
 } //QUEDA
+void inicializar_semaforos(){
+
+	pthread_mutex_init(&mutexNew, NULL);
+	pthread_mutex_init(&mutexReady, NULL);
+	pthread_mutex_init(&mutexBlock, NULL);
+	pthread_mutex_init(&mutexExe, NULL);
+	pthread_mutex_init(&mutexExit, NULL);
+
+	sem_init(&contadorNew, 0, 0); // Estado New
+	sem_init(&contadorReady, 0, 0); // Estado Ready
+	sem_init(&contadorExe, 0, 0); // Estado Exe
+	//sem_init(&contadorProcesosEnMemoria, 0, 0);    // Memoria IMP HAY QUE VER COMO SE INICIALIZA PORQUE ESTO AFECTA LA DISPONIBILIDAD DE LA COLA READY
+	sem_init(&multiprogramacion, 0, grado_max_multiprogramacion); // hasta 4 procesos en ready
+	//pthread_mutex_init(&multiprocesamiento, NULL);
+	sem_init(&contadorBlock, 0, 0);
+	sem_init(&largoPlazo, 0, 1);
+
+
+	//sem_init(&hilo_sincro_cpu_kernel, 0, 0);
+}
+
+void inicializar_listas(){
+
+
+	colaNew = queue_create();
+	listaReady = list_create();
+	listaExe = list_create();
+	listaBlock = list_create();
+	listaExit = list_create();
+
+	//lista_instrucciones_kernel = list_create();
+	//lista_pcb_en_memoria = list_create();
+
+}
+
+void destruir_semaforos_listas(){
+
+    list_destroy_and_destroy_elements(listaExe,free);
+    list_destroy_and_destroy_elements(listaBlock,free);
+
+   // list_destroy_and_destroy_elements(listaExit,free);
+    list_destroy_and_destroy_elements(listaReady,free);
+    //list_destroy_and_destroy_elements(lista_instrucciones_kernel,free);
+    //list_destroy_and_destroy_elements(lista_pcb_en_memoria,free);
+    queue_destroy_and_destroy_elements(colaNew,free);
+
+
+    pthread_mutex_destroy(&mutexBlock);
+    pthread_mutex_destroy(&mutexExe);
+    pthread_mutex_destroy(&mutexExit);
+    pthread_mutex_destroy(&mutexNew);
+
+}
+//void inicializar_planificacion(){
+//
+//	pthread_create(&hiloNewReady, NULL, (void*)hiloNew_Ready, NULL);
+//	pthread_create(&hiloReady_Exec, NULL, (void*)hiloReady_Exe, NULL);
+//	pthread_detach(hiloNewReady);
+//	pthread_detach(hiloReady_Exec);
+//
+//
+//}
+
 
 void liberarConexiones(int socket1, int socket2, int socket3){
 	if(socket1 != -1){
@@ -37,6 +100,7 @@ void terminar_kernel(t_log* logger,t_config* config){
 		config_destroy(config);
 	}
 }
+//Pasar esta funcion para mi a conexiones_kernel
 //se conecta a cpu, memoria, fileSystem y crea los hilos para procesar las conexiones
 void generar_conexiones(t_log* log_kernel){
 	int conexion1;

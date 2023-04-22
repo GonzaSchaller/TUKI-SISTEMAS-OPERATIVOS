@@ -19,7 +19,7 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
     pcb->PID = contadorProceso;
     pcb->instrucciones = listaInstrucciones;
     pcb->PC = 0;
-    //pcb->regCpu;
+    //pcb->regCpu
     //pcb->TSegmento;
     //pcb->estimacionRafaga;
     //pcb->tiempReady;

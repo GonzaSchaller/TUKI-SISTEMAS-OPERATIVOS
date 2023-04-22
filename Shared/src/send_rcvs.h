@@ -53,7 +53,7 @@ bool recv_SIGNAL();
 
 
 bool send_MOV_IN(int, uint32_t, uint32_t);
-bool recv_MOV_IN(int, uint32_t*, uint32_t* );
+bool recv_MOV_IN(int, uint32_t*, uint32_t);
 static void* serializar_MOV_IN(uint32_t , uint32_t );
 static void deserializar_MOV_IN(void* , uint32_t* , uint32_t* );
 
