@@ -5,14 +5,21 @@
 #include <send_rcvs.h>
 #include <commons/collections/list.h>
 
+typedef union {//porque puedo recibir int o char*
+	uint32_t tipo_int;
+	char* tipo_string;
+ }tipo_parametro;
+
+
 typedef struct{
 	int id;
 	char* nombre; //set
-	uint32_t parametro1; //ax
-	uint32_t parametro2; // "ASfas"
+	tipo_parametro parametro1;
+	tipo_parametro parametro2;
 	uint32_t parametro3;
 }instruccion;
 //
+
 typedef enum {
     NEW,
     READY,
@@ -66,12 +73,6 @@ typedef struct{
 
 }registros_cpu;
 
-//---------------------------------------------HASTA ACA--------------------------
-//typedef struct  {
-//        Registro registro;
-//        char* valor;
-//} registroCpu;
-
 typedef enum{
     HRRN,
     FIFO
@@ -95,7 +96,10 @@ typedef struct{
     //float horaDeIngresoAExe;
 }pcb_t;
 
-void cargar_instruccion(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
+void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
+void cargar_instruccion2(int, char* , uint32_t, char* ,uint32_t ,t_list* );
+void cargar_instruccion3(int, char* , char*, uint32_t ,uint32_t ,t_list* );
+
 void inicializarPCB(int, t_list*, pcb_t *);
 
 #endif
