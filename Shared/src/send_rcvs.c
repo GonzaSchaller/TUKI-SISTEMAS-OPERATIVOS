@@ -110,7 +110,8 @@ bool send_WAIT(){ // Recursos TODO
 
     return true;
 }
-// FALTA TOD0
+
+
 static void* serializar_IO(uint32_t parametro1) {
    void* stream = malloc(sizeof(op_code) + sizeof(uint32_t));
 
@@ -401,10 +402,6 @@ bool send_F_SEEK(int socket_cliente, char*  parametro1,uint32_t  parametro2){
 	   return true;
 }
 
-
-
-
-
 static void* serializar_CREATE_SEGMENT(uint32_t parametro1, uint32_t parametro2) {
     void* stream = malloc(sizeof(op_code) + sizeof(uint32_t) * 2);
 
@@ -562,7 +559,7 @@ bool send_F_READ(int socket_cliente, char*  parametro1,uint32_t  parametro2, uin
 	    free(stream);
 	    return true;
 }
-// FALTA TOD0
+
 static void* serializar_DELETE_SEGMENT(uint32_t parametro1) {
    void* stream = malloc(sizeof(op_code) + sizeof(uint32_t));
 
@@ -576,7 +573,6 @@ static void deserializar_DELETE_SEGMENT(void* stream, uint32_t* parametro1) {
     memcpy(parametro1, stream ,sizeof(uint32_t));
 
 }
-
 bool recv_DELETE_SEGMENT(int socket_cliente, uint32_t* parametro1){
     size_t size = sizeof(uint32_t);
     void* stream = malloc(size);
@@ -603,8 +599,6 @@ bool send_DELETE_SEGMENT(int socket_cliente, uint32_t  parametro1){
     return true;
 }
 
-
-// FALTA TOD0
 static void* serializar_F_CLOSE(size_t* size,char* archivo){
 		size_t size_archivo = strlen(archivo)+1; // No sabemos si agregar +1 PREGUNTAR
 		*size =sizeof(op_code) + 2*sizeof(size_t)+ size_archivo;
