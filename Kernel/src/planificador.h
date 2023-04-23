@@ -14,6 +14,7 @@
 void atender_cliente(void*);
 void agregarANew(pcb_t*, t_log*);
 
+
 //para poder usarlas en el main
 extern t_queue* colaNew;
 extern t_list* listaReady;

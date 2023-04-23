@@ -73,11 +73,6 @@ typedef struct{
 
 }registros_cpu;
 
-typedef enum{
-    HRRN,
-    FIFO
-} t_algoritmo_planificacion;
-
 
 typedef struct{
     uint32_t PID; // Debe ser unico en tod el sistema
