@@ -19,24 +19,24 @@ typedef struct{
 void atender_cliente(void*);
 void agregarANew(pcb_t*, t_log*);
 
-t_queue* colaNew;
-t_list* listaReady;
-t_list* listaExe;
-t_list* listaBlock;
-t_list* listaExit;
+extern t_queue* colaNew;
+extern t_list* listaReady;
+extern t_list* listaExe;
+extern t_list* listaBlock;
+extern t_list* listaExit;
 
-pthread_mutex_t mutexNew;
-pthread_mutex_t mutexReady;
-pthread_mutex_t mutexBlock;
-pthread_mutex_t mutexExe;
-pthread_mutex_t mutexExit;
+extern pthread_mutex_t mutexNew;
+extern pthread_mutex_t mutexReady;
+extern pthread_mutex_t mutexBlock;
+extern pthread_mutex_t mutexExe;
+extern pthread_mutex_t mutexExit;
 
-sem_t contadorNew;
-sem_t contadorReady;
-sem_t contadorExe;
-sem_t contadorBlock;
+extern sem_t contadorNew;
+extern sem_t contadorReady;
+extern sem_t contadorExe;
+extern sem_t contadorBlock;
 //sem_t contadorProcesosEnMemoria;
-sem_t multiprogramacion;
+extern sem_t multiprogramacion;
 //pthread_mutex_t multiprocesamiento;
-sem_t largoPlazo;
+extern sem_t largoPlazo;
 #endif

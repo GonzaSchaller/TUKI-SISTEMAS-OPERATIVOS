@@ -1,6 +1,28 @@
 #include "planificador.h"
 
 int contadorProcesos = 0 ;
+
+t_queue* colaNew;
+t_list* listaReady;
+t_list* listaExe;
+t_list* listaBlock;
+t_list* listaExit;
+
+pthread_mutex_t mutexNew;
+pthread_mutex_t mutexReady;
+pthread_mutex_t mutexBlock;
+pthread_mutex_t mutexExe;
+pthread_mutex_t mutexExit;
+
+sem_t contadorNew;
+sem_t contadorReady;
+sem_t contadorExe;
+sem_t contadorBlock;
+//sem_t contadorProcesosEnMemoria;
+sem_t multiprogramacion;
+//pthread_mutex_t multiprocesamiento;
+sem_t largoPlazo;
+
 //recibimos instrucciones, creamos pcb y lo mandamos a new
 void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 	args_atender_cliente* args = (args_atender_cliente*) void_args;
@@ -209,7 +231,6 @@ void agregarANew(pcb_t* pcb_proceso, t_log* log_kernel) {
 
 	pthread_mutex_unlock(&mutexNew);
 
-
 	sem_post(&contadorNew); // Despierta al planificador de largo plazo
 	sem_post(&largoPlazo); // Verifica que se haya despertado el planificador de largo plazo
 
@@ -242,13 +263,13 @@ void agregarAReady(pcb_t* pcb,t_log* log_kernel){ // Tendria mas sentido que log
 //	send_TAM(server_memoria,METER_EN_MEM_PRINCIPAL);
 //	send_TAM(server_memoria,proceso->indice_tabla_paginas);
 
-	uint32_t indice_proceso; //ESTE RECV ES PARA SABER SI MEMORIA YA TERMINO DE PASAR A SWAP AL PROCESO SUSPENDIDO
-	if (recv(server_memoria, &indice_proceso, sizeof(uint32_t), 0) != sizeof(uint32_t)) {
-	log_info(log_kernel, "fallo al recibir nro de pagina!");
-	return;
-	}if(indice_proceso == 5555){
-		log_trace(log_kernel,"Memoria termino de meter al proceso");
-	}
+//	uint32_t indice_proceso; //ESTE RECV ES PARA SABER SI MEMORIA YA TERMINO DE PASAR A SWAP AL PROCESO SUSPENDIDO
+//	if (recv(server_memoria, &indice_proceso, sizeof(uint32_t), 0) != sizeof(uint32_t)) {
+//	log_info(log_kernel, "fallo al recibir nro de pagina!");
+//	return;
+//	}if(indice_proceso == 5555){
+//		log_trace(log_kernel,"Memoria termino de meter al proceso");
+//	}
 
 
 	//printf("PROCESOS EN READY: %d \n", list_size(colaReady));
