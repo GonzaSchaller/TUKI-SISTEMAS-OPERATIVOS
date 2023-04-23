@@ -1,6 +1,4 @@
 #include "conexiones_kernel.h"
-#include "planificador.h"
-
 
 void escuchar_clientes(t_log* logger, int socket_servidor){
 

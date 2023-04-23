@@ -1,5 +1,6 @@
 #include "planificador.h"
 
+
 int contadorProcesos = 0 ;
 
 t_queue* colaNew;
@@ -22,6 +23,8 @@ sem_t contadorBlock;
 sem_t multiprogramacion;
 //pthread_mutex_t multiprocesamiento;
 sem_t largoPlazo;
+
+
 
 //recibimos instrucciones, creamos pcb y lo mandamos a new
 void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
@@ -58,7 +61,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		 		     log_error(log_kernel, "Fallo recibiendo SET");
 		 		     break;
 		 		            	}
-		 		cargar_instruccion(SET, "SET", parametro1, parametro2, 0, lista_instrucciones);
+		 		cargar_instruccion2(SET, "SET", parametro1, parametro2, 0, lista_instrucciones);
 				break;
 		 	}
 		 	case MOV_OUT:
@@ -68,16 +71,16 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		 		if (!recv_MOV_OUT(socket_cliente, &parametro1, &parametro2)) {
 		 			log_error(log_kernel, "Fallo recibiendo MOV_OUT");
 		 			break;		 			 		            	}
-		 		cargar_instruccion(MOV_OUT, "MOV_OUT", parametro1, parametro2 , 0 , lista_instrucciones);
+		 		cargar_instruccion1(MOV_OUT, "MOV_OUT", parametro1, parametro2 , 0 , lista_instrucciones);
 		 		break;
 		 			 	}
-		 	case WAIT:
+		 	case WAIT: //parametro: Recurso
 		 			{
 		 		uint32_t parametro1;
 		 		if (!recv_WAIT(socket_cliente, &parametro1)) {
 		 			log_error(log_kernel, "Fallo recibiendo WAIT");
 		 			break;	            	}
-		 			cargar_instruccion(WAIT, "WAIT", parametro1 , 0 , 0 ,lista_instrucciones);
+		 			cargar_instruccion1(WAIT, "WAIT", parametro1 , 0 , 0 ,lista_instrucciones);
 		 			break;
 		 			 	}
             case IO:
@@ -88,17 +91,17 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             	     log_error(log_kernel, "Fallo recibiendo IO");
             	     break;
             	}
-            	cargar_instruccion(IO,"IO",parametro1 , 0 , 0 ,lista_instrucciones);
+            	cargar_instruccion1(IO,"IO",parametro1 , 0 , 0 ,lista_instrucciones);
             	break;
             }
-            case SIGNAL:
+            case SIGNAL: //parametro recurso
             {
             	uint32_t parametro1;
             	if (!recv_SIGNAL(socket_cliente, &parametro1)) {
             		log_error(log_kernel, "Fallo recibiendo SIGNAL");
             		break;
             		 			}
-            	cargar_instruccion(SIGNAL, "SIGNAL", parametro1, 0 , 0 , lista_instrucciones);
+            	cargar_instruccion1(SIGNAL, "SIGNAL", parametro1, 0 , 0 , lista_instrucciones);
             		break;
             		 	}
             case MOV_IN:
@@ -109,45 +112,47 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             		log_error(log_kernel, "Fallo recibiendo MOV_IN");
             		break;
             		 		            	}
-            	cargar_instruccion(MOV_IN, "MOV_IN", parametro1 , parametro2 , 0, lista_instrucciones);
+            	cargar_instruccion1(MOV_IN, "MOV_IN", parametro1 , parametro2 , 0, lista_instrucciones);
             		break;
             		 	}
             case F_OPEN:
              {
-            		uint32_t parametro1;
+            		char* parametro1;
             		if (!recv_F_OPEN(socket_cliente, &parametro1)) {
             		  log_error(log_kernel, "Fallo recibiendo F_OPEN");
             		  break;
             	  }
-            		cargar_instruccion(F_OPEN, "F_OPEN", parametro1, 0 , 0 , lista_instrucciones);
+            		cargar_instruccion3(F_OPEN, "F_OPEN", parametro1, 0 , 0 , lista_instrucciones);
             		break;
             	 }
-             case YIELD:
+             case YIELD: //fijarse si poner rcv
              {
-                  cargar_instruccion(YIELD, "YIELD", 0 , 0 , 0 , lista_instrucciones);
+                  cargar_instruccion1(YIELD, "YIELD", 0 , 0 , 0 , lista_instrucciones);
                   break;
                    		 	}
 
 			// ACA VOY YO
 			  case F_TRUNCATE:
             {
-            	uint32_t parametro1, parametro2;
+            	char* parametro1;
+				uint32_t parametro2;
             	if (!recv_F_TRUNCATE(socket_cliente, &parametro1, &parametro2)) {
             	   log_error(log_kernel, "Fallo recibiendo F_TRUNCATE");
             	   break;
             	}
-            	cargar_instruccion( F_TRUNCATE,"F_TRUNCATE", parametro1 , parametro2 , 0 ,lista_instrucciones);
+            	cargar_instruccion3( F_TRUNCATE,"F_TRUNCATE", parametro1 , parametro2 , 0 ,lista_instrucciones);
             	break;
 			}
 
 			case F_SEEK:
             {
-            	uint32_t parametro1, parametro2;
+            	char* parametro1;
+            	uint32_t parametro2;
             	if (!recv_F_SEEK(socket_cliente, &parametro1, &parametro2)) {
             	   log_error(log_kernel, "Fallo recibiendo F_SEEK");
             	   break;
             	}
-            	cargar_instruccion( F_SEEK,"F_SEEK", parametro1 , parametro2 , 0 ,lista_instrucciones);
+            	cargar_instruccion3( F_SEEK,"F_SEEK", parametro1 , parametro2 , 0 ,lista_instrucciones);
             	break;
 			}
 			case CREATE_SEGMENT:
@@ -157,27 +162,29 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             	   log_error(log_kernel, "Fallo recibiendo CREATE_SEGMENT");
             	   break;
             	}
-            	cargar_instruccion( CREATE_SEGMENT,"CREATE_SEGMENT", parametro1 , parametro2 , 0 ,lista_instrucciones);
+            	cargar_instruccion1( CREATE_SEGMENT,"CREATE_SEGMENT", parametro1 , parametro2 , 0 ,lista_instrucciones);
             	break;
 			}
 			case F_WRITE:
             {
-            	uint32_t parametro1, parametro2, parametro3 ;
+            	char* parametro1;
+            	uint32_t parametro2, parametro3;
             	if (!recv_F_WRITE(socket_cliente, &parametro1, &parametro2, &parametro3)) {
             	   log_error(log_kernel, "Fallo recibiendo F_WRITE");
             	   break;
             	}
-            	cargar_instruccion( F_WRITE,"F_WRITE", parametro1 , parametro2 , parametro3 ,lista_instrucciones);
+            	cargar_instruccion3( F_WRITE,"F_WRITE", parametro1 , parametro2 , parametro3 ,lista_instrucciones);
             	break;
 			}
 			case F_READ:
             {
-            	uint32_t parametro1, parametro2, parametro3 ;
+            	char* parametro1;
+            	uint32_t parametro2, parametro3;
             	if (!recv_F_READ(socket_cliente, &parametro1, &parametro2, &parametro3)) {
             	   log_error(log_kernel, "Fallo recibiendo F_READ");
             	   break;
             	}
-            	cargar_instruccion( F_READ,"F_READ", parametro1 , parametro2 , parametro3 ,lista_instrucciones);
+            	cargar_instruccion3( F_READ,"F_READ", parametro1 , parametro2 , parametro3 ,lista_instrucciones);
 
             	break;
 			}
@@ -189,25 +196,25 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
             	     log_error(log_kernel, "Fallo recibiendo DELETE_SEGMENT");
             	     break;
             	}
-            	cargar_instruccion(DELETE_SEGMENT,"DELETE_SEGMENT", parametro1 , 0 , 0 ,lista_instrucciones);
+            	cargar_instruccion1(DELETE_SEGMENT,"DELETE_SEGMENT", parametro1 , 0 , 0 ,lista_instrucciones);
 
             	break;
             }
 			case F_CLOSE:
             {
-            	uint32_t parametro1;
+            	char* parametro1;
 
             	if (!recv_F_CLOSE(socket_cliente, &parametro1)) {
             	     log_error(log_kernel, "Fallo recibiendo F_CLOSE");
             	     break;
             	}
-            	cargar_instruccion(F_CLOSE,"F_CLOSE", parametro1 , 0 , 0 ,lista_instrucciones);
+            	cargar_instruccion3(F_CLOSE,"F_CLOSE", parametro1 , 0 , 0 ,lista_instrucciones);
 
             	break;
             }
 		    case EXIT:
             {
-            	cargar_instruccion(EXIT,"EXIT", 0 , 0 , 0 ,lista_instrucciones);
+            	cargar_instruccion1(EXIT,"EXIT", 0 , 0 , 0 ,lista_instrucciones);
 				break;
 			}
 
@@ -241,7 +248,7 @@ pcb_t* sacarDeNew(pcb_t* pcb_proceso,t_log*log_kernel){
 	sem_wait(&contadorNew);
 	pthread_mutex_lock(&mutexNew);
 
-	pcb_t* proceso = queue_pop(colaNew);
+	pcb_proceso = queue_pop(colaNew);
 	log_info(log_kernel, "[NEW] Se saca el proceso de PID: %d de la cola", pcb_proceso->PID);
 
 	pthread_mutex_unlock(&mutexNew);

@@ -6,6 +6,13 @@
 #include <pthread.h>
 #include <commons/log.h>
 #include <sockets.h>
+#include "planificador.h"
+
+typedef struct{
+	int socket;
+	t_log* log;
+	char* server_name;
+}args_atender_cliente;
 
 
 void procesar_conexion_cpu(void*);

@@ -9,16 +9,12 @@
 #include "instrucciones.h"
 #include <semaphore.h>
 #include <commons/collections/queue.h>
-
-typedef struct{
-	int socket;
-	t_log* log;
-	char* server_name;
-}args_atender_cliente;
+#include "conexiones_kernel.h"
 
 void atender_cliente(void*);
 void agregarANew(pcb_t*, t_log*);
 
+//para poder usarlas en el main
 extern t_queue* colaNew;
 extern t_list* listaReady;
 extern t_list* listaExe;

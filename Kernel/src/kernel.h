@@ -12,8 +12,6 @@
 #include "instrucciones.h"
 
 
-extern t_log* log_kernel;
-
 char* ip;
 
 char* puerto_escucha;
