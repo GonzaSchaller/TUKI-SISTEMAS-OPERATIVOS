@@ -38,14 +38,14 @@ bool recv_MOV_OUT(int, uint32_t*, uint32_t*);
 
 
 
-bool send_WAIT();
-bool recv_WAIT();
+bool send_WAIT(int socket_cliente, char* recurso);
+bool recv_WAIT(int socket_cliente, char** recurso);
 
 bool send_IO(int, uint32_t);
 bool recv_IO(int, uint32_t*);
 
-bool send_SIGNAL();
-bool recv_SIGNAL();
+bool send_SIGNAL(int socket_cliente, char* recurso);
+bool recv_SIGNAL(int socket_cliente, char** recurso);
 
 
 bool send_MOV_IN(int, uint32_t, uint32_t);
@@ -71,7 +71,7 @@ bool send_CREATE_SEGMENT(int, uint32_t, uint32_t);
 bool recv_CREATE_SEGMENT(int, uint32_t*, uint32_t*);
 
 
-bool send_F_WRITE(int, char*,uint32_t, uint32_t parametro);
+bool send_F_WRITE(int, char*,uint32_t, uint32_t );
 bool recv_F_WRITE(int, char**,uint32_t*, uint32_t*);
 
 bool send_F_READ(int, char*,uint32_t, uint32_t);
@@ -90,3 +90,4 @@ bool recv_EXIT(int);
 
 
 #endif
+
