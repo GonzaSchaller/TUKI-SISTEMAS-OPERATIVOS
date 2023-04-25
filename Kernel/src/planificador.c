@@ -49,7 +49,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 		//creo que va aca
 		contadorProcesos++;
 		inicializarPCB(contadorProcesos,lista_instrucciones, pcb); //inicializamos el pcb que le vamos a mandar al cpu
-		agregarANew(pcb, log_kernel); //agregamos cada proceso a NEW
+		agregarANew(pcb); //agregamos cada proceso a NEW
 
 		//me fijo que instruccion es segun el codigo de operacion
 		 switch (cop) {
@@ -229,7 +229,7 @@ void atender_cliente(void* void_args){ //lo que hago por cada consola conectada
 
     return;
 }
-void agregarANew(pcb_t* pcb_proceso, t_log* log_kernel) {
+void agregarANew(pcb_t* pcb_proceso) {
 
 	pthread_mutex_lock(&mutexNew);
 
@@ -239,16 +239,16 @@ void agregarANew(pcb_t* pcb_proceso, t_log* log_kernel) {
 	pthread_mutex_unlock(&mutexNew);
 
 	sem_post(&contadorNew); // Despierta al planificador de largo plazo
-	sem_post(&largoPlazo); // Verifica que se haya despertado el planificador de largo plazo
+	sem_post(&largoPlazo); // Ver si hay que usarlo
 
 	//log_error(log_kernel,"Salgo de agregar a NEW tranqu
 }
-pcb_t* sacarDeNew(pcb_t* pcb_proceso,t_log*log_kernel){
+pcb_t* sacarDeNew(){
 
-	sem_wait(&contadorNew);
+	sem_wait(&contadorNew); //si esta en 0 es que no hay mas pcbs para sacar, si estan en >0 es que hay para sacar
 	pthread_mutex_lock(&mutexNew);
 
-	pcb_proceso = queue_pop(colaNew);
+	pcb_t * pcb_proceso = queue_pop(colaNew);
 	log_info(log_kernel, "[NEW] Se saca el proceso de PID: %d de la cola", pcb_proceso->PID);
 
 	pthread_mutex_unlock(&mutexNew);
@@ -256,35 +256,45 @@ pcb_t* sacarDeNew(pcb_t* pcb_proceso,t_log*log_kernel){
 	return pcb_proceso;
 }
 
-void agregarAReady(pcb_t* pcb,t_log* log_kernel){ // Tendria mas sentido que log_kernel no sea pasado por parametro
+
+void agregarAReady(pcb_t* pcb){ // Tendria mas sentido que log_kernel no sea pasado por parametro
 	//log_trace(log_kernel,"Entre en agregar a ready");
 
-	time_t a = time(NULL);
+	time_t a = time(NULL); //momento en el que entra un proceso, sirve para el HRRN
 
 	pthread_mutex_lock(&mutexReady);
 
-
-	list_add(listaReady, pcb);
+	tabla_segmentos tseg;
+	list_add(listaReady, pcb); //agrega a la listaReady
 
 	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->PID);
-//	send_TAM(server_memoria,METER_EN_MEM_PRINCIPAL);
-//	send_TAM(server_memoria,proceso->indice_tabla_paginas);
-
-//	uint32_t indice_proceso; //ESTE RECV ES PARA SABER SI MEMORIA YA TERMINO DE PASAR A SWAP AL PROCESO SUSPENDIDO
-//	if (recv(server_memoria, &indice_proceso, sizeof(uint32_t), 0) != sizeof(uint32_t)) {
-//	log_info(log_kernel, "fallo al recibir nro de pagina!");
-//	return;
-//	}if(indice_proceso == 5555){
-//		log_trace(log_kernel,"Memoria termino de meter al proceso");
-//	}
-
+	send_INICIAR_ESTRUCTURA_MEMORIA(conexion_memoria, "Inicializa las estructuras"); //mandamos mensaje a memoria que incie sus estructuras
+	if(!recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){
+		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->PID);
+	}
+	pcb->TSegmento = tseg;
 
 	//printf("PROCESOS EN READY: %d \n", list_size(colaReady));
-	log_debug(log_kernel,"[----------------PROCESOS EN READY: %d --------------------]\n", list_size(listaReady));
+	log_debug(log_kernel,"[----------------PROCESOS EN READY: %d --------------------]\n", list_size(listaReady)); //max 4
 
 	pthread_mutex_unlock(&mutexReady);
 	sem_post(&contadorReady);
 	//sem_post(&contadorProcesosEnMemoria); Lo sacamos de aca para usarlo en el contexto en el que se llama a la funcion, porque no siempre que se agrega a ready, se toca la multiprogramacion
+}
+
+void hiloNew_Ready(){
+
+	while(1){
+		sem_wait(&largoPlazo); //ver si sacarlo o no
+		pcb_t* proceso = sacarDeNew();
+		//proceso->estimacionAnterior = estimacion_inicial;
+		//proceso->estimacionActual = estimacion_inicial;	//"estimacio_inicial" va a ser una variable que vamos a obtener del cfg
+		sem_wait(&multiprogramacion); // poner sem_post en el sacar_ready
+		//log_error(log_kernel,"[===========] agregue a ready desde hilo new ready");
+		agregarAReady(proceso);
+
+	}
+
 }
 
 

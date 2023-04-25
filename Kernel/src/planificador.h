@@ -10,10 +10,11 @@
 #include <semaphore.h>
 #include <commons/collections/queue.h>
 #include "conexiones_kernel.h"
+#include "kernel.h"
 
 void atender_cliente(void*);
-void agregarANew(pcb_t*, t_log*);
-
+void agregarANew(pcb_t*);
+void hiloNew_Ready();
 
 //para poder usarlas en el main
 extern t_queue* colaNew;

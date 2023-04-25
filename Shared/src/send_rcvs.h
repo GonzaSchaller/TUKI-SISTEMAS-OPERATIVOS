@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "../../home/utnso/tp-2023-1c-Kernel-Masters/Kernel/src/instrucciones.h"
 //Codigo de operacions instrucciones
 typedef enum{ 	//parametros
 	SET,  // 2
@@ -87,6 +88,7 @@ bool recv_F_CLOSE(int , char**);
 bool send_EXIT(int);
 bool recv_EXIT(int);
 
+void send_INICIAR_ESTRUCTURA_MEMORIA(int ,char* );
 
 
 #endif

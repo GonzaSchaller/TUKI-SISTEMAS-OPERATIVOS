@@ -670,9 +670,72 @@ bool send_EXIT(int socket_cliente) {
     free(stream);
     return true;
 }
+static void* serializar_INICIAR_ESTRUCTURA_MEMORIA(size_t* size, tabla_segmentos tabla){
+    size_t size_payload = 3 * sizeof(uint32_t);
+    *size = sizeof(uint32_t) + sizeof(size_t) + size_payload;
+    void* stream = malloc(*size);
+    //uint32_t op_code = 1234; // Cualquier valor de op_code válido para tu programa
+    memcpy(stream, &op_code, sizeof(uint32_t));
+    memcpy(stream + sizeof(uint32_t), size_payload, sizeof(size_t));
+    memcpy(stream + sizeof(uint32_t) + sizeof(size_t), &estructura, size_payload);
+    return stream;
+}
+
+
+
+void send_INICIAR_ESTRUCTURA_MEMORIA(int server_memoria,char* mensaje){
+	size_t size;
+    void* stream = serializar_INICIAR_ESTRUCTURA_MEMORIA(&size ,mensaje);
+    if (send(server_memoria, stream, size, 0) != size) {
+        free(stream);
+    }
+    free(stream);
+}
+
+static void* serializar_TABLA_SEGMENTOS(size_t* size, tabla_segmentos* tabla){
+    size_t size_payload = sizeof(estructura);
+
+    *size = sizeof(size_t) + size_payload;
+    void* stream = malloc(*size);
+
+    // Escribir los datos en el stream
+    memcpy(stream ), &size_payload, sizeof(size_t));
+    memcpy(stream + sizeof(size_t) + sizeof(size_t), &estructura, size_payload);
+
+    return stream;
+} // TODO
+static void deserializar_TABLA_SEGMENTOS(void* stream,tabla_segmentos* tabla){
+    size_t size_p1, size_p2, size_p3;
+
+    // Leer el tamaño de cada campo
+    memcpy(&size_p1, stream, sizeof(size_t));
+    memcpy(&size_p2, stream + sizeof(size_p1), sizeof(size_t));
+    memcpy(&size_p3, stream + sizeof(size_p1) + sizeof(size_p2), sizeof(size_t));
+
+    // Copiar los datos serializados en la estructura
+    memcpy(&tabla->id, stream + 3 * sizeof(size_t), size_p1);
+    memcpy(&tabla->direccion_Base, stream + 3 * sizeof(size_t) + size_p1, size_p2);
+    memcpy(&tabla->tamanio, stream + 3 * sizeof(size_t) + size_p1 + size_p2, size_p3);
+}
+En esta función, asumimos que la estructura Estructura tiene tres campos: valor1, valor2 y valor3, todos de tipo uint32_t. Primero, leemos el tamaño de cada campo desde la memoria serializada.
 
 
 
 
+}
+bool recv_F_CLOSE(int socket_cliente, tabla_Segmentos* tabla){
+	 size_t size_payload ;
+	    if (recv(socket_cliente,&size_payload,sizeof(size_t), 0) != sizeof(size_t)) {
+	        return false;
+	    }
+	    void* stream = malloc(size_payload);
+	    if (recv(socket_cliente,stream ,size_payload, 0) != size_payload) {
+	        free(stream);
+	        return false;
+	    }
+	    deserializar_F_CLOSE(stream, archivo);
+	    free(stream);
+	    return true;
+}
 
 

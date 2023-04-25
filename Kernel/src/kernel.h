@@ -13,11 +13,16 @@
 #include "instrucciones.h"
 #include "configuraciones.h"
 
+extern int conexion_cpu;
+extern int conexion_fileSystem;
+extern int conexion_memoria;
+
+extern t_log* log_kernel;
 
 void iniciar_config(t_config* );
 void liberarConexiones(int , int , int );
-void terminar_kernel(t_log*,t_config*);
-void generar_conexiones(t_log* );
+void terminar_kernel(t_config*);
+void generar_conexiones();
 
 
 

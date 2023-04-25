@@ -32,12 +32,12 @@ typedef struct{
     uint32_t id;
     uint32_t direccion_Base;
     uint32_t tamanio;
-}tabla_Segmentos;
+}tabla_segmentos;
 
 typedef struct{
         int posicion_puntero;
         t_list* archivos_Abiertos;
-} tabla_Archivos_Abiertos;
+} tabla_archivos_abiertos;
 
 //enum para mandar las instrucciones
 typedef enum{
@@ -79,10 +79,10 @@ typedef struct{
     t_list* instrucciones; // Lista de instrucciones a ejecutar
     uint32_t PC; // Program counter
     registros_cpu registros_cpu;
-    tabla_Segmentos TSegmento;
+    tabla_segmentos TSegmento;
     uint32_t estimacion_prox_rafaga;
     uint32_t tiempo_ready; // Seria el timestamp en que el proceso llego a ready cambiar nombre
-    tabla_Archivos_Abiertos tabla_archivos ;// No se si conviene esto o una estructura
+    tabla_archivos_abiertos tabla_archivos ;// No se si conviene esto o una estructura
     estado state ; //capaz ponerlo uint32
 
 //  float rafagaAnterior;
