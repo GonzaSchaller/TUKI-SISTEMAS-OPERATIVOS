@@ -1,7 +1,13 @@
 #include "kernel.h"
 
+t_log* log_kernel;
+int conexion_cpu;
+int conexion_fileSystem;
+int conexion_memoria;
+
 //lee el archivo config
 void iniciar_config(t_config* config){
+	ip = "127.0.0.1";
 	puerto_escucha = config_get_string_value(config, "PUERTO_ESCUCHA");
 	ip_memoria = config_get_string_value(config,"IP_MEMORIA");
 	puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
@@ -10,12 +16,12 @@ void iniciar_config(t_config* config){
 	puerto_cpu = config_get_string_value(config,"PUERTO_CPU");
 	ip_fileSystem = config_get_string_value(config,"IP_FILESYSTEM");
 	puerto_fileSystem = config_get_string_value(config,"PUERTO_FILESYSTEM");
-	//ALGORITMO_PLANIFICACION=HRRN
+	algoritmo_planificacion= config_get_string_value(config, "ALGORITMO_PLANIFICACION");
 	estimacion_inicial= config_get_int_value(config,"ESTIMACION_INICIAL" );
-	//HRRN_ALFA=0.5
+	hrrn_alfa = (float) config_get_double_value(config, "HRRN_ALFA");
+	validar_alfa(hrrn_alfa);
 	grado_max_multiprogramacion = config_get_int_value(config,"GRADO_MAX_MULTIPROGRAMACION");
-	//RECURSOS=[DISCO, RECURSO_1]
-	//INSTANCIAS_RECURSOS=[1, 2]
+	lista_recursos = obtener_recursos(config, "RECURSOS", "INSTANCIAS_RECURSOS");
 } //QUEDA
 void inicializar_semaforos(){
 
@@ -36,6 +42,14 @@ void inicializar_semaforos(){
 
 
 	//sem_init(&hilo_sincro_cpu_kernel, 0, 0);
+}
+
+void iniciar_planificacion(){
+	pthread_t hiloNewReady;
+
+	pthread_create(&hiloNewReady, NULL, (void*)hiloNew_Ready, NULL);
+	pthread_detach(hiloNewReady);
+
 }
 
 void inicializar_listas(){
@@ -63,6 +77,7 @@ void destruir_semaforos_listas(){
     //list_destroy_and_destroy_elements(lista_pcb_en_memoria,free);
     queue_destroy_and_destroy_elements(colaNew,free);
 
+    list_destroy_and_destroy_elements(lista_recursos, free);
 
     pthread_mutex_destroy(&mutexBlock);
     pthread_mutex_destroy(&mutexExe);
@@ -92,9 +107,9 @@ void liberarConexiones(int socket1, int socket2, int socket3){
 		close(socket3);
 	}
 }//QUEDA
-void terminar_kernel(t_log* logger,t_config* config){
-	if(logger !=NULL){
-		log_destroy(logger);
+void terminar_kernel(t_config* config){
+	if(log_kernel !=NULL){
+		log_destroy(log_kernel);
 	}
 	if(config != NULL){
 		config_destroy(config);
@@ -102,37 +117,33 @@ void terminar_kernel(t_log* logger,t_config* config){
 }
 //Pasar esta funcion para mi a conexiones_kernel
 //se conecta a cpu, memoria, fileSystem y crea los hilos para procesar las conexiones
-void generar_conexiones(t_log* log_kernel){
-	int conexion1;
-	int conexion2;
-	int conexion3;
+void generar_conexiones(){
 
 	pthread_t thread1, thread2, thread3;
 	//creo conexiones
-	conexion1 = crear_conexion(log_kernel, "CPU", ip_cpu, puerto_cpu);
-	conexion2 = crear_conexion(log_kernel, "FileSystem", ip_fileSystem, puerto_fileSystem);
-	conexion3 = crear_conexion(log_kernel, "Memoria", ip_memoria, puerto_memoria);
+	conexion_cpu = crear_conexion(log_kernel, "CPU", ip_cpu, puerto_cpu);
+	conexion_fileSystem = crear_conexion(log_kernel, "FileSystem", ip_fileSystem, puerto_fileSystem);
+	conexion_memoria = crear_conexion(log_kernel, "Memoria", ip_memoria, puerto_memoria);
 	//proceso conexiones
-	if(conexion1 != -1){
-		pthread_create(&thread1, NULL, (void*) procesar_conexion_cpu, &conexion1);
+	if(conexion_cpu != -1){
+		pthread_create(&thread1, NULL, (void*) procesar_conexion_cpu, &conexion_cpu);
 		pthread_detach(thread1);
 	}
-	if(conexion2 != -1){
-		pthread_create(&thread2, NULL, (void*) procesar_conexion_fileSystem, &conexion2);
+	if(conexion_fileSystem != -1){
+		pthread_create(&thread2, NULL, (void*) procesar_conexion_fileSystem, &conexion_fileSystem);
 		pthread_detach(thread2);
 	}
-	if(conexion3 != -1){
-		pthread_create(&thread3, NULL, (void*) procesar_conexion_memoria, &conexion3);
+	if(conexion_memoria != -1){
+		pthread_create(&thread3, NULL, (void*) procesar_conexion_memoria, &conexion_memoria);
 		pthread_detach(thread3);
 	}
 
-	liberarConexiones(conexion1, conexion2, conexion3);
+	liberarConexiones(conexion_fileSystem, conexion_fileSystem, conexion_memoria);
 }
 
 
 int main (){
-		ip = "127.0.0.1";
-	 	t_log* log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
+	 	log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
 		t_config* config_kernel = config_create("kernel.config");
 		iniciar_config(config_kernel);
 
@@ -140,12 +151,12 @@ int main (){
 		log_info(log_kernel , "Servidor listo para recibir cliente");
 
 		//kernel se conecta a cpu, memoria y fileSystem
-		generar_conexiones(log_kernel);
+		generar_conexiones();
 
 		//atiende los clientes y procesa las tareas de cada uno
 		escuchar_clientes(log_kernel, server_fd);
 
-		terminar_kernel(log_kernel, config_kernel);
+		terminar_kernel(config_kernel);
 
 
 	    return EXIT_SUCCESS;

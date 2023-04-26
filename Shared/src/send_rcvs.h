@@ -92,5 +92,6 @@ bool recv_INICIAR_ESTRUCTURA_MEMORIA(int, char** );
 
 bool send_TABLA_SEGMENTOS(int, tabla_segmentos*);
 bool recv_TABLA_SEGMENTOS(int, tabla_segmentos** );
+
 #endif
 
