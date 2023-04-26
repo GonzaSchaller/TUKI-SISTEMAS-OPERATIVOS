@@ -14,7 +14,7 @@ typedef struct{
 	char* server_name;
 }args_atender_cliente;
 
-
+void procesar_conexion_consola(void*);
 void procesar_conexion_cpu(void*);
 void procesar_conexion_fileSystem(void*);
 void procesar_conexion_memoria(void*);

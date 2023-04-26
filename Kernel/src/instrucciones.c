@@ -53,6 +53,6 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
     //pcb->estimacionRafaga;
     //pcb->tiempReady;
     //pcb->tablaArchivos;
-    pcb->state= NEW;
+    pcb->state= NEW; // hace falta?
 
 }

@@ -9,11 +9,11 @@
 #include "instrucciones.h"
 #include <semaphore.h>
 #include <commons/collections/queue.h>
-#include "conexiones_kernel.h"
 #include "kernel.h"
 
 void atender_cliente(void*);
 void agregarANew(pcb_t*);
+pcb_t* sacarDeNew();
 void hiloNew_Ready();
 
 //para poder usarlas en el main

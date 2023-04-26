@@ -30,6 +30,7 @@ extern float hrrn_alfa;
 extern uint32_t grado_max_multiprogramacion;
 extern t_list* lista_recursos;
 
+
 void validar_alfa(float);
 t_list* obtener_recursos(t_config*, char*, char*);
 #endif /* SRC_CONFIGURACIONES_H_ */

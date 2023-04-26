@@ -9,8 +9,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
-
-#include "../../home/utnso/tp-2023-1c-Kernel-Masters/Kernel/src/instrucciones.h"
+#include "estructuras_compartidas.h"
 //Codigo de operacions instrucciones
 typedef enum{ 	//parametros
 	SET,  // 2
@@ -88,8 +87,10 @@ bool recv_F_CLOSE(int , char**);
 bool send_EXIT(int);
 bool recv_EXIT(int);
 
-void send_INICIAR_ESTRUCTURA_MEMORIA(int ,char* );
+void send_INICIAR_ESTRUCTURA_MEMORIA(int,char*);
+bool recv_INICIAR_ESTRUCTURA_MEMORIA(int, char** );
 
-
+bool send_TABLA_SEGMENTOS(int, tabla_segmentos*);
+bool recv_TABLA_SEGMENTOS(int, tabla_segmentos** );
 #endif
 

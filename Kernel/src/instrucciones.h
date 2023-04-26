@@ -1,9 +1,10 @@
 #ifndef INSTRUCCIONES_H
 #define INSTRUCCIONES_H
 
+#include <stdlib.h>
 #include <inttypes.h>
-#include <send_rcvs.h>
 #include <commons/collections/list.h>
+#include <estructuras_compartidas.h>
 
 typedef union {//porque puedo recibir int o char*
 	uint32_t tipo_int;
@@ -28,11 +29,6 @@ typedef enum {
     FINISH
 }estado;
 
-typedef struct{
-    uint32_t id;
-    uint32_t direccion_Base;
-    uint32_t tamanio;
-}tabla_segmentos;
 
 typedef struct{
         int posicion_puntero;
