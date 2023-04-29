@@ -81,10 +81,10 @@ typedef struct{
     tabla_archivos_abiertos tabla_archivos ;// No se si conviene esto o una estructura
     estado state ; //capaz ponerlo uint32
 
-//  float rafagaAnterior;
-    float estimacion_actual;
-    float estimacion_anterior;
-    //float horaDeIngresoAExe;
+    float rafagaAnterior; // 0 al principio, despues es el tiempo real que se ejecuto. Seria el R(n)
+    float estimacion_actual; // reempalzamos si vuelve a ready
+    float estimacion_anterior; // estimacion inicial
+    float horaDeIngresoAExe; // timestamp cuando llega a execute para calcular la rafaga anterior
 }pcb_t;
 
 void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );

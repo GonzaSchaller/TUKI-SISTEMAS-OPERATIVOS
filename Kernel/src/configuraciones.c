@@ -14,6 +14,7 @@ float hrrn_alfa;
 uint32_t grado_max_multiprogramacion;
 t_list* lista_recursos;
 
+
 //si el hrrnAlfa es negativo cierro el programa
 void validar_alfa(float alfa){
 		if(alfa < 0){
@@ -38,7 +39,26 @@ t_list* obtener_recursos(t_config* config, char* rec, char* instancias){
 
 	return lista_recursos;
 }
+int obtener_algoritmo_planificacion(char* algoritmo){
 
+	algoritmo_planif algoritmo_planif;
+
+
+	    //HRRN
+	    if (strcmp(algoritmo,"FIFO") == 0)
+	    {
+	    	algoritmo_planif = FIFO;
+	        //log_info(log_kernel, "El algoritmo de planificacion elegido es FIFO.");
+	    }
+
+	    //SFJ SIN DESALOJO
+	    if (strcmp(algoritmo,"HRRN") == 0)
+	    {
+	    	algoritmo_planif = HRRN;
+	     //   log_info(log_kernel, "El algoritmo de planificacion elegido es SRT.");
+	    }
+	    return algoritmo_planif;
+}
 
 
 

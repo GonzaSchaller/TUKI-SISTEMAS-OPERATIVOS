@@ -30,13 +30,14 @@ void inicializar_semaforos(){
 	pthread_mutex_init(&mutexBlock, NULL);
 	pthread_mutex_init(&mutexExe, NULL);
 	pthread_mutex_init(&mutexExit, NULL);
+	pthread_mutex_init(&multiprocesamiento, NULL);
 
 	sem_init(&contadorNew, 0, 0); // Estado New
 	sem_init(&contadorReady, 0, 0); // Estado Ready
 	sem_init(&contadorExe, 0, 0); // Estado Exe
 	//sem_init(&contadorProcesosEnMemoria, 0, 0);    // Memoria IMP HAY QUE VER COMO SE INICIALIZA PORQUE ESTO AFECTA LA DISPONIBILIDAD DE LA COLA READY
 	sem_init(&multiprogramacion, 0, grado_max_multiprogramacion); // hasta 4 procesos en ready
-	//pthread_mutex_init(&multiprocesamiento, NULL);
+
 	sem_init(&contadorBlock, 0, 0);
 	sem_init(&largoPlazo, 0, 1);
 
@@ -46,7 +47,9 @@ void inicializar_semaforos(){
 
 void iniciar_planificacion(){
 	pthread_t hiloNewReady;
-
+	pthread_t hiloReadyExecute;
+	pthread_create(&hiloReadyExecute, NULL,(void*)hiloReady_Execute, NULL);
+	pthread_detach(hiloReadyExecute);
 	pthread_create(&hiloNewReady, NULL, (void*)hiloNew_Ready, NULL);
 	pthread_detach(hiloNewReady);
 

@@ -19,14 +19,14 @@ sem_t contadorExe;
 sem_t contadorBlock;
 //sem_t contadorProcesosEnMemoria;
 sem_t multiprogramacion;
-//pthread_mutex_t multiprocesamiento;
+pthread_mutex_t multiprocesamiento;
 sem_t largoPlazo;
 
 
 void agregarAReady(pcb_t* pcb){ // Tendria mas sentido que log_kernel no sea pasado por parametro
 	//log_trace(log_kernel,"Entre en agregar a ready");
 
-	//time_t a = time(NULL); //momento en el que entra un proceso, sirve para el HRRN
+	time_t a = time(NULL); //momento en el que entra un proceso, sirve para el HRRN
 
 	pthread_mutex_lock(&mutexReady); //para el execute a ready y de blocked a ready y de new a ready
 
@@ -62,5 +62,67 @@ void hiloNew_Ready(){
 	}
 
 }
+int tamanioDeColaReady(){
+
+	int tamanio;
+
+	pthread_mutex_lock(&mutexReady);
+	tamanio = list_size(listaReady);
+	pthread_mutex_unlock(&mutexReady);
+
+	return tamanio;
+}
+pcb_t* obtener_siguiente_ready(){
+
+//	log_trace(log_kernel,"Entre en obtener sig de ready");
+	sem_wait(&contadorReady);
+
+	pcb_t* procesoPlanificado = NULL;
+
+	if (tamanioDeColaReady() > 0){
+
+		// Aca dentro un SWITCH para los distintos algoritmos q llama a una funcion para cada uno
+		switch(obtener_algoritmo_planificacion(algoritmo_planificacion)){
+			//	log_trace(log_kernel,"EL ALGORITMO DE PLANIF ES: %d",algoritmo_config);
+				case FIFO:
+					procesoPlanificado = obtener_siguiente_FIFO();
+				break;
+				case HRRN:
+					procesoPlanificado = obtener_siguiente_HRRN();
+				break;
+			  }
 
 
+	}
+
+	// Devuelve NULL si no hay nada en ready
+	// Caso contrario devuelve el que tiene mas prioridad segun el algoritmo que se este empleando
+	return procesoPlanificado;
+}
+
+void* hiloReady_Execute(){
+
+	while(1){
+
+		pthread_mutex_lock(&multiprocesamiento);
+		pcb_t* pcb_siguiente = obtener_siguiente_ready();
+
+}
+
+
+pcb_t* obtener_siguiente_FIFO(){
+	pcb_t* procesoPlanificado;
+
+	pthread_mutex_lock(&mutexReady);
+	procesoPlanificado = list_remove(listaReady, 0);
+    pthread_mutex_unlock(&mutexReady);
+
+	return procesoPlanificado;
+}
+
+pcb_t* obtener_siguiente_HRRN(){
+	pcb_t* procesoPlanificado;
+
+
+	return procesoPlanificado;
+}
