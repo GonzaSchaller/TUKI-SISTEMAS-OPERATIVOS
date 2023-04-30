@@ -48,11 +48,21 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
     pcb->PID = contadorProceso;
     pcb->instrucciones = listaInstrucciones;
     pcb->PC = 0;
-    //pcb->regCpu
+    //pcb->registros_cpu
     //pcb->TSegmento;
-    //pcb->estimacionRafaga;
-    //pcb->tiempReady;
-    //pcb->tablaArchivos;
+    pcb->horaDeIngresoAReady= 0;
+    //pcb->tabla_archivos;
     pcb->state= NEW; // hace falta?
-
+    pcb->estimacion_rafaga_anterior =estimacion_inicial;
+	//pcb->estimacion_prox_rafaga ;
+	pcb-> rafaga_anterior_real = 0;
+	pcb->horaDeIngresoAExe = 0;
+	pcb->estimacion_prox_rafaga = (hrrn_alfa* pcb->rafaga_anterior_real)+ ((1+hrrn_alfa)* pcb-> estimacion_rafaga_anterior);
 }
+
+
+
+
+
+
+

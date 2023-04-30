@@ -19,6 +19,7 @@ void* hiloReady_Execute();
 pcb_t* obtener_siguiente_FIFO();
 pcb_t* obtener_siguiente_ready();
 pcb_t* obtener_siguiente_HRRN();
+
 //para poder usarlas en el main
 extern t_queue* colaNew;
 extern t_list* listaReady;

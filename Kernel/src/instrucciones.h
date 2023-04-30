@@ -5,6 +5,7 @@
 #include <inttypes.h>
 #include <commons/collections/list.h>
 #include <estructuras_compartidas.h>
+#include "configuraciones.h"
 
 typedef union {//porque puedo recibir int o char*
 	uint32_t tipo_int;
@@ -76,15 +77,16 @@ typedef struct{
     uint32_t PC; // Program counter
     registros_cpu registros_cpu;
     tabla_segmentos TSegmento;
-    uint32_t estimacion_prox_rafaga;
-    uint32_t tiempo_ready; // Seria el timestamp en que el proceso llego a ready cambiar nombre
+    uint32_t estimacion_prox_rafaga; //S del HRRN
+    float horaDeIngresoAReady; // Seria el timestamp en que el proceso llego a ready cambiar nombre
     tabla_archivos_abiertos tabla_archivos ;// No se si conviene esto o una estructura
     estado state ; //capaz ponerlo uint32
 
-    float rafagaAnterior; // 0 al principio, despues es el tiempo real que se ejecuto. Seria el R(n)
-    float estimacion_actual; // reempalzamos si vuelve a ready
-    float estimacion_anterior; // estimacion inicial
+    float rafaga_anterior_real; // 0 al principio, despues es el tiempo real que se ejecuto. Seria el R(n)
+    float estimacion_rafaga_anterior; // estimacion inicial
     float horaDeIngresoAExe; // timestamp cuando llega a execute para calcular la rafaga anterior
+	float horaDeSalidaDeExe;
+	float hrrn;
 }pcb_t;
 
 void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
