@@ -18,7 +18,10 @@ void hiloNew_Ready();
 void* hiloReady_Execute();
 pcb_t* obtener_siguiente_FIFO();
 pcb_t* obtener_siguiente_ready();
-pcb_t* obtener_siguiente_HRRN();
+pcb_t* obtener_siguiente_HRRN(time_t);
+
+void agregarAReady(pcb_t*);
+int tamanioDeListaReady();
 
 //para poder usarlas en el main
 extern t_queue* colaNew;

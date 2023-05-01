@@ -751,3 +751,79 @@ bool recv_TABLA_SEGMENTOS(int socket_cliente, tabla_segmentos** tabla){
 	    free(stream);
 	    return true;
 	}
+	static void* serializar_PID(uint32_t parametro1) {
+   void* stream = malloc(sizeof(uint32_t));
+    memcpy(stream, &parametro1, sizeof(uint32_t));
+    return stream;
+}
+static void deserializar_PID(void* stream, uint32_t* parametro1) {
+    memcpy(parametro1, stream ,sizeof(uint32_t));
+
+}
+
+bool send_PID(int fd,uint32_t parametro1){
+    //printf("Entre en send_PID \n");
+       size_t size = sizeof(uint32_t);
+
+        void* stream = serializar_PID(parametro1);
+
+
+        if (send(fd, stream, size, 0) != size) {
+            free(stream);
+            return false;
+        }
+
+        free(stream);
+        return true;
+}
+
+bool recv_PID(int fd, uint32_t* parametro1) {
+    size_t size = sizeof(uint32_t);
+    void* stream = malloc(size);
+
+    if (recv(fd, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+
+    deserializar_PID(stream, parametro1);
+
+    free(stream);
+    return true;
+}
+
+static void* serializar_PC(uint32_t parametro1) {
+   void* stream = malloc(sizeof(uint32_t));
+    memcpy(stream, &parametro1, sizeof(uint32_t));
+    return stream;
+}
+
+
+void deserializar_PC(void* stream, uint32_t* parametro1) {
+    memcpy(parametro1, stream ,sizeof(uint32_t));
+
+}
+
+bool send_PC(int fd, uint32_t parametro1) {
+   size_t size = sizeof(uint32_t);
+    void* stream = serializar_PC(parametro1);
+    if (send(fd, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
+
+
+bool recv_PC(int fd, uint32_t* parametro1) {
+    size_t size = sizeof(uint32_t);
+    void* stream = malloc(size);
+    if (recv(fd, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    deserializar_PC(stream, parametro1);
+    free(stream);
+    return true;
+}

@@ -53,15 +53,102 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
     pcb->horaDeIngresoAReady= 0;
     //pcb->tabla_archivos;
     pcb->state= NEW; // hace falta?
-    pcb->estimacion_rafaga_anterior =estimacion_inicial;
-	//pcb->estimacion_prox_rafaga ;
+    pcb->estimacion_rafaga_anterior = estimacion_inicial;
 	pcb-> rafaga_anterior_real = 0;
 	pcb->horaDeIngresoAExe = 0;
 	pcb->estimacion_prox_rafaga = (hrrn_alfa* pcb->rafaga_anterior_real)+ ((1+hrrn_alfa)* pcb-> estimacion_rafaga_anterior);
 }
 
 
+void send_instrucciones_kernel_a_cpu(int fd_cpu,pcb_t* pcb_proceso){
+		instruccion* a;
+		int cant_instrucciones = list_size(pcb_proceso->instrucciones);
+		int indice = 0;
+		while(indice < cant_instrucciones){
+			a = list_get(pcb_proceso->instrucciones,indice);
 
+			if(a->id == SET){
+
+				send_SET(fd_cpu,a->parametro1.tipo_int,a->parametro2.tipo_string);
+
+			}
+			else if(a->id == MOV_IN){
+
+				send_MOV_IN(fd_cpu,a->parametro1.tipo_int, a->parametro2.tipo_int);
+
+			}
+
+			else if(a->id == MOV_OUT){
+
+				send_MOV_OUT(fd_cpu,a->parametro1.tipo_int,a-> parametro2.tipo_int);
+			}
+			else if(a->id == IO){
+
+				send_IO(fd_cpu,a->parametro1.tipo_int);
+			}
+			else if(a->id == F_OPEN){
+
+				send_F_OPEN(fd_cpu,a->parametro1.tipo_string);
+
+			}
+			else if(a->id == F_CLOSE){
+
+				send_F_CLOSE(fd_cpu,a->parametro1.tipo_string);
+			}
+
+			else if(a->id == F_SEEK){
+
+				send_F_SEEK(fd_cpu,a->parametro1.tipo_string, a->parametro2.tipo_int);
+			}
+
+			else if(a->id == F_READ){
+
+				send_F_READ(fd_cpu,a->parametro1.tipo_string, a->parametro2.tipo_int,a->parametro3);
+			}
+
+			else if(a->id == F_WRITE ){
+
+				send_F_WRITE (fd_cpu,a->parametro1.tipo_string, a->parametro2.tipo_int,a->parametro3);
+			}
+
+			else if(a->id == F_TRUNCATE ){
+
+				send_F_TRUNCATE(fd_cpu,a->parametro1.tipo_string, a->parametro2.tipo_int);
+			}
+
+			else if(a->id == WAIT ){
+
+				send_WAIT (fd_cpu,a->parametro1.tipo_string);
+			}
+
+			else if(a->id == SIGNAL ){
+
+				send_SIGNAL (fd_cpu,a->parametro1.tipo_string);
+			}
+
+			else if(a->id == CREATE_SEGMENT ){
+
+				send_CREATE_SEGMENT (fd_cpu,a->parametro1.tipo_int, a->parametro2.tipo_int);
+			}
+
+			else if(a->id == DELETE_SEGMENT ){
+
+				send_DELETE_SEGMENT (fd_cpu,a->parametro1.tipo_int);
+			}
+
+			else if(a->id == YIELD) {
+
+				send_YIELD(fd_cpu);
+			}
+
+			else if(a->id == EXIT || strcmp(a->nombre, "EXIT") == 0){
+
+				send_EXIT(fd_cpu);
+			}
+			indice++;
+		}
+
+}
 
 
 

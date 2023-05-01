@@ -29,6 +29,7 @@ typedef enum{ 	//parametros
 	F_CLOSE,//1
 	EXIT
 }op_code;
+
 bool send_SET(int, uint32_t, char*);
 bool recv_SET(int,uint32_t*, char**);
 
@@ -92,6 +93,12 @@ bool recv_INICIAR_ESTRUCTURA_MEMORIA(int, char** );
 
 bool send_TABLA_SEGMENTOS(int, tabla_segmentos*);
 bool recv_TABLA_SEGMENTOS(int, tabla_segmentos** );
+
+bool send_PID(int,uint32_t);
+bool recv_PID(int, uint32_t*);
+
+bool send_PC(int, uint32_t);
+bool recv_PC(int, uint32_t*);
 
 #endif
 

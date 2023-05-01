@@ -6,6 +6,7 @@
 #include <commons/collections/list.h>
 #include <estructuras_compartidas.h>
 #include "configuraciones.h"
+#include <send_rcvs.h>
 
 typedef union {//porque puedo recibir int o char*
 	uint32_t tipo_int;
@@ -92,7 +93,7 @@ typedef struct{
 void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
 void cargar_instruccion2(int, char* , uint32_t, char* ,uint32_t ,t_list* );
 void cargar_instruccion3(int, char* , char*, uint32_t ,uint32_t ,t_list* );
-
+void send_instrucciones_kernel_a_cpu(int,pcb_t*);
 void inicializarPCB(int, t_list*, pcb_t *);
 
 #endif
