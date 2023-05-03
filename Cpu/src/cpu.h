@@ -16,6 +16,11 @@
 #include<netdb.h>
 #include<string.h>
 
+extern int conexion;
+
+extern t_log* logger;
+
+void iniciar_config(t_config* );
 
 t_log* iniciar_logger(void);
 t_config* iniciar_config(void);

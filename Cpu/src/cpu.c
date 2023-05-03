@@ -1,14 +1,24 @@
 #include "cpu.h"
+t_log* logger;
+int conexion;
+void iniciar_config(t_config* config){
+    ip = "127.0.0.1";
+    puerto_cpu = config_get_string_value(config,"PUERTO_ESCUCHA");
+    ip_memoria = config_get_string_value(config,"IP_MEMORIA");
+	puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
+	retardo_instruccion = config_get_string_value(config,"RETARDO_INSTRUCCION");
+    tam_max_segmento = config_get_string_value(config,"TAM_MAX_SEGMENTO");
+}
 
 int main (){
-	int conexion;
-	char* ip = "127.0.0.1";
-	char* ip_memoria;
-	char* puerto_cpu;
-	char* puerto_memoria;
+	//int conexion;
+	//char* ip = "127.0.0.1";
+	//char* ip_memoria;
+	//char* puerto_cpu;
+	//char* puerto_memoria;
 
 	//crear un logger
-	t_log* logger;
+	//t_log* logger;
 	logger = log_create("cpu.log","Cpu",1,LOG_LEVEL_DEBUG);
 
 	//config
@@ -16,10 +26,10 @@ int main (){
 	config =config_create("cpu.config");
 
 	//lo de la ip y puerto
-	ip_memoria = config_get_string_value(config,"IP_MEMORIA");
-	puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
-	puerto_cpu = config_get_string_value(config,"PUERTO_ESCUCHA");
-
+	//ip_memoria = config_get_string_value(config,"IP_MEMORIA");
+	//puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
+	//puerto_cpu = config_get_string_value(config,"PUERTO_ESCUCHA");
+	iniciar_config(config);
 
 	int server_fd = iniciar_servidor(logger, "Cpu", ip, puerto_cpu);
 	log_info(logger , "Servidor listo para recibir cliente");
