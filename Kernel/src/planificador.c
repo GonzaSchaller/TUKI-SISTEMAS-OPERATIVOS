@@ -131,15 +131,48 @@ pcb_t* obtener_siguiente_ready(){
 	// Caso contrario devuelve el que tiene mas prioridad segun el algoritmo que se este empleando
 	return procesoPlanificado;
 }
-
 void* hiloReady_Execute(){
-
+	uint32_t pc, tiempo_bloqueo_kernel;
 	while(1){
 		pthread_mutex_lock(&multiprocesamiento);
 		pcb_t* pcb_siguiente = obtener_siguiente_ready();
-		//mandar pcb
-		//send_instrucciones_kernel_a_cpu(conexion_cpu, pcb_siguiente);
 
+		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
+		pcb_siguiente->horaDeIngresoAExe = ((float) time(NULL))*1000;
+
+			if (!recv_PC(conexion_cpu, &pc)) {
+				log_error(log_kernel, "Fallo recibiendo pc");
+			}
+			pcb_siguiente->PC = pc;
+
+			if (!recv_tiempo_bloqueante(conexion_cpu, &tiempo_bloqueo_kernel)) { //tiempo que pasar en block
+				log_error(log_kernel, "Fallo recibiendo el tiempo bloqueante");
+			}
+
+			pcb_siguiente->tiempo_bloqueo = tiempo_bloqueo_kernel;
+
+			time_t fin_exe = time(NULL);
+			float tiempoDeFin = ((float) fin_exe)*1000; // el 1000?
+			pcb_siguiente->rafaga_anterior_real =pcb_siguiente-> horaDeIngresoAExe - tiempoDeFin;//pcb_siguiente-> horaDeSalidaDeExe;
+			pcb_siguiente->estimacion_prox_rafaga = (hrrn_alfa* pcb_siguiente->rafaga_anterior_real)+ ((1+hrrn_alfa)* pcb_siguiente-> estimacion_rafaga_anterior);
+			pcb_siguiente->estimacion_rafaga_anterior = pcb_siguiente->estimacion_prox_rafaga;
+
+			if(pcb_siguiente->tiempo_bloqueo > 0){// caso bloqueo
+				//agregarABlock(pcb_siguiente);
+				sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
+				}
+			else
+			{
+				if(pcb_siguiente->PC < list_size(pcb_siguiente->instrucciones)){ // caso YIELD
+					agregarAReady(pcb_siguiente);
+				}
+				else{// caso EXIT o error
+					//terminarEjecucion(pcb_siguiente);
+					sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
+				}
+			}
+
+		pthread_mutex_unlock(&multiprocesamiento);
 	}
 
 }
@@ -149,4 +182,3 @@ void* hiloReady_Execute(){
 	//procesoPlanificado->estimacion_prox_rafaga = (hrrn_alfa* procesoPlanificado->rafaga_anterior_real)+ ((1+hrrn_alfa)* procesoPlanificado-> estimacion_rafaga_anterior);
 	//procesoPlanificado->estimacion_rafaga_anterior = procesoPlanificado->estimacion_prox_rafaga;
 	//time_t final_ready = time(NULL);
-	//procesoPlanificado-> hrrn = (procesoPlanificado->estimacion_prox_rafaga + (final_ready - procesoPlanificado->horaDeIngresoAReady))/ procesoPlanificado->estimacion_prox_rafaga;

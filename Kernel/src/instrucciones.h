@@ -76,7 +76,7 @@ typedef struct{
     uint32_t PID; // Debe ser unico en tod el sistema
     t_list* instrucciones; // Lista de instrucciones a ejecutar
     uint32_t PC; // Program counter
-    registros_cpu registros_cpu;
+    registros_cpu registros;
     tabla_segmentos TSegmento;
     uint32_t estimacion_prox_rafaga; //S del HRRN
     float horaDeIngresoAReady; // Seria el timestamp en que el proceso llego a ready cambiar nombre
@@ -88,8 +88,9 @@ typedef struct{
     float horaDeIngresoAExe; // timestamp cuando llega a execute para calcular la rafaga anterior
 	float horaDeSalidaDeExe;
 	float hrrn;
+	uint32_t tiempo_bloqueo;
 }pcb_t;
-
+void enviar_pcb_cpu(int , pcb_t*);
 void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
 void cargar_instruccion2(int, char* , uint32_t, char* ,uint32_t ,t_list* );
 void cargar_instruccion3(int, char* , char*, uint32_t ,uint32_t ,t_list* );
