@@ -736,8 +736,9 @@ bool send_TABLA_SEGMENTOS(int server_memoria, tabla_segmentos* tabla){
         free(stream);
         return false;
     }
-    return true;
     free(stream);
+    return true;
+
 }
 bool recv_TABLA_SEGMENTOS(int socket_cliente, tabla_segmentos** tabla){
 	    size_t size = sizeof(uint32_t) * 3;
@@ -827,3 +828,60 @@ bool recv_PC(int fd, uint32_t* parametro1) {
     free(stream);
     return true;
 }
+
+static void* serializar_tiempo_bloqueante(uint32_t parametro1) {
+   void* stream = malloc(sizeof(uint32_t));
+    memcpy(stream, &parametro1, sizeof(uint32_t));
+    return stream;
+}
+
+
+void deserializar_tiempo_bloqueante(void* stream, uint32_t* parametro1) {
+    memcpy(parametro1, stream ,sizeof(uint32_t));
+
+}
+
+bool send_tiempo_bloqueante(int fd, uint32_t parametro1) {
+   size_t size = sizeof(uint32_t);
+    void* stream = serializar_tiempo_bloqueante(parametro1);
+    if (send(fd, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
+
+
+bool recv_tiempo_bloqueante(int fd, uint32_t* parametro1) {
+    size_t size = sizeof(uint32_t);
+    void* stream = malloc(size);
+    if (recv(fd, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    deserializar_tiempo_bloqueante(stream, parametro1);
+    free(stream);
+    return true;
+}
+
+
+
+/* static void* serializar_reg_cpu(registros_cpu* reg) {
+
+}// TODO
+static void deserializar_reg_cpu(void* stream, registros_cpu* reg) {
+
+
+}// TODO
+bool send_reg_cpu(int fd_cpu, registros_cpu* reg){
+
+
+	return true;
+}// TODO
+bool recv_reg_cpu(fd_cpu, pcb_proceso->registros){
+
+
+	return true;
+}// TODO
+*/
