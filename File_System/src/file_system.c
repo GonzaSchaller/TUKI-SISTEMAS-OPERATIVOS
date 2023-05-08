@@ -11,6 +11,31 @@ void levantar_config(){
 	retardo_acceso_bloque = config_get_string_value(config,"RETARDO_ACCESO_BLOQUE");
 }
 
+void establecer_conexion_kernel(){
+	int server_fd = iniciar_servidor(logger, "fileSystem", ip, puerto_escucha);
+	log_info(logger, "Servidor listo para recibir cliente");
+	int cliente_fd = esperar_cliente(logger, server_fd);
+}
+
+void establecer_conexion_memoria(){
+	conexion = crear_conexion(logger,"Memoria", ip, puerto_memoria);
+}
+
+void establecer_conexiones(){
+	pthread_t hilo_memoria, hilo_kernel;
+
+	if(pthread_create(&hilo_kernel, NULL, establecer_conexion_kernel(), NULL)){
+		printf("Error al crear el hilo de kernel\n");
+		exit(-1);
+	}
+	if(pthread_create(&hilo_memoria, NULL, establecer_conexion_memoria(), NULL)){
+		printf("Error al crear el hilo de memoria\n");
+		exit(-2);
+	}
+	pthread_join(hilo_kernel, NULL);
+	pthread_join(hilo_memoria, NULL);
+}
+
 int main (){
 	//int conexion;
 	//char* ip = "127.0.0.1";
@@ -30,23 +55,17 @@ int main (){
 	puerto_fileSystem = config_get_string_value(config,"PUERTO_ESCUCHA");
 	*/
 
-	int server_fd = iniciar_servidor(logger, "fileSystem", ip, puerto_fileSystem);
+	//int server_fd = iniciar_servidor(logger, "fileSystem", ip, puerto_fileSystem);
 
-	log_info(logger , "Servidor listo para recibir cliente");
-	int cliente_fd = esperar_cliente(logger, server_fd);
+	//log_info(logger , "Servidor listo para recibir cliente");
+	//int cliente_fd = esperar_cliente(logger, server_fd);
 
-	conexion = crear_conexion(logger,"Memoria", ip, puerto_memoria );
+	//conexion = crear_conexion(logger,"Memoria", ip, puerto_memoria );
 	//cuando el cpu es server del kernel
-
-
-	//problema de index, arreglar
+	
+	establecer_conexiones();
 
 	terminar_programa(conexion, logger, config);
-
-	//para recv()
-//	uint32_t handshake = 1;
-//	uint32_t result;
-
 
 	return EXIT_SUCCESS;
 
