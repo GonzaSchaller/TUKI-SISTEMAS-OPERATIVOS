@@ -12,16 +12,16 @@ void levantar_config(){
 }
 
 int main (){
-	int conexion;
-	char* ip = "127.0.0.1";
-	char* puerto_fileSystem, puerto_memoria;
+	//int conexion;
+	//char* ip = "127.0.0.1";
+	//char* puerto_fileSystem, puerto_memoria;
 
 	//crear un logger
-	t_log* logger;
+	//t_log* logger;
 	logger = log_create("fileSystem.log","FileSystem",1, LOG_LEVEL_DEBUG);
 
 	//config
-	t_config* config;
+	//t_config* config;
 	config =config_create("fileSystem.config");
 	/*
 	//lo de la ip y puerto
