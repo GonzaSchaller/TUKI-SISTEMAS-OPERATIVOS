@@ -1,5 +1,16 @@
 #include "file_system.h"
 
+void levantar_config(){
+	ip = config_get_string_value(config,"IP_MEMORIA");
+	puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
+	puerto_escucha = config_get_string_value(config,"PUERTO_ESCUCHA");
+	superbloque = config_get_string_value(config,"PATH_SUPERBLOQUE");
+	bitmap = config_get_string_value(config,"PATH_BITMAP");
+	bloques = config_get_string_value(config,"PATH_BLOQUES");
+	fcb = config_get_string_value(config,"PATH_FCB");
+	retardo_acceso_bloque = config_get_string_value(config,"RETARDO_ACCESO_BLOQUE");
+}
+
 int main (){
 	int conexion;
 	char* ip = "127.0.0.1";
@@ -12,12 +23,12 @@ int main (){
 	//config
 	t_config* config;
 	config =config_create("fileSystem.config");
-
+	/*
 	//lo de la ip y puerto
 	ip = config_get_string_value(config,"IP_MEMORIA");
 	puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
 	puerto_fileSystem = config_get_string_value(config,"PUERTO_ESCUCHA");
-
+	*/
 
 	int server_fd = iniciar_servidor(logger, "fileSystem", ip, puerto_fileSystem);
 
