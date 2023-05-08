@@ -15,6 +15,7 @@
 #include<sys/socket.h>
 #include<netdb.h>
 #include<string.h>
+#include <pthread.h>
 
 
 t_log* iniciar_logger(void);
@@ -22,6 +23,19 @@ t_config* iniciar_config(void);
 void leer_consola(t_log*);
 void paquete(int);
 void terminar_programa(int, t_log*, t_config*);
+
+extern int conexion;
+extern char* ip;
+extern char* puerto_escucha; //puerto para si mismo (file system)
+extern char* puerto_memoria;
+extern char* superbloque;
+extern char* bitmap;
+extern char* bloques;
+extern char* fcb;
+extern int retardo_acceso_bloque;
+
+extern t_log* logger;
+extern t_config* config;
 
 
 #endif
