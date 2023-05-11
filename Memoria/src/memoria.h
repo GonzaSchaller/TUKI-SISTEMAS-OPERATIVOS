@@ -2,7 +2,7 @@
 #define MEMORIA_H
 
 
-#include <stdint.h> // pasarlo a todos los archivos
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <commons/log.h>
@@ -17,20 +17,11 @@
 #include<netdb.h>
 #include<string.h>
 
+#include "iniciar.h"
+#include "comunicacion.h"
+#include <semaphore.h>
 
-t_log* iniciar_logger(void);
-t_config* iniciar_config(void);
 
-void leer_consola(t_log*);
-void paquete(int);
-void terminar_programa(int, t_log*, t_config*);
-
-int conexion_memoria;
-char* ip_memoria = "127.0.0.1";
-char* puerto_memoria;
-
-t_config* config_memoria;
-t_log* logger_memoria;
 
 
 

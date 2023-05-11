@@ -1,31 +1,15 @@
 #include "memoria.h"
+extern t_log* log_memoria;
+extern t_config_memoria cfg;
+extern void* memoria_principal;
 
-void terminar_memoria(t_log* logger,t_config* config){
-	if(logger !=NULL){
-		log_destroy(logger);
+int main(){
+	if(!init() || !cargar_configuracion() || !cargar_memoria()){
+		log_error(log_memoria,"error capo");
+		terminar_memoria();
 	}
-	if(config != NULL){
-		config_destroy(config);
-	}
+	int server_fd = iniciar_servidor(log_memoria,"MEMORIA","127.0.0.1",cfg->PUERTO_ESCUCHA);
+	server_escuchar(log_memoria,"MEMORIA",server_fd);
+	terminar_memoria();
+	return EXIT_SUCCESS;
 }
-
-int main (){
-	t_log* log_memoria;
-	log_memoria = log_create("memoria.log","Memoria",1, LOG_LEVEL_DEBUG);
-	//puerto e ip: tirar a otra carpeta
-	config_memoria =config_create("memoria.config");
-
-	puerto_memoria = config_get_string_value(config_memoria,"PUERTO_ESCUCHA");
-
-		int server_fd = iniciar_servidor(log_memoria, "Memoria", ip_memoria, puerto_memoria);
-		log_info(log_memoria, "Servidor listo para recibir al cliente");
-		int cliente_fd = esperar_cliente(log_memoria, server_fd);
-
-		terminar_memoria(log_memoria, config_memoria);
-
-
-	    return EXIT_SUCCESS;
-
-}
-
-
