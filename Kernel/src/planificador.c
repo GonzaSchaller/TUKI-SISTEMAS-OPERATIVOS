@@ -154,7 +154,7 @@ void* hiloReady_Execute(){
 			time_t fin_exe = time(NULL);
 			float tiempoDeFin = ((float) fin_exe)*1000; // el 1000?
 			pcb_siguiente->rafaga_anterior_real =pcb_siguiente-> horaDeIngresoAExe - tiempoDeFin;//pcb_siguiente-> horaDeSalidaDeExe;
-			pcb_siguiente->estimacion_prox_rafaga = (hrrn_alfa* pcb_siguiente->rafaga_anterior_real)+ ((1+hrrn_alfa)* pcb_siguiente-> estimacion_rafaga_anterior);
+			pcb_siguiente->estimacion_prox_rafaga = (hrrn_alfa* pcb_siguiente->rafaga_anterior_real)+ ((1-hrrn_alfa)* pcb_siguiente-> estimacion_rafaga_anterior);
 			pcb_siguiente->estimacion_rafaga_anterior = pcb_siguiente->estimacion_prox_rafaga;
 
 			if(pcb_siguiente->tiempo_bloqueo > 0){// caso bloqueo
