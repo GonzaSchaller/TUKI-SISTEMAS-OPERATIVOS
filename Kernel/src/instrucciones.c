@@ -56,7 +56,7 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
     pcb->estimacion_rafaga_anterior = estimacion_inicial;
 	pcb-> rafaga_anterior_real = 0;
 	pcb->horaDeIngresoAExe = 0;
-	pcb->estimacion_prox_rafaga = (hrrn_alfa* pcb->rafaga_anterior_real)+ ((1+hrrn_alfa)* pcb-> estimacion_rafaga_anterior);
+	pcb->estimacion_prox_rafaga = (hrrn_alfa* pcb->rafaga_anterior_real)+ ((1-hrrn_alfa)* pcb-> estimacion_rafaga_anterior);
 }
 
 void enviar_pcb_cpu(int fd_cpu, pcb_t* pcb_proceso){
