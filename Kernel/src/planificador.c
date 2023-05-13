@@ -48,15 +48,39 @@ void agregarAReady(pcb_t* pcb){
 }
 
 //estado Ready
+
+void agregarABlock(pcb_t* proceso){
+	//log_trace(log_kernel,"Entre en agregar a block ");
+	//log_info(log_kernel, "ADSSSS el proceso %d tiene el PC en %d",proceso->PID,proceso->PC);
+
+	pthread_mutex_lock(&mutexBlock);
+	list_add(listaBlock, proceso);
+	log_info(log_kernel, "[BLOCK] Entra el proceso de PID: %d a la cola.", proceso->PID);
+	pthread_mutex_unlock(&mutexBlock);
+}
+
+
+void sacarDeBlock(pcb_t* proceso){
+
+	bool tienenMismoPID(void* elemento){
+
+				if(proceso->PID == ((pcb_t*) elemento)->PID) //se fija si un elemento x de la lista tiene el mismo PID que el proceso q queremos sacar
+					return true;
+				else
+					return false;
+			}
+
+	pthread_mutex_lock(&mutexBlock);
+	list_remove_by_condition(listaBlock, tienenMismoPID);
+	log_info(log_kernel, "[BLOCK] Sale el proceso de PID: %d de la cola.", proceso->PID);
+	pthread_mutex_unlock(&mutexBlock);
+}
+
 void hiloNew_Ready(){
 
 	while(1){
 		sem_wait(&largoPlazo); //ver si sacarlo o no
 		pcb_t* proceso = sacarDeNew();
-
-		//proceso->estimacionAnterior = estimacion_inicial;
-		//proceso->estimacionActual = estimacion_inicial;	//"estimacio_inicial" va a ser una variable que vamos a obtener del cfg
-		sem_wait(&multiprogramacion); // poner sem_post en el sacar_ready
 		//log_error(log_kernel,"[===========] agregue a ready desde hilo new ready");
 		agregarAReady(proceso);
 		// proceso->state = Ready;
@@ -158,7 +182,7 @@ void* hiloReady_Execute(){
 			pcb_siguiente->estimacion_rafaga_anterior = pcb_siguiente->estimacion_prox_rafaga;
 
 			if(pcb_siguiente->tiempo_bloqueo > 0){// caso bloqueo
-				//agregarABlock(pcb_siguiente);
+				agregarABlock(pcb_siguiente);
 				sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
 				}
 			else
