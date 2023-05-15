@@ -15,6 +15,7 @@
 #include<sys/socket.h>
 #include<netdb.h>
 #include<string.h>
+#include "configuraciones.h"
 
 extern int conexion;
 
