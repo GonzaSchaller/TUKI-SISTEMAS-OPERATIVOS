@@ -24,11 +24,11 @@ void establecer_conexion_memoria(){
 void establecer_conexiones(){
 	pthread_t hilo_memoria, hilo_kernel;
 
-	if(pthread_create(&hilo_kernel, NULL, establecer_conexion_kernel(), NULL)){
+	if(pthread_create(&hilo_kernel, NULL, (void*)establecer_conexion_kernel, NULL)){
 		printf("Error al crear el hilo de kernel\n");
 		exit(-1);
 	}
-	if(pthread_create(&hilo_memoria, NULL, establecer_conexion_memoria(), NULL)){
+	if(pthread_create(&hilo_memoria, NULL, (void*)establecer_conexion_memoria, NULL)){
 		printf("Error al crear el hilo de memoria\n");
 		exit(-2);
 	}
