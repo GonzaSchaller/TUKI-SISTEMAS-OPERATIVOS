@@ -16,9 +16,10 @@
 #include<netdb.h>
 #include<string.h>
 #include "configuraciones.h"
+#include <pthread.h>
 
 extern int conexion;
-
+extern t_config* config;
 extern t_log* logger;
 
 void iniciar_config(t_config* );
