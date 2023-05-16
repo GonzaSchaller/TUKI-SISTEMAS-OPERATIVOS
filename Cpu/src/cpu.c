@@ -10,7 +10,7 @@ void iniciar_config(t_config* config){
     tam_max_segmento = config_get_string_value(config,"TAM_MAX_SEGMENTO");
 }
 void establecer_conexion_kernel(){
-	int server_fd = iniciar_servidor(logger, "Cpu", ip, puerto_escucha);
+	int server_fd = iniciar_servidor(logger, "Cpu", ip, puerto_cpu);
 	log_info(logger, "Servidor listo para recibir cliente");
 	int cliente_fd = esperar_cliente(logger, server_fd);
 }
