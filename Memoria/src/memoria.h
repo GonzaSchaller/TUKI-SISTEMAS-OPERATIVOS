@@ -20,6 +20,7 @@
 #include "iniciar.h"
 #include "comunicacion.h"
 #include <semaphore.h>
+#include "manejoDeMemoria.h"
 
 
 

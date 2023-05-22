@@ -9,5 +9,5 @@
 
 
 int server_escuchar(t_log *,char*, int);
-
+int server_escuchar3(t_log *,char*, int);
 #endif

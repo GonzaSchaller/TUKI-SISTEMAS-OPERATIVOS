@@ -2,7 +2,8 @@
 #include <send_rcvs.h>
 
 extern t_log*log_memoria;
-extern t_segmento;
+//extern *t_segmento;
+int clientes[3];
 
 //conexiones de kernel, cpu, filesystem
 typedef struct{
@@ -10,9 +11,6 @@ typedef struct{
 	char*server_name;
 } t_procesar_conexion_args;
 
-static void atender_cliente(){
-	printf("hola");
-}
 //esquema de memoria: segmentacion
 
 /*
@@ -87,7 +85,7 @@ static void procesar_conexion(void* void_args){
 
 }
 */
-
+/*
 int server_escuchar1(t_log*logger,int server_socket)
 {
 	   int socket_cliente = esperar_cliente(logger,server_socket);
@@ -96,11 +94,11 @@ int server_escuchar1(t_log*logger,int server_socket)
 
 	   pthread_t thread;
 
-	   pthread_create(&thread, NULL, (void*)atender_cliente, socket_cliente);
+	   pthread_create(&thread, NULL, (void*)procesar_conexion), socket_cliente);
 	   pthread_detach(thread);
 	   }
 return 0;
-}
+}*/
 
 /*
 int server_escuchar1(t_log*logger,int server_socket)
@@ -121,11 +119,9 @@ int server_escuchar1(t_log*logger,int server_socket)
 
 	}
 
-*/
-
 return 0;
 }
-
+*/
 
 /*
 int server_escuchar2(t_log*logger, char*server_name, int server_socket){
@@ -146,7 +142,7 @@ int server_escuchar2(t_log*logger, char*server_name, int server_socket){
 
 
 
-
+/*
 static void procesar_conexion(void* void_args){
 	t_procesar_conexion_args*args = (t_procesar_conexion_args*) void_args;
 	int cliente_socket = args->fd;
@@ -181,8 +177,9 @@ static void procesar_conexion(void* void_args){
 
 
 }
+*/
 
-
+/*
 int server_escuchar(t_log* log_memoria,char* server_name, int server_socket) {
 
     int cliente_socket = esperar_cliente(log_memoria, server_socket);
@@ -199,22 +196,39 @@ int server_escuchar(t_log* log_memoria,char* server_name, int server_socket) {
     else log_info(log_memoria,"no ai");
     return 0;
 }
+*/
+//acepto 3 clientes
+
+
 
 int server_escuchar3(t_log* log_memoria,char* server_name, int server_socket) {
 
-	for(int i=0;i<3;i++){
-		int cliente_socket = esperar_cliente(log_memoria, server_socket);
-
-		if (cliente_socket != -1) {
-		        pthread_t hilo;
-		        t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
-		        args->fd = cliente_socket;
-		        args->server_name = server_name;
-		        pthread_create(&hilo, NULL, (void*) procesar_conexion, (void*) args);
-		        pthread_detach(hilo);
-		        return 1;
-		    }
-		    i++;
+	for (int i=0;i<3;i++){
+		int cliente = esperar_cliente(log_memoria, server_socket);
+		clientes[i] = cliente;
 	}
-    return 0;
+   return 1;
 }
+/*
+for(int i=0;i<3;i++){
+	int cliente_socket = esperar_cliente(log_memoria, server_socket);
+
+	if (cliente_socket != -1) {
+	        pthread_t hilo;
+	        t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
+	        args->fd = cliente_socket;
+	        args->server_name = server_name;
+	        pthread_create(&hilo, NULL, (void*) procesar_conexion, (void*) args);
+	        pthread_detach(hilo);
+	        return 1;
+	    }
+	    i++;
+}
+return 0;*/
+
+
+
+
+
+
+
