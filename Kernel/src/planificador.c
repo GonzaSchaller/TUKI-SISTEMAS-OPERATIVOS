@@ -49,37 +49,39 @@ void agregarAReady(pcb_t* pcb){
 
 //estado Ready
 
-void agregarABlock(pcb_t* proceso){
-	//log_trace(log_kernel,"Entre en agregar a block ");
-	//log_info(log_kernel, "ADSSSS el proceso %d tiene el PC en %d",proceso->PID,proceso->PC);
+//void agregarABlock(pcb_t* proceso){
+//	//log_trace(log_kernel,"Entre en agregar a block ");
+//	//log_info(log_kernel, "ADSSSS el proceso %d tiene el PC en %d",proceso->PID,proceso->PC);
+//
+//	pthread_mutex_lock(&mutexBlock);
+//	list_add(listaBlock, proceso);
+//	log_info(log_kernel, "[BLOCK] Entra el proceso de PID: %d a la cola.", proceso->PID);
+//	pthread_mutex_unlock(&mutexBlock);
+//	sem_post(&contadorBlock);
+//}
 
-	pthread_mutex_lock(&mutexBlock);
-	list_add(listaBlock, proceso);
-	log_info(log_kernel, "[BLOCK] Entra el proceso de PID: %d a la cola.", proceso->PID);
-	pthread_mutex_unlock(&mutexBlock);
-}
 
-
-void sacarDeBlock(pcb_t* proceso){
-
-	bool tienenMismoPID(void* elemento){
-
-				if(proceso->PID == ((pcb_t*) elemento)->PID) //se fija si un elemento x de la lista tiene el mismo PID que el proceso q queremos sacar
-					return true;
-				else
-					return false;
-			}
-
-	pthread_mutex_lock(&mutexBlock);
-	list_remove_by_condition(listaBlock, tienenMismoPID);
-	log_info(log_kernel, "[BLOCK] Sale el proceso de PID: %d de la cola.", proceso->PID);
-	pthread_mutex_unlock(&mutexBlock);
-}
+//void sacarDeBlock(pcb_t* proceso){
+//	sem_wait(&contadorBlock);
+//	bool tienenMismoPID(void* elemento){
+//
+//				if(proceso->PID == ((pcb_t*) elemento)->PID) //se fija si un elemento x de la lista tiene el mismo PID que el proceso q queremos sacar
+//					return true;
+//				else
+//					return false;
+//			}
+//
+//	pthread_mutex_lock(&mutexBlock);
+//	list_remove_by_condition(listaBlock, tienenMismoPID);
+//	log_info(log_kernel, "[BLOCK] Sale el proceso de PID: %d de la cola.", proceso->PID);
+//	pthread_mutex_unlock(&mutexBlock);
+//}
 
 void hiloNew_Ready(){
 
 	while(1){
 		sem_wait(&largoPlazo); //ver si sacarlo o no
+		sem_wait(&multiprogramacion);
 		pcb_t* proceso = sacarDeNew();
 		//log_error(log_kernel,"[===========] agregue a ready desde hilo new ready");
 		agregarAReady(proceso);
@@ -155,7 +157,18 @@ pcb_t* obtener_siguiente_ready(){
 	// Caso contrario devuelve el que tiene mas prioridad segun el algoritmo que se este empleando
 	return procesoPlanificado;
 }
-void* hiloReady_Execute(){
+
+void bloquear_procesoPorIO(void* arg) {
+    // Obtén el PCB del proceso a bloquear desde el argumento pasado al hilo
+    pcb_t* pcb_bloqueado = (pcb_t*)arg;
+
+    usleep(pcb_bloqueado->tiempo_bloqueo * 1000); //en microsegundos
+    agregarAReady(pcb_bloqueado);
+
+    pthread_exit(NULL);
+}
+
+void hiloReady_Execute(){
 	uint32_t pc, tiempo_bloqueo_kernel;
 	while(1){
 		pthread_mutex_lock(&multiprocesamiento);
@@ -176,14 +189,16 @@ void* hiloReady_Execute(){
 			pcb_siguiente->tiempo_bloqueo = tiempo_bloqueo_kernel;
 
 			time_t fin_exe = time(NULL);
-			float tiempoDeFin = ((float) fin_exe)*1000; // el 1000?
+			float tiempoDeFin = ((float) fin_exe); // el 1000?
 			pcb_siguiente->rafaga_anterior_real =pcb_siguiente-> horaDeIngresoAExe - tiempoDeFin;//pcb_siguiente-> horaDeSalidaDeExe;
 			pcb_siguiente->estimacion_prox_rafaga = (hrrn_alfa* pcb_siguiente->rafaga_anterior_real)+ ((1-hrrn_alfa)* pcb_siguiente-> estimacion_rafaga_anterior);
 			pcb_siguiente->estimacion_rafaga_anterior = pcb_siguiente->estimacion_prox_rafaga;
 
-			if(pcb_siguiente->tiempo_bloqueo > 0){// caso bloqueo
-				agregarABlock(pcb_siguiente);
-				sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
+			if(pcb_siguiente->tiempo_bloqueo > 0){// caso bloqueo, agrega a ready cuando se termina de bloquear
+				pthread_t hilo_Block;
+				//hilo porque quiero I/O en paralelo
+				pthread_create(&hilo_Block, NULL, (void*)bloquear_procesoPorIO,(void*)pcb_siguiente);
+				pthread_detach(hilo_Block);
 				}
 			else
 			{
@@ -191,7 +206,7 @@ void* hiloReady_Execute(){
 					agregarAReady(pcb_siguiente);
 				}
 				else{// caso EXIT o error
-					//terminarEjecucion(pcb_siguiente);
+					terminarEjecucion(pcb_siguiente);
 					sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
 				}
 			}
@@ -201,6 +216,16 @@ void* hiloReady_Execute(){
 
 }
 
+void terminarEjecucion(pcb_t* pcb){ //TODO falta liberar recursos del proceso
+
+	pthread_mutex_lock(&mutexExit);
+
+	list_add(listaExit, pcb);
+	log_info(log_kernel, "[EXIT] Finaliza el proceso de PID: %d", pcb->PID);
+
+	pthread_mutex_unlock(&mutexExit);
+
+}
 
 	//procesoPlanificado->rafaga_anterior_real =procesoPlanificado-> horaDeIngresoAExe - procesoPlanificado-> horaDeSalidaDeExe;
 	//procesoPlanificado->estimacion_prox_rafaga = (hrrn_alfa* procesoPlanificado->rafaga_anterior_real)+ ((1+hrrn_alfa)* procesoPlanificado-> estimacion_rafaga_anterior);

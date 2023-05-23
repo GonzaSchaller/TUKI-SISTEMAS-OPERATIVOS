@@ -35,7 +35,6 @@ void inicializar_semaforos(){
 	sem_init(&contadorNew, 0, 0); // Estado New
 	sem_init(&contadorReady, 0, 0); // Estado Ready
 	sem_init(&contadorExe, 0, 0); // Estado Exe
-	//sem_init(&contadorProcesosEnMemoria, 0, 0);    // Memoria IMP HAY QUE VER COMO SE INICIALIZA PORQUE ESTO AFECTA LA DISPONIBILIDAD DE LA COLA READY
 	sem_init(&multiprogramacion, 0, grado_max_multiprogramacion); // hasta 4 procesos en ready
 
 	sem_init(&contadorBlock, 0, 0);

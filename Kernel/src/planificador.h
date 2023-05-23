@@ -10,17 +10,21 @@
 #include <semaphore.h>
 #include <commons/collections/queue.h>
 #include "kernel.h"
+#include <unistd.h>
 
 void atender_cliente(void*);
 void agregarANew(pcb_t*);
 void agregarABlock(pcb_t*);
 pcb_t* sacarDeNew();
 void hiloNew_Ready();
-void* hiloReady_Execute();
+void hiloReady_Execute();
+void hilo_Block();
 pcb_t* obtener_siguiente_FIFO();
 pcb_t* obtener_siguiente_ready();
 pcb_t* obtener_siguiente_HRRN(time_t);
+void bloquear_procesoPorIO(void* );
 
+void terminarEjecucion(pcb_t* );
 void agregarAReady(pcb_t*);
 void sacarDeBlock(pcb_t*);
 int tamanioDeListaReady();
