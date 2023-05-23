@@ -1,6 +1,3 @@
-manejodememorr.h
-
-
 #ifndef MANEJO_DE_MEMORIA_H
 #define MANEJO_DE_MEMORIA_H
 
@@ -33,6 +30,16 @@ manejodememorr.h
 
 void crear_segmento(int cliente_fd);
 void borrar_segmento(int cliente_fd);
+
+segmento_t* proximo_hueco_first_fit(uint32_t);
+segmento_t* proximo_hueco_worst_fit(uint32_t);
+segmento_t* proximo_hueco_best_fit(uint32_t);
+void asesinar_segmentos_libres();
+segmento_t* new_segmento(uint32_t id, uint32_t direccion_base,uint32_t tamanio);
+void borrar_segmento(int cliente_fd);
+void crear_segmento(int cliente_fd);
+
+
 
 
 

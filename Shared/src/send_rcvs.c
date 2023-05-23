@@ -714,7 +714,7 @@ bool recv_INICIAR_ESTRUCTURA_MEMORIA(int socket_cliente, char** mensaje){
 	    return true;
 }
 
-static void* serializar_TABLA_SEGMENTOS(size_t* size, tabla_segmentos* tabla) {
+static void* serializar_TABLA_SEGMENTOS(size_t* size, segmento_t* tabla) {
     *size = sizeof(uint32_t) * 3;
     void* stream = malloc(*size);
     memcpy(stream, &tabla->id, sizeof(uint32_t));
@@ -722,14 +722,14 @@ static void* serializar_TABLA_SEGMENTOS(size_t* size, tabla_segmentos* tabla) {
     memcpy(stream + 2 * sizeof(uint32_t), &tabla->tamanio, sizeof(uint32_t));
     return stream;
 }
-static void deserializar_TABLA_SEGMENTOS(void* stream,tabla_segmentos** tabla){
-    tabla_segmentos* table = malloc(sizeof(tabla_segmentos));
+static void deserializar_TABLA_SEGMENTOS(void* stream,segmento_t** tabla){
+	segmento_t* table = malloc(sizeof(segmento_t));
     memcpy(&table->id, stream, sizeof(uint32_t));
     memcpy(&table->direccion_Base, stream + sizeof(uint32_t), sizeof(uint32_t));
     memcpy(&table->tamanio, stream + 2*sizeof(uint32_t), sizeof(uint32_t));
     *tabla = table;
 }
-bool send_TABLA_SEGMENTOS(int server_memoria, tabla_segmentos* tabla){
+bool send_TABLA_SEGMENTOS(int server_memoria, segmento_t* tabla){
 	size_t size;
     void* stream = serializar_TABLA_SEGMENTOS(&size ,tabla);
     if (send(server_memoria, stream, size, 0) != size) {
@@ -740,7 +740,7 @@ bool send_TABLA_SEGMENTOS(int server_memoria, tabla_segmentos* tabla){
     return true;
 
 }
-bool recv_TABLA_SEGMENTOS(int socket_cliente, tabla_segmentos** tabla){
+bool recv_TABLA_SEGMENTOS(int socket_cliente, segmento_t** tabla){
 	    size_t size = sizeof(uint32_t) * 3;
 	    void* stream = malloc(size);
 

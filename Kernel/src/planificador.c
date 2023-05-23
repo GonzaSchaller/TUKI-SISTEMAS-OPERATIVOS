@@ -30,7 +30,7 @@ void agregarAReady(pcb_t* pcb){
 	pcb->horaDeIngresoAReady = a;
 	pthread_mutex_lock(&mutexReady); //para el execute a ready y de blocked a ready y de new a ready
 
-	tabla_segmentos* tseg;
+	segmento_t* tseg;
 	list_add(listaReady, pcb); //agrega a la listaReady
 
 	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->PID);

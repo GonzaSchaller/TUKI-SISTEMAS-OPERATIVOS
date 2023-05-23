@@ -20,7 +20,7 @@
 #include<netdb.h>//
 #include<string.h>//
 #include <estructuras_compartidas.h>
-
+#include "manejoDeMemoria.h"
 
 
 typedef struct {

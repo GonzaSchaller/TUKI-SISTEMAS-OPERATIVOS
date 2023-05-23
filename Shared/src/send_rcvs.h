@@ -91,8 +91,8 @@ bool recv_EXIT(int);
 void send_INICIAR_ESTRUCTURA_MEMORIA(int,char*);
 bool recv_INICIAR_ESTRUCTURA_MEMORIA(int, char** );
 
-bool send_TABLA_SEGMENTOS(int, tabla_segmentos*);
-bool recv_TABLA_SEGMENTOS(int, tabla_segmentos** );
+bool send_TABLA_SEGMENTOS(int, segmento_t*);
+bool recv_TABLA_SEGMENTOS(int, segmento_t** );
 
 bool send_PID(int,uint32_t);
 bool recv_PID(int, uint32_t*);
