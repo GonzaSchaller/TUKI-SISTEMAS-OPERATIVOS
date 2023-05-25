@@ -77,7 +77,7 @@ typedef struct{
     t_list* instrucciones; // Lista de instrucciones a ejecutar
     uint32_t PC; // Program counter
     registros_cpu registros;
-    segmento_t TSegmento;
+    t_list* TSegmento;
     uint32_t estimacion_prox_rafaga; //S del HRRN
     float horaDeIngresoAReady; // Seria el timestamp en que el proceso llego a ready cambiar nombre
     tabla_archivos_abiertos tabla_archivos ;// No se si conviene esto o una estructura

@@ -8,7 +8,10 @@ typedef struct{
     uint32_t tamanio;
 }segmento_t;
 
-
-
+typedef enum{
+   	 EXITOSO,
+   	 FALLIDO,
+   	 COMPACTAR
+} estados_segmentos;
 
 #endif /* SRC_ESTRUCTURAS_COMPARTIDAS_H_ */

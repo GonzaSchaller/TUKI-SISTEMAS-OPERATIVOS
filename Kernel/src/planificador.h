@@ -29,7 +29,9 @@ void terminarEjecucion(pcb_t* );
 void agregarAReady(pcb_t*);
 void sacarDeBlock(pcb_t*);
 int tamanioDeListaReady();
-
+void manejar_memoria(pcb_t*, uint32_t );
+void manejar_contextosDeEjecucion(pcb_t*);
+void manejar_recursos(pcb_t*,uint32_t);
 //para poder usarlas en el main
 extern t_queue* colaNew;
 extern t_list* listaReady;

@@ -714,24 +714,24 @@ bool recv_INICIAR_ESTRUCTURA_MEMORIA(int socket_cliente, char** mensaje){
 	    return true;
 }
 
-static void* serializar_TABLA_SEGMENTOS(size_t* size, segmento_t* tabla) {
+static void* serializar_SEGMENTO(size_t* size, segmento_t* segment) {
     *size = sizeof(uint32_t) * 3;
     void* stream = malloc(*size);
-    memcpy(stream, &tabla->id, sizeof(uint32_t));
-    memcpy(stream + sizeof(uint32_t), &tabla->direccion_Base, sizeof(uint32_t));
-    memcpy(stream + 2 * sizeof(uint32_t), &tabla->tamanio, sizeof(uint32_t));
+    memcpy(stream, &segment->id, sizeof(uint32_t));
+    memcpy(stream + sizeof(uint32_t), &segment->direccion_Base, sizeof(uint32_t));
+    memcpy(stream + 2 * sizeof(uint32_t), &segment->tamanio, sizeof(uint32_t));
     return stream;
 }
-static void deserializar_TABLA_SEGMENTOS(void* stream,segmento_t** tabla){
-	segmento_t* table = malloc(sizeof(segmento_t));
-    memcpy(&table->id, stream, sizeof(uint32_t));
-    memcpy(&table->direccion_Base, stream + sizeof(uint32_t), sizeof(uint32_t));
-    memcpy(&table->tamanio, stream + 2*sizeof(uint32_t), sizeof(uint32_t));
-    *tabla = table;
+static void deserializar_SEGMENTO(void* stream,segmento_t** segmento){
+	segmento_t* segment = malloc(sizeof(segmento_t));
+    memcpy(&segment->id, stream, sizeof(uint32_t));
+    memcpy(&segment->direccion_Base, stream + sizeof(uint32_t), sizeof(uint32_t));
+    memcpy(&segment->tamanio, stream + 2*sizeof(uint32_t), sizeof(uint32_t));
+    *segmento = segment;
 }
-bool send_TABLA_SEGMENTOS(int server_memoria, segmento_t* tabla){
+bool send_SEGMENTO(int server_memoria, segmento_t* segmento){
 	size_t size;
-    void* stream = serializar_TABLA_SEGMENTOS(&size ,tabla);
+    void* stream = serializar_SEGMENTO(&size ,segmento);
     if (send(server_memoria, stream, size, 0) != size) {
         free(stream);
         return false;
@@ -740,7 +740,7 @@ bool send_TABLA_SEGMENTOS(int server_memoria, segmento_t* tabla){
     return true;
 
 }
-bool recv_TABLA_SEGMENTOS(int socket_cliente, segmento_t** tabla){
+bool recv_SEGMENTO(int socket_cliente, segmento_t** segmento){
 	    size_t size = sizeof(uint32_t) * 3;
 	    void* stream = malloc(size);
 
@@ -748,7 +748,7 @@ bool recv_TABLA_SEGMENTOS(int socket_cliente, segmento_t** tabla){
 	        free(stream);
 	        return false;
 	    }
-	    deserializar_TABLA_SEGMENTOS(stream, tabla);
+	    deserializar_SEGMENTO(stream, segmento);
 	    free(stream);
 	    return true;
 	}
@@ -865,15 +865,49 @@ bool recv_tiempo_bloqueante(int fd, uint32_t* parametro1) {
     return true;
 }
 
+static void* serializar_BASE_SEGMENTO(uint32_t parametro1) {
+   void* stream = malloc(sizeof(uint32_t));
+    memcpy(stream, &parametro1, sizeof(uint32_t));
+    return stream;
+}
 
 
-/* static void* serializar_reg_cpu(registros_cpu* reg) {
+void deserializar_BASE_SEGMENTO(void* stream, uint32_t* parametro1) {
+    memcpy(parametro1, stream ,sizeof(uint32_t));
 
-}// TODO
-static void deserializar_reg_cpu(void* stream, registros_cpu* reg) {
+}
+
+bool send_BASE_SEGMENTO(int fd, uint32_t parametro1) {
+   size_t size = sizeof(uint32_t);
+    void* stream = serializar_BASE_SEGMENTO(parametro1);
+    if (send(fd, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
 
 
-}// TODO
+bool recv_BASE_SEGMENTO(int fd, uint32_t* parametro1) {
+    size_t size = sizeof(uint32_t);
+    void* stream = malloc(size);
+    if (recv(fd, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    deserializar_BASE_SEGMENTO(stream, parametro1);
+    free(stream);
+    return true;
+}
+bool recv_TABLA_SEGMENTOS(int fd,t_list** tablasegmentos){
+	return true;
+}
+bool send_TABLA_SEGMENTOS(int fd,t_list* tablasegmentos){
+	return true;
+}
+
+/*
 bool send_reg_cpu(int fd_cpu, registros_cpu* reg){
 
 
