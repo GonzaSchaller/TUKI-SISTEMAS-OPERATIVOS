@@ -13,6 +13,7 @@ pthread_mutex_t mutexBlock;
 pthread_mutex_t mutexExe;
 pthread_mutex_t mutexExit;
 
+
 sem_t contadorNew;
 sem_t contadorReady;
 sem_t contadorExe;
@@ -149,10 +150,7 @@ pcb_t* obtener_siguiente_ready(){
 					procesoPlanificado = obtener_siguiente_HRRN(b); //calcular el hrrn segun el tiempo final y elimina el de mayor RR
 				break;
 			  }
-
-
 	}
-
 	// Devuelve NULL si no hay nada en ready
 	// Caso contrario devuelve el que tiene mas prioridad segun el algoritmo que se este empleando
 	return procesoPlanificado;
@@ -168,14 +166,71 @@ void bloquear_procesoPorIO(void* arg) {
     pthread_exit(NULL);
 }
 
+recurso_sistema* encontrar_recurso(t_list* lista, char* nombre_buscar) {
+    bool buscar_recurso(void* elemento) {
+        recurso_sistema* recurso = (recurso_sistema*)elemento;
+        return strcmp(recurso->nombre, nombre_buscar) == 0;
+    }
+
+    return (recurso_sistema*)list_find(lista, buscar_recurso);
+}
+
+//bool encontrar_recurso(t_list* lista, void* elemento) {
+//    bool encuentra_elemento(void* elem) {
+//        return elem == elemento;
+//    }
+//
+//    return list_any_satisfy(lista, encuentra_elemento);
+//}
+
 void hiloReady_Execute(){
 	uint32_t pc, tiempo_bloqueo_kernel;
+	uint32_t cop;
 	while(1){
 		pthread_mutex_lock(&multiprocesamiento);
 		pcb_t* pcb_siguiente = obtener_siguiente_ready();
 
 		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
-		pcb_siguiente->horaDeIngresoAExe = ((float) time(NULL))*1000;
+		pcb_siguiente->horaDeIngresoAExe = ((float) time(NULL));
+		// aca
+			if(recv(conexion_cpu, &cop, sizeof(op_code), 0) == sizeof(op_code)){// Las que recibimos que SI son instruccion
+
+				if (cop == WAIT) {
+				    char* nombre_recurso;
+				    if (recv_WAIT(conexion_cpu, &nombre_recurso)) {
+				        recurso_sistema* recurso = encontrar_recurso(lista_recursos, nombre_recurso);
+
+				        if (recurso != NULL) {
+				            if (recurso->instancia > 0) {
+				                recurso->instancia--;
+				            } else {
+				                // Bloquear el proceso actual en la cola de bloqueados del recurso
+				                pthread_mutex_lock(&(recurso->mutexRecurso)); // creo que no es necesario el mutex, se comparte con otro hilo?
+				                queue_push(recurso->colaBloqueados, pcb_siguiente);
+				                pthread_mutex_unlock(&(recurso->mutexRecurso)); // Desbloquear el acceso a la cola de bloqueados
+				            }
+				        } else log_error(log_kernel, "El recurso no existe"); // NO se si es necesario poner este else, es si no encuentra el recurso
+				    } else log_error(log_kernel, "Fallo recibiendo WAIT");
+				} //finaliza Wait
+
+				else if (cop == SIGNAL) {
+				    char* nombre_recurso;
+				    if (recv_SIGNAL(conexion_cpu, &nombre_recurso)) {
+				        recurso_sistema* recurso = encontrar_recurso(lista_recursos, nombre_recurso);
+				        if (recurso != NULL) {
+				            recurso->instancia++;
+				            if (queue_size(recurso->colaBloqueados) > 0) {
+				                pthread_mutex_lock(&(recurso->mutexRecurso));
+				                queue_pop(recurso->colaBloqueados);
+				                pthread_mutex_unlock(&(recurso->mutexRecurso));
+
+				                pthread_mutex_lock(&mutexReady);
+				                list_add(listaReady, pcb_siguiente);
+				                pthread_mutex_unlock(&mutexReady);
+				            }
+				        } else log_error(log_kernel, "El recurso no existe");
+				    } else log_error(log_kernel, "Fallo recibiendo SIGNAL");
+				}
 
 			if (!recv_PC(conexion_cpu, &pc)) {
 				log_error(log_kernel, "Fallo recibiendo pc");
@@ -187,12 +242,12 @@ void hiloReady_Execute(){
 			}
 
 			pcb_siguiente->tiempo_bloqueo = tiempo_bloqueo_kernel;
-
+//			if(algoritmo_planif == HRRN){
 			time_t fin_exe = time(NULL);
 			float tiempoDeFin = ((float) fin_exe); // el 1000?
 			pcb_siguiente->rafaga_anterior_real =pcb_siguiente-> horaDeIngresoAExe - tiempoDeFin;//pcb_siguiente-> horaDeSalidaDeExe;
 			pcb_siguiente->estimacion_prox_rafaga = (hrrn_alfa* pcb_siguiente->rafaga_anterior_real)+ ((1-hrrn_alfa)* pcb_siguiente-> estimacion_rafaga_anterior);
-			pcb_siguiente->estimacion_rafaga_anterior = pcb_siguiente->estimacion_prox_rafaga;
+			pcb_siguiente->estimacion_rafaga_anterior = pcb_siguiente->estimacion_prox_rafaga;// } TODO ver a donde iria, si aca o en otro lado
 
 			if(pcb_siguiente->tiempo_bloqueo > 0){// caso bloqueo, agrega a ready cuando se termina de bloquear
 				pthread_t hilo_Block;
@@ -202,7 +257,7 @@ void hiloReady_Execute(){
 				}
 			else
 			{
-				if(pcb_siguiente->PC < list_size(pcb_siguiente->instrucciones)){ // caso YIELD
+				if(pcb_siguiente-> PC < list_size(pcb_siguiente->instrucciones)){ // caso YIELD
 					agregarAReady(pcb_siguiente);
 				}
 				else{// caso EXIT o error
@@ -214,8 +269,8 @@ void hiloReady_Execute(){
 		pthread_mutex_unlock(&multiprocesamiento);
 	}
 
-}
-
+  }
+ }
 void terminarEjecucion(pcb_t* pcb){ //TODO falta liberar recursos del proceso
 
 	pthread_mutex_lock(&mutexExit);

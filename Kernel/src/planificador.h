@@ -24,6 +24,7 @@ pcb_t* obtener_siguiente_ready();
 pcb_t* obtener_siguiente_HRRN(time_t);
 void bloquear_procesoPorIO(void* );
 
+recurso_sistema* encontrar_recurso(t_list*,char*);
 void terminarEjecucion(pcb_t* );
 void agregarAReady(pcb_t*);
 void sacarDeBlock(pcb_t*);

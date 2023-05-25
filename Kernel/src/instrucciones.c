@@ -48,8 +48,8 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
     pcb->PID = contadorProceso;
     pcb->instrucciones = listaInstrucciones;
     pcb->PC = 0;
-    pcb->registros;
-    pcb->TSegmento;
+//    pcb->registros;
+//    pcb->TSegmento;
     pcb->horaDeIngresoAReady= 0;
     //pcb->tabla_archivos;
     pcb->state= NEW; // hace falta?

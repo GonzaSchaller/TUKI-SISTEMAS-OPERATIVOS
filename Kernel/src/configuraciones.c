@@ -28,13 +28,17 @@ t_list* obtener_recursos(t_config* config, char* rec, char* instancias){
 	char** array_recursos = config_get_array_value(config, rec);
 	char** array_instancias = config_get_array_value(config, instancias);
 	int posicion = 0;
+	t_queue* cola_bloqueados = queue_create();
 
 	while(array_recursos[posicion] != NULL){
 		recurso_sistema* recurso = malloc(sizeof(recurso_sistema));
 		recurso->nombre = array_recursos[posicion];
 		recurso->instancia = atoi(array_instancias[posicion]); //capaz necesito chequear que no falle atoi
+		recurso->colaBloqueados = cola_bloqueados;
+		pthread_mutex_init(&recurso->mutexRecurso, NULL); //inicializo el mutex
 		list_add(lista_recursos, recurso);
 		posicion++;
+		free(recurso);
 	}
 
 	return lista_recursos;

@@ -3,12 +3,16 @@
 #include "inttypes.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <commons/collections/queue.h>
 #include <commons/config.h>
 #include <commons/collections/list.h>
 
 typedef struct{
 	char* nombre;
 	int instancia;
+	t_queue* colaBloqueados;
+	pthread_mutex_t mutexRecurso;
 }recurso_sistema;
 
 typedef enum{
