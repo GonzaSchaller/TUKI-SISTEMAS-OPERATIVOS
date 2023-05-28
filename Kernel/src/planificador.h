@@ -29,9 +29,11 @@ void terminarEjecucion(pcb_t* );
 void agregarAReady(pcb_t*);
 void sacarDeBlock(pcb_t*);
 int tamanioDeListaReady();
+void recalcular_rafagas_HRRN(pcb_t*, float);
 void manejar_memoria(pcb_t*, uint32_t );
 void manejar_contextosDeEjecucion(pcb_t*);
-void manejar_recursos(pcb_t*,uint32_t);
+void manejar_recursos(pcb_t*, uint32_t ,float );
+void manejar_otras_instrucciones(pcb_t*,uint32_t, float);
 //para poder usarlas en el main
 extern t_queue* colaNew;
 extern t_list* listaReady;

@@ -900,10 +900,47 @@ bool recv_BASE_SEGMENTO(int fd, uint32_t* parametro1) {
     free(stream);
     return true;
 }
-bool recv_TABLA_SEGMENTOS(int fd,t_list** tablasegmentos){
+
+static void* serializar_ID_SEGMENTO(uint32_t parametro1) {
+   void* stream = malloc(sizeof(uint32_t));
+    memcpy(stream, &parametro1, sizeof(uint32_t));
+    return stream;
+}
+
+
+void deserializar_ID_SEGMENTO(void* stream, uint32_t* parametro1) {
+    memcpy(parametro1, stream ,sizeof(uint32_t));
+
+}
+
+bool send_ID_SEGMENTO(int fd, uint32_t parametro1) {
+   size_t size = sizeof(uint32_t);
+    void* stream = serializar_ID_SEGMENTO(parametro1);
+    if (send(fd, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
+
+
+bool recv_ID_SEGMENTO(int fd, uint32_t* parametro1) {
+    size_t size = sizeof(uint32_t);
+    void* stream = malloc(size);
+    if (recv(fd, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    deserializar_ID_SEGMENTO(stream, parametro1);
+    free(stream);
+    return true;
+}
+
+bool recv_TABLA_SEGMENTOS(int fd,t_list** tablasegmentos){ // TODO
 	return true;
 }
-bool send_TABLA_SEGMENTOS(int fd,t_list* tablasegmentos){
+bool send_TABLA_SEGMENTOS(int fd,t_list* tablasegmentos){	//TODO
 	return true;
 }
 

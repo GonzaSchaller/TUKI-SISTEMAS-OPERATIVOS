@@ -87,15 +87,6 @@ void destruir_semaforos_listas(){
     pthread_mutex_destroy(&mutexNew);
 
 }
-//void inicializar_planificacion(){
-//
-//	pthread_create(&hiloNewReady, NULL, (void*)hiloNew_Ready, NULL);
-//	pthread_create(&hiloReady_Exec, NULL, (void*)hiloReady_Exe, NULL);
-//	pthread_detach(hiloNewReady);
-//	pthread_detach(hiloReady_Exec);
-//
-//
-//}
 
 
 void liberarConexiones(int socket1, int socket2, int socket3){
@@ -144,7 +135,7 @@ void generar_conexiones(){
 }
 
 
-int main (){
+int main (){	// TODO agregar las funciones de aca arriba en el main
 	 	log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
 		t_config* config_kernel = config_create("kernel.config");
 		iniciar_config(config_kernel);
