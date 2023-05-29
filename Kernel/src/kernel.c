@@ -62,6 +62,7 @@ void inicializar_listas(){
 	listaExe = list_create();
 	listaBlock = list_create();
 	listaExit = list_create();
+	tabla_ArchivosAbiertosGlobal = list_create();
 
 	//lista_instrucciones_kernel = list_create();
 	//lista_pcb_en_memoria = list_create();

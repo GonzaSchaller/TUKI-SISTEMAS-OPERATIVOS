@@ -6,6 +6,7 @@ t_list* listaReady;
 t_list* listaExe;
 t_list* listaBlock;
 t_list* listaExit;
+t_list* tabla_ArchivosAbiertosGlobal;
 
 pthread_mutex_t mutexNew;
 pthread_mutex_t mutexReady;
@@ -24,7 +25,7 @@ pthread_mutex_t multiprocesamiento;
 sem_t largoPlazo;
 
 
-void agregarAReady(pcb_t* pcb){
+void agregarNewAReady(pcb_t* pcb){
 	//log_trace(log_kernel,"Entre en agregar a ready");
 
 	time_t a = time(NULL); //momento en el que entra un proceso, sirve para el HRRN
@@ -34,18 +35,27 @@ void agregarAReady(pcb_t* pcb){
 	t_list* tseg;
 	list_add(listaReady, pcb); //agrega a la listaReady
 
-	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->PID);
 	send_INICIAR_ESTRUCTURA_MEMORIA(conexion_memoria, "Inicializa las estructuras"); //mandamos mensaje a memoria que incie sus estructuras
 	if(!recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento  TODO agus memoria
 		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->PID);
 	}
-	pcb->TSegmento = tseg; // TODO puntero?
-
+	pcb->TSegmento = tseg;
+	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->PID);
 	//printf("PROCESOS EN READY: %d \n", list_size(colaReady));
 	log_debug(log_kernel,"[----------------PROCESOS EN READY: %d --------------------]\n", list_size(listaReady)); //max 4
 
 	pthread_mutex_unlock(&mutexReady);
 	sem_post(&contadorReady);
+}
+
+void agregarAReady(pcb_t* pcb){
+	time_t llegadaReady = time(NULL);
+	pcb->horaDeIngresoAReady = llegadaReady;
+	pthread_mutex_lock(&mutexReady);
+	list_add(listaReady, pcb);
+	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->PID);
+	pthread_mutex_unlock(&mutexReady);
+
 }
 
 //estado Ready
@@ -85,7 +95,7 @@ void hiloNew_Ready(){
 		sem_wait(&multiprogramacion);
 		pcb_t* proceso = sacarDeNew();
 		//log_error(log_kernel,"[===========] agregue a ready desde hilo new ready");
-		agregarAReady(proceso);
+		agregarNewAReady(proceso);
 		// proceso->state = Ready;
 	}
 
@@ -162,6 +172,7 @@ void bloquear_procesoPorIO(void* arg) {
 
     usleep(pcb_bloqueado->tiempo_bloqueo * 1000); //en microsegundos
     agregarAReady(pcb_bloqueado);
+    pcb_bloqueado->state = READY;
 
     pthread_exit(NULL);
 }
@@ -204,6 +215,7 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				                pthread_mutex_lock(&(recurso->mutexRecurso)); // creo que no es necesario el mutex, se comparte con otro hilo?
 				                queue_push(recurso->colaBloqueados, pcb_siguiente);
 				                pthread_mutex_unlock(&(recurso->mutexRecurso)); // Desbloquear el acceso a la cola de bloqueados
+				            	pcb_siguiente->state = BLOCK;
 				            }
 				        }
 				        else { // si no existe el recurso
@@ -226,19 +238,33 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				            if (queue_size(recurso->colaBloqueados) > 0)
 				            {
 				                pthread_mutex_lock(&(recurso->mutexRecurso));
-				                queue_pop(recurso->colaBloqueados);
+				                pcb_t* pcb_bloqueado = queue_pop(recurso->colaBloqueados);
 				                pthread_mutex_unlock(&(recurso->mutexRecurso));
-
-				                pthread_mutex_lock(&mutexReady);
-				                list_add(listaReady, pcb_siguiente);
-				                pthread_mutex_unlock(&mutexReady);
+								pcb_bloqueado->state = READY;
+				               	agregarAReady(pcb_bloqueado);
 				            }
 				        } else{
 							terminarEjecucion(pcb_siguiente);
+							pcb_siguiente->state = EXIT;
 							sem_post(&multiprogramacion);
 						}
 				    } else log_error(log_kernel, "Fallo recibiendo SIGNAL");
 				}
+
+}
+void remover_segmento(t_list* tabla_segmento, uint32_t id_segmento){
+	    bool encontrarSegmento(void* elemento) {
+	        segmento_t* segmento = (segmento_t*)elemento;
+	        return segmento->id == id_segmento;
+	    }
+
+	    segmento_t* segmentoEncontrado = list_remove_by_condition(tabla_segmento, encontrarSegmento);
+	    if (segmentoEncontrado != NULL) {
+	        // Liberar recursos asociados al segmento, si es necesario
+	        free(segmentoEncontrado);
+	    } else {
+	        log_error(log_kernel, "No se encontró el segmento con ID %d en la lista de segmentos", id_segmento);
+	    }
 
 }
 void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
@@ -271,6 +297,7 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 					else if(estado_segmento == FALLIDO)
 					{
 						terminarEjecucion(pcb_siguiente);
+						pcb_siguiente->state = EXIT;
 						// TODO mostrar Out of Exit
 						sem_post(&multiprogramacion);
 					}
@@ -291,8 +318,7 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 			//t_list* nueva_tabla_segmentos;
 			if(recv_ID_SEGMENTO(conexion_cpu,&id_segmento)){
 				send_ID_SEGMENTO(conexion_memoria, id_segmento);
-			//recv_TABLA_SEGMENTOS(conexion_memoria,&nueva_tabla_segmentos); //
-				//pcb_siguiente->TSegmento = *nueva_tabla_segmentos;// TODO ver si hay que eliminar el segmneto en la tabla
+				remover_segmento(pcb_siguiente -> TSegmento, id_segmento);
 			}
 			else log_error(log_kernel, "Fallo recibiendo DELETE_SEGMENT");
 		}
@@ -315,10 +341,13 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 					}
 			}
 	 else if(cop == YIELD){
+		recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 		agregarAReady(pcb_siguiente);
+		pcb_siguiente->state = READY;
 	 }
 	 else{// caso EXIT o error
 					terminarEjecucion(pcb_siguiente);
+					pcb_siguiente->state = EXIT;
 					sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
 				}
 
@@ -338,7 +367,7 @@ void manejar_contextosDeEjecucion(pcb_t* pcb_siguiente){ // maneja lo que  nos m
 
 				manejar_recursos(pcb_siguiente, cop, tiempoDeFin);
 				manejar_memoria(pcb_siguiente, cop);
-				//manejar_fileSystem(pcb_siguiente, cop);
+				manejar_fileSystem(pcb_siguiente, cop, tiempoDeFin);
 				manejar_otras_instrucciones(pcb_siguiente, cop, tiempoDeFin);
 
 			}// del if del opcode
@@ -349,14 +378,15 @@ void hiloReady_Execute(){
 	{
 		pthread_mutex_lock(&multiprocesamiento);
 		pcb_t* pcb_siguiente = obtener_siguiente_ready();
-
 		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
 		pcb_siguiente->horaDeIngresoAExe = ((float) time(NULL));
-		// aca
+		pcb_siguiente->state = EXEC;
+		while(pcb_siguiente->state == EXEC){ //que ejecute cada instruccion hasta que cambie de estado
+			manejar_contextosDeEjecucion(pcb_siguiente);
 
-		manejar_contextosDeEjecucion(pcb_siguiente);
-
+		 }
 		pthread_mutex_unlock(&multiprocesamiento);
+
 	}
   }
 
@@ -370,6 +400,137 @@ void terminarEjecucion(pcb_t* pcb){ //TODO falta liberar recursos del proceso
 	pthread_mutex_unlock(&mutexExit);
 
 }
+// TODO ver a donde cambiar los estados del pcb_siguiente;
+void eliminarArchivoDeLista(char* nombreArchivo, t_list* listaArchivos) {
+    // Buscar el archivo en la lista por nombre
+	 bool encontrarArchivo(void* elemento) {
+	        fcb_t* archivo = (fcb_t*)elemento;
+	        return strcmp(archivo->nombreArchivo, nombreArchivo) == 0;
+	    }
+
+    void* archivoEncontrado = list_remove_by_condition(listaArchivos, encontrarArchivo);
+
+    if (archivoEncontrado != NULL) {
+    	fcb_t* archivo = (fcb_t*)archivoEncontrado;
+    	free(archivo);
+    }
+}
+fcb_t* encontrar_archivo(t_list* lista_archivos, char* nombre_archivo) {
+    // Función de condición para buscar el archivo por nombre
+    bool encontrar_archivo(void* elemento) {
+        fcb_t* archivo = (fcb_t*)elemento;
+        return strcmp(archivo->nombreArchivo, nombre_archivo) == 0;
+    }
+
+    // Buscar el archivo en la lista
+    fcb_t* archivo_encontrado = (fcb_t*)list_find(lista_archivos, encontrar_archivo);
+
+    return archivo_encontrado;
+}
+
+void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
+	if (cop == F_OPEN) // es un wait
+				{
+				    char* nombre_archivo;
+				    if (recv_F_OPEN(conexion_cpu, &nombre_archivo))
+				    {
+				        fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+				        if (archivo != NULL)
+				        {// se agrega la entrada en la tabla de archivos abietos del proceso con el puntero en 0
+
+
+				        	archivo->puntero_directo = 0;
+
+							list_add(pcb_siguiente->tabla_archivosAbiertos,archivo); // agrego a la tabla de archivos abiertos del proceso
+
+							pthread_mutex_init(&archivo->mutexArchivo, NULL); // TODO queda raro aca
+							pthread_mutex_lock(&(archivo->mutexArchivo));
+							queue_push(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
+							pthread_mutex_unlock(&(archivo->mutexArchivo));
+							pcb_siguiente->state = BLOCK;
+							recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
+				        }
+				        else{
+							//preguntar al filesystem si el archivo existe //todo
+							// send_EXISTE_ARCHIVO(conexion_memoria,nombre_archivo); // TODO
+
+//							if(NO EXISTE) {
+//							send filesystem crear archivo tamanio 0
+//							}
+//							agregar entrada a la tabla global de archivos abiertos y a la del proceso con el puntero en 0
+//							devolver a cpu el contexto de ejecuiciuon para que continue
+//							// lo otro
+//
+						}
+				    }
+				    else log_error(log_kernel, "Fallo recibiendo FOPEN");
+				}
+	else if(cop == F_CLOSE)
+	{
+		char* nombre_archivo;
+
+		if (recv_F_CLOSE(conexion_cpu, &nombre_archivo))
+			{
+			    fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+			    if (archivo != NULL)
+			    {
+			    	pthread_mutex_lock(&(archivo->mutexArchivo));
+			    	uint32_t tamanioLista = queue_size(archivo->colaBloqueados);
+
+					if(tamanioLista > 0){ // algun proceso quiere ese archivo
+					pcb_t* pcb_bloqueado= queue_pop(archivo->colaBloqueados);
+					pthread_mutex_unlock(&(archivo->mutexArchivo));
+					agregarAReady(pcb_bloqueado);
+					pcb_bloqueado->state = READY;
+					}
+					else{
+						// ningun otro proceso quiere el archivo
+					eliminarArchivoDeLista(nombre_archivo, pcb_siguiente->tabla_archivosAbiertos); //YO no quiero mas tener este archivo abierto
+					eliminarArchivoDeLista(nombre_archivo, tabla_ArchivosAbiertosGlobal);// sacar el archivo de la tabla global tambien			// ya NADIE lo tiene abierto
+					}
+				}
+			}
+		else log_error(log_kernel, "Fallo recibiendo FCLOSE");
+	}
+
+	else if (cop == F_SEEK){
+		uint32_t posicion;
+		char* nombre_archivo;
+		if(recv_F_SEEK(conexion_cpu,&nombre_archivo,&posicion)){
+			fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo); // todo ver si hay una forma de generalizarla, no repetirla tantas veces
+				 archivo->puntero_directo = posicion;
+				// send contexto de ejecucion; TODO devolvemos un mensaje de confirmacion
+
+		}
+	}
+	else if (cop == F_TRUNCATE){
+		uint32_t tamanio;
+		char* nombre_archivo;
+		if(recv_F_TRUNCATE(conexion_cpu,&nombre_archivo,&tamanio)){
+			send_F_TRUNCATE(conexion_fileSystem,nombre_archivo,tamanio);
+			fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+			//todo bloqueará al proceso hasta que el File System informe de la finalización de la operación.
+			pthread_mutex_init(&archivo->mutexArchivo, NULL); // TODO queda raro aca
+			pthread_mutex_lock(&(archivo->mutexArchivo));
+			queue_push(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
+			pthread_mutex_unlock(&(archivo->mutexArchivo));
+			pcb_siguiente->state = BLOCK;
+			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin); // todo generalizar edsde el mutex init hasta aca
+			// todo falta desbloquear
+
+		}
+	}
+	else if(cop ==F_READ){
+		//todo
+	}
+
+
+	else if(cop == F_WRITE){
+			//todo
+	}
+}
+
+
 
 
 

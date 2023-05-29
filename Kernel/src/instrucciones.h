@@ -32,11 +32,6 @@ typedef enum {
 }estado;
 
 
-typedef struct{
-        int posicion_puntero;
-        t_list* archivos_Abiertos;
-} tabla_archivos_abiertos;
-
 //enum para mandar las instrucciones
 typedef enum{
 	AX,
@@ -80,7 +75,7 @@ typedef struct{
     t_list* TSegmento;
     uint32_t estimacion_prox_rafaga; //S del HRRN
     float horaDeIngresoAReady; // Seria el timestamp en que el proceso llego a ready cambiar nombre
-    tabla_archivos_abiertos tabla_archivos ;// No se si conviene esto o una estructura
+    t_list* tabla_archivosAbiertos ;// lista de fcb_t
     estado state ; //capaz ponerlo uint32
 
     float rafaga_anterior_real; // 0 al principio, despues es el tiempo real que se ejecuto. Seria el R(n)

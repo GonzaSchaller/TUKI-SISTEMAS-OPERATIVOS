@@ -48,11 +48,10 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
     pcb->PID = contadorProceso;
     pcb->instrucciones = listaInstrucciones;
     pcb->PC = 0;
-//    pcb->registros;
-//    pcb->TSegmento;
+//    pcb->registros; //todo
     pcb->horaDeIngresoAReady= 0;
-    //pcb->tabla_archivos;
-    pcb->state= NEW; // hace falta?
+    pcb->tabla_archivosAbiertos = list_create();
+    pcb->state= NEW; // hace falta? //Todo
     pcb->estimacion_rafaga_anterior = estimacion_inicial;
 	pcb-> rafaga_anterior_real = 0;
 	pcb->horaDeIngresoAExe = 0;
@@ -64,7 +63,7 @@ void enviar_pcb_cpu(int fd_cpu, pcb_t* pcb_proceso){
 	send_PID(fd_cpu,pcb_proceso->PID);
 	send_PC(fd_cpu,pcb_proceso->PC);
 	//send_reg_cpu(fd_cpu, pcb_proceso->registros); falta enviar registro
-	send_TABLA_SEGMENTOS(fd_cpu, &pcb_proceso->TSegmento);
+	send_TABLA_SEGMENTOS(fd_cpu, pcb_proceso->TSegmento);
 
 
 

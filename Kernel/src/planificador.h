@@ -23,6 +23,7 @@ pcb_t* obtener_siguiente_FIFO();
 pcb_t* obtener_siguiente_ready();
 pcb_t* obtener_siguiente_HRRN(time_t);
 void bloquear_procesoPorIO(void* );
+void agregarNewAReady(pcb_t*);
 
 recurso_sistema* encontrar_recurso(t_list*,char*);
 void terminarEjecucion(pcb_t* );
@@ -34,12 +35,16 @@ void manejar_memoria(pcb_t*, uint32_t );
 void manejar_contextosDeEjecucion(pcb_t*);
 void manejar_recursos(pcb_t*, uint32_t ,float );
 void manejar_otras_instrucciones(pcb_t*,uint32_t, float);
+void manejar_fileSystem(pcb_t* ,uint32_t, float tiempoDeFin);
+fcb_t* encontrar_archivo(t_list*, char*);
+void eliminarArchivoDeLista(char*, t_list*);
 //para poder usarlas en el main
 extern t_queue* colaNew;
 extern t_list* listaReady;
 extern t_list* listaExe;
 extern t_list* listaBlock;
 extern t_list* listaExit;
+extern t_list* tabla_ArchivosAbiertosGlobal;
 
 extern pthread_mutex_t mutexNew;
 extern pthread_mutex_t mutexReady;
