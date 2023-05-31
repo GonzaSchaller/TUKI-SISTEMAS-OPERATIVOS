@@ -227,7 +227,7 @@ void agregarANew(pcb_t* pcb_proceso) {
 	pthread_mutex_lock(&mutexNew);
 
 	queue_push(colaNew, pcb_proceso);
-	log_info(log_kernel, "[NEW] Entra el proceso de PID: %d a la cola.", pcb_proceso->contexto_PCB.PID);
+	log_info(log_kernel, "Se crea el proceso <%d> en NEW", pcb_proceso->contexto_PCB.PID);
 
 	pthread_mutex_unlock(&mutexNew);
 

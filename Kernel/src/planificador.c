@@ -40,9 +40,9 @@ void agregarNewAReady(pcb_t* pcb){
 		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto_PCB.PID);
 	}
 	pcb->contexto_PCB.TSegmento = tseg;
-	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->contexto_PCB.PID);
+	log_info(log_kernel, "PID: <%d> - Estado Anterior: <NEW> - Estado Actual: <READY>", pcb->contexto_PCB.PID);// todo estado anterior
+
 	//printf("PROCESOS EN READY: %d \n", list_size(colaReady));
-	log_debug(log_kernel,"[----------------PROCESOS EN READY: %d --------------------]\n", list_size(listaReady)); //max 4
 
 	pthread_mutex_unlock(&mutexReady);
 	sem_post(&contadorReady);
@@ -53,7 +53,9 @@ void agregarAReady(pcb_t* pcb){
 	pcb->horaDeIngresoAReady = llegadaReady;
 	pthread_mutex_lock(&mutexReady);
 	list_add(listaReady, pcb);
-	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->contexto_PCB.PID);
+	//log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->contexto_PCB.PID);
+	//log_info(log_kernel, “PID: <%d> - Estado Anterior: <NEW> - Estado Actual: <READY>”,pcb->contexto_PCB.PID); // TODO ver estado anterior y eso
+
 	pthread_mutex_unlock(&mutexReady);
 
 }
@@ -220,6 +222,7 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				        }
 				        else { // si no existe el recurso
 				        	terminarEjecucion(pcb_siguiente);
+							log_info(log_kernel, "Finaliza el proceso <%d> porque no existe una instancia del recurso", pcb_siguiente->contexto_PCB.PID);
 				        	sem_post(&multiprogramacion);
 				        }
 				    }
@@ -246,6 +249,7 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				        } else{
 							terminarEjecucion(pcb_siguiente);
 							pcb_siguiente->state = EXIT;
+							log_info(log_kernel, "Finaliza el proceso <%d> porque no existe una instancia del recurso", pcb_siguiente->contexto_PCB.PID);
 							sem_post(&multiprogramacion);
 						}
 				    } else log_error(log_kernel, "Fallo recibiendo SIGNAL");
@@ -297,14 +301,16 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 					else if(estado_segmento == FALLIDO)
 					{
 						terminarEjecucion(pcb_siguiente);
+						//log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <S / SEG_FAULT / OUT_OF_MEMORY>", pcb_proceso->contexto_PCB.PID);
 						pcb_siguiente->state = EXIT;
-						// TODO mostrar Out of Exit
+						log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <%d>", pcb_siguiente->contexto_PCB.PID,estado_segmento); // todo chat gpt neus
 						sem_post(&multiprogramacion);
 					}
 					else if(estado_segmento == COMPACTAR)
 						{ // espacio disponible, pero no se encuentra contiguo, por lo que hay que compactar
 						// TODO avisarle a agus memoria que nos mande COMPACTAR cuando se tiene el epacio pero no esta contiguo. Y fallido si no esta disponible
 						//TODO compactar_memoria.
+						//todo log seg_fault
 						}
 				}
 				else {
@@ -335,7 +341,9 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 		 	 	 else if(pcb_siguiente->tiempo_bloqueo > 0){// caso bloqueo, agrega a ready cuando se termina de bloquear
 					pthread_t hilo_Block;
 					recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
+					log_info(log_kernel, "PID: <%d> - Ejecuta IO: <%f>", pcb_siguiente->contexto_PCB.PID, tiempoDeFin); // todo ver tiempo * 1000?
 					//hilo porque quiero I/O en paralelo
+
 					pthread_create(&hilo_Block, NULL, (void*)bloquear_procesoPorIO,(void*)pcb_siguiente);
 					pthread_detach(hilo_Block);
 					}
@@ -348,6 +356,9 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 	 else{// caso EXIT o error
 					terminarEjecucion(pcb_siguiente);
 					pcb_siguiente->state = EXIT;
+					if(cop == EXIT){
+					//log_info(log_kernel, "Finaliza el proceso <PID> - Motivo: <SUCCESS> ", pcb_siguiente->contexto_PCB.PID); // todo poner el success bien
+					}
 					sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
 				}
 
