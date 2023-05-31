@@ -1,15 +1,13 @@
 #ifndef CONSOLA_MAIN_H
 #define CONSOLA_MAIN_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <sockets.h>
+
+#include "conexiones_consola.h"
+#include "funciones.h"
 
 
-t_config* config_consola;
-t_log* log_consola;
-char* ip;
-char* puerto;
+void levantar_config();
 void terminar_consola(t_log* log ,int conexion, t_config* config);
 
 #endif
+

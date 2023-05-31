@@ -204,3 +204,10 @@
 
 [ERROR] 23:52:36:355 Kernel/(8721:8721): Error al conectar (a Memoria)
 
+[INFO] 16:36:14:346 Kernel/(30409:30409): Servidor listo para recibir cliente
+[ERROR] 16:36:14:347 Kernel/(30409:30409): Error al conectar (a CPU)
+
+[ERROR] 16:36:14:347 Kernel/(30409:30409): Error al conectar (a FileSystem)
+
+[ERROR] 16:36:14:347 Kernel/(30409:30409): Error al conectar (a Memoria)
+

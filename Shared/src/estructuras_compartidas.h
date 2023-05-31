@@ -2,6 +2,20 @@
 #define SRC_ESTRUCTURAS_COMPARTIDAS_H_
 #include <commons/collections/queue.h>
 
+typedef union {//porque puedo recibir int o char*
+	uint32_t tipo_int;
+	char* tipo_string;
+ }tipo_parametro;
+
+
+typedef struct{
+	int id;
+	char* nombre; //set
+	tipo_parametro parametro1;
+	tipo_parametro parametro2;
+	uint32_t parametro3;
+}instruccion;
+
 typedef struct{
     uint32_t id;
     uint32_t direccion_Base;
@@ -65,5 +79,12 @@ typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	F_CLOSE,//1
 	EXIT
 }op_code;
+
+
+
+
+
+
+
 
 #endif /* SRC_ESTRUCTURAS_COMPARTIDAS_H_ */

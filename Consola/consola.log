@@ -44,3 +44,12 @@
 
 [INFO] 20:43:04:807 consola/(3321:3321): Cliente conectado en 127.0.0.1:8000 (a Kernel)
 
+[ERROR] 16:30:46:914 consola/(30258:30258): Error abriendo archivo
+[ERROR] 16:31:18:222 consola/(30272:30272): Error abriendo archivo
+[ERROR] 16:31:29:390 consola/(30290:30290): Error abriendo archivo
+[ERROR] 16:32:59:914 consola/(30355:30355): Error al conectar (a Kernel)
+
+[ERROR] 16:33:44:208 consola/(30370:30370): Error al conectar (a Kernel)
+
+[ERROR] 16:37:11:950 consola/(30432:30432): Error al conectar (a Kernel)
+

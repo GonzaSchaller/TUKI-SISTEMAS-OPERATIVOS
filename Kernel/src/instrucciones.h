@@ -8,20 +8,8 @@
 #include "configuraciones.h"
 #include <send_rcvs.h>
 
-typedef union {//porque puedo recibir int o char*
-	uint32_t tipo_int;
-	char* tipo_string;
- }tipo_parametro;
 
 
-typedef struct{
-	int id;
-	char* nombre; //set
-	tipo_parametro parametro1;
-	tipo_parametro parametro2;
-	uint32_t parametro3;
-}instruccion;
-//
 
 typedef enum {
     NEW,
