@@ -21,12 +21,13 @@
 #include<string.h>//
 #include <estructuras_compartidas.h>
 #include "manejoDeMemoria.h"
+#include "sem.h"
 
 
 typedef struct {
     char* ALGORITMO_ASIGNACION;
     uint32_t TAMANIO_MEMORIA;//
-    uint32_t TAMANIO_SEGMENTO;//
+    uint32_t TAMANIO_SEGMENTO_0;//
     char* PUERTO_ESCUCHA;//
     uint32_t RETARDO_MEMORIA;//
     uint32_t RETARDO_COMPACTACION;//

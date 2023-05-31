@@ -77,7 +77,11 @@ typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	F_READ,//3
 	DELETE_SEGMENT,//1
 	F_CLOSE,//1
-	EXIT
+	EXIT,
+	HANDSHAKE,
+	INICIAR_ESTRUCTURAS,
+	FINALIZAR_ESTRUCTURAS,
+	COMPACTAR_MEMORIA
 }op_code;
 
 

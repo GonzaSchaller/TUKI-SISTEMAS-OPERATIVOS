@@ -10,25 +10,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include "estructuras_compartidas.h"
-//Codigo de operacions instrucciones
-typedef enum{ 	//parametros
-	SET,  // 2
-	MOV_OUT, //2
-	WAIT, //1
-	IO, //1
-	SIGNAL, //1
-	MOV_IN, //2
-	F_OPEN, //1
-	YIELD,
-	F_TRUNCATE,//2
-	F_SEEK,//2
-	CREATE_SEGMENT,//2
-	F_WRITE,//3
-	F_READ,//3
-	DELETE_SEGMENT,//1
-	F_CLOSE,//1
-	EXIT
-}op_code;
+#include <commons/collections/list.h>
+//a ver ah
+
 
 bool send_SET(int, uint32_t, char*);
 bool recv_SET(int,uint32_t*, char**);
@@ -91,8 +75,8 @@ bool recv_EXIT(int);
 void send_INICIAR_ESTRUCTURA_MEMORIA(int,char*);
 bool recv_INICIAR_ESTRUCTURA_MEMORIA(int, char** );
 
-bool send_TABLA_SEGMENTOS(int, segmento_t*);
-bool recv_TABLA_SEGMENTOS(int, segmento_t** );
+bool send_SEGMENTO(int, segmento_t*);
+bool recv_SEGMENTO(int, segmento_t** );
 
 bool send_PID(int,uint32_t);
 bool recv_PID(int, uint32_t*);
@@ -103,5 +87,31 @@ bool recv_PC(int, uint32_t*);
 bool send_tiempo_bloqueante(int, uint32_t);
 bool recv_tiempo_bloqueante(int, uint32_t*);
 
-#endif
+bool send_BASE_SEGMENTO(int, uint32_t);
+bool recv_BASE_SEGMENTO(int, uint32_t*);
 
+bool recv_TABLA_SEGMENTOS(int ,t_list**);
+bool send_TABLA_SEGMENTOS(int ,t_list* );
+
+bool recv_ID_SEGMENTO(int, uint32_t*);
+bool send_ID_SEGMENTO(int, uint32_t );
+
+bool send_CANT_INSTRUCCIONES(int, uint32_t);
+bool recv_CANT_INSTRUCCIONES(int, uint32_t*);
+
+bool send_REG_CPU(int, registros_cpu );
+bool recv_REG_CPU(int, registros_cpu* );
+
+bool send_CONTEXTO_EJECUCION(int , contexto_ejecucion);
+bool recv_CONTEXTO_EJECUCION(int , contexto_ejecucion*);
+
+
+
+bool send_handshake(int socket,uint8_t resultado);
+bool recv_handshake(int socket,uint8_t* resultado);
+
+
+
+
+
+#endif

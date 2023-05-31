@@ -4,6 +4,9 @@
 extern t_log*log_memoria;
 //extern *t_segmento;
 int clientes[3];
+int tam_hueco_mas_grande;
+int memoria_disponible;
+segmento_t segmento_0;
 
 //conexiones de kernel, cpu, filesystem
 typedef struct{
@@ -11,139 +14,9 @@ typedef struct{
 	char*server_name;
 } t_procesar_conexion_args;
 
-//esquema de memoria: segmentacion
-
-/*
-static void procesar_conexion(void* void_args){
-	t_procesar_conexion_args*args = (t_procesar_conexion_args*) void_args;
-	int cliente_socket = args->fd;
-	char*server_name = args->server_name;
-	free(args);
-
-	op_code cop;
-	while(cliente_socket!=-1){
-
-		//0if(recv(cliente_socket,&cop,sizeof(op_code),0) == 0){
-		//	log_info(logger,"DISCONECT!");
-		//	return;
-		//}
-
-		switch(cop){
-		case CREATE_SEGMENT:
-			//--------CONEXION KERNEL-MEMORIA-------
-			//CREACION DE SEGMENTO CREATE-SEGMENT
-			//uno se me conecta el kernel y me manda un mensaje para que le cree un segmento con tamanio definido
-			//entonces pueden ocurrir 3 cosas:
-		//1) el segmento se crea exitosamente y le devuelvo la base del nuevo segmento // si hay espacio de manera contigua, creo el segmento y le mando la direccion.
-		//2) no hay mas espacio dispoible en la memoria y por lo tanto el proceso finaliza con un out of memory // decirle que no tengo el espacio libre.
-		//3) tengo espacio disponible pero no esta contiguo, por lo que tengo que decir que se tiene que compactar. // le informo al kernel que se debe solicitar una compactacion previa a crear el segmento.
-
-			break;
-
-		case DELETE_SEGMENT:
-
-			// el kernel tiene que hacer un DELETE SEGMENT, me manda el id del segmento a eliminar, voy lo elimino, y le devuelvo la tabla de segmentos actualizada.
-		//Marco el segmento como libre y en caso de que tenga huecos libres aledanios, los debo consolidar actializando sus estructuras administrativas.
 
 
-			break;
-
-		case F_WRITE:
-		// - pedido de escritura: escribir lo pedido en la pos pedida y responder un mensaje de ok
-		//cada acceso a memoria tiene un tiempo de espera en milisegundos definido por archivo de config.
-			break;
-
-		case F_READ:
-		// - pedido de lectura: devolver el valor que se encuentra en la pos pedida.
-			break;
-
-		default:
-			//log_error(logger,"algo salio mal");
-
-
-		// ALGUIEN ME AVISA QUE FINALIZO UN PROCESO Y LIBERO SU ESPACIO DE MEMORIA.
-
-
-		//---CONEXION MEMORIA - CPU --------- READ / WRITE
-		//encargado de responder los pedidos realizados por la CPU para leer y/o escribir en los segmentos de datos del proceso en ejecucion, referenciados por diversas tablas de paginas
-		//puede pedirme
-
-		//CONEXION CPU-FILESYSTEM-MEMORIA : me dan una direccion fisica, y solicitan accesos al espacio de usuario de memoria.
-
-		//COMPACTACION DE SEGMENTOS:
-		//debo mover los segmentos a fin de eleiminar los guecos libres entre los mismos, dejando un unico huevo libre de todo el espacio disponible.
-		// tarea principal de esta operacion: informar al kernel las tablas de segmentos actualizadas.
-
-
-
-				//TODO
-		}
-
-	}
-
-	//log_warning(logger,"el cliente se desconexto del server\n");
-
-}
-*/
-/*
-int server_escuchar1(t_log*logger,int server_socket)
-{
-	   int socket_cliente = esperar_cliente(logger,server_socket);
-
-	   if(socket_cliente != -1){
-
-	   pthread_t thread;
-
-	   pthread_create(&thread, NULL, (void*)procesar_conexion), socket_cliente);
-	   pthread_detach(thread);
-	   }
-return 0;
-}*/
-
-/*
-int server_escuchar1(t_log*logger,int server_socket)
-{
-	for (int i=0;i<3;i++){
-		int socket_cliente = esperar_cliente(logger,server_socket);
-		if (cliente_socket != -1) {
-		        pthread_t hilo;
-		        t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
-		        args->fd = cliente_socket;
-		        args->server_name = server_name;
-		        pthread_create(&hilo, NULL, (void*) procesar_conexion, (void*) args);
-		        pthread_detach(hilo);
-		        return 1;
-		    }
-
-		i++;
-
-	}
-
-return 0;
-}
-*/
-
-/*
-int server_escuchar2(t_log*logger, char*server_name, int server_socket){
-	int cliente_socket = esperar_cliente2(logger,server_name,server_socket);
-	if(cliente_socket != -1){
-		pthread_t hilo;
-		t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
-		args->fd = cliente_socket;
-		args->server_name = server_name;
-		pthread_create(&hilo,NULL,(void*)procesar_conexion,(void*)args);
-		pthread_detach(hilo);
-		return 1;
-	}
-	return 0;
-}
-
-*/
-
-
-
-/*
-static void procesar_conexion(void* void_args){
+static void procesar_conexionn(void* void_args){
 	t_procesar_conexion_args*args = (t_procesar_conexion_args*) void_args;
 	int cliente_socket = args->fd;
 	char*server_name = args->server_name;
@@ -158,58 +31,155 @@ static void procesar_conexion(void* void_args){
 			}
 
 			switch(cop){
-		//	case HANDSHAKE:
+			case HANDSHAKE:
+				uint8_t handshake;
+				uint8_t resultOk = 0;
+				uint8_t resultError = -1;
 
-
-
+				if(!recv_handshake(cliente_socket,&handshake)){
+					log_error(log_memoria,"Fallo recibiendo el handshake");
+					break;
+				}
+				if(handshake == 1){
+							    log_info(log_memoria,"handshake exitoso");
+							    send_handshake(cliente_socket,&resultOk);
+							}
+							else{
+								   log_error(log_memoria,"no t conozco capo");
+								   send_handshake(cliente_socket,&resultError);
+								}
 				break;
 
-			case CREATE_SEGMENT:
+			case INICIAR_ESTRUCTURAS: // cuadno se conecta el kernel le mando la tabla de segmentos inicial.
+				//crear_tabla_segmentos(); //METERLE EL SEGMENTO 0 Y MANDARLO.
+				t_list tabla_de_segmentos;
+				//aniado a la tabla de segmentos el segmento 0 y lo mando.
+				//el segmento 0 ya esta en memoria.
 
-				crear_segmento();
+				break;
+			case CREATE_SEGMENT:
+				uint32_t id;
+				uint32_t tamanio;
+
+				recv_CREATE_SEGMENT(cliente_socket,id,tamanio);
+				if(tamanio>memoria_disponible){
+					//no hay memoria disponible...
+				}else if(tam_hueco_mas_grande<tamanio){
+					//hay que compactar...
+				}else log_info(log_memoria,"hay espacio disponible... creando segmento.");
+
+
 
 				break;
 
 			case DELETE_SEGMENT:
-				borrar_segmento();
+
 
 				break;
 
+			case FINALIZAR_ESTRUCTURAS:
+				break;
 
+			case MOV_IN:
+			break;
+
+			case MOV_OUT:
+				break;
+
+			case COMPACTAR_MEMORIA:
+				break;
+
+
+             }//break
+       }//while
+		log_warning(log_memoria,"cliente desconectado");
+		return;
 }
-*/
 
-/*
+
 int server_escuchar(t_log* log_memoria,char* server_name, int server_socket) {
 
-    int cliente_socket = esperar_cliente(log_memoria, server_socket);
+	while(1){
+		int cliente_socket = esperar_cliente(log_memoria, server_socket);
 
-    if (cliente_socket != -1) {
-        pthread_t hilo;
-        t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
-        args->fd = cliente_socket;
-        args->server_name = server_name;
-        pthread_create(&hilo, NULL, (void*) procesar_conexion, (void*) args);
-        pthread_detach(hilo);
-        return 1;
-    }
-    else log_info(log_memoria,"no ai");
-    return 0;
+		    if (cliente_socket != -1) {
+		        pthread_t hilo;
+		        t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
+		        args->fd = cliente_socket;
+		        args->server_name = server_name;
+		        pthread_create(&hilo, NULL, (void*) procesar_conexionn, (void*) args);
+		        pthread_detach(hilo);
+		    }
+	}
+	return 0;
+
 }
-*/
+
 //acepto 3 clientes
 
 
-
+/*
 int server_escuchar3(t_log* log_memoria,char* server_name, int server_socket) {
-
-	for (int i=0;i<3;i++){
-		int cliente = esperar_cliente(log_memoria, server_socket);
-		clientes[i] = cliente;
+	int i=0;
+	while(i<3){
+		int cliente_fd=esperar_cliente(log_memoria,server_socket);
+		if(cliente_fd!=-1){
+			 pthread_t hilo;
+			        t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
+			        args->fd = cliente_fd;
+			        args->server_name = server_name;
+			        pthread_create(&hilo, NULL, (void*) procesar_conexionn, (void*) args);
+			        pthread_detach(hilo);
+			        return 1;
+		}
+	i++;
 	}
    return 1;
 }
+*/
 /*
+void tirar_threads(int socket_cliente, char*server_name , int server_socket){
+
+   pthread_t hilo;
+   t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
+   args->fd = socket_cliente;
+   args->server_name = server_name;
+   pthread_create(&hilo, NULL, (void*) procesar_conexionn, (void*) args);
+   pthread_detach(hilo);
+}
+/*
+int esperar_clienteM(int socket_servidor)
+{
+	uint32_t handshake;
+	uint32_t resultOk = 0;
+	uint32_t resultError = -1;
+	int socket_cliente = accept(socket_servidor, NULL, NULL);
+
+	recv(socket_cliente, &handshake, sizeof(uint32_t), MSG_WAITALL);
+	if(handshake == 1){
+		send(socket_cliente, &resultOk, sizeof(uint32_t), NULL);
+		printf("Handshake OK\n");
+		printf("Se conecto CPU!\n");
+		pthread_t hilo;
+					        t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
+					        args->fd = clientes[i];
+					        args->server_name = server_name;
+					        pthread_create(&hilo, NULL, (void*) procesar_conexion, (void*) args);
+					        pthread_detach(hilo);
+					        log_info(log_memoria,"hilo nro: %d \n", i);
+
+	}
+	else
+	{
+		send(socket_cliente, &resultError, sizeof(uint32_t), NULL);
+		printf("error \n");
+	}
+
+	return socket_cliente;
+}
+
+
+
 for(int i=0;i<3;i++){
 	int cliente_socket = esperar_cliente(log_memoria, server_socket);
 
@@ -225,9 +195,6 @@ for(int i=0;i<3;i++){
 	    i++;
 }
 return 0;*/
-
-
-
 
 
 

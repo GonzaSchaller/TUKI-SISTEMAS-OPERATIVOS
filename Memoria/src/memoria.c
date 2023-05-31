@@ -2,9 +2,14 @@
 extern t_log* log_memoria;
 extern t_config_memoria *cfg;
 extern void* memoria_principal;
+extern int memoria_disponible;
+extern int hueco_mas_grande;
+
+
+
 
 int main(){
-	printf("dsadsa");
+
 
 	if(!init() || !cargar_configuracion("memoria.config")){
 		log_error(log_memoria,"Tuviste un error al iniciar capo");
@@ -14,10 +19,13 @@ int main(){
 
 	//inicio el servidor y acepto mis conexiones
 	int server_fd = iniciar_servidor(log_memoria,"MEMORIA","127.0.0.1",cfg->PUERTO_ESCUCHA);
-	if(server_escuchar3(log_memoria,"MEMORIA",server_fd)){
+
+	cargar_memoria();
+
+	if(server_escuchar(log_memoria,"MEMORIA",server_fd)==1){
 		log_info(log_memoria,"Conexiones establecidas");
-		cargar_memoria();
 	}
+
 
 
 	terminar_memoria();

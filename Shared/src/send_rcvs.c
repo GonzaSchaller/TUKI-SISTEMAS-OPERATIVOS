@@ -359,6 +359,7 @@ static void deserializar_F_TRUNCATE(void* stream,char** parametro1 , uint32_t* p
 	memcpy(parametro2,stream+sizeof(size_t)+size_parametro1,sizeof(uint32_t));
 // OPCODE,PAYLOAD, SIZE P2, P2,ENTERO P1,
 }
+
 bool recv_F_TRUNCATE(int socket_cliente, char** parametro1,uint32_t* parametro2){
     size_t size_payload ;
     if (recv(socket_cliente,&size_payload,sizeof(size_t), 0) != sizeof(size_t)) {
@@ -1183,4 +1184,71 @@ bool recv_CONTEXTO_EJECUCION(int fd, contexto_ejecucion* contexto){
     free(stream);
     return true;
 }
+
+static void* serializar_handshake(uint8_t resultado){
+	void*stream = malloc(sizeof(op_code) + sizeof(uint8_t));
+	op_code cop = HANDSHAKE;
+	memcpy(stream,&cop,sizeof(op_code));
+	memcpy(stream+sizeof(op_code),&resultado,sizeof(uint8_t));
+    return stream;
+}
+
+
+static void deserializar_handshake(void*stream,uint8_t*resultado){
+	memcpy(resultado,stream,sizeof(uint8_t));
+}
+
+bool send_handshake(int socket,uint8_t resultado){
+	size_t size = sizeof(op_code) + sizeof(uint8_t);
+	void*stream = serializar_handshake(resultado);
+	if(send(socket,stream,size,0) != size){
+		free(stream);
+		return false;
+	}
+	free(stream);
+	return true;
+}
+bool recv_handshake(int socket,uint8_t* resultado){
+	size_t size = sizeof(uint8_t);
+	void*stream = malloc(size);
+	if(recv(socket,stream,size,0)!=size){
+		free(stream);
+		return false;
+	}
+	deserializar_handshake(stream,resultado);
+	free(stream);
+	return (true);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

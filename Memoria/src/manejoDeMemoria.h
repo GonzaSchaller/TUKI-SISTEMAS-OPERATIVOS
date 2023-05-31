@@ -28,6 +28,7 @@
 
 
 
+
 void crear_segmento(int cliente_fd);
 void borrar_segmento(int cliente_fd);
 
@@ -38,7 +39,7 @@ void asesinar_segmentos_libres();
 segmento_t* new_segmento(uint32_t id, uint32_t direccion_base,uint32_t tamanio);
 void borrar_segmento(int cliente_fd);
 void crear_segmento(int cliente_fd);
-
+uint32_t meter_en_memoria(segmento_t* segmento_a_ubicar);
 
 
 
