@@ -37,10 +37,10 @@ void agregarNewAReady(pcb_t* pcb){
 
 	send_INICIAR_ESTRUCTURA_MEMORIA(conexion_memoria, "Inicializa las estructuras"); //mandamos mensaje a memoria que incie sus estructuras
 	if(!recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento  TODO agus memoria
-		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->PID);
+		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto_PCB.PID);
 	}
-	pcb->TSegmento = tseg;
-	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->PID);
+	pcb->contexto_PCB.TSegmento = tseg;
+	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->contexto_PCB.PID);
 	//printf("PROCESOS EN READY: %d \n", list_size(colaReady));
 	log_debug(log_kernel,"[----------------PROCESOS EN READY: %d --------------------]\n", list_size(listaReady)); //max 4
 
@@ -53,7 +53,7 @@ void agregarAReady(pcb_t* pcb){
 	pcb->horaDeIngresoAReady = llegadaReady;
 	pthread_mutex_lock(&mutexReady);
 	list_add(listaReady, pcb);
-	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->PID);
+	log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->contexto_PCB.PID);
 	pthread_mutex_unlock(&mutexReady);
 
 }
@@ -286,7 +286,7 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 							segmento->id = id_segmento;
 							segmento->tamanio = tamanio;
 							// mutex_wait (ejecucion de la lista)
-							list_add(pcb_siguiente->TSegmento, segmento); // TODO ver si hay que poner un mutex
+							list_add(pcb_siguiente->contexto_PCB.TSegmento, segmento); // TODO ver si hay que poner un mutex
 							// mutex_post ( ejecucion de la lista)
 							send_BASE_SEGMENTO(conexion_cpu,base_nuevo_segmento);
 						}
@@ -318,7 +318,7 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 			//t_list* nueva_tabla_segmentos;
 			if(recv_ID_SEGMENTO(conexion_cpu,&id_segmento)){
 				send_ID_SEGMENTO(conexion_memoria, id_segmento);
-				remover_segmento(pcb_siguiente -> TSegmento, id_segmento);
+				remover_segmento(pcb_siguiente ->contexto_PCB.TSegmento, id_segmento);
 			}
 			else log_error(log_kernel, "Fallo recibiendo DELETE_SEGMENT");
 		}
@@ -355,11 +355,12 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 
 
 void manejar_contextosDeEjecucion(pcb_t* pcb_siguiente){ // maneja lo que  nos manda cpu
-	uint32_t cop,pc;
-	if (!recv_PC(conexion_cpu, &pc)) { // TODO avisar cpu que nos manden primero program counter y despues el opcode y ver reg cpu
-		log_error(log_kernel, "Fallo recibiendo pc");
+	uint32_t cop;
+	contexto_ejecucion contexto;
+	if (!recv_CONTEXTO_EJECUCION(conexion_cpu, &contexto)) { // TODO avisar cpu que nos manden primero program counter y despues el opcode y ver reg cpu
+		log_error(log_kernel, "Fallo recibiendo el Contexto de Ejecucion");
 			}
-	pcb_siguiente->PC = pc;
+	pcb_siguiente->contexto_PCB= contexto;
 	if(recv(conexion_cpu, &cop, sizeof(op_code), 0) == sizeof(op_code)) // Las que recibimos que SI son instruccion
 			{
 				time_t fin_exe = time(NULL);
@@ -395,7 +396,7 @@ void terminarEjecucion(pcb_t* pcb){ //TODO falta liberar recursos del proceso
 	pthread_mutex_lock(&mutexExit);
 
 	list_add(listaExit, pcb);
-	log_info(log_kernel, "[EXIT] Finaliza el proceso de PID: %d", pcb->PID);
+	log_info(log_kernel, "[EXIT] Finaliza el proceso de PID: %d", pcb->contexto_PCB.PID);
 
 	pthread_mutex_unlock(&mutexExit);
 

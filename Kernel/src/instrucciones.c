@@ -44,14 +44,17 @@ void cargar_instruccion3(int id, char* nombre, char* parametro1, uint32_t parame
 }
 
 void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb){
+	registros_cpu registrosInicializados;
+	memset(&registrosInicializados, 0, sizeof(registros_cpu));
 
-    pcb->PID = contadorProceso;
+    pcb->contexto_PCB.PID = contadorProceso;
     pcb->instrucciones = listaInstrucciones;
-    pcb->PC = 0;
-//    pcb->registros; //todo
+    pcb->contexto_PCB.PC = 0;
+   	pcb->contexto_PCB.registros = registrosInicializados;//todo fijarse que no rompa
+    pcb->contexto_PCB.TSegmento= NULL;
     pcb->horaDeIngresoAReady= 0;
     pcb->tabla_archivosAbiertos = list_create();
-    pcb->state= NEW; // hace falta? //Todo
+    pcb->state= NEW;
     pcb->estimacion_rafaga_anterior = estimacion_inicial;
 	pcb-> rafaga_anterior_real = 0;
 	pcb->horaDeIngresoAExe = 0;
@@ -59,13 +62,13 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
 }
 
 void enviar_pcb_cpu(int fd_cpu, pcb_t* pcb_proceso){
+	send_CANT_INSTRUCCIONES(fd_cpu,list_size(pcb_proceso->instrucciones)); //TODO recibe primero la cant de inestrucciones
 	send_instrucciones_kernel_a_cpu(fd_cpu,pcb_proceso);
-	send_PID(fd_cpu,pcb_proceso->PID);
-	send_PC(fd_cpu,pcb_proceso->PC);
-	//send_reg_cpu(fd_cpu, pcb_proceso->registros); falta enviar registro
-	send_TABLA_SEGMENTOS(fd_cpu, pcb_proceso->TSegmento);
-
-
+	//send_PID(fd_cpu,pcb_proceso->PID);		//contexto de ejecucion
+	//send_PC(fd_cpu,pcb_proceso->PC);		//contexto de ejecucion
+	//send_reg_cpu(fd_cpu, pcb_proceso->registros); falta enviar registro //contexto de ejecucion
+	//send_TABLA_SEGMENTOS(fd_cpu, pcb_proceso->TSegmento); //contexto de ejecucion
+	send_CONTEXTO_EJECUCION(fd_cpu,pcb_proceso->contexto_PCB);
 
 }
 void send_instrucciones_kernel_a_cpu(int fd_cpu,pcb_t* pcb_proceso){

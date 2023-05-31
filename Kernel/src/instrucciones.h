@@ -50,29 +50,14 @@ typedef enum{
 //set ax "sada"
 
 //Valores de registros que voy a guardar en el pcb
-typedef struct{
-//	   char AX[4]; // Registro AX de 4 bytes
-//	   char BX[4];
-//	   char CX[4];
-//	   char DX[4];
-//	   char EAX[8]; // Registro EAX de 8 bytes
-//	   char EBX[8];
-//	   char ECX[8];
-//	   char EDX[8];
-//	   char RAX[16]; // Registro RAX de 16 bytes
-//	   char RBX[16];
-//	   char RCX[16];
-//	   char RDX[16];
-
-}registros_cpu;
 
 
 typedef struct{
-    uint32_t PID; // Debe ser unico en tod el sistema
+
     t_list* instrucciones; // Lista de instrucciones a ejecutar
-    uint32_t PC; // Program counter
-    registros_cpu registros;
-    t_list* TSegmento;
+    contexto_ejecucion contexto_PCB; //tiene registros, tabla segmento, pid y PC
+
+
     uint32_t estimacion_prox_rafaga; //S del HRRN
     float horaDeIngresoAReady; // Seria el timestamp en que el proceso llego a ready cambiar nombre
     t_list* tabla_archivosAbiertos ;// lista de fcb_t

@@ -24,4 +24,46 @@ typedef struct{ //A implmentar por FileSystem
 
 } fcb_t;
 
+typedef struct{
+	   char AX[4]; // Registro AX de 4 bytes
+	   char BX[4];
+	   char CX[4];
+	   char DX[4];
+	   char EAX[8]; // Registro EAX de 8 bytes
+	   char EBX[8];
+	   char ECX[8];
+	   char EDX[8];
+	   char RAX[16]; // Registro RAX de 16 bytes
+	   char RBX[16];
+	   char RCX[16];
+	   char RDX[16];
+}registros_cpu;
+
+typedef struct{
+    uint32_t PID;
+    uint32_t PC;
+    registros_cpu registros;
+    t_list* TSegmento;
+
+}contexto_ejecucion;
+
+typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
+	SET = 100,  // 2
+	MOV_OUT, //2
+	WAIT, //1
+	IO, //1
+	SIGNAL, //1
+	MOV_IN, //2
+	F_OPEN, //1
+	YIELD,
+	F_TRUNCATE,//2
+	F_SEEK,//2
+	CREATE_SEGMENT,//2
+	F_WRITE,//3
+	F_READ,//3
+	DELETE_SEGMENT,//1
+	F_CLOSE,//1
+	EXIT
+}op_code;
+
 #endif /* SRC_ESTRUCTURAS_COMPARTIDAS_H_ */
