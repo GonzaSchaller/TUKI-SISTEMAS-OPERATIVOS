@@ -1,5 +1,18 @@
 #include "file_system.h"
 
+t_log* logger;
+t_config* config;
+
+char* ip;
+char* puerto_memoria;
+char* puerto_escucha;
+char* superbloque;
+char* bitmap;
+char* bloques;
+char* fcb;
+char* retardo_acceso_bloque;
+int conexion;
+
 void levantar_config(){
 	ip = config_get_string_value(config,"IP_MEMORIA");
 	puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
@@ -37,23 +50,12 @@ void establecer_conexiones(){
 }
 
 int main (){
-	//int conexion;
-	//char* ip = "127.0.0.1";
-	//char* puerto_fileSystem, puerto_memoria;
 
-	//crear un logger
-	//t_log* logger;
+	// Issue 2967 es donde está la info de por qué definí las variables del .h en el .c también
 	logger = log_create("fileSystem.log","FileSystem",1, LOG_LEVEL_DEBUG);
 
-	//config
-	//t_config* config;
-	config =config_create("fileSystem.config");
-	/*
-	//lo de la ip y puerto
-	ip = config_get_string_value(config,"IP_MEMORIA");
-	puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
-	puerto_fileSystem = config_get_string_value(config,"PUERTO_ESCUCHA");
-	*/
+	config = config_create("fileSystem.config");
+	levantar_config();
 
 	//int server_fd = iniciar_servidor(logger, "fileSystem", ip, puerto_fileSystem);
 
