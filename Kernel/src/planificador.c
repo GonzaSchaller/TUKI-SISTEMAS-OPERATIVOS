@@ -35,10 +35,10 @@ void agregarNewAReady(pcb_t* pcb){
 	t_list* tseg;
 	list_add(listaReady, pcb); //agrega a la listaReady
 
-	send_INICIAR_ESTRUCTURA_MEMORIA(conexion_memoria, "Inicializa las estructuras"); //mandamos mensaje a memoria que incie sus estructuras
-	if(!recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento  TODO agus memoria
-		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto_PCB.PID);
-	}
+//	send_INICIAR_ESTRUCTURA_MEMORIA(conexion_memoria, "Inicializa las estructuras"); //mandamos mensaje a memoria que incie sus estructuras
+//	if(!recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento  TODO agus memoria
+//		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto_PCB.PID);
+//	}
 	pcb->contexto_PCB.TSegmento = tseg;
 	log_info(log_kernel, "PID: <%d> - Estado Anterior: <NEW> - Estado Actual: <READY>", pcb->contexto_PCB.PID);// todo estado anterior
 
@@ -368,10 +368,14 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 void manejar_contextosDeEjecucion(pcb_t* pcb_siguiente){ // maneja lo que  nos manda cpu
 	uint32_t cop;
 	contexto_ejecucion contexto;
-	if (!recv_CONTEXTO_EJECUCION(conexion_cpu, &contexto)) { // TODO avisar cpu que nos manden primero program counter y despues el opcode y ver reg cpu
-		log_error(log_kernel, "Fallo recibiendo el Contexto de Ejecucion");
-			}
-	pcb_siguiente->contexto_PCB= contexto;
+
+	if(recv_CONTEXTO_EJECUCION(conexion_cpu, &contexto) == sizeof(contexto)){
+		pcb_siguiente->contexto_PCB= contexto;
+	}
+//	if (!recv_CONTEXTO_EJECUCION(conexion_cpu, &contexto)) { // TODO avisar cpu que nos manden primero program counter y despues el opcode y ver reg cpu
+//		log_error(log_kernel, "Fallo recibiendo el Contexto de Ejecucion");
+//			}
+
 	if(recv(conexion_cpu, &cop, sizeof(op_code), 0) == sizeof(op_code)) // Las que recibimos que SI son instruccion
 			{
 				time_t fin_exe = time(NULL);
@@ -390,6 +394,7 @@ void hiloReady_Execute(){
 	{
 		pthread_mutex_lock(&multiprocesamiento);
 		pcb_t* pcb_siguiente = obtener_siguiente_ready();
+		log_info(log_kernel, "estamos en execute %d", pcb_siguiente->contexto_PCB.PID); // log de prueba
 		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
 		pcb_siguiente->horaDeIngresoAExe = ((float) time(NULL));
 		pcb_siguiente->state = EXEC;

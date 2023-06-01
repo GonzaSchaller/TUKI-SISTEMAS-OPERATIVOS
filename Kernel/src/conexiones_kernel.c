@@ -17,15 +17,17 @@ void procesar_conexion_consola(void* void_args){ //lo que hago por cada consola 
 	while(socket_cliente != -1){
 		if(recv(socket_cliente, &cop, sizeof(op_code), 0) != sizeof(op_code)){ //si no recibo una instruccion
 			//aca irian las cosas que recibo que no son una instruccion
-//			contadorProcesos++;
-//			inicializarPCB(lista_instrucciones,pcb); //inicializamos el pcb que le vamos a mandar al cpu
-//			agregarANew(pcb); //agregamos cada proceso a NEW
+			contadorProcesos++;
+			inicializarPCB(contadorProcesos,lista_instrucciones, pcb); //inicializamos el pcb que le vamos a mandar al cpu
+			agregarANew(pcb); //agregamos cada proceso a NEW
 			log_info(log_kernel, "No recibí una instruccion");
+			break; //Importante
 		}
-		//creo que va aca
-		contadorProcesos++;
-		inicializarPCB(contadorProcesos,lista_instrucciones, pcb); //inicializamos el pcb que le vamos a mandar al cpu
-		agregarANew(pcb); //agregamos cada proceso a NEW
+//		log_info(log_kernel, "%d", cop);
+//		//creo que va aca
+//		contadorProcesos++;
+//		inicializarPCB(contadorProcesos,lista_instrucciones, pcb); //inicializamos el pcb que le vamos a mandar al cpu
+//		agregarANew(pcb); //agregamos cada proceso a NEW
 
 		//me fijo que instruccion es segun el codigo de operacion
 		 switch (cop) {
@@ -205,22 +207,22 @@ void procesar_conexion_consola(void* void_args){ //lo que hago por cada consola 
 
     return;
 }
-void escuchar_clientes(t_log* logger, int socket_servidor){
-
-	args_atender_cliente* args = malloc(sizeof(args_atender_cliente));
-	args->log = logger;
-	args->socket = socket_servidor;
-	args->server_name = "Kernel";
-	while (1) {
-	   pthread_t thread;
-	   int *socket_cliente = malloc(sizeof(int));
-	   *socket_cliente = esperar_cliente(logger, socket_servidor); //el server acepta al cliente y devuelve un socket_cliente
-	   if(*socket_cliente != -1){ //si se establece la conexion
-		   pthread_create(&thread, NULL, (void*) procesar_conexion_consola, (void*) args);
-		   pthread_detach(thread);
-	   }
-	}
-}
+//void escuchar_clientes(t_log* logger, int socket_servidor){
+//
+//	args_atender_cliente* args = malloc(sizeof(args_atender_cliente));
+//	args->log = logger;
+//	args->socket = socket_servidor;
+//	args->server_name = "Kernel";
+//	while (1) {
+//	   pthread_t thread;
+//	   int *socket_cliente = malloc(sizeof(int));
+//	   *socket_cliente = esperar_cliente(logger, socket_servidor); //el server acepta al cliente y devuelve un socket_cliente
+//	   if(*socket_cliente != -1){ //si se establece la conexion
+//		   pthread_create(&thread, NULL, (void*) procesar_conexion_consola, (void*) args);
+//		   pthread_detach(thread);
+//	   }
+//	}
+//}
 
 void agregarANew(pcb_t* pcb_proceso) {
 
@@ -253,16 +255,16 @@ pcb_t* sacarDeNew(){
 void procesar_conexion_cpu(void* socket_cliente){
 
 
-	free(socket_cliente);
+	//free(socket_cliente);
 }
 // TODO
 void procesar_conexion_fileSystem(void* socket_cliente){
 
-	free(socket_cliente);
+	//free(socket_cliente);
 }
 // TODO
 void procesar_conexion_memoria(void* socket_cliente){
 
-	free(socket_cliente);
+	//free(socket_cliente);
 }
 

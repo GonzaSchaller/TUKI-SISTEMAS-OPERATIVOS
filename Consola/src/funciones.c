@@ -48,7 +48,7 @@
 
     		estructura_instrucciones->id = SET;
     		estructura_instrucciones->nombre = parametros[0];
-    		estructura_instrucciones->parametro1.tipo_string = parametros[1];
+    		estructura_instrucciones->parametro1.tipo_int = atoi(parametros[1]);
     		estructura_instrucciones->parametro2.tipo_string = parametros[2];
     		//estructura_instrucciones->parametro3 = NULL;
 
@@ -62,7 +62,8 @@
 
     		estructura_instrucciones->id = MOV_IN;
     		estructura_instrucciones->nombre = parametros[0];
-    		estructura_instrucciones->parametro1.tipo_string = parametros[1];
+
+    		estructura_instrucciones->parametro1.tipo_int = atoi(parametros[1]);
     		estructura_instrucciones->parametro2.tipo_int= atoi(parametros[2]);
     		//estructura_instrucciones->parametro3 = NULL;
 
@@ -77,7 +78,7 @@
     		estructura_instrucciones->id = MOV_OUT;
     		estructura_instrucciones->nombre = parametros[0];
     		estructura_instrucciones->parametro1.tipo_int = atoi(parametros[1]);
-    		estructura_instrucciones->parametro2.tipo_string = parametros[2];
+    		estructura_instrucciones->parametro2.tipo_int = atoi(parametros[2]);
     		//estructura_instrucciones->parametro3 = NULL;
 
     		list_add(lista_instrucciones,estructura_instrucciones);
@@ -226,9 +227,10 @@
     		//estructura_instrucciones->parametro3 = NULL;
 
     		list_add(lista_instrucciones,estructura_instrucciones);
-
                }
+
      }
+
    fclose(archivo);
 }
 
@@ -244,8 +246,6 @@ void send_instrucciones_a_kernel(){
 		a = list_get(lista_instrucciones,indice);
 
 		//log_warning(log_consola,"El id de las intrucciones en send instrucciones es: %d",a->id);
-
-		a = list_get(lista_instrucciones,indice);
 
 					if(a->id == SET){
 
@@ -328,4 +328,25 @@ void send_instrucciones_a_kernel(){
 					indice++;
 				}
 
+}
+
+int obtener_algoritmo_planificacion(char* algoritmo){
+
+	algoritmo_planif algoritmo_planif;
+
+
+	    //HRRN
+	    if (strcmp(algoritmo,"FIFO") == 0)
+	    {
+	    	algoritmo_planif = FIFO;
+	        //log_info(log_kernel, "El algoritmo de planificacion elegido es FIFO.");
+	    }
+
+	    //SFJ SIN DESALOJO
+	    if (strcmp(algoritmo,"HRRN") == 0)
+	    {
+	    	algoritmo_planif = HRRN;
+	     //   log_info(log_kernel, "El algoritmo de planificacion elegido es SRT.");
+	    }
+	    return algoritmo_planif;
 }

@@ -9,7 +9,7 @@ static void* serializar_SET(size_t* size, uint32_t  parametro1, char* parametro2
 	    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t), &parametro1,sizeof(uint32_t));
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(uint32_t), &size_parametro2, sizeof(size_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(uint32_t) + sizeof(size_t), &parametro2, size_parametro2);
+	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(uint32_t) + sizeof(size_t), parametro2, size_parametro2);
 // copio al stream en orden cop,payload,p1,sizep2,p2
 // Creo que esta mal, primero le copiamos opcode con size opcode, despues copiamos payload que es tamanio size_t
 // despues copio el parametro1 que es tamanio uint32_t, despues copio el size de p2, con tamanio size_t,
@@ -101,7 +101,7 @@ static void* serializar_WAIT(size_t* size,char* recurso){
 		    memcpy(stream, &cop, sizeof(op_code));
 		    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
 		    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_recurso, sizeof(size_t));
-		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), &recurso, size_recurso);
+		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), recurso, size_recurso);
 	// copio al stream en orden cop,payload,sizep2,p2
 		    return stream;
 }
@@ -179,7 +179,7 @@ static void* serializar_SIGNAL(size_t* size,char* recurso){
 		    memcpy(stream, &cop, sizeof(op_code));
 		    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
 		    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_recurso, sizeof(size_t));
-		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), &recurso, size_recurso);
+		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), recurso, size_recurso);
 	// copio al stream en orden cop,payload,sizep2,p2
 		    return stream;
 
@@ -264,7 +264,7 @@ static void* serializar_F_OPEN(size_t* size,char* archivo){
 		    memcpy(stream, &cop, sizeof(op_code));
 		    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
 		    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_archivo, sizeof(size_t));
-		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+size_archivo, &archivo, size_archivo);
+		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+size_archivo, archivo, size_archivo);
 	// copio al stream en orden cop,payload,sizep2,p2
 		    return stream;
 }
@@ -345,7 +345,7 @@ static void* serializar_F_TRUNCATE(size_t* size, char* parametro1 ,uint32_t  par
 	    memcpy(stream, &cop, sizeof(op_code));
 	    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_parametro1,sizeof(size_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), &parametro1, size_parametro1);
+	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), parametro1, size_parametro1);
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t) + size_parametro1, &parametro2, sizeof(uint32_t));
 // copio al stream en orden cop,payload,sizep1,p1,p2
 	    return stream;
@@ -391,11 +391,11 @@ static void* serializar_F_SEEK(size_t* size, char* parametro1, uint32_t  paramet
 	*size =sizeof(op_code) + 2*sizeof(size_t) + sizeof(uint32_t)+ size_parametro1;
 	size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
 	void* stream = malloc(*size);
-	op_code cop = F_TRUNCATE;
+	op_code cop = F_SEEK;
 	    memcpy(stream, &cop, sizeof(op_code));
 	    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_parametro1,sizeof(size_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), &parametro1, size_parametro1);
+	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), parametro1, size_parametro1);
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t) + size_parametro1, &parametro2, sizeof(uint32_t));
 // copio al stream en orden cop,payload,sizep1,p1,p2
 	    return stream;
@@ -472,11 +472,11 @@ static void* serializar_F_WRITE(size_t* size, char* parametro1 ,uint32_t  parame
 	*size =sizeof(op_code) + 2*sizeof(size_t) + sizeof(uint32_t)+ size_parametro1;
 	size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
 	void* stream = malloc(*size);
-	op_code cop = F_TRUNCATE;
+	op_code cop = F_WRITE;
 	    memcpy(stream, &cop, sizeof(op_code));
 	    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_parametro1,sizeof(size_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), &parametro1, size_parametro1);
+	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), parametro1, size_parametro1);
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t) + size_parametro1, &parametro2, sizeof(uint32_t));
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t) + size_parametro1+sizeof(uint32_t), &parametro3, sizeof(uint32_t));
 // copio al stream en orden cop,payload,sizep1,p1,p2,p3
@@ -523,11 +523,11 @@ static void* serializar_F_READ(size_t* size, char* parametro1 ,uint32_t  paramet
 	*size =sizeof(op_code) + 2*sizeof(size_t) + sizeof(uint32_t)+ size_parametro1;
 	size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
 	void* stream = malloc(*size);
-	op_code cop = F_TRUNCATE;
+	op_code cop = F_READ;
 	    memcpy(stream, &cop, sizeof(op_code));
 	    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_parametro1,sizeof(size_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), &parametro1, size_parametro1);
+	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), parametro1, size_parametro1);
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t) + size_parametro1, &parametro2, sizeof(uint32_t));
 	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t) + size_parametro1+sizeof(uint32_t), &parametro3, sizeof(uint32_t));
 // copio al stream en orden cop,payload,sizep1,p1,p2
@@ -605,11 +605,11 @@ static void* serializar_F_CLOSE(size_t* size,char* archivo){
 		*size =sizeof(op_code) + 2*sizeof(size_t)+ size_archivo;
 		size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
 		void* stream = malloc(*size);
-		op_code cop = F_OPEN;
+		op_code cop = F_CLOSE;
 		    memcpy(stream, &cop, sizeof(op_code));
 		    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
 		    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_archivo, sizeof(size_t));
-		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+size_archivo, &archivo, size_archivo);
+		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+size_archivo, archivo, size_archivo);
 		    return stream;
 }
 static void deserializar_F_CLOSE(void* stream,char** archivo){
@@ -678,7 +678,7 @@ static void* serializar_INICIAR_ESTRUCTURA_MEMORIA(size_t* size, char* mensaje){
 		void* stream = malloc(*size);
 		memcpy(stream, &size_payload, sizeof(size_t));
 		memcpy(stream+sizeof(size_t), &size_mensaje, sizeof(size_t));
-		memcpy(stream+sizeof(size_t)+sizeof(size_t), &mensaje, size_mensaje);
+		memcpy(stream+sizeof(size_t)+sizeof(size_t), mensaje, size_mensaje);
 		return stream;
 }
 static void deserializar_INICIAR_ESTRUCTURA_MEMORIA(void* stream,char** mensaje){

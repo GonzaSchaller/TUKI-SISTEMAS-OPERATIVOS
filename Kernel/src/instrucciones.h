@@ -8,9 +8,6 @@
 #include "configuraciones.h"
 #include <send_rcvs.h>
 
-
-
-
 typedef enum {
     NEW,
     READY,
@@ -18,27 +15,6 @@ typedef enum {
     BLOCK,
     FINISH
 }estado;
-
-
-//enum para mandar las instrucciones
-typedef enum{
-	AX,
-	BX,
-	CX,
-	DX,
-	EAX,
-	EBX,
-	ECX,
-	EDX,
-	RAX,
-	RBX,
-	RCX,
-	RDX
-}Registro;
-//set ax "sada"
-
-//Valores de registros que voy a guardar en el pcb
-
 
 typedef struct{
 

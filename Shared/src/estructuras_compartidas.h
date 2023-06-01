@@ -53,6 +53,21 @@ typedef struct{
 	   char RDX[16];
 }registros_cpu;
 
+//enum para mandar las instrucciones
+typedef enum{
+	AX = 400,
+	BX = 500,
+	CX,
+	DX,
+	EAX,
+	EBX,
+	ECX,
+	EDX,
+	RAX,
+	RBX,
+	RCX,
+	RDX
+}Registro;
 typedef struct{
     uint32_t PID;
     uint32_t PC;

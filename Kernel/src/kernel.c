@@ -43,17 +43,6 @@ void inicializar_semaforos(){
 
 	//sem_init(&hilo_sincro_cpu_kernel, 0, 0);
 }
-
-void iniciar_planificacion(){
-	pthread_t hiloNewReady;
-	pthread_t hiloReadyExecute;
-	pthread_create(&hiloReadyExecute, NULL,(void*)hiloReady_Execute, NULL);
-	pthread_detach(hiloReadyExecute);
-	pthread_create(&hiloNewReady, NULL, (void*)hiloNew_Ready, NULL);
-	pthread_detach(hiloNewReady);
-
-}
-
 void inicializar_listas(){
 
 
@@ -68,6 +57,19 @@ void inicializar_listas(){
 	//lista_pcb_en_memoria = list_create();
 
 }
+
+void iniciar_planificacion(){
+	inicializar_listas();
+	inicializar_semaforos();
+	pthread_t hiloNewReady;
+	pthread_t hiloReadyExecute;
+	pthread_create(&hiloReadyExecute, NULL,(void*)hiloReady_Execute, NULL);
+	pthread_detach(hiloReadyExecute);
+	pthread_create(&hiloNewReady, NULL, (void*)hiloNew_Ready, NULL);
+	pthread_detach(hiloNewReady);
+
+}
+
 
 void destruir_semaforos_listas(){
 
@@ -113,46 +115,66 @@ void terminar_kernel(t_config* config){
 //se conecta a cpu, memoria, fileSystem y crea los hilos para procesar las conexiones
 void generar_conexiones(){
 
-	pthread_t thread1, thread2, thread3;
+	//pthread_t thread1, thread2, thread3;
 	//creo conexiones
 	conexion_cpu = crear_conexion(log_kernel, "CPU", ip_cpu, puerto_cpu);
 	conexion_fileSystem = crear_conexion(log_kernel, "FileSystem", ip_fileSystem, puerto_fileSystem);
 	conexion_memoria = crear_conexion(log_kernel, "Memoria", ip_memoria, puerto_memoria);
 	//proceso conexiones
-	if(conexion_cpu != -1){
-		pthread_create(&thread1, NULL, (void*) procesar_conexion_cpu, &conexion_cpu);
-		pthread_detach(thread1);
-	}
-	if(conexion_fileSystem != -1){
-		pthread_create(&thread2, NULL, (void*) procesar_conexion_fileSystem, &conexion_fileSystem);
-		pthread_detach(thread2);
-	}
-	if(conexion_memoria != -1){
-		pthread_create(&thread3, NULL, (void*) procesar_conexion_memoria, &conexion_memoria);
-		pthread_detach(thread3);
-	}
+//	if(conexion_cpu != -1){
+//
+////		pthread_create(&thread1, NULL, (void*) procesar_conexion_cpu, &conexion_cpu);
+////		pthread_detach(thread1);
+//	}
+//	if(conexion_fileSystem != -1){
+////		pthread_create(&thread2, NULL, (void*) procesar_conexion_fileSystem, &conexion_fileSystem);
+////		pthread_detach(thread2);
+//	}
+//	if(conexion_memoria != -1){
+////		pthread_create(&thread3, NULL, (void*) procesar_conexion_memoria, &conexion_memoria);
+////		pthread_detach(thread3);
+//	}
 
-	liberarConexiones(conexion_fileSystem, conexion_fileSystem, conexion_memoria);
+
 }
+int server_escuchar(int server_kernel){
+	int consola_socket = esperar_cliente(log_kernel, server_kernel);
 
+	if(consola_socket != -1){
+		pthread_t hilo;
+		args_atender_cliente* args = malloc(sizeof(args_atender_cliente));
+		args->log = log_kernel;
+		args->socket = consola_socket;
+		args->server_name = "Kernel";
+		procesar_conexion_consola((void*) args);
+		//pthread_create(&hilo, NULL, (void*) procesar_conexion_consola, (void*) args);
+		//pthread_detach(hilo);
+		return 1;
+	}
+	return 0;
+}
 
 int main (){	// TODO agregar las funciones de aca arriba en el main
 	 	log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
 		t_config* config_kernel = config_create("kernel.config");
 		iniciar_config(config_kernel);
 
-		int server_fd = iniciar_servidor(log_kernel, "Kernel", ip, puerto_escucha);
+		int server_kernel = iniciar_servidor(log_kernel, "Kernel", ip, puerto_escucha);
 		log_info(log_kernel , "Servidor listo para recibir cliente");
+
+		iniciar_planificacion();
 
 		//kernel se conecta a cpu, memoria y fileSystem
 		generar_conexiones();
-
 		//atiende los clientes y procesa las tareas de cada uno
-		escuchar_clientes(log_kernel, server_fd);
+		while(server_escuchar(server_kernel));
+
+		//escuchar_clientes(log_kernel, server_fd);
 
 		terminar_kernel(config_kernel);
-
-
+		close(server_kernel);
+		//liberarConexiones(conexion_fileSystem, conexion_fileSystem, conexion_memoria);
+		destruir_semaforos_listas();
 	    return EXIT_SUCCESS;
 }
 
