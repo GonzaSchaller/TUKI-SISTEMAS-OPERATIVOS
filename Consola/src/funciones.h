@@ -13,7 +13,7 @@
 #include "send_rcvs.h"
 #include "conexiones_consola.h"
 
-
+int obtener_registro_cpu(char*);
 void obtener_instrucciones(char*);
 void send_instrucciones_a_kernel();
 

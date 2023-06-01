@@ -1,5 +1,36 @@
 #include "funciones.h"
 
+int obtener_registro_cpu(char* registro) {
+    Registro reg;
+
+    if (strcmp(registro, "AX") == 0) {
+        reg = AX;
+    } else if (strcmp(registro, "BX") == 0) {
+        reg = BX;
+    } else if (strcmp(registro, "CX") == 0) {
+        reg = CX;
+    } else if (strcmp(registro, "DX") == 0) {
+        reg = DX;
+    } else if (strcmp(registro, "EAX") == 0) {
+        reg = EAX;
+    } else if (strcmp(registro, "EBX") == 0) {
+        reg = EBX;
+    } else if (strcmp(registro, "ECX") == 0) {
+        reg = ECX;
+    } else if (strcmp(registro, "EDX") == 0) {
+        reg = EDX;
+    } else if (strcmp(registro, "RAX") == 0) {
+        reg = RAX;
+    } else if (strcmp(registro, "RBX") == 0) {
+        reg = RBX;
+    } else if (strcmp(registro, "RCX") == 0) {
+        reg = RCX;
+    } else if (strcmp(registro, "RDX") == 0) {
+        reg = RDX;}
+
+    return reg;
+}
+
  void obtener_instrucciones(char*path){
 
     FILE*archivo = fopen(path,"r");
@@ -48,7 +79,7 @@
 
     		estructura_instrucciones->id = SET;
     		estructura_instrucciones->nombre = parametros[0];
-    		estructura_instrucciones->parametro1.tipo_int = atoi(parametros[1]);
+    		estructura_instrucciones->parametro1.tipo_int = obtener_registro_cpu(parametros[1]);
     		estructura_instrucciones->parametro2.tipo_string = parametros[2];
     		//estructura_instrucciones->parametro3 = NULL;
 
@@ -63,7 +94,7 @@
     		estructura_instrucciones->id = MOV_IN;
     		estructura_instrucciones->nombre = parametros[0];
 
-    		estructura_instrucciones->parametro1.tipo_int = atoi(parametros[1]);
+    		estructura_instrucciones->parametro1.tipo_int = obtener_registro_cpu(parametros[1]);
     		estructura_instrucciones->parametro2.tipo_int= atoi(parametros[2]);
     		//estructura_instrucciones->parametro3 = NULL;
 
@@ -78,7 +109,7 @@
     		estructura_instrucciones->id = MOV_OUT;
     		estructura_instrucciones->nombre = parametros[0];
     		estructura_instrucciones->parametro1.tipo_int = atoi(parametros[1]);
-    		estructura_instrucciones->parametro2.tipo_int = atoi(parametros[2]);
+    		estructura_instrucciones->parametro2.tipo_int = obtener_registro_cpu(parametros[2]);
     		//estructura_instrucciones->parametro3 = NULL;
 
     		list_add(lista_instrucciones,estructura_instrucciones);
@@ -330,23 +361,4 @@ void send_instrucciones_a_kernel(){
 
 }
 
-int obtener_algoritmo_planificacion(char* algoritmo){
 
-	algoritmo_planif algoritmo_planif;
-
-
-	    //HRRN
-	    if (strcmp(algoritmo,"FIFO") == 0)
-	    {
-	    	algoritmo_planif = FIFO;
-	        //log_info(log_kernel, "El algoritmo de planificacion elegido es FIFO.");
-	    }
-
-	    //SFJ SIN DESALOJO
-	    if (strcmp(algoritmo,"HRRN") == 0)
-	    {
-	    	algoritmo_planif = HRRN;
-	     //   log_info(log_kernel, "El algoritmo de planificacion elegido es SRT.");
-	    }
-	    return algoritmo_planif;
-}

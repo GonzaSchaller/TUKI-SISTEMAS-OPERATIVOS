@@ -143,3 +143,15 @@
 
 [INFO] 04:02:54:845 consola/(22097:22097): Cliente conectado en 127.0.0.1:8000 (a Kernel)
 
+[ERROR] 22:03:21:304 consola/(2853:2853): Error al conectar (a Kernel)
+
+[INFO] 22:04:23:297 consola/(2991:2991): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 22:16:44:806 consola/(3660:3660): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 22:23:36:215 consola/(3977:3977): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 22:27:15:423 consola/(4303:4303): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 22:29:02:266 consola/(4564:4564): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
