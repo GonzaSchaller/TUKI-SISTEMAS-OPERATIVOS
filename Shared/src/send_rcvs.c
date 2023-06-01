@@ -1,56 +1,59 @@
 #include "send_rcvs.h"
-static void* serializar_SET(size_t* size, uint32_t  parametro1, char* parametro2 ){
-	size_t size_parametro2 = strlen(parametro2) +1; // No sabemos si agregar +1 PREGUNTAR
-	*size =sizeof(op_code) + 2*sizeof(size_t) + sizeof(uint32_t)+ size_parametro2;
-	size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
-	void* stream = malloc(*size);
-	op_code cop = SET;
-	    memcpy(stream, &cop, sizeof(op_code));
-	    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t), &parametro1,sizeof(uint32_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(uint32_t), &size_parametro2, sizeof(size_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(uint32_t) + sizeof(size_t), parametro2, size_parametro2);
-// copio al stream en orden cop,payload,p1,sizep2,p2
-// Creo que esta mal, primero le copiamos opcode con size opcode, despues copiamos payload que es tamanio size_t
-// despues copio el parametro1 que es tamanio uint32_t, despues copio el size de p2, con tamanio size_t,
-// ahora le sumo el offset de otro size_t , copio el parametrto2, cont amanio size p2 YA LO CAMBIE PERO HABLARLO
-	    return stream;
+static void* serializar_SET(size_t* size, char* parametro2, uint32_t parametro1) {
+	// Carga los parametros al reves pero funciona como deberia funcionar
+	size_t size_parametro2 = strlen(parametro2) + 1;
+    *size =
+          sizeof(op_code)   // cop
+        + sizeof(size_t)    // total
+        + sizeof(size_t)    // size de char* parametro2
+        + size_parametro2         // char* parametro2
+        + sizeof(uint32_t);  // parametro1
+    size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
+    void* stream = malloc(*size);
+    op_code cop = SET;
+    memcpy(stream, &cop, sizeof(op_code));
+    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
+    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_parametro2, sizeof(size_t));
+    memcpy(stream+sizeof(op_code)+sizeof(size_t)*2, parametro2, size_parametro2);
+    memcpy(stream+sizeof(op_code)+sizeof(size_t)*2+size_parametro2, &parametro1, sizeof(uint32_t));
+
+    return stream;
 }
-static void deserializar_SET(void* stream,uint32_t* parametro1 ,char** parametro2){
+
+static void deserializar_SET(void* stream, char** parametro2, uint32_t* parametro1) {
+	// Carga los parametros al reves pero funciona como deberia funcionar
 	size_t size_parametro2;
-	memcpy(&parametro1,stream,sizeof(uint32_t));
+    memcpy(&size_parametro2, stream, sizeof(size_t));
 
-	memcpy(&size_parametro2, stream +sizeof(uint32_t), sizeof(size_t));
-	char* p2 = malloc(size_parametro2);
+    char* p2 = malloc(size_parametro2);
+    memcpy(p2, stream+sizeof(size_t), size_parametro2);
+    *parametro2 = p2;
 
-	memcpy(p2,stream+sizeof(uint32_t)+sizeof(size_t) ,size_parametro2);
-	*parametro2 = p2;
-// OPCODE,PAYLOAD,ENTERO P1, SIZE P2, P2
+    memcpy(parametro1, stream+sizeof(size_t)+size_parametro2, sizeof(uint32_t));
 }
-bool recv_SET(int socket_cliente,uint32_t*  parametro1, char** parametro2){
-    size_t size_payload ;
-// Cuando recibo la instruccion set, voy a tener el op_code(Cosa que ya recibi antes de llegar aca),
-// ahora recibo el payload (Que es el tamanio de los parametros que mando),
-// seguidos por el entero y el char.
 
-    if (recv(socket_cliente,&size_payload,sizeof(size_t), 0) != sizeof(size_t)) {
+bool recv_SET(int fd,uint32_t* parametro1,char** parametro2) {
+
+    size_t size_payload;
+    if (recv(fd, &size_payload, sizeof(size_t), 0) != sizeof(size_t))
         return false;
-    }
-    void* stream = malloc(size_payload);
 
-    if (recv(socket_cliente,stream ,size_payload, 0) != size_payload) {
+    void* stream = malloc(size_payload);
+    if (recv(fd, stream, size_payload, 0) != size_payload) {
         free(stream);
         return false;
     }
-   deserializar_SET(stream, parametro1, parametro2);
+
+    deserializar_SET(stream, parametro2, parametro1);
+
     free(stream);
     return true;
-
 }
-bool send_SET(int socket_cliente, uint32_t  parametro1, char* parametro2){
+
+bool send_SET(int fd,uint32_t parametro1 , char* parametro2) {
     size_t size;
-    void* stream = serializar_SET(&size ,parametro1, parametro2);
-    if (send(socket_cliente, stream, size, 0) != size) {
+    void* stream = serializar_SET(&size, parametro2, parametro1);
+    if (send(fd, stream, size, 0) != size) {
         free(stream);
         return false;
     }
