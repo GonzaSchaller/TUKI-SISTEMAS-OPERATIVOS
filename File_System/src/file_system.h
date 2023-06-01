@@ -10,19 +10,12 @@
 #include <readline/readline.h>
 #include <sockets.h>
 
-#include<signal.h>
-#include<unistd.h>
-#include<sys/socket.h>
-#include<netdb.h>
-#include<string.h>
+#include <signal.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <string.h>
 #include <pthread.h>
-
-
-t_log* iniciar_logger(void);
-t_config* iniciar_config(void);
-void leer_consola(t_log*);
-void paquete(int);
-void terminar_programa(int, t_log*, t_config*);
 
 extern int conexion;
 extern char* ip;
@@ -32,10 +25,15 @@ extern char* superbloque;
 extern char* bitmap;
 extern char* bloques;
 extern char* fcb;
-extern int retardo_acceso_bloque;
+extern char* retardo_acceso_bloque;
 
 extern t_log* logger;
 extern t_config* config;
 
+t_log* iniciar_logger(void);
+t_config* iniciar_config(void);
+void leer_consola(t_log*);
+void paquete(int);
+void terminar_programa(int, t_log*, t_config*);
 
 #endif
