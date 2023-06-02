@@ -19,7 +19,6 @@ static void* serializar_SET(size_t* size, char* parametro2, uint32_t parametro1)
 
     return stream;
 }
-
 static void deserializar_SET(void* stream, char** parametro2, uint32_t* parametro1) {
 	// Carga los parametros al reves pero funciona como deberia funcionar
 	size_t size_parametro2;
@@ -31,7 +30,6 @@ static void deserializar_SET(void* stream, char** parametro2, uint32_t* parametr
 
     memcpy(parametro1, stream+sizeof(size_t)+size_parametro2, sizeof(uint32_t));
 }
-
 bool recv_SET(int fd,uint32_t* parametro1,char** parametro2) {
 
     size_t size_payload;
@@ -49,7 +47,6 @@ bool recv_SET(int fd,uint32_t* parametro1,char** parametro2) {
     free(stream);
     return true;
 }
-
 bool send_SET(int fd,uint32_t parametro1 , char* parametro2) {
     size_t size;
     void* stream = serializar_SET(&size, parametro2, parametro1);
@@ -362,7 +359,6 @@ static void deserializar_F_TRUNCATE(void* stream,char** parametro1 , uint32_t* p
 	memcpy(parametro2,stream+sizeof(size_t)+size_parametro1,sizeof(uint32_t));
 // OPCODE,PAYLOAD, SIZE P2, P2,ENTERO P1,
 }
-
 bool recv_F_TRUNCATE(int socket_cliente, char** parametro1,uint32_t* parametro2){
     size_t size_payload ;
     if (recv(socket_cliente,&size_payload,sizeof(size_t), 0) != sizeof(size_t)) {
@@ -674,6 +670,7 @@ bool send_EXIT(int socket_cliente) {
     free(stream);
     return true;
 }
+
 static void* serializar_INICIAR_ESTRUCTURA_MEMORIA() {
    void* stream = malloc(sizeof(op_code));
     op_code cop = INICIAR_ESTRUCTURAS;
@@ -706,7 +703,7 @@ void send_INICIAR_ESTRUCTURA_MEMORIA(int socket_cliente){
 }
 
 static void* serializar_SEGMENTO(size_t* size, segmento_t* segment) {
-    *size = sizeof(uint32_t) * 3;
+    *size = sizeof(segmento_t);
     void* stream = malloc(*size);
     memcpy(stream, &segment->id, sizeof(uint32_t));
     memcpy(stream + sizeof(uint32_t), &segment->direccion_Base, sizeof(uint32_t));
@@ -732,7 +729,7 @@ bool send_SEGMENTO(int server_memoria, segmento_t* segmento){
 
 }
 bool recv_SEGMENTO(int socket_cliente, segmento_t** segmento){
-	    size_t size = sizeof(uint32_t) * 3;
+	    size_t size = sizeof(segmento_t);
 	    void* stream = malloc(size);
 
 	    if (recv(socket_cliente, stream, size, 0) != size) {
@@ -743,7 +740,8 @@ bool recv_SEGMENTO(int socket_cliente, segmento_t** segmento){
 	    free(stream);
 	    return true;
 	}
-	static void* serializar_PID(uint32_t parametro1) {
+
+static void* serializar_PID(uint32_t parametro1) {
    void* stream = malloc(sizeof(uint32_t));
     memcpy(stream, &parametro1, sizeof(uint32_t));
     return stream;
@@ -752,7 +750,6 @@ static void deserializar_PID(void* stream, uint32_t* parametro1) {
     memcpy(parametro1, stream ,sizeof(uint32_t));
 
 }
-
 bool send_PID(int fd,uint32_t parametro1){
     //printf("Entre en send_PID \n");
        size_t size = sizeof(uint32_t);
@@ -768,7 +765,6 @@ bool send_PID(int fd,uint32_t parametro1){
         free(stream);
         return true;
 }
-
 bool recv_PID(int fd, uint32_t* parametro1) {
     size_t size = sizeof(uint32_t);
     void* stream = malloc(size);
@@ -789,13 +785,10 @@ static void* serializar_PC(uint32_t parametro1) {
     memcpy(stream, &parametro1, sizeof(uint32_t));
     return stream;
 }
-
-
 static void deserializar_PC(void* stream, uint32_t* parametro1) {
     memcpy(parametro1, stream ,sizeof(uint32_t));
 
 }
-
 bool send_PC(int fd, uint32_t parametro1) {
    size_t size = sizeof(uint32_t);
     void* stream = serializar_PC(parametro1);
@@ -806,8 +799,6 @@ bool send_PC(int fd, uint32_t parametro1) {
     free(stream);
     return true;
 }
-
-
 bool recv_PC(int fd, uint32_t* parametro1) {
     size_t size = sizeof(uint32_t);
     void* stream = malloc(size);
@@ -825,13 +816,10 @@ static void* serializar_tiempo_bloqueante(uint32_t parametro1) {
     memcpy(stream, &parametro1, sizeof(uint32_t));
     return stream;
 }
-
-
 static void deserializar_tiempo_bloqueante(void* stream, uint32_t* parametro1) {
     memcpy(parametro1, stream ,sizeof(uint32_t));
 
 }
-
 bool send_tiempo_bloqueante(int fd, uint32_t parametro1) {
    size_t size = sizeof(uint32_t);
     void* stream = serializar_tiempo_bloqueante(parametro1);
@@ -842,8 +830,6 @@ bool send_tiempo_bloqueante(int fd, uint32_t parametro1) {
     free(stream);
     return true;
 }
-
-
 bool recv_tiempo_bloqueante(int fd, uint32_t* parametro1) {
     size_t size = sizeof(uint32_t);
     void* stream = malloc(size);
@@ -861,13 +847,10 @@ static void* serializar_BASE_SEGMENTO(uint32_t parametro1) {
     memcpy(stream, &parametro1, sizeof(uint32_t));
     return stream;
 }
-
-
 static void deserializar_BASE_SEGMENTO(void* stream, uint32_t* parametro1) {
     memcpy(parametro1, stream ,sizeof(uint32_t));
 
 }
-
 bool send_BASE_SEGMENTO(int fd, uint32_t parametro1) {
    size_t size = sizeof(uint32_t);
     void* stream = serializar_BASE_SEGMENTO(parametro1);
@@ -878,8 +861,6 @@ bool send_BASE_SEGMENTO(int fd, uint32_t parametro1) {
     free(stream);
     return true;
 }
-
-
 bool recv_BASE_SEGMENTO(int fd, uint32_t* parametro1) {
     size_t size = sizeof(uint32_t);
     void* stream = malloc(size);
@@ -897,13 +878,9 @@ static void* serializar_ID_SEGMENTO(uint32_t parametro1) {
     memcpy(stream, &parametro1, sizeof(uint32_t));
     return stream;
 }
-
-
 static void deserializar_ID_SEGMENTO(void* stream, uint32_t* parametro1) {
     memcpy(parametro1, stream ,sizeof(uint32_t));
-
 }
-
 bool send_ID_SEGMENTO(int fd, uint32_t parametro1) {
    size_t size = sizeof(uint32_t);
     void* stream = serializar_ID_SEGMENTO(parametro1);
@@ -914,8 +891,6 @@ bool send_ID_SEGMENTO(int fd, uint32_t parametro1) {
     free(stream);
     return true;
 }
-
-
 bool recv_ID_SEGMENTO(int fd, uint32_t* parametro1) {
     size_t size = sizeof(uint32_t);
     void* stream = malloc(size);
@@ -927,18 +902,16 @@ bool recv_ID_SEGMENTO(int fd, uint32_t* parametro1) {
     free(stream);
     return true;
 }
+
 static void* serializar_CANT_INSTRUCCIONES(uint32_t parametro1) {
    void* stream = malloc(sizeof(uint32_t));
     memcpy(stream, &parametro1, sizeof(uint32_t));
     return stream;
 }
-
-
 static void deserializar_CANT_INSTRUCCIONES(void* stream, uint32_t* parametro1) {
     memcpy(parametro1, stream ,sizeof(uint32_t));
 
 }
-
 bool send_CANT_INSTRUCCIONES(int fd, uint32_t parametro1) {
    size_t size = sizeof(uint32_t);
     void* stream = serializar_CANT_INSTRUCCIONES(parametro1);
@@ -949,8 +922,6 @@ bool send_CANT_INSTRUCCIONES(int fd, uint32_t parametro1) {
     free(stream);
     return true;
 }
-
-
 bool recv_CANT_INSTRUCCIONES(int fd, uint32_t* parametro1) {
     size_t size = sizeof(uint32_t);
     void* stream = malloc(size);
@@ -963,9 +934,8 @@ bool recv_CANT_INSTRUCCIONES(int fd, uint32_t* parametro1) {
     return true;
 }
 
-
 static void* serializar_REG_CPU(registros_cpu reg ){
-void* stream = malloc(4*sizeof(char[4]) + 4*sizeof(char[8]) + 4*sizeof(char[16]));
+void* stream = malloc(sizeof(registros_cpu));
 int offset = 0; // Desplazamiento
 	memcpy(stream, &reg.AX, sizeof(char[4]));
 	offset += sizeof(char[4]);
@@ -1019,9 +989,8 @@ int offset = 0; // Desplazamiento
 	offset += sizeof(char[16]);
 	memcpy(&reg->RDX, stream + offset,sizeof(char[16]));
 }
-
 bool send_REG_CPU(int fd, registros_cpu registros) {
-   size_t size = 4*sizeof(char[4]) + 4*sizeof(char[8]) + 4*sizeof(char[16]);
+   size_t size = sizeof(registros_cpu);
     void* stream = serializar_REG_CPU(registros);
     if (send(fd, stream, size, 0) != size) {
         free(stream);
@@ -1030,8 +999,6 @@ bool send_REG_CPU(int fd, registros_cpu registros) {
     free(stream);
     return true;
 }
-
-
 bool recv_REG_CPU(int fd, registros_cpu* registros) {
     size_t size = 4*sizeof(char[4]) + 4*sizeof(char[8]) + 4*sizeof(char[16]);
     void* stream = malloc(size);
@@ -1044,8 +1011,8 @@ bool recv_REG_CPU(int fd, registros_cpu* registros) {
     return true;
 }
 
-static void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion contexto){
-	    void* stream = malloc(2 * sizeof(uint32_t) + 4 * sizeof(char[4]) + 4 * sizeof(char[8]) + 4 * sizeof(char[16]));
+static void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion contexto){	// TODO agregar lo de TABLA DE SEGMENTOS
+	    void* stream = malloc(sizeof(contexto_ejecucion));
 	    //+sizeof(t_list);// TODO este sizeof seria el de la tabla de segmentos
 
 	    // Serializar los datos individualmente y copiarlos en el stream
@@ -1141,8 +1108,7 @@ static void deserializar_CONTEXTO_EJECUCION(void* stream, contexto_ejecucion*con
 	    //lista de tabla de segmentos //todo
 }
 bool send_CONTEXTO_EJECUCION(int fd, contexto_ejecucion contexto){
-	size_t size = 2*sizeof(uint32_t)
-	+4*sizeof(char[4]) + 4*sizeof(char[8]) + 4*sizeof(char[16]);
+	size_t size = sizeof(contexto_ejecucion);
 	//+sizeof(t_list);// TODO este sizeof seria el de la tabla de segmentos
 
     void* stream = serializar_CONTEXTO_EJECUCION(contexto);
@@ -1155,7 +1121,7 @@ bool send_CONTEXTO_EJECUCION(int fd, contexto_ejecucion contexto){
     return true;
 }
 bool recv_CONTEXTO_EJECUCION(int fd, contexto_ejecucion* contexto){
-    size_t size = 2*sizeof(uint32_t) +4*sizeof(char[4]) + 4*sizeof(char[8]) + 4*sizeof(char[16]);// mas lista todo
+    size_t size = sizeof(contexto_ejecucion);// mas lista todo
     void* stream = malloc(size);
     if (recv(fd, stream, size, 0) != size) {
         free(stream);
@@ -1173,12 +1139,9 @@ static void* serializar_handshake(uint8_t resultado){
 	memcpy(stream+sizeof(op_code),&resultado,sizeof(uint8_t));
     return stream;
 }
-
-
 static void deserializar_handshake(void*stream,uint8_t*resultado){
 	memcpy(resultado,stream,sizeof(uint8_t));
 }
-
 bool send_handshake(int socket,uint8_t resultado){
 	size_t size = sizeof(op_code) + sizeof(uint8_t);
 	void*stream = serializar_handshake(resultado);
@@ -1201,83 +1164,106 @@ bool recv_handshake(int socket,uint8_t* resultado){
 	return (true);
 }
 
-static void* serializar_TABLA_SEGMENTOS(size_t* size, t_list* lista) {
-    *size = 3* sizeof(uint32_t)  * list_size(lista); // sizeof(uint32_t) por cada campo (ID, base, tamaño)
-    void*stream = malloc(*size);
+static void* serializar_TABLA_SEGMENTOS(t_list* tabla_segmentos, int* tamanio_serializado) {
+    int cant_segmentos = list_size(tabla_segmentos);
+    *tamanio_serializado = sizeof(segmento_t) * cant_segmentos;
 
-    // Serializo los elementos
-    t_list_iterator* list_it = list_iterator_create(lista);
-    int i = 0;
-    while (list_iterator_has_next(list_it)) {
-        segmento_t* segmento = list_iterator_next(list_it);
-        memcpy(stream + i * sizeof(uint32_t), &(segmento->id), sizeof(uint32_t));
-        memcpy(stream + (i + 1) * sizeof(uint32_t), &(segmento->direccion_Base), sizeof(uint32_t));
-        memcpy(stream + (i + 2) * sizeof(uint32_t), &(segmento->tamanio), sizeof(uint32_t));
-                i += 3;
+    void* stream = malloc(*tamanio_serializado);
+    int offset = 0;
+
+    for (int i = 0; i < cant_segmentos; i++) {
+        segmento_t* segmento = list_get(tabla_segmentos, i);
+        memcpy(stream + offset, &segmento, sizeof(segmento_t));
+        offset += sizeof(segmento_t);
     }
-    list_iterator_destroy(list_it);
+
+    return stream;
+}
+static t_list* deserializar_TABLA_SEGMENTOS(void* stream, int tamanio_serializado) {
+    int num_segmentos = tamanio_serializado / sizeof(segmento_t) ;
+    int offset = 0;
+
+    t_list* tabla_segmentos = list_create();
+
+    for (int i = 0; i < num_segmentos; i++) {
+        segmento_t* segmento = malloc(sizeof(segmento_t));
+
+        memcpy(&segmento, stream + offset, sizeof(segmento_t));
+        offset += sizeof(segmento_t);
+        list_add(tabla_segmentos, segmento);
+    }
+
+    return tabla_segmentos;
+}
+bool send_TABLA_SEGMENTOS(int fd, t_list* lista_segmentos) {
+    int tamanio_serializado;
+    void* stream = serializar_TABLA_SEGMENTOS(lista_segmentos, &tamanio_serializado);
+
+    if (send(fd, stream, tamanio_serializado, 0) != tamanio_serializado) {
+        free(stream);
+        return false;
+    }
+
+    free(stream);
+    return true;
+}
+bool recv_TABLA_SEGMENTOS(int fd, t_list** lista_segmentos) {
+    int tamanio_serializado;
+    if (recv(fd, &tamanio_serializado, sizeof(int), 0) != sizeof(int)) {
+        return false;
+    }
+
+    void* stream = malloc(tamanio_serializado);
+    if (recv(fd, stream, tamanio_serializado, 0) != tamanio_serializado) {
+        free(stream);
+        return false;
+    }
+    *lista_segmentos = deserializar_TABLA_SEGMENTOS(stream, tamanio_serializado);
+    free(stream);
+    return true;
+}
+
+/*
+void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion contexto) {
+    int tamanio_tabla_segmentos;
+    void* buffer_tabla_segmentos = serializar_lista_segmentos(contexto.tabla_segmentos, &tamanio_tabla_segmentos);
+
+    void* stream = malloc(sizeof(contexto_ejecucion) + sizeof(int) + tamanio_tabla_segmentos);
+    int offset = 0;
+
+    memcpy(stream + offset, &contexto.PID, sizeof(uint32_t));
+    offset += sizeof(uint32_t);
+
+    memcpy(stream + offset, &contexto.PC, sizeof(uint32_t));
+    offset += sizeof(uint32_t);
+
+    memcpy(stream + offset, contexto.registros.AX, sizeof(char[4]));
+    offset += sizeof(char[4]);
+
+    // Copia los demás campos de contexto de ejecución aquí
+
+    // Copia el tamaño de la tabla de segmentos serializada
+    memcpy(stream + offset, &tamanio_tabla_segmentos, sizeof(int));
+    offset += sizeof(int);
+
+    // Copia la tabla de segmentos serializada
+    memcpy(stream + offset, buffer_tabla_segmentos, tamanio_tabla_segmentos);
+
+    free(buffer_tabla_segmentos);
+
     return stream;
 }
 
 
 
-static t_list* deserializar_TABLA_SEGMENTOS(void* stream, uint32_t n_elements) {
-    t_list* lista = list_create();
-
-    // Deserializo y los agrego a la lista
-    for (uint32_t i = 0; n_elements > 0; i += 3, n_elements--) {
-    	segmento_t* segmento = malloc(sizeof(segmento_t));
-        memcpy(&(segmento->id), stream + i * sizeof(uint32_t), sizeof(uint32_t));
-        memcpy(&(segmento->direccion_Base), stream + (i + 1) * sizeof(uint32_t), sizeof(uint32_t));
-        memcpy(&(segmento->tamanio), stream + (i + 2) * sizeof(uint32_t), sizeof(uint32_t));
-        list_add(lista, segmento);
-    }
-    return lista;
+void serializar(contexto_ejecucion contexto){
+	uint32_t offset_posta =0;
+	serializar_PID(contexto.PID,&offset_posta);
+	serializar_PC(contexto.PC,&offset_posta);
+	serializar_REG_CPU(contexto.registros,&offset_posta);
+	serializar_lista_segmentos(contexto.TSegmento,&offset_posta);
 }
-
-bool send_TABLA_SEGMENTOS(int fd, t_list* lista) {
-    size_t size;
-    void* stream = serializar_TABLA_SEGMENTOS(&size, lista);
-    if (send(fd, stream, size, 0) != size) {
-        free(stream);
-        return false;
-    }
-    free(stream);
-    return true;
-}
-
-bool recv_TABLA_SEGMENTOS(int fd, t_list** lista) {
-    size_t size;
-    void* stream = malloc(size);
-    if (recv(fd, stream, size, 0) != size) {
-        free(stream);
-        return false;
-    }
-    uint8_t n_elements = size / (sizeof(uint32_t) * 3); // Cálculo del número de elementos en la lista
-    *lista = deserializar_TABLA_SEGMENTOS(stream, n_elements);
-    free(stream);
-    return true;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*/
 
 
 

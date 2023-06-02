@@ -105,13 +105,15 @@ bool recv_REG_CPU(int, registros_cpu* );
 bool send_CONTEXTO_EJECUCION(int , contexto_ejecucion);
 bool recv_CONTEXTO_EJECUCION(int , contexto_ejecucion*);
 
-
-
 bool send_handshake(int socket,uint8_t resultado);
 bool recv_handshake(int socket,uint8_t* resultado);
 
 bool send_TABLA_SEGMENTOS(int , t_list*);
 bool recv_TABLA_SEGMENTOS(int, t_list** );
 
+bool recv_TABLA_SEGMENTO(int , uint32_t* ,uint32_t* ,uint32_t* );
+bool send_LA_TABLA_SEGMENTO(int , uint32_t  ,uint32_t  ,uint32_t );
 
+bool send_TABLA_SEGMENTOS(int, t_list* );
+bool recv_TABLA_SEGMENTOS(int , t_list** );
 #endif
