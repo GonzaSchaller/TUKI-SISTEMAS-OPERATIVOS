@@ -23,89 +23,110 @@ void recibir_instrucciones(int socket_cliente, t_log* logger){
 
 		switch(code_instruccion){
 			case SET:{
-				uint32_t* p1;
+				uint32_t p1;
 				char* p2;
 
-				if(!recv_SET(socket_cliente, &p1, &p2))
+				if(!recv_SET(socket_cliente, &p1, &p2)){
 					log_error(logger, "Error al recibir SET");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case MOV_IN:{
-				uint32_t* p1;
-				uint32_t* p2;
+				uint32_t p1;
+				uint32_t p2;
 
-				if(!recv_MOV_IN(socket_cliente, &p1, &p2))
+				if(!recv_MOV_IN(socket_cliente, &p1, &p2)){
 					log_error(logger, "Error al recibir MOV_IN");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case MOV_OUT:{
-				uint32_t* p1;
-				uint32_t* p2;
+				uint32_t p1;
+				uint32_t p2;
 
-				if(!recv_MOV_OUT(socket_cliente, &p1, &p2))
+				if(!recv_MOV_OUT(socket_cliente, &p1, &p2)){
 					log_error(logger,"Error al recibir MOV_OUT");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case IO:{
-				uint32_t* p1;
+				uint32_t p1;
 
-				if(!recv_IO(socket_cliente, &p1))
+				if(!recv_IO(socket_cliente, &p1)){
 					log_error(logger, "Error al recibir IO");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case F_OPEN:{
 				char* p1;
 
-				if(!recv_F_OPEN(socket_cliente, &p1))
+				if(!recv_F_OPEN(socket_cliente, &p1)){
 					log_error(logger,"Error al recibir F_OPEN");
+					break;
+				}
+				//agregar
 				break;
 			}
 			case F_CLOSE:{
 				char* p1;
 
-				if(!recv_F_CLOSE(socket_cliente, &p1))
+				if(!recv_F_CLOSE(socket_cliente, &p1)){
 					log_error(logger,"Error al recibir F_CLOSE");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case F_SEEK:{
 				char* p1;
-				uint32_t* p2;
+				uint32_t p2;
 
-				if(!recv_F_SEEK(socket_cliente, &p1, &p2))
+				if(!recv_F_SEEK(socket_cliente, &p1, &p2)){
 					log_error(logger,"Error al recibir F_SEEK");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case F_READ:{
 				char* p1;
-				uint32_t* p2;
-				uint32_t* p3;
+				uint32_t p2;
+				uint32_t p3;
 
-				if(!recv_F_READ(socket_cliente, &p1, &p2, &p3))
+				if(!recv_F_READ(socket_cliente, &p1, &p2, &p3)){
 					log_error(logger,"Error al recibir F_READ");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case F_WRITE:{
 				char* p1;
-				uint32_t* p2;
-				uint32_t* p3;
+				uint32_t p2;
+				uint32_t p3;
 
-				if(!recv_F_WRITE(socket_cliente, &p1, &p2, &p3))
+				if(!recv_F_WRITE(socket_cliente, &p1, &p2, &p3)){
 					log_error(logger,"Error al recibir F_WRITE");
+					break;
+				}
 				//agregar
 				break;
 			case F_TRUNCATE:{
 				char* p1;
 				uint32_t p2;
 
-				if(!recv_F_TRUNCATE(socket_cliente, &p1, &p2))
+				if(!recv_F_TRUNCATE(socket_cliente, &p1, &p2)){
 					log_error(logger,"Error al recibir F_TRUNCATE");
+					break;
+				}
 				//agregar
 				break;
 			}
@@ -113,45 +134,57 @@ void recibir_instrucciones(int socket_cliente, t_log* logger){
 			case WAIT:{
 				char* p1;
 
-				if(!recv_WAIT(socket_cliente, &p1))
+				if(!recv_WAIT(socket_cliente, &p1)){
 					log_error(logger, "Error al recibir WAIT");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case SIGNAL:{
 				char* p1;
 
-				if(!recv_SIGNAL(socket_cliente, &p1))
+				if(!recv_SIGNAL(socket_cliente, &p1)){
 					log_error(logger,"Error al recibir SIGNAL");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case CREATE_SEGMENT:{
-				uint32_t* p1;
-				uint32_t* p2;
+				uint32_t p1;
+				uint32_t p2;
 
-				if(!recv_CREATE_SEGMENT(socket_cliente, &p1, &p2))
+				if(!recv_CREATE_SEGMENT(socket_cliente, &p1, &p2)){
 					log_error(logger,"Error al recibir CREATE_SEGMENT");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case DELETE_SEGMENT:{
-				uint32_t* p1;
+				uint32_t p1;
 
-				if(!recv_DELETE_SEGMENT(socket_cliente, &p1))
+				if(!recv_DELETE_SEGMENT(socket_cliente, &p1)){
 					log_error(logger,"Error al recibir DELETE_SEGMENT");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case YIELD:{
-				if(!recv_YIELD(socket_cliente))
+				if(!recv_YIELD(socket_cliente)){
 					log_error(logger, "Error al recibir YIELD");
+					break;
+				}
 				//agregar
 				break;
 			}
 			case EXIT:{
-				if(!recv_EXIT(socket_cliente))
+				if(!recv_EXIT(socket_cliente)){
 					log_error(logger, "Error al recibir EXIT");
+					break;
+				}
 				//agregar
 				break;
 			}
