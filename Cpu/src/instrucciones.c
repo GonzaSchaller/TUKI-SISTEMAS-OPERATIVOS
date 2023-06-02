@@ -1,5 +1,7 @@
 #include "instrucciones.h"
 
+t_list* lista_pcb;
+
 void recibir_instrucciones(int socket_cliente, t_log* logger){
 	////////////////////////////////////////////////////////////////////// RECIBIR INSTRUCCIONES /////////////////////////
 	op_code code_instruccion = -10;
@@ -35,11 +37,19 @@ void recibir_instrucciones(int socket_cliente, t_log* logger){
 	pcb_proceso -> registros = contexto -> registros;
 
 	//revisar
-	t_list* lista_pcb;
+
 	list_add(lista_pcb, pcb_proceso);
 
 	instruccion* instrucion_en_execute = malloc(sizeof(instruccion));
-	instrucion_en_execute = fetch(lista_pcb);
+
+	// ¿no tendria que primero buscar el proceso en la lista_pcb y despues buscar el la intruccion?
+	while(pcb_proceso -> PC < list_size(pcb_proceso -> instrucciones)){
+		instrucion_en_execute = fetch(pcb_proceso);
+
+
+		decode_execute(instrucion_en_execute);
+	}
+	send_PC(socket_cliente,pcb_proceso -> PC);
 
 }
 
@@ -273,7 +283,37 @@ void cargar_instruccion3(int id, char* nombre, char* parametro1, uint32_t parame
 	list_add(lista, estructura_instrucciones);
 }
 
-instruccion* fetch(t_list* lista){
+instruccion* fetch(pcb_cpu* un_pcb ){
+	instruccion* proxima_instruccion = malloc(sizeof(instruccion));
 
-	list_get(lista, index);
+	proxima_instruccion = list_get(un_pcb -> instrucciones, un_pcb -> PC);
+	return proxima_instruccion;
+}
+
+void decode_execute(pcb_cpu* pcb_proceso, instruccion* una_instruccion){
+	op_code code_instruccion = una_instruccion -> id;
+
+	char retardo = *retardo_instruccion; // quiero asignar el valor al que esta apuntando el puntero en retardo
+
+	swith (code_instruccion){
+		case SET:{
+			break;
+		}
+		case YIELD:{
+			break;
+		}
+		case EXIT:{
+			break;
+		}
+		case IO:{
+			break;
+		}
+		case WAIT:{
+			break;
+		}
+		case SIGNAL:{
+			break;
+		}
+	}
+	pcb_proceso -> PC += 1;
 }

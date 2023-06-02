@@ -18,6 +18,7 @@
 #include <string.h>
 #include "send_rcvs.h"
 #include "estructuras_compartidas.h"
+#include "configuraciones.h"
 
 typedef struct{
 	uint32_t PID;
@@ -26,6 +27,8 @@ typedef struct{
 	registros_cpu registros;
 
 }pcb_cpu;
+
+t_list* lista_pcb;
 
 void recibir_instrucciones(int, t_log*);
 void cargar_instruccion_a_lista(int, op_code, t_list*, t_log*);
