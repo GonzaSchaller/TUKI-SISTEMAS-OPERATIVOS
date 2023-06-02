@@ -22,9 +22,8 @@ void recibir_instrucciones(int socket_cliente, t_log* logger){
 
 	if(!recv_CONTEXTO_EJECUCION(socket_cliente, contexto)){
 		log_error(logger, "Error al recibir el contexto de ejecucion");
-		exit(1);
+		return;
 	}
-
 
 }
 
