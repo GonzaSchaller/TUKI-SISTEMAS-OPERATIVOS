@@ -34,5 +34,6 @@ uint32_t recibir_cant_instrucciones(int, t_log*);
 void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
 void cargar_instruccion2(int, char* , uint32_t, char* ,uint32_t ,t_list* );
 void cargar_instruccion3(int, char* , char*, uint32_t ,uint32_t ,t_list* );
+instruccion* fetch();
 
 #endif

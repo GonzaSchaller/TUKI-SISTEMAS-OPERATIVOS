@@ -1,9 +1,8 @@
 #include "instrucciones.h"
 
 void recibir_instrucciones(int socket_cliente, t_log* logger){
+	////////////////////////////////////////////////////////////////////// RECIBIR INSTRUCCIONES /////////////////////////
 	op_code code_instruccion = -10;
-	//instruccion instruccion_recibida;
-
 
 	uint32_t cant_instrucciones = recibir_cant_instrucciones(socket_cliente, logger);
 	t_list* lista_instrucciones = list_create();
@@ -17,20 +16,30 @@ void recibir_instrucciones(int socket_cliente, t_log* logger){
 	}
 
 
-
+	/////////////////////////////////////////////////////////////////// RECIBIR CONTEXTO DE EJECUCION ////////////////////
 	contexto_ejecucion* contexto;
 
+	//revisar que con este recv ya obtengo el contexto completo
 	if(!recv_CONTEXTO_EJECUCION(socket_cliente, contexto)){
 		log_error(logger, "Error al recibir el contexto de ejecucion");
 		return;
 	}
 
+	// paso el pcb a una lista
+	//revisar
 	pcb_cpu* pcb_proceso = malloc(sizeof(pcb_cpu));
 
 	pcb_proceso -> PID = contexto -> PID;
 	pcb_proceso -> PC = contexto -> PC;
 	pcb_proceso -> instrucciones = lista_instrucciones;
 	pcb_proceso -> registros = contexto -> registros;
+
+	//revisar
+	t_list* lista_pcb;
+	list_add(lista_pcb, pcb_proceso);
+
+	instruccion* instrucion_en_execute = malloc(sizeof(instruccion));
+	instrucion_en_execute = fetch(lista_pcb);
 
 }
 
@@ -264,3 +273,7 @@ void cargar_instruccion3(int id, char* nombre, char* parametro1, uint32_t parame
 	list_add(lista, estructura_instrucciones);
 }
 
+instruccion* fetch(t_list* lista){
+
+	list_get(lista, index);
+}

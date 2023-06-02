@@ -8,7 +8,11 @@ void establecer_conexion_kernel(){
 	// almacena el socket_cliente (kernel)
 	int cliente_kernel_fd = esperar_cliente(logger, server_fd);
 
-	recibir_instrucciones(cliente_kernel_fd, logger);
+	if(cliente_kernel_fd != -1){
+		recibir_instrucciones(cliente_kernel_fd, logger);
+
+	}
+
 }
 
 void establecer_conexion_memoria(){
@@ -34,6 +38,7 @@ int main (){
 	logger = log_create("cpu.log","Cpu",1,LOG_LEVEL_DEBUG);
 	config = config_create("cpu.config");
 
+	levantar_config();
 	//int server_fd = iniciar_servidor(logger, "Cpu", ip, puerto_cpu);
 	//log_info(logger , "Servidor listo para recibir cliente");
 	//int cliente_fd = esperar_cliente(logger, server_fd);
