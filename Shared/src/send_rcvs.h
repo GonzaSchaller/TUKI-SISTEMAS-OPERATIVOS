@@ -72,8 +72,8 @@ bool recv_F_CLOSE(int , char**);
 bool send_EXIT(int);
 bool recv_EXIT(int);
 
-void send_INICIAR_ESTRUCTURA_MEMORIA(int,char*);
-bool recv_INICIAR_ESTRUCTURA_MEMORIA(int, char** );
+void send_INICIAR_ESTRUCTURA_MEMORIA(int );
+bool recv_INICIAR_ESTRUCTURA_MEMORIA(int);
 
 bool send_SEGMENTO(int, segmento_t*);
 bool recv_SEGMENTO(int, segmento_t** );

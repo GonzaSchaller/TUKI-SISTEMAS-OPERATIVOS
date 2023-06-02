@@ -674,7 +674,38 @@ bool send_EXIT(int socket_cliente) {
     free(stream);
     return true;
 }
-static void* serializar_INICIAR_ESTRUCTURA_MEMORIA(size_t* size, char* mensaje){
+static void* serializar_INICIAR_ESTRUCTURA_MEMORIA() {
+   void* stream = malloc(sizeof(op_code));
+    op_code cop = INICIAR_ESTRUCTURAS;
+    memcpy(stream, &cop, sizeof(op_code));
+    return stream;
+}
+bool recv_INICIAR_ESTRUCTURA_MEMORIA(int socket_cliente){
+
+	    size_t size = sizeof(op_code);
+	    void* stream = malloc(size);
+
+	    if (recv(socket_cliente, stream, size, 0) != size) {
+	        free(stream);
+	        return false;
+	    }
+	    //deserializar_YIELD(stream);
+	    free(stream);
+	    return true;
+
+}
+void send_INICIAR_ESTRUCTURA_MEMORIA(int socket_cliente){
+	op_code instruccion = YIELD;
+   size_t size = sizeof(op_code);
+    void* stream = serializar_INICIAR_ESTRUCTURA_MEMORIA(instruccion);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+
+    }
+    free(stream);
+}
+
+/*static void* serializar_INICIAR_ESTRUCTURA_MEMORIA(size_t* size, char* mensaje){
 	size_t size_mensaje = strlen(mensaje)+1;
 		*size = 2*sizeof(size_t)+ size_mensaje;
 		size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
@@ -684,6 +715,7 @@ static void* serializar_INICIAR_ESTRUCTURA_MEMORIA(size_t* size, char* mensaje){
 		memcpy(stream+sizeof(size_t)+sizeof(size_t), mensaje, size_mensaje);
 		return stream;
 }
+
 static void deserializar_INICIAR_ESTRUCTURA_MEMORIA(void* stream,char** mensaje){
 	size_t size_mensaje;
 	memcpy(&size_mensaje, stream, sizeof(size_t));
@@ -717,7 +749,7 @@ bool recv_INICIAR_ESTRUCTURA_MEMORIA(int socket_cliente, char** mensaje){
 	    free(stream);
 	    return true;
 }
-
+*/
 static void* serializar_SEGMENTO(size_t* size, segmento_t* segment) {
     *size = sizeof(uint32_t) * 3;
     void* stream = malloc(*size);
