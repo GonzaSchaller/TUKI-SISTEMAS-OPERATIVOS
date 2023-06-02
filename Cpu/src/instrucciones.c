@@ -25,6 +25,13 @@ void recibir_instrucciones(int socket_cliente, t_log* logger){
 		return;
 	}
 
+	pcb_cpu* pcb_proceso = malloc(sizeof(pcb_cpu));
+
+	pcb_proceso -> PID = contexto -> PID;
+	pcb_proceso -> PC = contexto -> PC;
+	pcb_proceso -> instrucciones = lista_instrucciones;
+	pcb_proceso -> registros = contexto -> registros;
+
 }
 
 uint32_t recibir_cant_instrucciones(int socket, t_log* logger){
