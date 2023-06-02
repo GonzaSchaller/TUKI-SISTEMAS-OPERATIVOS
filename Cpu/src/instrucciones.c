@@ -290,28 +290,39 @@ instruccion* fetch(pcb_cpu* un_pcb ){
 	return proxima_instruccion;
 }
 
-void decode_execute(pcb_cpu* pcb_proceso, instruccion* una_instruccion){
+void decode_execute(pcb_cpu* pcb_proceso, instruccion* una_instruccion, t_log* logger){
 	op_code code_instruccion = una_instruccion -> id;
 
-	char retardo = *retardo_instruccion; // quiero asignar el valor al que esta apuntando el puntero en retardo
+	uint32_t retardo = *retardo_instruccion; // quiero asignar el valor al que esta apuntando el puntero en retardo
+	retardo = retardo / 1000; //paso de segundos a milisegundos
 
-	swith (code_instruccion){
+	switch (code_instruccion){
 		case SET:{
+			uint32_t param2 = una_instruccion -> parametro1.tipo_int;
+			char* param1 = una_instruccion -> parametro1.tipo_string;
+			log_info(logger, "PID: %d - Ejecutando: %d - %d, %d", pcb_proceso->PID, una_instruccion->id, param1, param2);
+			sleep(retardo);
+			ejercutar_SET(param1, param2);
 			break;
 		}
 		case YIELD:{
+			log_info(logger, "Ejecutando YIELD");
 			break;
 		}
 		case EXIT:{
+			log_info(logger, "Ejecutando EXIT");
 			break;
 		}
 		case IO:{
+			log_info(logger, "Ejecutando IO");
 			break;
 		}
 		case WAIT:{
+			log_info(logger, "Ejecutando WAIT");
 			break;
 		}
 		case SIGNAL:{
+			log_info(logger, "Ejecutando SIGNAL");
 			break;
 		}
 	}
