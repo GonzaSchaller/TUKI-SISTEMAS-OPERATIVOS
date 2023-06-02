@@ -20,5 +20,8 @@
 #include "estructuras_compartidas.h"
 
 void recibir_instrucciones(int, t_log*);
+void cargar_instruccion_a_lista(int, op_code, t_list*, t_log*);
+bool verificacion_recibo_code_correctamente(int, t_log*, op_code);
+uint32_t recibir_cant_instrucciones(int, t_log*);
 
 #endif
