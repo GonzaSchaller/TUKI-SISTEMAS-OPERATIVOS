@@ -47,11 +47,11 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
 	registros_cpu registrosInicializados;
 	memset(&registrosInicializados, 0, sizeof(registros_cpu));
 
-    pcb->contexto_PCB.PID = contadorProceso;
+    pcb->contexto.PID = contadorProceso;
     pcb->instrucciones = listaInstrucciones;
-    pcb->contexto_PCB.PC = 0;
-   	pcb->contexto_PCB.registros = registrosInicializados;//todo fijarse que no rompa
-    pcb->contexto_PCB.TSegmento= NULL;
+    pcb->contexto.PC = 0;
+   	pcb->contexto.registros = registrosInicializados;//todo fijarse que no rompa
+    pcb->contexto.TSegmento= NULL;
     pcb->horaDeIngresoAReady= 0;
     pcb->tabla_archivosAbiertos = list_create();
     pcb->state= NEW;
@@ -64,7 +64,7 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
 }
 
 void enviar_pcb_cpu(int fd_cpu, pcb_t* pcb_proceso){
-	send_CONTEXTO_EJECUCION(fd_cpu,pcb_proceso->contexto_PCB);
+	send_CONTEXTO_EJECUCION(fd_cpu,pcb_proceso->contexto);
 	send_CANT_INSTRUCCIONES(fd_cpu,list_size(pcb_proceso->instrucciones)); //TODO recibe primero la cant de inestrucciones
 	send_instrucciones_kernel_a_cpu(fd_cpu,pcb_proceso);
 	//send_PID(fd_cpu,pcb_proceso->PID);		//contexto de ejecucion

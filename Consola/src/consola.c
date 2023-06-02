@@ -32,7 +32,6 @@ int main (int argc, char* argv[]){
 		return EXIT_FAILURE;
 		terminar_programa(conexion_kernel, log_consola, config_consola);
 	}
-
 	send_instrucciones_a_kernel();
 	//int conexion2 = crear_conexion(log_consola,"Kernel", ip, puerto );
 	terminar_programa(conexion_kernel, log_consola, config_consola);

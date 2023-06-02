@@ -38,6 +38,7 @@ void manejar_otras_instrucciones(pcb_t*,uint32_t, float);
 void manejar_fileSystem(pcb_t* ,uint32_t, float tiempoDeFin);
 fcb_t* encontrar_archivo(t_list*, char*);
 void eliminarArchivoDeLista(char*, t_list*);
+void print_lista_PID();
 //para poder usarlas en el main
 extern t_queue* colaNew;
 extern t_list* listaReady;

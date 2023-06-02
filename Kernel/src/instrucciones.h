@@ -19,7 +19,7 @@ typedef enum {
 typedef struct{
 
     t_list* instrucciones; // Lista de instrucciones a ejecutar
-    contexto_ejecucion contexto_PCB; //tiene registros, tabla segmento, pid y PC
+    contexto_ejecucion contexto; //tiene registros, tabla segmento, pid y PC
 
 
     uint32_t estimacion_prox_rafaga; //S del HRRN

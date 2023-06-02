@@ -229,7 +229,7 @@ void agregarANew(pcb_t* pcb_proceso) {
 	pthread_mutex_lock(&mutexNew);
 
 	queue_push(colaNew, pcb_proceso);
-	log_info(log_kernel, "Se crea el proceso <%d> en NEW", pcb_proceso->contexto_PCB.PID);
+	log_info(log_kernel, "Se crea el proceso <%d> en NEW", pcb_proceso->contexto.PID);
 
 	pthread_mutex_unlock(&mutexNew);
 
@@ -244,7 +244,7 @@ pcb_t* sacarDeNew(){
 	pthread_mutex_lock(&mutexNew);
 
 	pcb_t * pcb_proceso = queue_pop(colaNew);
-	log_info(log_kernel, "[NEW] Se saca el proceso de PID: %d de la cola", pcb_proceso->contexto_PCB.PID);
+	log_info(log_kernel, "[NEW] Se saca el proceso de PID: %d de la cola", pcb_proceso->contexto.PID);
 
 	pthread_mutex_unlock(&mutexNew);
 
