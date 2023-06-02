@@ -1,8 +1,8 @@
 #include "instrucciones.h"
 
 void recibir_instrucciones(int socket_cliente, t_log* logger){
-	op_code code_instruccion;
-	instruccion instruccion_recibida;
+	op_code code_instruccion = -10;
+	//instruccion instruccion_recibida;
 
 
 	uint32_t cant_instrucciones = recibir_cant_instrucciones(socket_cliente, logger);
@@ -45,77 +45,77 @@ bool verificacion_recibo_code_correctamente(int socket, t_log* logger, op_code c
 	return true;
 }
 
-void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* una_lista, t_log* logger){
+void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista, t_log* logger){
 
 	switch(code){
 		case SET:{
-			uint32_t p1;
-			char* p2;
+			uint32_t param1;
+			char* param2;
 
-			if(!recv_SET(socket_cliente, &p1, &p2)){
+			if(!recv_SET(socket_cliente, &param1, &param2)){
 				log_error(logger, "Error al recibir SET");
 				break;
 			}
-			//agregar
+			cargar_instruccion2(SET, "SET", param1, param2, 0, lista);
 			break;
 		}
 		case MOV_IN:{
-			uint32_t p1;
-			uint32_t p2;
+			uint32_t param1;
+			uint32_t param2;
 
-			if(!recv_MOV_IN(socket_cliente, &p1, &p2)){
+			if(!recv_MOV_IN(socket_cliente, &param1, &param2)){
 				log_error(logger, "Error al recibir MOV_IN");
 				break;
 			}
-			//agregar
+			cargar_instruccion1(MOV_IN, "MOV_IN", param1, param2, 0, lista);
 			break;
 		}
 		case MOV_OUT:{
-			uint32_t p1;
-			uint32_t p2;
+			uint32_t param1;
+			uint32_t param2;
 
-			if(!recv_MOV_OUT(socket_cliente, &p1, &p2)){
+			if(!recv_MOV_OUT(socket_cliente, &param1, &param2)){
 				log_error(logger,"Error al recibir MOV_OUT");
 				break;
 			}
-			//agregar
+			cargar_instruccion1(MOV_OUT, "MOV_OUT", param1, param2 , 0 , lista);
 			break;
 		}
 		case IO:{
-			uint32_t p1;
+			uint32_t param1;
 
-			if(!recv_IO(socket_cliente, &p1)){
+			if(!recv_IO(socket_cliente, &param1)){
 				log_error(logger, "Error al recibir IO");
 				break;
 			}
-			//agregar
+			cargar_instruccion1(IO,"IO", param1, 0, 0,lista);
 			break;
 		}
 		case F_OPEN:{
-			char* p1;
+			char* param1;
 
-			if(!recv_F_OPEN(socket_cliente, &p1)){
+			if(!recv_F_OPEN(socket_cliente, &param1)){
 				log_error(logger,"Error al recibir F_OPEN");
 				break;
 			}
-			//agregar
+			cargar_instruccion3(F_OPEN, "F_OPEN", param1, 0, 0, lista);
 			break;
 		}
 		case F_CLOSE:{
-			char* p1;
+			char* param1;
 
-			if(!recv_F_CLOSE(socket_cliente, &p1)){
+			if(!recv_F_CLOSE(socket_cliente, &param1)){
 				log_error(logger,"Error al recibir F_CLOSE");
 				break;
 			}
-			//agregar
+			cargar_instruccion3(F_CLOSE, "F_CLOSE", param1, 0, 0, lista);
 			break;
 		}
 		case F_SEEK:{
-			char* p1;
-			uint32_t p2;
+			char* param1;
+			uint32_t param2;
 
-			if(!recv_F_SEEK(socket_cliente, &p1, &p2)){
+			if(!recv_F_SEEK(socket_cliente, &param1, &param2)){
 				log_error(logger,"Error al recibir F_SEEK");
 				break;
 			}
@@ -123,79 +123,79 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* una_li
 			break;
 		}
 		case F_READ:{
-			char* p1;
-			uint32_t p2;
-			uint32_t p3;
+			char* param1;
+			uint32_t param2;
+			uint32_t param3;
 
-			if(!recv_F_READ(socket_cliente, &p1, &p2, &p3)){
+			if(!recv_F_READ(socket_cliente, &param1, &param2, &param3)){
 				log_error(logger,"Error al recibir F_READ");
 				break;
 			}
-			//agregar
+			cargar_instruccion3( F_READ, "F_READ", param1, param2, param3, lista);
 			break;
 		}
 		case F_WRITE:{
-			char* p1;
-			uint32_t p2;
-			uint32_t p3;
+			char* param1;
+			uint32_t param2;
+			uint32_t param3;
 
-			if(!recv_F_WRITE(socket_cliente, &p1, &p2, &p3)){
+			if(!recv_F_WRITE(socket_cliente, &param1, &param2, &param3)){
 				log_error(logger,"Error al recibir F_WRITE");
 				break;
 			}
-			//agregar
+			cargar_instruccion3( F_WRITE, "F_WRITE", param1, param2, param3, lista);
 			break;
 		}
 		case F_TRUNCATE:{
-			char* p1;
-			uint32_t p2;
+			char* param1;
+			uint32_t param2;
 
-			if(!recv_F_TRUNCATE(socket_cliente, &p1, &p2)){
+			if(!recv_F_TRUNCATE(socket_cliente, &param1, &param2)){
 				log_error(logger,"Error al recibir F_TRUNCATE");
 				break;
 			}
-			//agregar
+			cargar_instruccion3( F_TRUNCATE, "F_TRUNCATE", param1, param2, 0, lista);
 			break;
 		}
 		case WAIT:{
-			char* p1;
+			char* param1;
 
-			if(!recv_WAIT(socket_cliente, &p1)){
+			if(!recv_WAIT(socket_cliente, &param1)){
 				log_error(logger, "Error al recibir WAIT");
 				break;
 			}
-			//agregar
+			cargar_instruccion3(WAIT, "WAIT", param1, 0, 0, lista);
 			break;
 		}
 		case SIGNAL:{
-			char* p1;
+			char* param1;
 
-			if(!recv_SIGNAL(socket_cliente, &p1)){
+			if(!recv_SIGNAL(socket_cliente, &param1)){
 				log_error(logger,"Error al recibir SIGNAL");
 				break;
 			}
-			//agregar
+			cargar_instruccion3(SIGNAL, "SIGNAL", param1, 0, 0, lista);
 			break;
 		}
 		case CREATE_SEGMENT:{
-			uint32_t p1;
-			uint32_t p2;
+			uint32_t param1;
+			uint32_t param2;
 
-			if(!recv_CREATE_SEGMENT(socket_cliente, &p1, &p2)){
+			if(!recv_CREATE_SEGMENT(socket_cliente, &param1, &param2)){
 				log_error(logger,"Error al recibir CREATE_SEGMENT");
 				break;
 			}
-			//agregar
+			cargar_instruccion1(CREATE_SEGMENT, "CREATE_SEGMENT", param1, param2, 0, lista);
 			break;
 		}
 		case DELETE_SEGMENT:{
-			uint32_t p1;
+			uint32_t param1;
 
-			if(!recv_DELETE_SEGMENT(socket_cliente, &p1)){
+			if(!recv_DELETE_SEGMENT(socket_cliente, &param1)){
 				log_error(logger,"Error al recibir DELETE_SEGMENT");
 				break;
 			}
-			//agregar
+			cargar_instruccion1(DELETE_SEGMENT, "DELETE_SEGMENT", param1, 0, 0, lista);
 			break;
 		}
 		case YIELD:{
@@ -203,7 +203,7 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* una_li
 				log_error(logger, "Error al recibir YIELD");
 				break;
 			}
-			//agregar
+			cargar_instruccion1(YIELD, "YIELD", 0, 0, 0, lista);
 			break;
 		}
 		case EXIT:{
@@ -211,11 +211,50 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* una_li
 				log_error(logger, "Error al recibir EXIT");
 				break;
 			}
-			//agregar
+			cargar_instruccion1(EXIT,"EXIT", 0, 0, 0, lista);
 			break;
 		}
 
 	}
 
+}
+
+void cargar_instruccion1(int id, char* nombre, uint32_t parametro1, uint32_t parametro2,uint32_t parametro3,t_list* lista){
+
+	instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
+
+	estructura_instrucciones->id = id;
+	estructura_instrucciones->nombre = nombre;
+	estructura_instrucciones->parametro1.tipo_int = parametro1;
+	estructura_instrucciones->parametro2.tipo_int = parametro2;
+	estructura_instrucciones->parametro3 = parametro3;
+
+	list_add(lista, estructura_instrucciones);
+}
+
+void cargar_instruccion2(int id, char* nombre, uint32_t parametro1, char* parametro2,uint32_t parametro3,t_list* lista){
+
+	instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
+
+	estructura_instrucciones->id = id;
+	estructura_instrucciones->nombre = nombre;
+	estructura_instrucciones->parametro1.tipo_int = parametro1;
+	estructura_instrucciones->parametro2.tipo_string= parametro2;
+	estructura_instrucciones->parametro3 = parametro3;
+
+	list_add(lista, estructura_instrucciones);
+}
+
+void cargar_instruccion3(int id, char* nombre, char* parametro1, uint32_t parametro2,uint32_t parametro3,t_list* lista){
+
+	instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
+
+	estructura_instrucciones->id = id;
+	estructura_instrucciones->nombre = nombre;
+	estructura_instrucciones->parametro1.tipo_string = parametro1;
+	estructura_instrucciones->parametro2.tipo_int = parametro2;
+	estructura_instrucciones->parametro3 = parametro3;
+
+	list_add(lista, estructura_instrucciones);
 }
 
