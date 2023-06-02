@@ -24,7 +24,7 @@ void liberarConexiones(int , int , int );
 void terminar_kernel(t_config*);
 void generar_conexiones();
 int server_escuchar(int);
-
+char* estado_pcb_a_string(uint32_t);
 
 
 #endif

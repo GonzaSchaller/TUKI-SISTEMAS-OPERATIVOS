@@ -35,12 +35,15 @@ void agregarNewAReady(pcb_t* pcb){
 	t_list* tseg;
 	list_add(listaReady, pcb); //agrega a la listaReady
 
-//	send_INICIAR_ESTRUCTURA_MEMORIA(conexion_memoria, "Inicializa las estructuras"); //mandamos mensaje a memoria que incie sus estructuras
-//	if(!recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento  TODO agus memoria
-//		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto_PCB.PID);
-//	}
+	send_INICIAR_ESTRUCTURA_MEMORIA(conexion_memoria); //mandamos mensaje a memoria que incie sus estructuras
+	if(!recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento  TODO agus memoria
+		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto_PCB.PID);
+	}
 	pcb->contexto_PCB.TSegmento = tseg;
-	log_info(log_kernel, "PID: <%d> - Estado Anterior: <NEW> - Estado Actual: <READY>", pcb->contexto_PCB.PID);// todo estado anterior
+
+	pcb->state_anterior = pcb->state;
+	pcb->state = READY;
+	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb->contexto_PCB.PID,estado_pcb_a_string(pcb->state_anterior),estado_pcb_a_string(pcb->state));// todo estado anterior
 
 	//printf("PROCESOS EN READY: %d \n", list_size(colaReady));
 
@@ -53,9 +56,9 @@ void agregarAReady(pcb_t* pcb){
 	pcb->horaDeIngresoAReady = llegadaReady;
 	pthread_mutex_lock(&mutexReady);
 	list_add(listaReady, pcb);
-	//log_info(log_kernel, "[READY] Entra el proceso de PID: %d a la cola.", pcb->contexto_PCB.PID);
-	//log_info(log_kernel, “PID: <%d> - Estado Anterior: <NEW> - Estado Actual: <READY>”,pcb->contexto_PCB.PID); // TODO ver estado anterior y eso
-
+	pcb->state_anterior = pcb->state;
+	pcb->state = READY;
+	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb->contexto_PCB.PID,estado_pcb_a_string(pcb->state_anterior),estado_pcb_a_string(pcb->state));
 	pthread_mutex_unlock(&mutexReady);
 
 }
@@ -98,7 +101,7 @@ void hiloNew_Ready(){
 		pcb_t* proceso = sacarDeNew();
 		//log_error(log_kernel,"[===========] agregue a ready desde hilo new ready");
 		agregarNewAReady(proceso);
-		// proceso->state = Ready;
+
 	}
 
 }
@@ -171,10 +174,12 @@ pcb_t* obtener_siguiente_ready(){
 void bloquear_procesoPorIO(void* arg) {
     // Obtén el PCB del proceso a bloquear desde el argumento pasado al hilo
     pcb_t* pcb_bloqueado = (pcb_t*)arg;
-
+    pcb_bloqueado->state_anterior = pcb_bloqueado->state;
+    pcb_bloqueado->state = BLOCK;
+    log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_bloqueado->contexto_PCB.PID,estado_pcb_a_string(pcb_bloqueado->state_anterior),estado_pcb_a_string(pcb_bloqueado->state));// TODO VA ESTE?
     usleep(pcb_bloqueado->tiempo_bloqueo * 1000); //en microsegundos
     agregarAReady(pcb_bloqueado);
-    pcb_bloqueado->state = READY;
+    //pcb_bloqueado->state = READY;
 
     pthread_exit(NULL);
 }
@@ -216,8 +221,10 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				                // Bloquear el proceso actual en la cola de bloqueados del recurso
 				                pthread_mutex_lock(&(recurso->mutexRecurso)); // creo que no es necesario el mutex, se comparte con otro hilo?
 				                queue_push(recurso->colaBloqueados, pcb_siguiente);
+				                pcb_siguiente->state_anterior = pcb_siguiente->state;
+				                pcb_siguiente->state = BLOCK;
+				                log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto_PCB.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
 				                pthread_mutex_unlock(&(recurso->mutexRecurso)); // Desbloquear el acceso a la cola de bloqueados
-				            	pcb_siguiente->state = BLOCK;
 				            }
 				        }
 				        else { // si no existe el recurso
@@ -243,12 +250,11 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				                pthread_mutex_lock(&(recurso->mutexRecurso));
 				                pcb_t* pcb_bloqueado = queue_pop(recurso->colaBloqueados);
 				                pthread_mutex_unlock(&(recurso->mutexRecurso));
-								pcb_bloqueado->state = READY;
+								pcb_bloqueado->state = READY;//
 				               	agregarAReady(pcb_bloqueado);
 				            }
 				        } else{
 							terminarEjecucion(pcb_siguiente);
-							pcb_siguiente->state = EXIT;
 							log_info(log_kernel, "Finaliza el proceso <%d> porque no existe una instancia del recurso", pcb_siguiente->contexto_PCB.PID);
 							sem_post(&multiprogramacion);
 						}
@@ -302,7 +308,7 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 					{
 						terminarEjecucion(pcb_siguiente);
 						//log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <S / SEG_FAULT / OUT_OF_MEMORY>", pcb_proceso->contexto_PCB.PID);
-						pcb_siguiente->state = EXIT;
+
 						log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <%d>", pcb_siguiente->contexto_PCB.PID,estado_segmento); // todo chat gpt neus
 						sem_post(&multiprogramacion);
 					}
@@ -351,11 +357,10 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 	 else if(cop == YIELD){
 		recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 		agregarAReady(pcb_siguiente);
-		pcb_siguiente->state = READY;
+
 	 }
 	 else{// caso EXIT o error
 					terminarEjecucion(pcb_siguiente);
-					pcb_siguiente->state = EXIT;
 					if(cop == EXIT){
 					//log_info(log_kernel, "Finaliza el proceso <PID> - Motivo: <SUCCESS> ", pcb_siguiente->contexto_PCB.PID); // todo poner el success bien
 					}
@@ -394,9 +399,12 @@ void hiloReady_Execute(){
 	{
 		pthread_mutex_lock(&multiprocesamiento);
 		pcb_t* pcb_siguiente = obtener_siguiente_ready();
+
 		log_info(log_kernel, "estamos en execute %d", pcb_siguiente->contexto_PCB.PID); // log de prueba
 		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
+		log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto_PCB.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
 		pcb_siguiente->horaDeIngresoAExe = ((float) time(NULL));
+		pcb_siguiente->state_anterior=pcb_siguiente->state;
 		pcb_siguiente->state = EXEC;
 		while(pcb_siguiente->state == EXEC){ //que ejecute cada instruccion hasta que cambie de estado
 			manejar_contextosDeEjecucion(pcb_siguiente);
@@ -412,6 +420,9 @@ void terminarEjecucion(pcb_t* pcb){ //TODO falta liberar recursos del proceso
 	pthread_mutex_lock(&mutexExit);
 
 	list_add(listaExit, pcb);
+	pcb->state_anterior = pcb->state;
+	pcb->state = FINISH;
+	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb->contexto_PCB.PID,estado_pcb_a_string(pcb->state_anterior),estado_pcb_a_string(pcb->state)); // TODO dudoso q vaya aca
 	log_info(log_kernel, "[EXIT] Finaliza el proceso de PID: %d", pcb->contexto_PCB.PID);
 
 	pthread_mutex_unlock(&mutexExit);
@@ -463,8 +474,11 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 							pthread_mutex_init(&archivo->mutexArchivo, NULL); // TODO queda raro aca
 							pthread_mutex_lock(&(archivo->mutexArchivo));
 							queue_push(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
-							pthread_mutex_unlock(&(archivo->mutexArchivo));
+							pcb_siguiente->state_anterior = pcb_siguiente->state;
 							pcb_siguiente->state = BLOCK;
+							log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto_PCB.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
+							pthread_mutex_unlock(&(archivo->mutexArchivo));
+
 							recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 				        }
 				        else{
@@ -498,7 +512,7 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 					pcb_t* pcb_bloqueado= queue_pop(archivo->colaBloqueados);
 					pthread_mutex_unlock(&(archivo->mutexArchivo));
 					agregarAReady(pcb_bloqueado);
-					pcb_bloqueado->state = READY;
+
 					}
 					else{
 						// ningun otro proceso quiere el archivo
@@ -530,8 +544,11 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 			pthread_mutex_init(&archivo->mutexArchivo, NULL); // TODO queda raro aca
 			pthread_mutex_lock(&(archivo->mutexArchivo));
 			queue_push(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
-			pthread_mutex_unlock(&(archivo->mutexArchivo));
+			pcb_siguiente->state_anterior = pcb_siguiente->state;
 			pcb_siguiente->state = BLOCK;
+			log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto_PCB.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
+			pthread_mutex_unlock(&(archivo->mutexArchivo));
+
 			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin); // todo generalizar edsde el mutex init hasta aca
 			// todo falta desbloquear
 

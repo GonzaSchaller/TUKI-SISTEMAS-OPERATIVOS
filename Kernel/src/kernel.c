@@ -4,6 +4,23 @@ t_log* log_kernel;
 int conexion_cpu;
 int conexion_fileSystem;
 int conexion_memoria;
+//todo
+char* estado_pcb_a_string(uint32_t estado_int){// CAMBIE
+	  switch (estado_int) {
+	        case NEW:
+	            return "NEW";
+	        case READY:
+	            return "READY";
+	        case EXEC:
+	            return "EXEC";
+	        case BLOCK:
+	            return "BLOCK";
+	        case FINISH:
+	        	return "EXIT";
+	        default:
+	            return "Registro desconocido";
+	    }
+}
 
 //lee el archivo config
 void iniciar_config(t_config* config){

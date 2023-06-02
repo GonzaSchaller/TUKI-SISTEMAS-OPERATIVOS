@@ -14,7 +14,7 @@ typedef enum {
     EXEC,
     BLOCK,
     FINISH
-}estado;
+}estado;// ESTADO PCB
 
 typedef struct{
 
@@ -27,6 +27,7 @@ typedef struct{
     t_list* tabla_archivosAbiertos ;// lista de fcb_t
     estado state ; //capaz ponerlo uint32
 
+    uint32_t state_anterior;
     float rafaga_anterior_real; // 0 al principio, despues es el tiempo real que se ejecuto. Seria el R(n)
     float estimacion_rafaga_anterior; // estimacion inicial
     float horaDeIngresoAExe; // timestamp cuando llega a execute para calcular la rafaga anterior
