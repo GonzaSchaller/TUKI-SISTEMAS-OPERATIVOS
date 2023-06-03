@@ -692,12 +692,12 @@ bool recv_INICIAR_ESTRUCTURA_MEMORIA(int socket_cliente){
 
 }
 void send_INICIAR_ESTRUCTURA_MEMORIA(int socket_cliente){
-	op_code instruccion = YIELD;
+	op_code instruccion = INICIAR_ESTRUCTURAS;
    size_t size = sizeof(op_code);
     void* stream = serializar_INICIAR_ESTRUCTURA_MEMORIA(instruccion);
     if (send(socket_cliente, stream, size, 0) != size) {
         free(stream);
-
+        return;
     }
     free(stream);
 }
