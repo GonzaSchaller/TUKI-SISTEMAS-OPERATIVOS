@@ -1,9 +1,18 @@
 #include "cpu.h"
 
 void establecer_conexion_kernel(){
+	// genera el servidor de cpu
 	int server_fd = iniciar_servidor(logger, "Cpu", ip, puerto_cpu);
 	log_info(logger, "Servidor listo para recibir cliente");
-	int cliente_fd = esperar_cliente(logger, server_fd);
+
+	// almacena el socket_cliente (kernel)
+	int cliente_kernel_fd = esperar_cliente(logger, server_fd);
+
+	if(cliente_kernel_fd != -1){
+		procesar_instrucciones(cliente_kernel_fd, logger);
+
+	}
+
 }
 
 void establecer_conexion_memoria(){
@@ -29,6 +38,7 @@ int main (){
 	logger = log_create("cpu.log","Cpu",1,LOG_LEVEL_DEBUG);
 	config = config_create("cpu.config");
 
+	levantar_config();
 	//int server_fd = iniciar_servidor(logger, "Cpu", ip, puerto_cpu);
 	//log_info(logger , "Servidor listo para recibir cliente");
 	//int cliente_fd = esperar_cliente(logger, server_fd);
@@ -38,7 +48,6 @@ int main (){
 	//cuando el cpu es server del kernel
 	establecer_conexiones();
 
-	recibir_instrucciones();
 
 	terminar_programa(conexion, logger, config);
 
