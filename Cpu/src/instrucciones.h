@@ -34,11 +34,14 @@ void procesar_instrucciones(int, t_log*);
 void cargar_instruccion_a_lista(int, op_code, t_list*, t_log*);
 bool verificacion_recibo_code_correctamente(int, t_log*, op_code);
 uint32_t recibir_cant_instrucciones(int, t_log*);
+
 void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
 void cargar_instruccion2(int, char* , uint32_t, char* ,uint32_t ,t_list* );
 void cargar_instruccion3(int, char* , char*, uint32_t ,uint32_t ,t_list* );
+
 instruccion* fetch();
 void decode_execute(int, pcb_cpu*, instruccion*, t_log*);
+
 void ejecutar_SET(int, contexto_ejecucion); //REVISAR
 void ejecuctar_YIELD(int, pcb_cpu*);
 void ejecutar_EXIT(int, contexto_ejecucion);

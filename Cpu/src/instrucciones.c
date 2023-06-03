@@ -27,7 +27,7 @@ void procesar_instrucciones(int socket_cliente, t_log* logger){
 		return;
 	}
 
-	// paso el pcb a una lista
+	// paso el contexto a un pcb y ese a una lista
 	//revisar
 	pcb_cpu* pcb_proceso = malloc(sizeof(pcb_cpu));
 
@@ -37,17 +37,16 @@ void procesar_instrucciones(int socket_cliente, t_log* logger){
 	pcb_proceso -> registros = contexto -> registros;
 
 	//revisar
-
 	list_add(lista_pcb, pcb_proceso);
 
-	instruccion* instrucion_en_execute = malloc(sizeof(instruccion));
+	instruccion* instruccion_en_execute = malloc(sizeof(instruccion));
 
 	// ¿no tendria que primero buscar el proceso en la lista_pcb y despues buscar el la intruccion?
 	while(pcb_proceso -> PC < list_size(pcb_proceso -> instrucciones)){
-		instrucion_en_execute = fetch(pcb_proceso);
-		decode_execute(instrucion_en_execute);
+		instruccion_en_execute = fetch(pcb_proceso);
+		decode_execute(socket_cliente, pcb_proceso, instruccion_en_execute, logger);
 	}
-	send_PC(socket_cliente,pcb_proceso -> PC);
+	//send_PC(socket_cliente,pcb_proceso -> PC);
 
 }
 
@@ -298,29 +297,29 @@ void decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instrucci
 		case SET:{
 			uint32_t param1 = una_instruccion -> parametro1.tipo_int;
 			char* param2 = una_instruccion -> parametro1.tipo_string;
-			//log_info(logger, "PID: %d - Ejecutando: %d - %s, %d", pcb_proceso->PID, una_instruccion->id, param1, param2);
 			sleep(retardo);
+			log_info(logger, "Ejecutando SET");
 			//ejercutar_SET(socket, param1, param2);
 			break;
 		}
 		case YIELD:{
-			//log_info(logger, "PID: %d - Ejecutando: %d - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			log_info(logger, "Ejecutando YIELD");
 
 			ejecutar_YIELD(socket,);
 			break;
 		}
 		case EXIT:{
-			//log_info(logger, "PID: %d - Ejecutando: %d - %d, %d", pcb_proceso->PID, una_instruccion->id);
-			ejecutar_EXIT();
+			log_info(logger, "Ejecutando EXIT");
+			//ejecutar_EXIT();
 			break;
 		}
 		case IO:{
-			//log_info(logger, "PID: %d - Ejecutando: %d - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			log_info(logger, "Ejecutando IO");
 			ejecutar_IO();
 			break;
 		}
 		case WAIT:{
-			//log_info(logger, "PID: %d - Ejecutando: %d - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			log_info(logger, "Ejecutando WAIT");
 			ejecutar_WAIT();
 			break;
 		}
@@ -335,38 +334,45 @@ void decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instrucci
 
 //COMPLETAR
 void ejecutar_SET(int socket, contexto_ejecucion contexto_de_ejecucion){
-
 	contexto_de_ejecucion -> PC += 1;
 	send_CONTEXTO_EJECUCION(socket, contexto_de_ejecucion);
+	send(socket, SET, sizeof(op_code), NULL);
+
 }
 
 void ejecuctar_YIELD(int socket, pcb_cpu* pcb_proceso){
-	contexto_ejecucion* contexto_de_ejecucion;
+	contexto_ejecucion* contexto_de_ejecucion = pcb_proceso -> instrucciones;
 	contexto_de_ejecucion -> PID = pcb_proceso -> PID;
 	contexto_de_ejecucion -> PC = pcb_proceso -> PC + 1;
 	contexto_de_ejecucion -> registros = pcb_proceso -> registros;
+
 	// en teoria el contexto de ejecucion tiene los TSegmento pero el pcb_proceso no, no se de donde sacarlo
 	send_CONTEXTO_EJECUCION(socket, contexto_de_ejecucion);
+	send(socket, YIELD, sizeof(op_code), NULL);
 }
 
 //FALTA, esta funcion hace que no no busque la siguiente isntruccion
 void ejecutar_EXIT(int socket, contexto_ejecucion contexto_de_ejecucion){
 	contexto_de_ejecucion -> PC += 1;
 	send_CONTEXTO_EJECUCION(socket, contexto_de_ejecucion);
+	send(socket, EXIT, sizeof(op_code), NULL);
 }
 
-void ejecutar_IO(int socket, uint32_t tiempo, contexto_ejecucion contexto_de_ejecucion){
+void ejecutar_IO(int socket, uint32_t tiempo, contexto_ejecucion* contexto_de_ejecucion){
 	contexto_de_ejecucion -> PC += 1;
-	send_tiempo_bloqueante(socket, tiempo);
 	send_CONTEXTO_EJECUCION(socket, contexto_de_ejecucion);
+	send(socket, IO, sizeof(op_code), NULL);
+	send_tiempo_bloqueante(socket, tiempo);
 }
 
 void ejecutar_WAIT(int socket, contexto_ejecucion contexto_de_ejecucion, char* recurso){
 	contexto_de_ejecucion -> PC += 1;
+	send(socket, WAIT, sizeof(op_code), NULL);
 	send_WAIT(socket, recurso);
 }
 
 void ejecutar_SIGNAL(int socket, contexto_ejecucion contexto_de_ejecucion, char* recurso){
+	send(socket, SIGNAL, sizeof(op_code), NULL);
 	contexto_de_ejecucion -> PC += 1;
 	send_SIGNAL(socket, recurso);
 }
