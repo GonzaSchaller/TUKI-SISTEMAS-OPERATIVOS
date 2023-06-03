@@ -9,7 +9,7 @@
 #include <commons/collections/list.h>
 
 extern char* ip;
-extern char* retardo_instruccion;
+extern uint32_t* retardo_instruccion;
 extern char* ip_memoria;
 extern char* puerto_memoria;
 extern char* puerto_cpu;

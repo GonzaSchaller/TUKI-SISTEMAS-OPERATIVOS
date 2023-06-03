@@ -9,7 +9,7 @@ void establecer_conexion_kernel(){
 	int cliente_kernel_fd = esperar_cliente(logger, server_fd);
 
 	if(cliente_kernel_fd != -1){
-		recibir_instrucciones(cliente_kernel_fd, logger);
+		procesar_instrucciones(cliente_kernel_fd, logger);
 
 	}
 
