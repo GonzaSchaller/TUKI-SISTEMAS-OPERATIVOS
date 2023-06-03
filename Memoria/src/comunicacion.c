@@ -4,16 +4,15 @@
 extern t_log*log_memoria;
 //extern *t_segmento;
 int clientes[3];
-int tam_hueco_mas_grande;
-int memoria_disponible;
-segmento_t segmento_0;
+extern int tam_hueco_mas_grande;
+extern int memoria_disponible;
+extern segmento_t *segmento_0;
 
 //conexiones de kernel, cpu, filesystem
 typedef struct{
 	int fd;
 	char*server_name;
 } t_procesar_conexion_args;
-
 
 
 static void procesar_conexionn(void* void_args){
@@ -52,35 +51,64 @@ static void procesar_conexionn(void* void_args){
 
 			case INICIAR_ESTRUCTURAS: // cuadno se conecta el kernel le mando la tabla de segmentos inicial.
 				//crear_tabla_segmentos(); //METERLE EL SEGMENTO 0 Y MANDARLO.
-				t_list tabla_de_segmentos;
-				//aniado a la tabla de segmentos el segmento 0 y lo mando.
-				//el segmento 0 ya esta en memoria.
+				t_list* tabla_de_segmentos = list_create();
+				list_add(tabla_de_segmentos,(void*)segmento_0);
+				//mandar TODO
 
 				break;
 			case CREATE_SEGMENT:
-				uint32_t id;
-				uint32_t tamanio;
+				uint32_t ide;
+				uint32_t size;
+				bool entra;
 
-				recv_CREATE_SEGMENT(cliente_socket,id,tamanio);
-				if(tamanio>memoria_disponible){
-					//no hay memoria disponible...
-				}else if(tam_hueco_mas_grande<tamanio){
-					//hay que compactar...
+				if(!recv_CREATE_SEGMENT(cliente_socket, & ide, &size)) {
+					log_error(log_memoria,"error recibiendo CREATE_SEGMENT"); break;}
+				log_info(log_memoria,"Creación de Proceso PID: %d \n", ide);
+
+				if(!entra_en_memoria(size)){
+					//no entra el segmento ni aunque compactes send error TODO FALLIDO
+				} else if(!entra_en_hueco_mas_grande()){
+					//hay que compactar...send(mandarqyehayquecompactar)TODO COMPACTAR
 				}else log_info(log_memoria,"hay espacio disponible... creando segmento.");
 
+				segmento_t* segmento;
 
+				if(crear_segmento(ide,size)==NULL){
+					log_error(log_memoria,"algo salio mal creando el segmento ");
+					//send que salio mal.
+				}
+			     //send el segmento. EXITOSO. le mando la direccion del segmento.
 
 				break;
 
 			case DELETE_SEGMENT:
+				uint32_t id;
+				recv_DELETE_SEGMENT(cliente_socket,&id);
+				//recv_tabla_de_segmentos(cliente_socket,) //TODO
 
+				if(borrar_segmento(id)) {
+					log_info("eliminacion ok");
+					//send que pudo eliminar. //TODO EXITOSO
+				}
+				t_list* tabla_de_segmentos;
+				//recibo la tabla de segmentos. //TODO
+				actualizar_tabla_kernel(tabla_de_segmentos);
+				//send tabla actualizada //TODO
 
 				break;
 
 			case FINALIZAR_ESTRUCTURAS:
+				//TODO
+				//kernel me manda su tabla de segmentos.
+				if(finalizar_estructuras()){
+					log_info("Todo ok finalizando estructuras");
+				}
+
 				break;
 
 			case MOV_IN:
+				//recibo un registro
+
 			break;
 
 			case MOV_OUT:
@@ -136,65 +164,6 @@ int server_escuchar3(t_log* log_memoria,char* server_name, int server_socket) {
 	}
    return 1;
 }
-*/
-/*
-void tirar_threads(int socket_cliente, char*server_name , int server_socket){
-
-   pthread_t hilo;
-   t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
-   args->fd = socket_cliente;
-   args->server_name = server_name;
-   pthread_create(&hilo, NULL, (void*) procesar_conexionn, (void*) args);
-   pthread_detach(hilo);
-}
-/*
-int esperar_clienteM(int socket_servidor)
-{
-	uint32_t handshake;
-	uint32_t resultOk = 0;
-	uint32_t resultError = -1;
-	int socket_cliente = accept(socket_servidor, NULL, NULL);
-
-	recv(socket_cliente, &handshake, sizeof(uint32_t), MSG_WAITALL);
-	if(handshake == 1){
-		send(socket_cliente, &resultOk, sizeof(uint32_t), NULL);
-		printf("Handshake OK\n");
-		printf("Se conecto CPU!\n");
-		pthread_t hilo;
-					        t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
-					        args->fd = clientes[i];
-					        args->server_name = server_name;
-					        pthread_create(&hilo, NULL, (void*) procesar_conexion, (void*) args);
-					        pthread_detach(hilo);
-					        log_info(log_memoria,"hilo nro: %d \n", i);
-
-	}
-	else
-	{
-		send(socket_cliente, &resultError, sizeof(uint32_t), NULL);
-		printf("error \n");
-	}
-
-	return socket_cliente;
-}
-
-
-
-for(int i=0;i<3;i++){
-	int cliente_socket = esperar_cliente(log_memoria, server_socket);
-
-	if (cliente_socket != -1) {
-	        pthread_t hilo;
-	        t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
-	        args->fd = cliente_socket;
-	        args->server_name = server_name;
-	        pthread_create(&hilo, NULL, (void*) procesar_conexion, (void*) args);
-	        pthread_detach(hilo);
-	        return 1;
-	    }
-	    i++;
-}
-return 0;*/
 
 
 
