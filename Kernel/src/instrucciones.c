@@ -42,6 +42,21 @@ void cargar_instruccion3(int id, char* nombre, char* parametro1, uint32_t parame
 
 	list_add(lista, estructura_instrucciones);
 }
+void asignar_recurso(char* nombre,t_list* lista){
+
+	recurso_sistema* recurso = malloc(sizeof(recurso_sistema));
+
+	recurso->nombre = nombre;
+	recurso->instancia = 1;
+
+	list_add(lista, recurso);
+	free(recurso);
+}
+void aumentar_instancias_recurso( char* nombre,t_list* lista){
+
+	recurso_sistema* recurso = encontrar_recurso(lista,nombre);
+	recurso->instancia += 1;
+}
 
 void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb){
 	registros_cpu registrosInicializados;
@@ -50,10 +65,11 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
     pcb->contexto.PID = contadorProceso;
     pcb->instrucciones = listaInstrucciones;
     pcb->contexto.PC = 0;
-   	pcb->contexto.registros = registrosInicializados;//todo fijarse que no rompa
+   	pcb->contexto.registros = registrosInicializados;
     pcb->contexto.TSegmento= NULL;
     pcb->horaDeIngresoAReady= 0;
     pcb->tabla_archivosAbiertos = list_create();
+    pcb->recursos_asignados = list_create();
     pcb->state= NEW;
 
     pcb->state_anterior= 0;
@@ -65,15 +81,10 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb)
 
 void enviar_pcb_cpu(int fd_cpu, pcb_t* pcb_proceso){
 	send_CONTEXTO_EJECUCION(fd_cpu,pcb_proceso->contexto);
-	send_CANT_INSTRUCCIONES(fd_cpu,list_size(pcb_proceso->instrucciones)); //TODO recibe primero la cant de inestrucciones
+	send_CANT_INSTRUCCIONES(fd_cpu,list_size(pcb_proceso->instrucciones));
 	send_instrucciones_kernel_a_cpu(fd_cpu,pcb_proceso);
-	//send_PID(fd_cpu,pcb_proceso->PID);		//contexto de ejecucion
-	//send_PC(fd_cpu,pcb_proceso->PC);		//contexto de ejecucion
-	//send_reg_cpu(fd_cpu, pcb_proceso->registros); falta enviar registro //contexto de ejecucion
-	//send_TABLA_SEGMENTOS(fd_cpu, pcb_proceso->TSegmento); //contexto de ejecucion
-
-
 }
+
 void send_instrucciones_kernel_a_cpu(int fd_cpu,pcb_t* pcb_proceso){
 		instruccion* a;
 		int cant_instrucciones = list_size(pcb_proceso->instrucciones);

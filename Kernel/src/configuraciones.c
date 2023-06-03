@@ -55,11 +55,11 @@ int obtener_algoritmo_planificacion(char* algoritmo){
 	        //log_info(log_kernel, "El algoritmo de planificacion elegido es FIFO.");
 	    }
 
-	    //SFJ SIN DESALOJO
+
 	    if (strcmp(algoritmo,"HRRN") == 0)
 	    {
 	    	algoritmo_planif = HRRN;
-	     //   log_info(log_kernel, "El algoritmo de planificacion elegido es SRT.");
+	     //   log_info(log_kernel, "El algoritmo de planificacion elegido es HRRN.");
 	    }
 	    return algoritmo_planif;
 }

@@ -1247,4 +1247,38 @@ bool recv_TABLA_SEGMENTOS(int fd, t_list** lista_segmentos) {
     free(stream);
     return true;
 }
+static void* serializar_FINALIZAR_ESTRUCTURAS() {
+   void* stream = malloc(sizeof(op_code));
+    op_code cop = YIELD;
+    memcpy(stream, &cop, sizeof(op_code));
+    return stream;
+}
+bool recv_FINALIZAR_ESTRUCTURAS(int socket_cliente){
+
+	    size_t size = sizeof(op_code);
+	    void* stream = malloc(size);
+
+	    if (recv(socket_cliente, stream, size, 0) != size) {
+	        free(stream);
+	        return false;
+	    }
+	    //deserializar_YIELD(stream);
+	    free(stream);
+	    return true;
+
+}
+bool send_FINALIZAR_ESTRUCTURAS(int socket_cliente){
+	op_code instruccion = FINALIZAR_ESTRUCTURAS;
+   size_t size = sizeof(op_code);
+    void* stream = serializar_FINALIZAR_ESTRUCTURAS(instruccion);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+
+    free(stream);
+    return true;
+}
+
+
 

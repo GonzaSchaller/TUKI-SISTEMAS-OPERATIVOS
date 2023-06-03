@@ -116,4 +116,7 @@ bool send_LA_TABLA_SEGMENTO(int , uint32_t  ,uint32_t  ,uint32_t );
 
 bool send_TABLA_SEGMENTOS(int, t_list* );
 bool recv_TABLA_SEGMENTOS(int , t_list** );
+
+bool recv_FINALIZAR_ESTRUCTURAS(int);
+bool send_FINALIZAR_ESTRUCTURAS(int);
 #endif

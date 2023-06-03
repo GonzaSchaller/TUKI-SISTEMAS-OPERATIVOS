@@ -252,19 +252,3 @@ pcb_t* sacarDeNew(){
 }
 
 
-void procesar_conexion_cpu(void* socket_cliente){
-
-
-	//free(socket_cliente);
-}
-// TODO
-void procesar_conexion_fileSystem(void* socket_cliente){
-
-	//free(socket_cliente);
-}
-// TODO
-void procesar_conexion_memoria(void* socket_cliente){
-
-	//free(socket_cliente);
-}
-

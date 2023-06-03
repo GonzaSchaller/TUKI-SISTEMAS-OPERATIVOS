@@ -56,14 +56,14 @@ void agregarNewAReady(pcb_t* pcb){
 	list_add(listaReady, pcb); //agrega a la listaReady
 
 	send_INICIAR_ESTRUCTURA_MEMORIA(conexion_memoria); //mandamos mensaje a memoria que incie sus estructuras
-	if(!recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento  TODO agus memoria
-		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto.PID);
-	}// TODO no se puede probar
-	pcb->contexto.TSegmento = tseg;
 
+	if(!recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento
+		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto.PID);
+	}
+	pcb->contexto.TSegmento = tseg;
 	pcb->state_anterior = pcb->state;
 	pcb->state = READY;
-	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb->contexto.PID,estado_pcb_a_string(pcb->state_anterior),estado_pcb_a_string(pcb->state));// todo estado anterior
+	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb->contexto.PID,estado_pcb_a_string(pcb->state_anterior),estado_pcb_a_string(pcb->state));
 	print_lista_PID();
 	pthread_mutex_unlock(&mutexReady);
 	sem_post(&contadorReady);
@@ -183,14 +183,14 @@ recurso_sistema* encontrar_recurso(t_list* lista, char* nombre_buscar) {
     return (recurso_sistema*)list_find(lista, buscar_recurso);
 }
 
-void recalcular_rafagas_HRRN(pcb_t* pcb_siguiente, float tiempoDeFin){ // TODO cambiarle posicion
+void recalcular_rafagas_HRRN(pcb_t* pcb_siguiente, float tiempoDeFin){
 	uint32_t algoritmo_planif;
 
 	algoritmo_planif = obtener_algoritmo_planificacion(algoritmo_planificacion);
 	if(algoritmo_planif == HRRN){
 				pcb_siguiente->rafaga_anterior_real =pcb_siguiente-> horaDeIngresoAExe - tiempoDeFin;//pcb_siguiente-> horaDeSalidaDeExe;
+				pcb_siguiente->estimacion_rafaga_anterior = pcb_siguiente->estimacion_prox_rafaga;
 				pcb_siguiente->estimacion_prox_rafaga = (hrrn_alfa* pcb_siguiente->rafaga_anterior_real)+ ((1-hrrn_alfa)* pcb_siguiente-> estimacion_rafaga_anterior);
-				pcb_siguiente->estimacion_rafaga_anterior = pcb_siguiente->estimacion_prox_rafaga;// } TODO ver a donde iria, si aca o en otro lado
 				}
 }
 
@@ -203,9 +203,14 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 						recurso_sistema* recurso = encontrar_recurso(lista_recursos, nombre_recurso);
 				        if (recurso != NULL)
 				        {
-				            if (recurso->instancia > 0)
+				            if (recurso->instancia > 0){
 				                recurso->instancia--;
+				                if(!encontrar_recurso(pcb_siguiente->recursos_asignados, nombre_recurso)) //si no encontro el recurso, agrega el recurso a la lista del proceso
+				                asignar_recurso(nombre_recurso , pcb_siguiente->recursos_asignados);
+				                else
+				                aumentar_instancias_recurso(nombre_recurso , pcb_siguiente->recursos_asignados); // si ya tiene el recurso asignado, le sumo una instancia
 
+				            }
 				            else
 				            {
 								recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
@@ -341,7 +346,7 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 		 	 	 else if(pcb_siguiente->tiempo_bloqueo > 0){// caso bloqueo, agrega a ready cuando se termina de bloquear
 					pthread_t hilo_Block;
 					recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
-					log_info(log_kernel, "PID: <%d> - Ejecuta IO: <%f>", pcb_siguiente->contexto.PID, tiempoDeFin); // todo ver tiempo * 1000?
+					log_info(log_kernel, "PID: <%d> - Ejecuta IO: <%f>", pcb_siguiente->contexto.PID, tiempoDeFin); // todo ver tiempo * 1000? Me parece que tendriamos que hacerlo por la IO
 					//hilo porque quiero I/O en paralelo
 
 					pthread_create(&hilo_Block, NULL, (void*)bloquear_procesoPorIO,(void*)pcb_siguiente);
@@ -365,14 +370,10 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 void manejar_contextosDeEjecucion(pcb_t* pcb_siguiente){ // maneja lo que  nos manda cpu
 	uint32_t cop;
 	contexto_ejecucion contexto;
-
-	if(recv_CONTEXTO_EJECUCION(conexion_cpu, &contexto) == sizeof(contexto)){
-		pcb_siguiente->contexto= contexto;
-	}
-//	if (!recv_CONTEXTO_EJECUCION(conexion_cpu, &contexto)) { // TODO avisar cpu que nos manden primero program counter y despues el opcode y ver reg cpu
-//		log_error(log_kernel, "Fallo recibiendo el Contexto de Ejecucion");
-//			}
-
+	if (!recv_CONTEXTO_EJECUCION(conexion_cpu, &contexto)) {
+		log_error(log_kernel, "Fallo recibiendo el Contexto de Ejecucion");
+			}
+	pcb_siguiente->contexto= contexto;
 	if(recv(conexion_cpu, &cop, sizeof(op_code), 0) == sizeof(op_code)) // Las que recibimos que SI son instruccion
 			{
 				time_t fin_exe = time(NULL);
@@ -409,20 +410,29 @@ void hiloReady_Execute(){
 	}
   }
 
-void terminarEjecucion(pcb_t* pcb){ //TODO falta liberar recursos del proceso
+void liberar_Recursos(pcb_t* pcb) {
+    for (int i = 0; i < list_size(pcb->recursos_asignados); i++) {
+        recurso_sistema* recurso = list_get(pcb->recursos_asignados, i);
+        recurso_sistema* recursoPosta = encontrar_recurso(lista_recursos, recurso->nombre);
+        recursoPosta->instancia += recurso->instancia;
+	}
+
+}
+void terminarEjecucion(pcb_t* pcb){ //TODO falta liberar recursos del proceso //free(pcb)? o liberar recursos tipo wait //ademas creo que hay que mandar mensaje a nmemoria para que libere sus recursos
 
 	pthread_mutex_lock(&mutexExit);
-
+	liberar_Recursos(pcb);
 	list_add(listaExit, pcb);
 	pcb->state_anterior = pcb->state;
 	pcb->state = FINISH;
 	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb->contexto.PID,estado_pcb_a_string(pcb->state_anterior),estado_pcb_a_string(pcb->state)); // TODO dudoso q vaya aca
+	send_FINALIZAR_ESTRUCTURAS(conexion_memoria);
 	log_info(log_kernel, "[EXIT] Finaliza el proceso de PID: %d", pcb->contexto.PID);
-
+	free(pcb);
 	pthread_mutex_unlock(&mutexExit);
 
 }
-// TODO ver a donde cambiar los estados del pcb_siguiente;
+
 void eliminarArchivoDeLista(char* nombreArchivo, t_list* listaArchivos) {
     // Buscar el archivo en la lista por nombre
 	 bool encontrarArchivo(void* elemento) {
