@@ -1191,6 +1191,7 @@ static t_list* deserializar_TABLA_SEGMENTOS(void* stream, int tamanio_serializad
         memcpy(&segmento, stream + offset, sizeof(segmento_t));
         offset += sizeof(segmento_t);
         list_add(tabla_segmentos, segmento);
+	    free(segmento);
     }
 
     return tabla_segmentos;
