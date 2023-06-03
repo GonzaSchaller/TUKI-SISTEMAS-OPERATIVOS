@@ -34,6 +34,7 @@ typedef struct{
 	float horaDeSalidaDeExe;
 	float hrrn;
 	t_list* recursos_asignados;
+	int socket_consola;
 	uint32_t tiempo_bloqueo;
 }pcb_t;
 void enviar_pcb_cpu(int , pcb_t*);
@@ -41,7 +42,7 @@ void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
 void cargar_instruccion2(int, char* , uint32_t, char* ,uint32_t ,t_list* );
 void cargar_instruccion3(int, char* , char*, uint32_t ,uint32_t ,t_list* );
 void send_instrucciones_kernel_a_cpu(int,pcb_t*);
-void inicializarPCB(int, t_list*, pcb_t *);
+void inicializarPCB(int, t_list*, pcb_t *, int);
 void asignar_recurso(char* ,t_list* );
 void aumentar_instancias_recurso(char*,t_list* );
 

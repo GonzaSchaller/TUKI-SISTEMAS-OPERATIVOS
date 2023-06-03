@@ -21,7 +21,7 @@ extern t_log* log_kernel;
 
 void iniciar_config(t_config* );
 void liberarConexiones(int , int , int );
-void terminar_kernel(t_config*);
+void terminar_kernel(t_config*, int);
 void generar_conexiones();
 int server_escuchar(int);
 char* estado_pcb_a_string(uint32_t);

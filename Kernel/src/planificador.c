@@ -363,7 +363,10 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 					log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <SUCCESS> ", pcb_siguiente->contexto.PID); // todo poner el success bien
 					sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
 				}
-
+	 else{
+		 terminarEjecucion(pcb_siguiente);
+		 log_error(log_kernel, "Finaliza por error");
+	 }
 }
 
 
@@ -428,6 +431,9 @@ void terminarEjecucion(pcb_t* pcb){ //TODO falta liberar recursos del proceso //
 	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb->contexto.PID,estado_pcb_a_string(pcb->state_anterior),estado_pcb_a_string(pcb->state)); // TODO dudoso q vaya aca
 	send_FINALIZAR_ESTRUCTURAS(conexion_memoria);
 	log_info(log_kernel, "[EXIT] Finaliza el proceso de PID: %d", pcb->contexto.PID);
+	if(!send_EXIT(pcb->socket_consola)){
+		log_info(log_kernel, "Error enviandole a consola exit");
+	};
 	free(pcb);
 	pthread_mutex_unlock(&mutexExit);
 

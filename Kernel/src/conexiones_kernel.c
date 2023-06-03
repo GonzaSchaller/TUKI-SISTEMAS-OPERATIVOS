@@ -18,7 +18,7 @@ void procesar_conexion_consola(void* void_args){ //lo que hago por cada consola 
 		if(recv(socket_cliente, &cop, sizeof(op_code), 0) != sizeof(op_code)){ //si no recibo una instruccion
 			//aca irian las cosas que recibo que no son una instruccion
 			contadorProcesos++;
-			inicializarPCB(contadorProcesos,lista_instrucciones, pcb); //inicializamos el pcb que le vamos a mandar al cpu
+			inicializarPCB(contadorProcesos,lista_instrucciones,pcb, socket_cliente); //inicializamos el pcb que le vamos a mandar al cpu
 			agregarANew(pcb); //agregamos cada proceso a NEW
 			log_info(log_kernel, "No recibí una instruccion");
 			break; //Importante
