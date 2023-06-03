@@ -1011,56 +1011,56 @@ bool recv_REG_CPU(int fd, registros_cpu* registros) {
     return true;
 }
 
-static void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion* contexto, int* tamanio_serializado) {
-    int cant_segmentos = list_size(contexto->TSegmento);
+static void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion contexto, int* tamanio_serializado) {
+    int cant_segmentos = list_size(contexto.TSegmento);
     *tamanio_serializado = sizeof(segmento_t) * cant_segmentos;
     void* stream = malloc(2 * sizeof(uint32_t) + sizeof(registros_cpu) + *tamanio_serializado);
 
     int offset = 0;
-    memcpy(stream + offset, &(contexto->PID), sizeof(uint32_t));
+    memcpy(stream + offset, &(contexto.PID), sizeof(uint32_t));
     offset += sizeof(uint32_t);
 
-    memcpy(stream + offset, &(contexto->PC), sizeof(uint32_t));
+    memcpy(stream + offset, &(contexto.PC), sizeof(uint32_t));
     offset += sizeof(uint32_t);
 
-    memcpy(stream + offset, contexto->registros.AX, sizeof(char[4]));
+    memcpy(stream + offset, &(contexto.registros.AX), sizeof(char[4]));
     offset += sizeof(char[4]);
 
-    memcpy(stream + offset, contexto->registros.BX, sizeof(char[4]));
+    memcpy(stream + offset, &(contexto.registros.BX), sizeof(char[4]));
     offset += sizeof(char[4]);
 
-    memcpy(stream + offset, contexto->registros.CX, sizeof(char[4]));
+    memcpy(stream + offset, &(contexto.registros.CX), sizeof(char[4]));
     offset += sizeof(char[4]);
 
-    memcpy(stream + offset, contexto->registros.DX, sizeof(char[4]));
+    memcpy(stream + offset, (&contexto.registros.DX), sizeof(char[4]));
     offset += sizeof(char[4]);
 
-    memcpy(stream + offset, contexto->registros.EAX, sizeof(char[8]));
+    memcpy(stream + offset, &(contexto.registros.EAX), sizeof(char[8]));
     offset += sizeof(char[8]);
 
-    memcpy(stream + offset, contexto->registros.EBX, sizeof(char[8]));
+    memcpy(stream + offset, &(contexto.registros.EBX), sizeof(char[8]));
     offset += sizeof(char[8]);
 
-    memcpy(stream + offset, contexto->registros.ECX, sizeof(char[8]));
+    memcpy(stream + offset, &(contexto.registros.ECX), sizeof(char[8]));
     offset += sizeof(char[8]);
 
-    memcpy(stream + offset, contexto->registros.EDX, sizeof(char[8]));
+    memcpy(stream + offset, &(contexto.registros.EDX), sizeof(char[8]));
     offset += sizeof(char[8]);
 
-    memcpy(stream + offset, contexto->registros.RAX, sizeof(char[16]));
+    memcpy(stream + offset, &(contexto.registros.RAX), sizeof(char[16]));
     offset += sizeof(char[16]);
 
-    memcpy(stream + offset, contexto->registros.RBX, sizeof(char[16]));
+    memcpy(stream + offset, &(contexto.registros.RBX), sizeof(char[16]));
     offset += sizeof(char[16]);
 
-    memcpy(stream + offset, contexto->registros.RCX, sizeof(char[16]));
+    memcpy(stream + offset, &(contexto.registros.RCX), sizeof(char[16]));
     offset += sizeof(char[16]);
 
-    memcpy(stream + offset, contexto->registros.RDX, sizeof(char[16]));
+    memcpy(stream + offset, &(contexto.registros.RDX), sizeof(char[16]));
     offset += sizeof(char[16]);
 
     for (int i = 0; i < cant_segmentos; i++) {
-        segmento_t* segmento = list_get(contexto->TSegmento, i);
+        segmento_t* segmento = list_get(contexto.TSegmento, i);
         memcpy(stream + offset, segmento, sizeof(segmento_t));
         offset += sizeof(segmento_t);
     }
@@ -1072,46 +1072,29 @@ static void deserializar_CONTEXTO_EJECUCION(void* stream, contexto_ejecucion* co
     int offset = 0;
     t_list* tabla_segmentos = list_create();
 
-    memcpy(&(contexto->PID), stream + offset, sizeof(uint32_t));
-    offset += sizeof(uint32_t);
-
-    memcpy(&(contexto->PC), stream + offset, sizeof(uint32_t));
-    offset += sizeof(uint32_t);
-
-    memcpy(&(contexto->registros.AX), stream + offset, sizeof(char[4]));
-    offset += sizeof(char[4]);
-
-    memcpy(contexto->registros.BX, stream + offset, sizeof(char[4]));
-    offset += sizeof(char[4]);
-
-    memcpy(contexto->registros.CX, stream + offset, sizeof(char[4]));
-    offset += sizeof(char[4]);
-
-    memcpy(contexto->registros.DX, stream + offset, sizeof(char[4]));
-    offset += sizeof(char[4]);
-
-    memcpy(contexto->registros.EAX, stream + offset, sizeof(char[8]));
-    offset += sizeof(char[8]);
-
-    memcpy(contexto->registros.EBX, stream + offset, sizeof(char[8]));
-    offset += sizeof(char[8]);
-
-    memcpy(contexto->registros.ECX, stream + offset, sizeof(char[8]));
-    offset += sizeof(char[8]);
-
-    memcpy(contexto->registros.EDX, stream + offset, sizeof(char[8]));
-    offset += sizeof(char[8]);
-
-    memcpy(contexto->registros.RAX, stream + offset, sizeof(char[16]));
-    offset += sizeof(char[16]);
-
-    memcpy(contexto->registros.RBX, stream + offset, sizeof(char[16]));
-    offset += sizeof(char[16]);
-
-    memcpy(contexto->registros.RCX, stream + offset, sizeof(char[16]));
-    offset += sizeof(char[16]);
-
-    memcpy(contexto->registros.RDX, stream + offset, sizeof(char[16]));
+   memcpy(&contexto->registros.AX, stream ,sizeof(char[4]));
+	offset += sizeof(char[4]);
+	memcpy(&(contexto->registros.BX), stream + offset, sizeof(char[4]));
+	offset += sizeof(char[4]);
+	memcpy(&(contexto->registros.CX), stream + offset, sizeof(char[4]));
+	offset += sizeof(char[4]);
+	memcpy(&(contexto->registros.DX), stream + offset, sizeof(char[4]));
+	offset += sizeof(char[4]);
+	memcpy(&(contexto->registros.EAX), stream + offset,sizeof(char[8]));
+	offset += sizeof(char[8]);
+	memcpy(&(contexto->registros.EBX), stream + offset,sizeof(char[8]));
+	offset += sizeof(char[8]);
+	memcpy(&(contexto->registros.ECX), stream + offset,sizeof(char[8]));
+	offset += sizeof(char[8]);
+	memcpy(&(contexto->registros.EDX), stream + offset,sizeof(char[8]));
+	offset += sizeof(char[8]);
+	memcpy(&(contexto->registros.RAX), stream + offset,sizeof(char[16]));
+	offset += sizeof(char[16]);
+	memcpy(&(contexto->registros.RBX), stream + offset,sizeof(char[16]));
+	offset += sizeof(char[16]);
+	memcpy(&(contexto->registros.RCX), stream + offset,sizeof(char[16]));
+	offset += sizeof(char[16]);
+	memcpy(&(contexto->registros.RDX), stream + offset,sizeof(char[16]));
     offset += sizeof(char[16]);
 
     int num_segmentos = tamanio_tabla_segmentos / sizeof(segmento_t);
@@ -1123,14 +1106,18 @@ static void deserializar_CONTEXTO_EJECUCION(void* stream, contexto_ejecucion* co
         free(segmento);
     }
 
-    &(contexto->TSegmento) = tabla_segmentos;
+    contexto->TSegmento = tabla_segmentos;
 }
-
-bool send_CONTEXTO_EJECUCION(int fd, contexto_ejecucion* contexto) {
+bool send_CONTEXTO_EJECUCION(int fd, contexto_ejecucion contexto) {
     int tamanio_serializado;
     void* stream = serializar_CONTEXTO_EJECUCION(contexto, &tamanio_serializado);
-    size_t size = 2 * sizeof(uint32_t) + sizeof(registros_cpu) + tamanio_serializado;
 
+    if (send(fd, &tamanio_serializado, sizeof(int), 0) != sizeof(int)) {
+        free(stream);
+        return false;
+    }
+
+    size_t size = 2 * sizeof(uint32_t) + sizeof(registros_cpu) + tamanio_serializado;
     if (send(fd, stream, size, 0) != size) {
         free(stream);
         return false;
@@ -1141,20 +1128,22 @@ bool send_CONTEXTO_EJECUCION(int fd, contexto_ejecucion* contexto) {
 }
 
 bool recv_CONTEXTO_EJECUCION(int fd, contexto_ejecucion* contexto) {
-    int tamanio_tabla_segmentos;
-    size_t size = 2 * sizeof(uint32_t) + sizeof(registros_cpu) + (sizeof(segmento_t) * list_size(contexto->TSegmento));
-    void* stream = malloc(size);
+    int tamanio_serializado;
 
+    if (recv(fd, &tamanio_serializado, sizeof(int), 0) != sizeof(int)) {
+        return false;
+    }
+	size_t size=  2 * sizeof(uint32_t) + sizeof(registros_cpu) + tamanio_serializado;
+    void* stream = malloc(size);
     if (recv(fd, stream, size, 0) != size) {
         free(stream);
         return false;
     }
+    deserializar_CONTEXTO_EJECUCION(stream, contexto, tamanio_serializado);
 
-    deserializar_CONTEXTO_EJECUCION(stream, contexto, tamanio_tabla_segmentos);
     free(stream);
     return true;
 }
-
 
 static void* serializar_handshake(uint8_t resultado){
 	void*stream = malloc(sizeof(op_code) + sizeof(uint8_t));
@@ -1249,7 +1238,7 @@ bool recv_TABLA_SEGMENTOS(int fd, t_list** lista_segmentos) {
 }
 static void* serializar_FINALIZAR_ESTRUCTURAS() {
    void* stream = malloc(sizeof(op_code));
-    op_code cop = YIELD;
+    op_code cop = FINALIZAR_ESTRUCTURAS;
     memcpy(stream, &cop, sizeof(op_code));
     return stream;
 }
@@ -1279,6 +1268,3 @@ bool send_FINALIZAR_ESTRUCTURAS(int socket_cliente){
     free(stream);
     return true;
 }
-
-
-
