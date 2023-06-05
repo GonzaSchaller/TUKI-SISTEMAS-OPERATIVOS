@@ -48,6 +48,10 @@ void inicializar_semaforos(){
 	pthread_mutex_init(&mutexExe, NULL);
 	pthread_mutex_init(&mutexExit, NULL);
 	pthread_mutex_init(&multiprocesamiento, NULL);
+	pthread_mutex_init(&mutexHiloTruncate,NULL);
+	pthread_mutex_init(&mutexHiloRead,NULL);
+	pthread_mutex_init(&mutexHiloWrite,NULL);
+
 
 	sem_init(&contadorNew, 0, 0); // Estado New
 	sem_init(&contadorReady, 0, 0); // Estado Ready
@@ -101,10 +105,14 @@ void destruir_semaforos_listas(){
 
     list_destroy_and_destroy_elements(lista_recursos, free);
 
-    pthread_mutex_destroy(&mutexBlock);
-    pthread_mutex_destroy(&mutexExe);
-    pthread_mutex_destroy(&mutexExit);
     pthread_mutex_destroy(&mutexNew);
+    pthread_mutex_destroy(&mutexReady);
+    pthread_mutex_destroy(&mutexBlock);
+    pthread_mutex_destroy(&mutexExit);
+    pthread_mutex_destroy(&multiprocesamiento);
+    pthread_mutex_destroy(&mutexHiloTruncate);
+    pthread_mutex_destroy(&mutexHiloRead);
+    pthread_mutex_destroy(&mutexHiloWrite);
 
 }
 
@@ -119,7 +127,8 @@ void liberarConexiones(int socket1, int socket2, int socket3){
 	if(socket3 != -1){
 		close(socket3);
 	}
-}//QUEDA
+}
+
 void terminar_kernel(t_config* config, int server_kernel){
 	if(log_kernel !=NULL){
 		log_destroy(log_kernel);

@@ -17,11 +17,8 @@
 bool send_SET(int, uint32_t, char*);
 bool recv_SET(int,uint32_t*, char**);
 
-
 bool send_MOV_OUT(int, uint32_t, uint32_t);
 bool recv_MOV_OUT(int, uint32_t*, uint32_t*);
-
-
 
 bool send_WAIT(int socket_cliente, char* recurso);
 bool recv_WAIT(int socket_cliente, char** recurso);
@@ -111,12 +108,34 @@ bool recv_handshake(int socket,uint8_t* resultado);
 bool send_TABLA_SEGMENTOS(int , t_list*);
 bool recv_TABLA_SEGMENTOS(int, t_list** );
 
-bool recv_TABLA_SEGMENTO(int , uint32_t* ,uint32_t* ,uint32_t* );
 bool send_LA_TABLA_SEGMENTO(int , uint32_t  ,uint32_t  ,uint32_t );
+bool recv_TABLA_SEGMENTO(int , uint32_t* ,uint32_t* ,uint32_t* );
 
 bool send_TABLA_SEGMENTOS(int, t_list* );
 bool recv_TABLA_SEGMENTOS(int , t_list** );
 
-bool recv_FINALIZAR_ESTRUCTURAS(int);
 bool send_FINALIZAR_ESTRUCTURAS(int);
+bool recv_FINALIZAR_ESTRUCTURAS(int);
+
+bool send_EXISTE_ARCHIVO(int socket_cliente, char* );
+bool recv_EXISTE_ARCHIVO(int socket_cliente, char** );
+
+bool send_OK_CODE(int, extra_code );
+bool recv_OK_CODE(int, extra_code*);
+
+bool send_CREAR_ARCHIVO(int, char* ,uint32_t );
+bool recv_CREAR_ARCHIVO(int, char**,uint32_t*);
+
+
+bool send_FINALIZAR_TRUNCATE(int, uint32_t);
+bool recv_FINALIZAR_TRUNCATE(int, uint32_t*);
+
+bool send_FINALIZAR_READ(int,uint32_t);
+bool recv_FINALIZAR_READ(int,uint32_t*);
+
+bool send_FINALIZAR_WRITE(int,uint32_t );
+bool recv_FINALIZAR_WRITE(int,uint32_t* );
+
+
+
 #endif

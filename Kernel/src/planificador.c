@@ -13,6 +13,9 @@ pthread_mutex_t mutexReady;
 pthread_mutex_t mutexBlock;
 pthread_mutex_t mutexExe;
 pthread_mutex_t mutexExit;
+pthread_mutex_t mutexHiloTruncate;
+pthread_mutex_t mutexHiloRead;
+pthread_mutex_t mutexHiloWrite;
 
 
 sem_t contadorNew;
@@ -48,7 +51,7 @@ void print_lista_PID(){
 void agregarNewAReady(pcb_t* pcb){
 	//log_trace(log_kernel,"Entre en agregar a ready");
 
-	time_t a = time(NULL); //momento en el que entra un proceso, sirve para el HRRN
+	time_t a = time(NULL) * 1000; //momento en el que entra un proceso, sirve para el HRRN
 	pcb->horaDeIngresoAReady = a;
 	pthread_mutex_lock(&mutexReady); //para el execute a ready y de blocked a ready y de new a ready
 
@@ -70,7 +73,7 @@ void agregarNewAReady(pcb_t* pcb){
 }
 
 void agregarAReady(pcb_t* pcb){
-	time_t llegadaReady = time(NULL);
+	time_t llegadaReady = time(NULL) * 1000;
 	pcb->horaDeIngresoAReady = llegadaReady;
 	pthread_mutex_lock(&mutexReady);
 	list_add(listaReady, pcb);
@@ -150,7 +153,7 @@ pcb_t* obtener_siguiente_ready(){
 					procesoPlanificado = obtener_siguiente_FIFO();
 				break;
 				case HRRN:
-					time_t b= time(NULL);
+					time_t b= time(NULL) * 1000;
 					procesoPlanificado = obtener_siguiente_HRRN(b); //calcular el hrrn segun el tiempo final y elimina el de mayor RR
 				break;
 			  }
@@ -171,6 +174,50 @@ void bloquear_procesoPorIO(void* arg) {
     agregarAReady(pcb_bloqueado);
     //pcb_bloqueado->state = READY;
 
+    pthread_exit(NULL);
+}
+
+void bloquear_procesoPorArchivo(void* argumentos) {
+    // Obtén el PCB del proceso a bloquear desde el argumento pasado al hilo
+    extra_code codigo;
+    pcb_t* pcb_siguiente;
+    arg_archivo_bloqueado* arg = (arg_archivo_bloqueado*)argumentos;
+    pcb_t* pcb_bloqueado = arg->pcb;
+    fcb_t* archivo = arg->archivo;
+	int nombre_instruccion = arg->nombre_instruccion;
+	free(arg);
+    pcb_bloqueado->state_anterior = pcb_bloqueado->state;
+    pcb_bloqueado->state = BLOCK;
+
+    log_info(log_kernel,"PID: <%d> - Bloqueado por: <%s>",pcb_bloqueado->contexto.PID, archivo->nombreArchivo);
+
+    if(nombre_instruccion == F_TRUNCATE){
+		pthread_mutex_lock(&mutexHiloTruncate);
+		recv_FINALIZAR_TRUNCATE(conexion_fileSystem,&codigo);
+		if(codigo == FINALIZAR){
+			pcb_siguiente =queue_pop(archivo->colaBloqueados);
+		}
+		pthread_mutex_unlock(&mutexHiloTruncate);
+	}
+    else if(nombre_instruccion == F_READ){
+    	pthread_mutex_lock(&mutexHiloRead);
+    	recv_FINALIZAR_READ(conexion_fileSystem, &codigo);
+    	if(codigo == FINALIZAR){
+			pcb_siguiente =queue_pop(archivo->colaBloqueados);
+		}
+        pthread_mutex_unlock(&mutexHiloRead);
+
+    }
+    else if(nombre_instruccion == F_WRITE){
+    	pthread_mutex_lock(&mutexHiloWrite);
+    	recv_FINALIZAR_WRITE(conexion_fileSystem,&codigo);
+    	if(codigo == FINALIZAR){
+			pcb_siguiente = queue_pop(archivo->colaBloqueados);
+
+		}
+        pthread_mutex_unlock(&mutexHiloWrite);
+    }
+	agregarAReady(pcb_siguiente);
     pthread_exit(NULL);
 }
 
@@ -333,7 +380,7 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 			}
 			else log_error(log_kernel, "Fallo recibiendo DELETE_SEGMENT");
 		}
-		// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
+		//send_CONTEXTO_EJECUCION(conexion_cpu, contexto_ejecucion );// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
 }
 void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempoDeFin){
 	uint32_t tiempo_bloqueo_kernel;
@@ -343,7 +390,7 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 		 	 	 if (!recv_tiempo_bloqueante(conexion_cpu, &tiempo_bloqueo_kernel)) { //tiempo que pasar en block
 		 				log_error(log_kernel, "Fallo recibiendo el tiempo bloqueante");
 		 			}
-		 	 	 else if(pcb_siguiente->tiempo_bloqueo > 0){// caso bloqueo, agrega a ready cuando se termina de bloquear
+		 	 	 else if(pcb_siguiente->tiempo_bloqueo >= 0){// caso bloqueo, agrega a ready cuando se termina de bloquear
 					pthread_t hilo_Block;
 					recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 					log_info(log_kernel, "PID: <%d> - Ejecuta IO: <%f>", pcb_siguiente->contexto.PID, tiempoDeFin); // todo ver tiempo * 1000? Me parece que tendriamos que hacerlo por la IO
@@ -380,7 +427,7 @@ void manejar_contextosDeEjecucion(pcb_t* pcb_siguiente){ // maneja lo que  nos m
 	if(recv(conexion_cpu, &cop, sizeof(op_code), 0) == sizeof(op_code)) // Las que recibimos que SI son instruccion
 			{
 				time_t fin_exe = time(NULL);
-				float tiempoDeFin = ((float) fin_exe); //TODO el 1000?
+				float tiempoDeFin = ((float) fin_exe) * 1000; //TODO el 1000?
 
 				manejar_recursos(pcb_siguiente, cop, tiempoDeFin);
 				manejar_memoria(pcb_siguiente, cop);
@@ -401,7 +448,7 @@ void hiloReady_Execute(){
 		pcb_siguiente->state_anterior = pcb_siguiente->state;
 		pcb_siguiente->state = EXEC;
 		log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
-		pcb_siguiente->horaDeIngresoAExe = ((float) time(NULL));
+		pcb_siguiente->horaDeIngresoAExe = ((float) time(NULL)) * 1000;
 
 
 		while(pcb_siguiente->state == EXEC){ //que ejecute cada instruccion hasta que cambie de estado
@@ -475,34 +522,42 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				        fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 				        if (archivo != NULL)
 				        {// se agrega la entrada en la tabla de archivos abietos del proceso con el puntero en 0
-
+							pthread_mutex_lock(&(archivo->mutexArchivo));
 
 				        	archivo->puntero_directo = 0;
 
-							list_add(pcb_siguiente->tabla_archivosAbiertos,archivo); // agrego a la tabla de archivos abiertos del proceso
+							list_add(pcb_siguiente->tabla_archivosAbiertos,archivo->nombreArchivo); // agrego a la tabla de archivos abiertos del proceso
 
-							pthread_mutex_init(&archivo->mutexArchivo, NULL); // TODO queda raro aca
-							pthread_mutex_lock(&(archivo->mutexArchivo));
+							//pthread_mutex_init(&archivo->mutexArchivo, NULL); // TODO queda raro aca
+
 							queue_push(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
 							pcb_siguiente->state_anterior = pcb_siguiente->state;
 							pcb_siguiente->state = BLOCK;
 							log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
-							pthread_mutex_unlock(&(archivo->mutexArchivo));
+							//pthread_mutex_unlock(&(archivo->mutexArchivo));
 
 							recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 				        }
 				        else{
 							//preguntar al filesystem si el archivo existe //todo
-							// send_EXISTE_ARCHIVO(conexion_memoria,nombre_archivo); // TODO
+							if(!send_EXISTE_ARCHIVO(conexion_memoria, nombre_archivo)){
+								log_error(log_kernel, "Fallo enviado existe_archivo a FILESYSTEM");
+							}
+								extra_code estado;
+								if(!recv_OK_CODE(conexion_fileSystem, &estado)){
+								log_error(log_kernel, "Fallo recibiendo OK de FILESYSTEM");
+								}
+								if(estado == INCORRECTO) {
+									if(!send_CREAR_ARCHIVO(conexion_fileSystem, nombre_archivo, 0)){
+										log_error(log_kernel, "Fallo enviado crear_archivo a FILESYSTEM");
+									}
+								}
+								list_add(tabla_ArchivosAbiertosGlobal,nombre_archivo); // TODO deberia ser el archivo nuevo, no el nombre del archivo nuevo solamente.
+								archivo->puntero_directo = 0;
+								list_add(pcb_siguiente->tabla_archivosAbiertos,archivo); // agrego a la tabla de archivos abiertos del proceso
+								send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);
+							}
 
-//							if(NO EXISTE) {
-//							send filesystem crear archivo tamanio 0
-//							}
-//							agregar entrada a la tabla global de archivos abiertos y a la del proceso con el puntero en 0
-//							devolver a cpu el contexto de ejecuiciuon para que continue
-//							// lo otro
-//
-						}
 				    }
 				    else log_error(log_kernel, "Fallo recibiendo FOPEN");
 				}
@@ -515,14 +570,12 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 			    fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 			    if (archivo != NULL)
 			    {
-			    	pthread_mutex_lock(&(archivo->mutexArchivo));
+					// init del mutex
+			    	//pthread_mutex_lock(&(archivo->mutexArchivo));
 			    	uint32_t tamanioLista = queue_size(archivo->colaBloqueados);
-
 					if(tamanioLista > 0){ // algun proceso quiere ese archivo
 					pcb_t* pcb_bloqueado= queue_pop(archivo->colaBloqueados);
-					pthread_mutex_unlock(&(archivo->mutexArchivo));
 					agregarAReady(pcb_bloqueado);
-
 					}
 					else{
 						// ningun otro proceso quiere el archivo
@@ -530,6 +583,7 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 					eliminarArchivoDeLista(nombre_archivo, tabla_ArchivosAbiertosGlobal);// sacar el archivo de la tabla global tambien			// ya NADIE lo tiene abierto
 					}
 				}
+				pthread_mutex_unlock(&(archivo->mutexArchivo)); //desbloquea el archivo para que otro proceso pueda usarlo
 			}
 		else log_error(log_kernel, "Fallo recibiendo FCLOSE");
 	}
@@ -539,10 +593,10 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 		char* nombre_archivo;
 		if(recv_F_SEEK(conexion_cpu,&nombre_archivo,&posicion)){
 			fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo); // todo ver si hay una forma de generalizarla, no repetirla tantas veces
-				 archivo->puntero_directo = posicion;
-				// send contexto de ejecucion; TODO devolvemos un mensaje de confirmacion
-
+			archivo->puntero_directo = posicion;
+			send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);
 		}
+
 	}
 	else if (cop == F_TRUNCATE){
 		uint32_t tamanio;
@@ -551,30 +605,71 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 			send_F_TRUNCATE(conexion_fileSystem,nombre_archivo,tamanio);
 			fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 			//todo bloqueará al proceso hasta que el File System informe de la finalización de la operación.
-			pthread_mutex_init(&archivo->mutexArchivo, NULL); // TODO queda raro aca
-			pthread_mutex_lock(&(archivo->mutexArchivo));
+			//pthread_mutex_lock(&(archivo->mutexArchivo));
 			queue_push(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
-			pcb_siguiente->state_anterior = pcb_siguiente->state;
-			pcb_siguiente->state = BLOCK;
 			log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
-			pthread_mutex_unlock(&(archivo->mutexArchivo));
-
+			//pthread_mutex_unlock(&(archivo->mutexArchivo));
+			// mutex bloqueado
+			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
+			pthread_t hilo_archivo;
+			args->pcb = pcb_siguiente;
+			args->archivo = archivo;
+			args->nombre_instruccion = F_TRUNCATE;
+			pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
+			pthread_detach(hilo_archivo);
 			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin); // todo generalizar edsde el mutex init hasta aca
 			// todo falta desbloquear
 
 		}
 	}
 	else if(cop ==F_READ){
+		char* nombre_archivo;
+		uint32_t direccion_logica;
+		uint32_t cantidad_bytes;
+
+		if(!recv_F_READ(conexion_cpu, &nombre_archivo, &direccion_logica, &cantidad_bytes)){
+			log_error(log_kernel, "Fallo recibiendo F_READ");
+		}
+		else {
+			fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
+			pthread_t hilo_archivo;
+			args->pcb = pcb_siguiente;
+			args->archivo = archivo;
+			args->nombre_instruccion = F_READ;
+			pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
+			pthread_detach(hilo_archivo);
+			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
+		}
 		//todo
 	}
 
 
 	else if(cop == F_WRITE){
-			//todo
+		char* nombre_archivo;
+		uint32_t direccion_logica;
+		uint32_t cantidad_bytes;	//todo
+
+		if(!recv_F_WRITE(conexion_cpu, &nombre_archivo, &direccion_logica, &cantidad_bytes)){
+			log_error(log_kernel, "Fallo recibiendo F_WRITE");
+		}
+		else{
+			fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
+			pthread_t hilo_archivo;
+			args->pcb = pcb_siguiente;
+			args->archivo = archivo;
+			args->nombre_instruccion = F_WRITE;
+			pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
+			pthread_detach(hilo_archivo);
+			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
+		}
+
 	}
 }
 
 
 
 
+// TODO recalcular_rafagas_hrrn sacarlo de todos las funciones de manejo, y ponerlo despues del while en el hilo_ready_exe
 

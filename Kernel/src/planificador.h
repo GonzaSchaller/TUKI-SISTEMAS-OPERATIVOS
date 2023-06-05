@@ -12,6 +12,13 @@
 #include "kernel.h"
 #include <unistd.h>
 
+typedef struct{
+	pcb_t* pcb;
+	fcb_t* archivo;
+	uint32_t nombre_instruccion;
+}arg_archivo_bloqueado;
+
+
 void atender_cliente(void*);
 void agregarANew(pcb_t*);
 void agregarABlock(pcb_t*);
@@ -22,7 +29,7 @@ void hilo_Block();
 pcb_t* obtener_siguiente_FIFO();
 pcb_t* obtener_siguiente_ready();
 pcb_t* obtener_siguiente_HRRN(time_t);
-void bloquear_procesoPorIO(void* );
+void bloquear_proceso(void* );
 void agregarNewAReady(pcb_t*);
 
 recurso_sistema* encontrar_recurso(t_list*,char*);
@@ -54,6 +61,9 @@ extern pthread_mutex_t mutexBlock;
 extern pthread_mutex_t mutexExe;
 extern pthread_mutex_t mutexExit;
 extern pthread_mutex_t multiprocesamiento;
+extern pthread_mutex_t mutexHiloTruncate;
+extern pthread_mutex_t mutexHiloRead;
+extern pthread_mutex_t mutexHiloWrite;
 
 extern sem_t contadorNew;
 extern sem_t contadorReady;

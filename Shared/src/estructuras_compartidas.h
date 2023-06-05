@@ -28,7 +28,7 @@ typedef enum{
    	 COMPACTAR
 } estados_segmentos;
 
-typedef struct{ //A implmentar por FileSystem
+typedef struct{ //A implmentar por FileSystem //todo fijarse que sea asi
 	char* nombreArchivo;
 	uint32_t puntero_directo;
 	uint32_t puntero_indirecto;
@@ -99,7 +99,12 @@ typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	COMPACTAR_MEMORIA
 }op_code;
 
-
+//
+typedef enum{ //para que filesystem deveulva ok o no
+	CORRECTO, //OK
+	INCORRECTO,
+	FINALIZAR //para que el filesystem avise a kernel cuando finaliza fread, fwirte, y ftruncate
+}extra_code;
 
 
 
