@@ -31,8 +31,8 @@ extern char* puerto_fileSystem;
 extern char* algoritmo_planificacion;
 
 extern uint32_t estimacion_inicial;
-extern float hrrn_alfa;
 extern uint32_t grado_max_multiprogramacion;
+extern float hrrn_alfa;
 extern t_list* lista_recursos;
 
 

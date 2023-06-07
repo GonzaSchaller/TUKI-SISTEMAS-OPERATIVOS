@@ -6,7 +6,7 @@
 #include <pthread.h>
 #include <commons/log.h>
 #include <sockets.h>
-#include "planificador.h"
+#include "kernel.h"
 
 typedef struct{
 	int socket;

@@ -20,7 +20,7 @@ void procesar_conexion_consola(void* void_args){ //lo que hago por cada consola 
 			contadorProcesos++;
 			inicializarPCB(contadorProcesos,lista_instrucciones,pcb, socket_cliente); //inicializamos el pcb que le vamos a mandar al cpu
 			agregarANew(pcb); //agregamos cada proceso a NEW
-			log_info(log_kernel, "No recibí una instruccion");
+			//log_info(log_kernel, "No recibí una instruccion");
 			break; //Importante
 		}
 //		log_info(log_kernel, "%d", cop);
@@ -207,22 +207,6 @@ void procesar_conexion_consola(void* void_args){ //lo que hago por cada consola 
 
     return;
 }
-//void escuchar_clientes(t_log* logger, int socket_servidor){
-//
-//	args_atender_cliente* args = malloc(sizeof(args_atender_cliente));
-//	args->log = logger;
-//	args->socket = socket_servidor;
-//	args->server_name = "Kernel";
-//	while (1) {
-//	   pthread_t thread;
-//	   int *socket_cliente = malloc(sizeof(int));
-//	   *socket_cliente = esperar_cliente(logger, socket_servidor); //el server acepta al cliente y devuelve un socket_cliente
-//	   if(*socket_cliente != -1){ //si se establece la conexion
-//		   pthread_create(&thread, NULL, (void*) procesar_conexion_consola, (void*) args);
-//		   pthread_detach(thread);
-//	   }
-//	}
-//}
 
 void agregarANew(pcb_t* pcb_proceso) {
 

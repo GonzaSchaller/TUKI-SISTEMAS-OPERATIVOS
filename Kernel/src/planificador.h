@@ -9,8 +9,8 @@
 #include "instrucciones.h"
 #include <semaphore.h>
 #include <commons/collections/queue.h>
-#include "kernel.h"
 #include <unistd.h>
+#include "kernel.h"
 
 typedef struct{
 	pcb_t* pcb;
@@ -22,31 +22,26 @@ typedef struct{
 void atender_cliente(void*);
 void agregarANew(pcb_t*);
 void agregarABlock(pcb_t*);
-pcb_t* sacarDeNew();
+void agregarNewAReady(pcb_t*);
 void hiloNew_Ready();
 void hiloReady_Execute();
 void hilo_Block();
-pcb_t* obtener_siguiente_FIFO();
-pcb_t* obtener_siguiente_ready();
-pcb_t* obtener_siguiente_HRRN(time_t);
-void bloquear_proceso(void* );
-void agregarNewAReady(pcb_t*);
-
-recurso_sistema* encontrar_recurso(t_list*,char*);
 void terminarEjecucion(pcb_t* );
 void agregarAReady(pcb_t*);
 void sacarDeBlock(pcb_t*);
-int tamanioDeListaReady();
 void recalcular_rafagas_HRRN(pcb_t*, float);
-void manejar_memoria(pcb_t*, uint32_t );
-void manejar_contextosDeEjecucion(pcb_t*);
-void manejar_recursos(pcb_t*, uint32_t ,float );
-void manejar_otras_instrucciones(pcb_t*,uint32_t, float);
-void manejar_fileSystem(pcb_t* ,uint32_t, float tiempoDeFin);
-fcb_t* encontrar_archivo(t_list*, char*);
-void eliminarArchivoDeLista(char*, t_list*);
 void print_lista_PID();
 void liberar_Recursos(pcb_t*);
+void recibir_actualizar_tablas_segmento(pcb_t*);
+
+pcb_t* obtener_siguiente_FIFO();
+pcb_t* obtener_siguiente_ready();
+pcb_t* obtener_siguiente_HRRN(time_t);
+pcb_t* sacarDeNew();
+
+int tamanioDeListaReady();
+
+
 //para poder usarlas en el main
 extern t_queue* colaNew;
 extern t_list* listaReady;
@@ -71,6 +66,8 @@ extern sem_t contadorExe;
 extern sem_t contadorBlock;
 //sem_t contadorProcesosEnMemoria;
 extern sem_t multiprogramacion;
+extern sem_t semFWrite;
+extern sem_t semFRead;
 
 extern sem_t largoPlazo;
 #endif

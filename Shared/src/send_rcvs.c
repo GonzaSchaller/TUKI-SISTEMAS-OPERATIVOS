@@ -812,16 +812,16 @@ bool recv_PC(int fd, uint32_t* parametro1) {
 }
 
 static void* serializar_tiempo_bloqueante(uint32_t parametro1) {
-   void* stream = malloc(sizeof(uint32_t));
+   void* stream = malloc(sizeof(float));
     memcpy(stream, &parametro1, sizeof(uint32_t));
     return stream;
 }
-static void deserializar_tiempo_bloqueante(void* stream, uint32_t* parametro1) {
-    memcpy(parametro1, stream ,sizeof(uint32_t));
+static void deserializar_tiempo_bloqueante(void* stream, float* parametro1) {
+    memcpy(parametro1, stream ,sizeof(float));
 
 }
-bool send_tiempo_bloqueante(int fd, uint32_t parametro1) {
-   size_t size = sizeof(uint32_t);
+bool send_tiempo_bloqueante(int fd, float parametro1) {
+   size_t size = sizeof(float);
     void* stream = serializar_tiempo_bloqueante(parametro1);
     if (send(fd, stream, size, 0) != size) {
         free(stream);
@@ -830,8 +830,8 @@ bool send_tiempo_bloqueante(int fd, uint32_t parametro1) {
     free(stream);
     return true;
 }
-bool recv_tiempo_bloqueante(int fd, uint32_t* parametro1) {
-    size_t size = sizeof(uint32_t);
+bool recv_tiempo_bloqueante(int fd, float* parametro1) {
+    size_t size = sizeof(float);
     void* stream = malloc(size);
     if (recv(fd, stream, size, 0) != size) {
         free(stream);

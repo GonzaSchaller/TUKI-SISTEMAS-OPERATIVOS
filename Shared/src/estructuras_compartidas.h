@@ -32,10 +32,10 @@ typedef struct{ //A implmentar por FileSystem //todo fijarse que sea asi
 	char* nombreArchivo;
 	uint32_t puntero_directo;
 	uint32_t puntero_indirecto;
+	uint32_t tamanio_archivo;
 	//... algo mas
 	t_queue* colaBloqueados;
-	pthread_mutex_t mutexArchivo; //para garantizar mutua exclusion //todo ver donde inicializarlo
-
+	pthread_mutex_t mutexArchivo; //para garantizar mutua exclusion
 } fcb_t;
 
 typedef struct{

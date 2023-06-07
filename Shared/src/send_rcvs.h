@@ -81,8 +81,8 @@ bool recv_PID(int, uint32_t*);
 bool send_PC(int, uint32_t);
 bool recv_PC(int, uint32_t*);
 
-bool send_tiempo_bloqueante(int, uint32_t);
-bool recv_tiempo_bloqueante(int, uint32_t*);
+bool send_tiempo_bloqueante(int, float);
+bool recv_tiempo_bloqueante(int, float*);
 
 bool send_BASE_SEGMENTO(int, uint32_t);
 bool recv_BASE_SEGMENTO(int, uint32_t*);

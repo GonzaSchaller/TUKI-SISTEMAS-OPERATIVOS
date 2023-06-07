@@ -57,8 +57,8 @@ void inicializar_semaforos(){
 	sem_init(&contadorReady, 0, 0); // Estado Ready
 	sem_init(&contadorExe, 0, 0); // Estado Exe
 	sem_init(&multiprogramacion, 0, grado_max_multiprogramacion); // hasta 4 procesos en ready
-
-	sem_init(&contadorBlock, 0, 0);
+	sem_init(&semFWrite,0, 1);
+	sem_init(&semFRead,0,1);
 	sem_init(&largoPlazo, 0, 1);
 
 
@@ -99,11 +99,12 @@ void destruir_semaforos_listas(){
 
     list_destroy_and_destroy_elements(listaExit,free);
     list_destroy_and_destroy_elements(listaReady,free);
-    //list_destroy_and_destroy_elements(lista_instrucciones_kernel,free);
+    //list_destroy_and_destroy_elements(lista_instrucciones,free);
     //list_destroy_and_destroy_elements(lista_pcb_en_memoria,free);
     queue_destroy_and_destroy_elements(colaNew,free);
 
     list_destroy_and_destroy_elements(lista_recursos, free);
+    list_destroy_and_destroy_elements(tabla_ArchivosAbiertosGlobal, free);
 
     pthread_mutex_destroy(&mutexNew);
     pthread_mutex_destroy(&mutexReady);

@@ -59,25 +59,26 @@ void aumentar_instancias_recurso( char* nombre,t_list* lista){
 }
 
 void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb,int socket_cliente){
-	registros_cpu registrosInicializados;
-	memset(&registrosInicializados, 0, sizeof(registros_cpu));
-
+	registros_cpu* registrosInicializados = malloc(sizeof(registros_cpu));
+	memset(registrosInicializados, 0, sizeof(registros_cpu));
     pcb->contexto.PID = contadorProceso;
     pcb->instrucciones = listaInstrucciones;
     pcb->contexto.PC = 0;
-   	pcb->contexto.registros = registrosInicializados;
+   	pcb->contexto.registros = *registrosInicializados;
     pcb->contexto.TSegmento= NULL;
     pcb->horaDeIngresoAReady= 0;
     pcb->tabla_archivosAbiertos = list_create();
     pcb->recursos_asignados = list_create();
     pcb->state= NEW;
-
+    pcb->tiempo_bloqueo = 0;
     pcb->state_anterior= 0;
     pcb->estimacion_rafaga_anterior = estimacion_inicial;
 	pcb-> rafaga_anterior_real = 0;
 	pcb->horaDeIngresoAExe = 0;
 	pcb->estimacion_prox_rafaga = (hrrn_alfa* pcb->rafaga_anterior_real)+ ((1-hrrn_alfa)* pcb-> estimacion_rafaga_anterior);
 	pcb->socket_consola = socket_cliente;
+	pcb->tiempo_bloqueo = -1;
+	free(registrosInicializados);
 }
 
 void enviar_pcb_cpu(int fd_cpu, pcb_t* pcb_proceso){

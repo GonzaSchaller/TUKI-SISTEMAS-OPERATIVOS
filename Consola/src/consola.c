@@ -32,19 +32,20 @@ int main (int argc, char* argv[]){
 		return EXIT_FAILURE;
 		terminar_programa(conexion_kernel, log_consola, config_consola);
 	}
+
 	send_instrucciones_a_kernel();
 	//int conexion2 = crear_conexion(log_consola,"Kernel", ip, puerto );
-
-	if(!recv_EXIT(conexion_kernel)){
-		log_info(log_consola, "Error recibiendo exit");
-	};
+	//int cop;
+//	if(recv(conexion_kernel, &cop, sizeof(op_code), MSG_WAITALL) != sizeof(op_code)){
+//		log_info(log_consola, "Error recibiendo exit");
+//		return EXIT_FAILURE;
+//
+//	};
 	log_info(log_consola, "Finaliza Consola");
 	terminar_programa(conexion_kernel, log_consola, config_consola);
-
 	return EXIT_SUCCESS;
+
 }
-
-
 
 
 

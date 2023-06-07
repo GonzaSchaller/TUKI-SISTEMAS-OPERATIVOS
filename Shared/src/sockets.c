@@ -54,7 +54,7 @@ int esperar_cliente(t_log* logger,int socket_servidor)
 }
 
 
-// CLIENTE
+ //CLIENTE
 int crear_conexion(t_log* logger, char* nombre_server, char *ip, char* puerto) //nombre del server al q se va a conectar
 {
 	struct addrinfo hints;
@@ -90,7 +90,6 @@ int crear_conexion(t_log* logger, char* nombre_server, char *ip, char* puerto) /
 
 	return socket_cliente;
 }
-
 
 
 //cierra conexion del cliente, log, y config
