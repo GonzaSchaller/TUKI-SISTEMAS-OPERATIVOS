@@ -14,7 +14,7 @@ typedef struct{
 	char*server_name;
 } t_procesar_conexion_args;
 
-
+//comentario
 static void procesar_conexionn(void* void_args){
 	t_procesar_conexion_args*args = (t_procesar_conexion_args*) void_args;
 	int cliente_socket = args->fd;
