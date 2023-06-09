@@ -157,9 +157,9 @@ int server_escuchar(int server_kernel){
 		args->log = log_kernel;
 		args->socket = consola_socket;
 		args->server_name = "Kernel";
-		//procesar_conexion_consola((void*) args);
-		pthread_create(&hilo, NULL, (void*) procesar_conexion_consola, (void*) args);
-		pthread_detach(hilo);
+		procesar_conexion_consola((void*) args);
+		//pthread_create(&hilo, NULL, (void*) procesar_conexion_consola, (void*) args);
+		//pthread_detach(hilo);
 		return 1;
 	}
 	return 0;

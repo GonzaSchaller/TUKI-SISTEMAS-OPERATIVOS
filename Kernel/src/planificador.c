@@ -223,6 +223,7 @@ void liberar_Recursos(pcb_t* pcb) { //para liberar recursos asignados de un proc
         recurso_sistema* recurso_del_pcb = list_get(pcb->recursos_asignados, i);
         recurso_sistema* recurso = encontrar_recurso(lista_recursos, recurso_del_pcb->nombre);
         recurso->instancia += recurso_del_pcb->instancia;
+        queue_destroy_and_destroy_elements(recurso->colaBloqueados,free);
 	}
 
 }

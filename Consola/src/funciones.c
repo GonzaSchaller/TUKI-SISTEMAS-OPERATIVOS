@@ -41,11 +41,11 @@ int obtener_registro_cpu(char* registro) {
 
     while(fgets(buffer, 100, archivo)){ //leo linea por linea, de a 99 caracteres + /0
     	token = strtok(buffer,"\n");
-
+    	instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
 
         //3 parametros
         if(strncmp(buffer,"F_READ",6) == 0){
-        	instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
+
 
     		char** parametros = string_n_split(token,4," ");
 
@@ -59,7 +59,7 @@ int obtener_registro_cpu(char* registro) {
         }
 
         else if(strncmp(buffer,"F_WRITE",7) == 0){
-            instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
+
     		char** parametros = string_n_split(token,4," ");
 
     		estructura_instrucciones->id = F_WRITE;
@@ -74,7 +74,7 @@ int obtener_registro_cpu(char* registro) {
         //2 parametros
 
         else if(strncmp(buffer,"SET",3) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
+
     		char** parametros = string_n_split(token, 3," ");
 
     		estructura_instrucciones->id = SET;
@@ -88,7 +88,6 @@ int obtener_registro_cpu(char* registro) {
 
                }
         else if(strncmp(buffer,"MOV_IN",6) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
     		char** parametros = string_n_split(token,3," ");
 
     		estructura_instrucciones->id = MOV_IN;
@@ -103,7 +102,6 @@ int obtener_registro_cpu(char* registro) {
 
                }
         else if(strncmp(buffer,"MOV_OUT", 7) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
     		char** parametros = string_n_split(token,3," ");
 
     		estructura_instrucciones->id = MOV_OUT;
@@ -116,7 +114,6 @@ int obtener_registro_cpu(char* registro) {
 
                }
         else if(strncmp(buffer,"F_TRUNCATE", 10) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
     		char** parametros = string_n_split(token,3," ");
 
     		estructura_instrucciones->id = F_TRUNCATE;
@@ -129,7 +126,6 @@ int obtener_registro_cpu(char* registro) {
 
                }
         else if(strncmp(buffer,"F_SEEK",6) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
     		char** parametros = string_n_split(token,3," ");
 
     		estructura_instrucciones->id = F_SEEK;
@@ -143,7 +139,6 @@ int obtener_registro_cpu(char* registro) {
                }
 
         else if(strncmp(buffer,"CREATE_SEGMENT", 14) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
     		char** parametros = string_n_split(token,3," ");
 
     		estructura_instrucciones->id = CREATE_SEGMENT;
@@ -157,7 +152,6 @@ int obtener_registro_cpu(char* registro) {
                }
         // 1 parametro
         else if(strncmp(buffer,"I/O", 3) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
     		char** parametros = string_n_split(token,2," ");
 
     		estructura_instrucciones->id = IO;
@@ -170,7 +164,6 @@ int obtener_registro_cpu(char* registro) {
 
                }
         else if(strncmp(buffer,"WAIT", 4) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
     		char** parametros = string_n_split(token,2," ");
 
     		estructura_instrucciones->id = WAIT;
@@ -183,7 +176,6 @@ int obtener_registro_cpu(char* registro) {
 
                }
         else if(strncmp(buffer,"SIGNAL", 6) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
     		char** parametros = string_n_split(token,2," ");
 
     		estructura_instrucciones->id = SIGNAL;
@@ -196,7 +188,6 @@ int obtener_registro_cpu(char* registro) {
 
                }
         else if(strncmp(buffer,"F_OPEN", 6) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
     		char** parametros = string_n_split(token,2," ");
 
     		estructura_instrucciones->id = F_OPEN;
@@ -209,7 +200,6 @@ int obtener_registro_cpu(char* registro) {
 
                }
         else if(strncmp(buffer,"F_CLOSE", 7) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
     		char** parametros = string_n_split(token,2," ");
 
     		estructura_instrucciones->id = F_CLOSE;
@@ -222,7 +212,6 @@ int obtener_registro_cpu(char* registro) {
 
                }
         else if(strncmp(buffer,"DELETE_SEGMENT",14) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
     		char** parametros = string_n_split(token,2," ");
 
     		estructura_instrucciones->id = DELETE_SEGMENT;
@@ -235,7 +224,7 @@ int obtener_registro_cpu(char* registro) {
                }
         //0 parametros
         else if(strncmp(buffer,"EXIT", 4) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
+
     		char** parametros = string_n_split(token,1," ");
 
     		estructura_instrucciones->id = EXIT;
@@ -248,7 +237,7 @@ int obtener_registro_cpu(char* registro) {
 
                }
         else if(strncmp(buffer,"YIELD", 5) == 0){
-               instruccion* estructura_instrucciones = malloc(sizeof(instruccion));
+
     		char** parametros = string_n_split(token,1," ");
 
     		estructura_instrucciones->id = YIELD;
@@ -358,7 +347,7 @@ void send_instrucciones_a_kernel(){
 					}
 					indice++;
 				}
-
+		list_destroy_and_destroy_elements(lista_instrucciones,free);
 }
 
 
