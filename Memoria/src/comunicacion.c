@@ -2,8 +2,6 @@
 #include <send_rcvs.h>
 
 extern t_log*log_memoria;
-//extern *t_segmento;
-int clientes[3];
 extern int tam_hueco_mas_grande;
 extern int memoria_disponible;
 extern segmento_t *segmento_0;
@@ -87,12 +85,12 @@ static void procesar_conexionn(void* void_args){
 				//recv_tabla_de_segmentos(cliente_socket,) //TODO
 
 				if(borrar_segmento(id)) {
-					log_info("eliminacion ok");
+					log_info(log_memoria,"eliminacion ok");
 					//send que pudo eliminar. //TODO EXITOSO
 				}
-				t_list* tabla_de_segmentos;
+				t_list* ts_kernel;
 				//recibo la tabla de segmentos. //TODO
-				actualizar_tabla_kernel(tabla_de_segmentos);
+				actualizar_tabla_kernel(ts_kernel);
 				//send tabla actualizada //TODO
 
 				break;
@@ -101,13 +99,12 @@ static void procesar_conexionn(void* void_args){
 				//TODO
 				//kernel me manda su tabla de segmentos.
 				if(finalizar_estructuras()){
-					log_info("Todo ok finalizando estructuras");
+					log_info(log_memoria,"Todo ok finalizando estructuras");
 				}
 
 				break;
 
 			case MOV_IN:
-				//recibo un registro
 
 			break;
 
@@ -164,7 +161,7 @@ int server_escuchar3(t_log* log_memoria,char* server_name, int server_socket) {
 	}
    return 1;
 }
-
+*/
 
 
 

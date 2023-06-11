@@ -4,7 +4,7 @@ t_log*log_memoria;
 t_config_memoria *cfg;
 void* memoria_principal;
 t_list* segmentos_libres;
-t_list* segmentos_usados;
+t_list* segmentos_ocupados;
 segmento_t* (*proximo_hueco) (uint32_t);
 int tam_hueco_mas_grande;
 segmento_t *segmento_0;
@@ -67,9 +67,9 @@ uint8_t cargar_memoria(){
 
 	   tam_hueco_mas_grande = cfg->TAMANIO_MEMORIA-cfg->TAMANIO_SEGMENTO_0;
 	   memoria_disponible = cfg->TAMANIO_MEMORIA - cfg->TAMANIO_SEGMENTO_0;
-	   segmentos_usados = list_create();
+	   segmentos_ocupados = list_create();
 
-	  list_add(segmentos_usados,(void*) segmento_0);
+	  list_add(segmentos_ocupados,(void*) segmento_0);
 
       // segmentos_usados = list_create();
 
