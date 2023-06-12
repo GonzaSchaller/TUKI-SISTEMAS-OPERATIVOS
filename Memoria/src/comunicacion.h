@@ -7,7 +7,8 @@
 #include <commons/log.h>
 #include <sockets.h>
 #include <send_rcvs.h>
-
+#include "manejoDeMemoria.h"
+#include "sem.h"
 
 int server_escuchar(t_log *,char*, int);
 int server_escuchar3(t_log *,char*, int);

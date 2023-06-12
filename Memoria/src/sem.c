@@ -66,7 +66,7 @@ void memsetear_mp(uint32_t base,uint32_t tamanio){
 }
 
 
-static bool seg_con_id(void* segmento){
+bool seg_con_id(void* segmento){
 	segmento_t* seg = (segmento_t*) segmento;
 	return seg->id == magic;
 }

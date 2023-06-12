@@ -7,7 +7,7 @@ t_list* segmentos_libres;
 t_list* segmentos_ocupados;
 segmento_t* (*proximo_hueco) (uint32_t);
 int tam_hueco_mas_grande;
-segmento_t *segmento_0;
+segmento_t* segmento_0;
 int memoria_disponible;
 
 
@@ -50,14 +50,15 @@ uint8_t cargar_configuracion(char*path){
 
 uint8_t cargar_memoria(){
 	  memoria_principal = malloc(cfg->TAMANIO_MEMORIA);
-
 	  if (memoria_principal == NULL) log_error(log_memoria, "Fallo en el malloc a memoria_principal"); else log_info(log_memoria,"cargue memoria principal");
 	  memset(memoria_principal,0,cfg->TAMANIO_MEMORIA);
 
-	  segmento_t * segmento0 = new_segmento(0,0,cfg->TAMANIO_SEGMENTO_0);
-
+	  segmentos_ocupados = list_create();
 	  segmentos_libres = list_create();
+
+	  segmento_t * segmento0 = new_segmento(0,0,cfg->TAMANIO_SEGMENTO_0);
 	  segmento_t* hueco = new_segmento(0,cfg->TAMANIO_SEGMENTO_0,cfg->TAMANIO_MEMORIA-cfg->TAMANIO_SEGMENTO_0); // primero creo el hueco.
+
 	  if (hueco == NULL) {
 	        log_error(log_memoria, "Fallo en la creacion de t_list* segmentos_libres");
 	       // asesinar_seglib(); // borrar la lista creada.
@@ -67,7 +68,6 @@ uint8_t cargar_memoria(){
 
 	   tam_hueco_mas_grande = cfg->TAMANIO_MEMORIA-cfg->TAMANIO_SEGMENTO_0;
 	   memoria_disponible = cfg->TAMANIO_MEMORIA - cfg->TAMANIO_SEGMENTO_0;
-	   segmentos_ocupados = list_create();
 
 	  list_add(segmentos_ocupados,(void*) segmento_0);
 

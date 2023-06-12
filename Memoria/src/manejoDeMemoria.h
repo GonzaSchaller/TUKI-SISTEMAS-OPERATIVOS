@@ -28,12 +28,12 @@
 #include "sem.h"
 
 
-
-
-
 segmento_t* proximo_hueco_first_fit(uint32_t);
 segmento_t* proximo_hueco_worst_fit(uint32_t);
 segmento_t* proximo_hueco_best_fit(uint32_t);
+bool entra_en_memoria(uint32_t size);
+bool entra_en_hueco_mas_grande(uint32_t size);
+
 void asesinar_segmentos_libres();
 segmento_t* new_segmento(uint32_t id, uint32_t direccion_base,uint32_t tamanio);
 bool borrar_segmento(uint32_t id);

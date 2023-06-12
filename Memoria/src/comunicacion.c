@@ -39,72 +39,113 @@ static void procesar_conexionn(void* void_args){
 				}
 				if(handshake == 1){
 							    log_info(log_memoria,"handshake exitoso");
-							    send_handshake(cliente_socket,&resultOk);
+							    send_handshake(cliente_socket,resultOk);
 							}
 							else{
-								   log_error(log_memoria,"no t conozco capo");
-								   send_handshake(cliente_socket,&resultError);
+								   log_error(log_memoria,"no t conozcoleer() capo");
+								   send_handshake(cliente_socket,resultError);
 								}
 				break;
 
 			case INICIAR_ESTRUCTURAS: // cuadno se conecta el kernel le mando la tabla de segmentos inicial.
-				//crear_tabla_segmentos(); //METERLE EL SEGMENTO 0 Y MANDARLO.
-				t_list* tabla_de_segmentos = list_create();
-				list_add(tabla_de_segmentos,(void*)segmento_0);
-				//mandar TODO
+				uint32_t pid;
+				if(recv_INICIAR_ESTRUCTURA_MEMORIA(cliente_socket)){
+					recv_PID(cliente_socket, &pid);
+					log_info(log_memoria,"Creación de Proceso PID: %d",pid);
+
+				    t_list* tabla_de_segmentos = list_create();
+
+					list_add(tabla_de_segmentos,(void*)segmento_0);
+
+					send_TABLA_SEGMENTOS(cliente_socket,tabla_de_segmentos);
+				}
+				else log_error("fallo recibiendo iniciar_estructuras");
 
 				break;
 			case CREATE_SEGMENT:
 				uint32_t ide;
 				uint32_t size;
-				bool entra;
+				estados_segmentos estado;
+				uint32_t pid3;
 
 				if(!recv_CREATE_SEGMENT(cliente_socket, & ide, &size)) {
-					log_error(log_memoria,"error recibiendo CREATE_SEGMENT"); break;}
-				log_info(log_memoria,"Creación de Proceso PID: %d \n", ide);
+				log_error(log_memoria,"error recibiendo CREATE_SEGMENT"); break;}
+
+				recv_PID(cliente_socket, &pid3);
 
 				if(!entra_en_memoria(size)){
-					//no entra el segmento ni aunque compactes send error TODO FALLIDO
-				} else if(!entra_en_hueco_mas_grande()){
-					//hay que compactar...send(mandarqyehayquecompactar)TODO COMPACTAR
-				}else log_info(log_memoria,"hay espacio disponible... creando segmento.");
-
-				segmento_t* segmento;
-
-				if(crear_segmento(ide,size)==NULL){
-					log_error(log_memoria,"algo salio mal creando el segmento ");
-					//send que salio mal.
+					estado = FALLIDO;
+					send(cliente_socket,&estado,sizeof(estado),0);
 				}
-			     //send el segmento. EXITOSO. le mando la direccion del segmento.
+				else if(!entra_en_hueco_mas_grande(size)){
+					estado = COMPACTAR;
+					uint32_t confirmacion;
 
+					send(cliente_socket,&estado,sizeof(estado),0);
+					recv(cliente_socket, &confirmacion, sizeof(confirmacion), 0);
+
+					if(confirmacion == COMPACTAR){
+					log_info(log_memoria,"Inicio de compactacion");
+						//compactar_memoria(); TODO
+					}
+				}else{
+					uint32_t pid4;
+					log_info(log_memoria,"hay espacio disponible... creando segmento.");
+					send(cliente_socket,&estado,sizeof(estado),0);
+
+					recv_PID(cliente_socket, &pid4);
+					segmento_t* segmento = crear_segmento(ide,size,pid4);
+
+					if(segmento == NULL){
+					   log_error(log_memoria,"algo salio mal creando el segmento ");
+					}
+					uint32_t base = segmento->direccion_Base;
+					send_BASE_SEGMENTO(cliente_socket,base);
+				}
 				break;
 
 			case DELETE_SEGMENT:
 				uint32_t id;
-				recv_DELETE_SEGMENT(cliente_socket,&id);
+				t_list* ts_kernel;
+
+			    recv_ID_SEGMENTO(cliente_socket, &id);
+			    recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
+
 				//recv_tabla_de_segmentos(cliente_socket,) //TODO
 
 				if(borrar_segmento(id)) {
 					log_info(log_memoria,"eliminacion ok");
 					//send que pudo eliminar. //TODO EXITOSO
 				}
-				t_list* ts_kernel;
+
 				//recibo la tabla de segmentos. //TODO
-				actualizar_tabla_kernel(ts_kernel);
+				list_remove_by_condition(ts_kernel,(void*) &seg_con_id);
+
+				send_TABLA_SEGMENTOS(cliente_socket,ts_kernel);
 				//send tabla actualizada //TODO
 
 				break;
 
 			case FINALIZAR_ESTRUCTURAS:
-				//TODO
+				uint32_t pid2;
+				t_list* ts;
+
+				recv_PID(cliente_socket, &pid2);
+				log_info(log_memoria,"Eliminación de Proceso PID: %d",&pid2);
 				//kernel me manda su tabla de segmentos.
-				if(finalizar_estructuras()){
-					log_info(log_memoria,"Todo ok finalizando estructuras");
+				recv_TABLA_SEGMENTOS(cliente_socket,&ts);
+
+				uint32_t lenght = list_size((void*) ts); //TODO fijarse si esta bien el casteo.
+
+				for(int i=0;i<lenght;i++){
+					 segmento_t* seg = list_get(ts, i);
+					 borrar_segmento(seg->id);
 				}
 
 				break;
 
 			case MOV_IN:
+
 
 			break;
 
@@ -112,6 +153,7 @@ static void procesar_conexionn(void* void_args){
 				break;
 
 			case COMPACTAR_MEMORIA:
+				//compactar_memoria();
 				break;
 
 

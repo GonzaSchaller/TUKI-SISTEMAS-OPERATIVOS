@@ -15,6 +15,7 @@
 //SEMAFOROS
 void iniciar_mutex();
 void finalizar_mutex();
+bool seg_con_id(void* segmento)l
 
 //TABAL DE SEGMENTOS OCUPADOS
 void insertar_segmento_entso(segmento_t * );

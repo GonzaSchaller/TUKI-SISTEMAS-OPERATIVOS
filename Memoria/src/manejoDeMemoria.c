@@ -21,10 +21,10 @@ static uint32_t tamanioStc = 0;
 extern pthread_mutex_t mutex_segmentos_libres;
 //extern pthread_mutex_t mutex_memoria_ocupada;
 
-bool entra_en_memoria(int size){
-	return memoria_disponible>=size;
+bool entra_en_memoria(uint32_t size){
+	return memoria_disponible >= size;
 }
-bool entra_en_hueco_mas_grande(int size){
+bool entra_en_hueco_mas_grande(uint32_t size){
 	return tam_hueco_mas_grande >= size;
 }
 
@@ -72,14 +72,15 @@ bool actualizar_segmentos_libres (segmento_t* seg, uint32_t size){
 }
 
 
-segmento_t* crear_segmento(uint32_t id,uint32_t size){
+segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 
 	segmento_t * seg = (*proximo_hueco)(size);
 	if(seg==NULL){
 		log_error(log_memoria,"no pude agarrar el hueco");
 	}
 	uint32_t base = seg ->direccion_Base;
-	log_info(log_memoria,"Crear segmento: &d, Base: %d- Tamanio:  %d\n",id,base,size);
+
+	log_info(log_memoria,"“PID: %d - Crear Segmento: %d - Base: %d - TAMAÑO: %d",pid,id,base,size);
 
 	segmento_t* segmento_libre = new_segmento(id,base,size);
 
@@ -103,7 +104,7 @@ bool borrar_segmento(uint32_t id){
 
 	segmento_t* seg = encontrar_id_tso(id);
 	if(seg == NULL) return false;
-	log_info(log_memoria,"PID: <PID> Eliminar Segmento: %d  - Base: %d - Tamanio %d \n",seg->id,seg->direccion_Base,seg->tamanio);
+	log_info(log_memoria,"Eliminar Segmento: %d  - Base: %d - Tamanio %d \n",seg->id,seg->direccion_Base,seg->tamanio);
 
 	segmento_t* new_hueco_libre = new_segmento(pozo,seg->direccion_Base,seg->tamanio);
 	//meto el segmento nuevo en segmetos libres
@@ -140,7 +141,6 @@ t_list* actualizar_tabla_kernel(t_list* tabla){
 
 uint32_t unificar_huecos_tsl() {
 	uint32_t size_total = 0;
-    pthread_mutex_lock(&mutex_segmentos_libres);
     int size = list_size(segmentos_libres); // saco el lenght a la lista de segmentos libres.
     for (int i=0; i<size; ++i) { //la recorro.
         if (i==size-1) break;
@@ -154,7 +154,6 @@ uint32_t unificar_huecos_tsl() {
             --size;
         }
     }
-    pthread_mutex_unlock(&mutex_segmentos_libres);
     return size_total;
 }
 
@@ -187,12 +186,23 @@ segmento_t* proximo_hueco_first_fit(uint32_t tamanio){
 }
 
 
-bool finalizar_estructuras(t_list* tabla_segmentos){
 
-//	uint32_t size = lista_size(tabla_segmentos);
+void compactar_memoria(){
 
-	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
