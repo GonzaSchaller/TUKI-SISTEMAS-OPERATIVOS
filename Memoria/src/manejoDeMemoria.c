@@ -48,11 +48,12 @@ static void* hueco_mayor(void * h1,void*h2){
 	else return hueco2;
 }
 
-segmento_t* new_segmento(uint32_t id, uint32_t direccion_base,uint32_t tamanio){
+segmento_t* new_segmento(uint32_t id, uint32_t direccion_base,uint32_t tamanio,uint32_t pid){
 	segmento_t* seg = malloc(sizeof(segmento_t));
 	seg->direccion_Base = direccion_base;
 	seg->tamanio = tamanio;
 	seg->id = id;
+	seg->pid = pid;
 	return seg;
 }
 
@@ -82,7 +83,7 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 
 	log_info(log_memoria,"“PID: %d - Crear Segmento: %d - TAMAÑO: %d",pid,id,size);
 
-	segmento_t* segmento_libre = new_segmento(id,base,size);
+	segmento_t* segmento_libre = new_segmento(id,base,size,pid);
 
 	insertar_segmento_entso(segmento_libre);
 
@@ -106,7 +107,7 @@ bool borrar_segmento(uint32_t base,uint32_t pid){
 	if(seg == NULL) return false;
 	log_info(log_memoria,"PID: %d - Eliminar Segmento: %d  - Base: %d - Tamanio %d \n",pid,seg->id,seg->direccion_Base,seg->tamanio);
 
-	segmento_t* new_hueco_libre = new_segmento(pozo,seg->direccion_Base,seg->tamanio);
+	segmento_t* new_hueco_libre = new_segmento(pozo,seg->direccion_Base,seg->tamanio,pozo);
 	//meto el segmento nuevo en segmetos libres
 
 	insertar_segmento_entsl(new_hueco_libre);
@@ -132,20 +133,6 @@ bool borrar_segmento(uint32_t base,uint32_t pid){
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //delegacion innecesaria? quizas

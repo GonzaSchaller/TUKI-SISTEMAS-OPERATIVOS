@@ -114,7 +114,7 @@ static void procesar_conexionn(void* void_args){
 
 			    // me devuelve la tabla de ese segmento.
 			    t_list * tsegmentos_pid = create_list_seg_by_pid(pid_dlt);
-			    uint32_t base = find_id(tsegmentos_pid); //busco la base del id a eliminar.
+			    uint32_t base = find_id(tsegmentos_pid,id); //busco la base del id a eliminar.
 			    //elimino por base
 				if(borrar_segmento(base)) {
 					log_info(log_memoria,"eliminacion ok");
@@ -129,19 +129,18 @@ static void procesar_conexionn(void* void_args){
 				break;
 
 			case FINALIZAR_ESTRUCTURAS:
-				uint32_t pid2;
+				uint32_t pid_fe;
 				t_list* ts;
 
-				recv_PID(cliente_socket, &pid2);
-				log_info(log_memoria,"Eliminación de Proceso PID: %d",&pid2);
-
+				recv_PID(cliente_socket, &pid_fe);
 				recv_TABLA_SEGMENTOS(cliente_socket,&ts);
 
-				uint32_t lenght = list_size(ts);
+				log_info(log_memoria,"Eliminación de Proceso PID: %d",&pid_fe);
 
+				uint32_t lenght = list_size(ts);
 				for(int i=0;i<lenght;i++){
 					 segmento_t* seg = list_get(ts, i);
-					 borrar_segmento(seg->id);
+					 borrar_segmento(seg->direccion_Base);
 				}
 
 				break;
