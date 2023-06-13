@@ -2,8 +2,6 @@
 #include <send_rcvs.h>
 
 extern t_log*log_memoria;
-extern int tam_hueco_mas_grande;
-extern int memoria_disponible;
 extern segmento_t *segmento_0;
 
 //conexiones de kernel, cpu, filesystem
@@ -125,7 +123,6 @@ static void procesar_conexionn(void* void_args){
 				send_TABLA_SEGMENTOS(cliente_socket,ts_kernel);
 				//deletear la lista. TODO
 
-
 				break;
 
 			case FINALIZAR_ESTRUCTURAS:
@@ -135,7 +132,7 @@ static void procesar_conexionn(void* void_args){
 				recv_PID(cliente_socket, &pid_fe);
 				recv_TABLA_SEGMENTOS(cliente_socket,&ts);
 
-				log_info(log_memoria,"Eliminación de Proceso PID: %d",&pid_fe);
+				log_info(log_memoria,"Eliminación de Proceso PID: %d",pid_fe);
 
 				uint32_t lenght = list_size(ts);
 				for(int i=0;i<lenght;i++){
@@ -145,13 +142,28 @@ static void procesar_conexionn(void* void_args){
 
 				break;
 
-			case MOV_IN: //cambiar nombre. TODO
+
+			//espacio de usuario :)
+
+
+
+			case LEER: //cambiar nombre. TODO
 				//recibo la direccion fisica
 				//leo lo que hay
 
+
+
+
+
+
 			break;
 
-			case MOV_OUT://cambair nombre TODO
+			case ESCRIBIR://cambair nombre TODO
+				uint32_t pid_es;
+				recv_PID(cliente_socket,&pid_es);
+
+
+
 				break;
 
 			case COMPACTAR_MEMORIA:
@@ -184,28 +196,6 @@ int server_escuchar(t_log* log_memoria,char* server_name, int server_socket) {
 
 }
 
-//acepto 3 clientes
-
-
-/*
-int server_escuchar3(t_log* log_memoria,char* server_name, int server_socket) {
-	int i=0;
-	while(i<3){
-		int cliente_fd=esperar_cliente(log_memoria,server_socket);
-		if(cliente_fd!=-1){
-			 pthread_t hilo;
-			        t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
-			        args->fd = cliente_fd;
-			        args->server_name = server_name;
-			        pthread_create(&hilo, NULL, (void*) procesar_conexionn, (void*) args);
-			        pthread_detach(hilo);
-			        return 1;
-		}
-	i++;
-	}
-   return 1;
-}
-*/
 
 
 

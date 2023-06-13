@@ -115,7 +115,7 @@ bool borrar_segmento(uint32_t base,uint32_t pid){
 	memsetear_mp(seg->direccion_Base,seg->tamanio);
 	//elimino el segmento usado de la lista de segmentos usados.
 
-	remover_segmento_entso(seg->id);
+	remover_segmento_entso(seg->id); //cambiar esto TODO
 
 	//dont remove
 	pthread_mutex_lock(&mutex_segmentos_libres);
@@ -190,8 +190,10 @@ segmento_t* proximo_hueco_first_fit(uint32_t tamanio){
 
 
 
-void compactar_memoria(){
+bool compactar_memoria(){
 
+
+	return 0;
 }
 
 
