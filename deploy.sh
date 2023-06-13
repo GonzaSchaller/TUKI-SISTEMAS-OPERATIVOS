@@ -5,7 +5,7 @@
 #(cd Shared/Debug && make install)
 
 #Compilar resto de los proyectos
-(cd Consola/ && make build) 
 (cd Kernel/ && make build) 
+(cd Consola/ && make build) 
 #(cd Cpu/ && make build) 
 #(cd Memoria/ && make build) 

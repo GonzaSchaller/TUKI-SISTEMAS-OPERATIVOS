@@ -11,7 +11,7 @@ OUTFILE = consola.out
 build: makefolder $(OBJ_SHARED) $(OBJ_CONSOLA)
 	$(CC) -o $(OUTFILE) $(OBJ_SHARED) $(OBJ_CONSOLA) -lpthread -lcommons -lm -lreadline
 
-z
+
 makefolder:
 	if [ ! -d ./src ]; then mkdir src; fi
 
