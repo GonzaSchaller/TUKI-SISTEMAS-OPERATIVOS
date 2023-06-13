@@ -57,7 +57,7 @@ uint8_t cargar_memoria(){
 	  segmentos_ocupados = list_create();
 	  segmentos_libres = list_create();
 
-	  segmento_t * segmento0 = new_segmento(0,0,cfg->TAMANIO_SEGMENTO_0,pozo);
+	 segmento_0 = new_segmento(0,0,cfg->TAMANIO_SEGMENTO_0,pozo);
 	  segmento_t* hueco = new_segmento(0,cfg->TAMANIO_SEGMENTO_0,cfg->TAMANIO_MEMORIA-cfg->TAMANIO_SEGMENTO_0,pozo); // primero creo el hueco.
 
 	  if (hueco == NULL) {
