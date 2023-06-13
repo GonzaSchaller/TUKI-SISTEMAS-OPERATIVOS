@@ -188,11 +188,28 @@ segmento_t* proximo_hueco_first_fit(uint32_t tamanio){
 		return seg;
 }
 
+bool compactar(uint32_t iteracion){
+	segmento_t* segmento = get_en_lso(iteracion);
+	if(segmento->direccion_Base == 0) return true;
+
+	segmento_t*hueco = find_en_tsl_rango(segmento->direccion_Base-1);
+
+	uint32_t base_actual = segmento->direccion_Base;
+	uint32_t base_nueva = hueco->direccion_Base;
 
 
-bool compactar_memoria(){
+
+	// lo que tengo que hacer es guardar
+}
 
 
+uint32_t compactar_memoria(){
+	uint32_t size = size_tso();
+	for(int i=0;i<size;i++){
+		if(!compactar(i)){
+			return 0;
+		}
+	}
 	return 0;
 }
 

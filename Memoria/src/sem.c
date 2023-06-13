@@ -5,12 +5,14 @@ pthread_mutex_t mutex_segmentos_usados;
 pthread_mutex_t mutex_memoria_ocupada;
 pthread_mutex_t mutex_compactacion;
 pthread_mutex_t mutex_segm_0;
+pthread_mutex_t mutex_compactar;
 
 //ESTRUCTURAS
 extern t_list* segmentos_libres;
 extern t_list* segmentos_ocupados;
 static uint32_t magic = 0;
 static uint32_t pid_s;
+static uint32_t rango;
 extern void* memoria_principal;
 
 //los inicio.
@@ -20,7 +22,7 @@ void iniciar_mutex() {
     pthread_mutex_init(&mutex_memoria_ocupada, NULL);
     pthread_mutex_init(&mutex_compactacion, NULL);
     pthread_mutex_init(&mutex_segm_0, NULL);
-
+    pthread_mutex_init(&mutex_compactar, NULL);
  //   sem_init(&sem_cant_segmentos, 0, 0);
 
 }
@@ -32,9 +34,7 @@ void finalizar_mutex() {
     pthread_mutex_destroy(&mutex_memoria_ocupada);
     pthread_mutex_destroy(&mutex_compactacion);
     pthread_mutex_destroy(&mutex_segm_0);
-
-
-  //  sem_destroy(&sem_cant_segmentos);
+    pthread_mutex_destroy(&mutex_compactar);
 
 }
 
@@ -127,6 +127,47 @@ uint32_t find_id(t_list* tsegmentos_pid,uint32_t id){
 	uint32_t base_b = list_find(tsegmentos_pid, &seg_con_id_igual);
 	return base_b;
 }
+
+uint32_t size_tso(){
+	pthread_mutex_lock(&mutex_segmentos_usados);
+	uint32_t size = list_size(segmentos_ocupados);
+	pthread_mutex_unlock(&mutex_segmentos_usados);
+	return size;
+}
+
+segmento_t* get_en_lso(uint32_t pos){
+	pthread_mutex_lock(&mutex_segmentos_usados);
+	segmento_t* segmento = list_get(segmentos_ocupados,pos);
+	pthread_mutex_unlock(&mutex_segmentos_usados);
+	return segmento;
+}
+
+bool esta_en_rango(void* segmento){
+	segmento_t* seg = (segmento_t*) segmento;
+	return (rango >= seg->direccion_Base) && (rango < (seg->direccion_Base+seg->tamanio));
+}
+
+segmento_t* find_en_tsl_rango(uint32_t numero){
+	rango = numero;
+	pthread_mutex_lock(&mutex_segmentos_libres);
+	segmento_t*hueco = list_find(segmentos_libres, &esta_en_rango);
+	pthread_mutex_unlock(&mutex_segmentos_libres);
+	return hueco;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
