@@ -47,13 +47,14 @@ static void procesar_conexionn(void* void_args){
 								}
 				break;
 
-			case INICIAR_ESTRUCTURAS: // cuadno se conecta el kernel le mando la tabla de segmentos inicial.
+			case INICIAR_ESTRUCTURAS:
 				uint32_t pid;
 				if(recv_INICIAR_ESTRUCTURA_MEMORIA(cliente_socket)){
 					recv_PID(cliente_socket, &pid);
 					log_info(log_memoria,"Creación de Proceso PID: %d",pid);
 
 				    t_list* tabla_de_segmentos = list_create();
+				    segmento_0->pid = pid;
 
 					list_add(tabla_de_segmentos,(void*)segmento_0);
 
@@ -66,12 +67,12 @@ static void procesar_conexionn(void* void_args){
 				uint32_t ide;
 				uint32_t size;
 				estados_segmentos estado;
-				uint32_t pid3;
+				uint32_t pid_cts;
 
 				if(!recv_CREATE_SEGMENT(cliente_socket, & ide, &size)) {
 				log_error(log_memoria,"error recibiendo CREATE_SEGMENT"); break;}
 
-				recv_PID(cliente_socket, &pid3);
+				recv_PID(cliente_socket, &pid_cts);
 
 				if(!entra_en_memoria(size)){
 					estado = FALLIDO;
@@ -89,12 +90,10 @@ static void procesar_conexionn(void* void_args){
 						//compactar_memoria(); TODO
 					}
 				}else{
-					uint32_t pid4;
 					log_info(log_memoria,"hay espacio disponible... creando segmento.");
 					send(cliente_socket,&estado,sizeof(estado),0);
 
-					recv_PID(cliente_socket, &pid4);
-					segmento_t* segmento = crear_segmento(ide,size,pid4);
+					segmento_t* segmento = crear_segmento(ide,size,pid_cts);
 
 					if(segmento == NULL){
 					   log_error(log_memoria,"algo salio mal creando el segmento ");
@@ -107,22 +106,25 @@ static void procesar_conexionn(void* void_args){
 			case DELETE_SEGMENT:
 				uint32_t id;
 				t_list* ts_kernel;
+				uint32_t pid_dlt;
 
+				recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
 			    recv_ID_SEGMENTO(cliente_socket, &id);
-			    recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
+			    recv_PID(cliente_socket,&pid_dlt);
 
-				//recv_tabla_de_segmentos(cliente_socket,) //TODO
-
-				if(borrar_segmento(id)) {
+			    // me devuelve la tabla de ese segmento.
+			    t_list * tsegmentos_pid = create_list_seg_by_pid(pid_dlt);
+			    uint32_t base = find_id(tsegmentos_pid); //busco la base del id a eliminar.
+			    //elimino por base
+				if(borrar_segmento(base)) {
 					log_info(log_memoria,"eliminacion ok");
-					//send que pudo eliminar. //TODO EXITOSO
 				}
 
-				//recibo la tabla de segmentos. //TODO
-				list_remove_by_condition(ts_kernel,(void*) &seg_con_id);
+				list_remove_by_condition(ts_kernel,(void*) &seg_con_id_igual);
 
 				send_TABLA_SEGMENTOS(cliente_socket,ts_kernel);
-				//send tabla actualizada //TODO
+				//deletear la lista. TODO
+
 
 				break;
 
@@ -132,10 +134,10 @@ static void procesar_conexionn(void* void_args){
 
 				recv_PID(cliente_socket, &pid2);
 				log_info(log_memoria,"Eliminación de Proceso PID: %d",&pid2);
-				//kernel me manda su tabla de segmentos.
+
 				recv_TABLA_SEGMENTOS(cliente_socket,&ts);
 
-				uint32_t lenght = list_size((void*) ts); //TODO fijarse si esta bien el casteo.
+				uint32_t lenght = list_size(ts);
 
 				for(int i=0;i<lenght;i++){
 					 segmento_t* seg = list_get(ts, i);
@@ -144,12 +146,13 @@ static void procesar_conexionn(void* void_args){
 
 				break;
 
-			case MOV_IN:
-
+			case MOV_IN: //cambiar nombre. TODO
+				//recibo la direccion fisica
+				//leo lo que hay
 
 			break;
 
-			case MOV_OUT:
+			case MOV_OUT://cambair nombre TODO
 				break;
 
 			case COMPACTAR_MEMORIA:

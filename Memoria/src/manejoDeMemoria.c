@@ -80,7 +80,7 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 	}
 	uint32_t base = seg ->direccion_Base;
 
-	log_info(log_memoria,"“PID: %d - Crear Segmento: %d - Base: %d - TAMAÑO: %d",pid,id,base,size);
+	log_info(log_memoria,"“PID: %d - Crear Segmento: %d - TAMAÑO: %d",pid,id,size);
 
 	segmento_t* segmento_libre = new_segmento(id,base,size);
 
@@ -97,14 +97,14 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 }
 
 
-bool borrar_segmento(uint32_t id){
+bool borrar_segmento(uint32_t base,uint32_t pid){
 	//tengo que buscar el segmeto en mi lista de segmentos usados,
 	//borrar lo que habia en ese espacio en memoria?
 	//actualizar mi lista de huecos libres, si tengo dos huecoos contiguos los tengo que compactar.
 
-	segmento_t* seg = encontrar_id_tso(id);
+	segmento_t* seg = encontrar_base_tso(base);
 	if(seg == NULL) return false;
-	log_info(log_memoria,"Eliminar Segmento: %d  - Base: %d - Tamanio %d \n",seg->id,seg->direccion_Base,seg->tamanio);
+	log_info(log_memoria,"PID: %d - Eliminar Segmento: %d  - Base: %d - Tamanio %d \n",pid,seg->id,seg->direccion_Base,seg->tamanio);
 
 	segmento_t* new_hueco_libre = new_segmento(pozo,seg->direccion_Base,seg->tamanio);
 	//meto el segmento nuevo en segmetos libres
@@ -132,6 +132,22 @@ bool borrar_segmento(uint32_t id){
 
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //delegacion innecesaria? quizas
 t_list* actualizar_tabla_kernel(t_list* tabla){
 	t_list* ts_kernel;
