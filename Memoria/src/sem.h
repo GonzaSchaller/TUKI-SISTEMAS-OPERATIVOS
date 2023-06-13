@@ -31,8 +31,9 @@ void remove_segmento_tsl(uint32_t id);
 void memsetear_mp(uint32_t base,uint32_t tamanio);
 
 //RELLENO
+t_list * create_list_seg_by_pid(uint32_t pid);
 t_list* remover_xID(t_list* tabla);
-
+uint32_t find_id(t_list* tsegmentos_pid,uint32_t id);
 
 
 #endif

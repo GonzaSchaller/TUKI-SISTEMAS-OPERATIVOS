@@ -60,7 +60,7 @@ static void procesar_conexionn(void* void_args){
 
 					send_TABLA_SEGMENTOS(cliente_socket,tabla_de_segmentos);
 				}
-				else log_error("fallo recibiendo iniciar_estructuras");
+				else log_error(log_memoria,"fallo recibiendo iniciar_estructuras");
 
 				break;
 			case CREATE_SEGMENT:
@@ -116,7 +116,7 @@ static void procesar_conexionn(void* void_args){
 			    t_list * tsegmentos_pid = create_list_seg_by_pid(pid_dlt);
 			    uint32_t base = find_id(tsegmentos_pid,id); //busco la base del id a eliminar.
 			    //elimino por base
-				if(borrar_segmento(base)) {
+				if(borrar_segmento(base,pid_dlt)) {
 					log_info(log_memoria,"eliminacion ok");
 				}
 
@@ -140,7 +140,7 @@ static void procesar_conexionn(void* void_args){
 				uint32_t lenght = list_size(ts);
 				for(int i=0;i<lenght;i++){
 					 segmento_t* seg = list_get(ts, i);
-					 borrar_segmento(seg->direccion_Base);
+					 borrar_segmento(seg->direccion_Base,pid_fe);
 				}
 
 				break;

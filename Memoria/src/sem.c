@@ -122,7 +122,7 @@ t_list * create_list_seg_by_pid(uint32_t pid){
 	return lista;
 }
 
-uint32_t find_id(t_list* tsegmentos_pid,id){
+uint32_t find_id(t_list* tsegmentos_pid,uint32_t id){
 	magic = id;
 	uint32_t base_b = list_find(tsegmentos_pid, &seg_con_id_igual);
 	return base_b;

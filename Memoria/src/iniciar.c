@@ -1,4 +1,5 @@
 #include "iniciar.h"
+#define pozo 9999
 
 t_log*log_memoria;
 t_config_memoria *cfg;
@@ -56,8 +57,8 @@ uint8_t cargar_memoria(){
 	  segmentos_ocupados = list_create();
 	  segmentos_libres = list_create();
 
-	  segmento_t * segmento0 = new_segmento(0,0,cfg->TAMANIO_SEGMENTO_0);
-	  segmento_t* hueco = new_segmento(0,cfg->TAMANIO_SEGMENTO_0,cfg->TAMANIO_MEMORIA-cfg->TAMANIO_SEGMENTO_0); // primero creo el hueco.
+	  segmento_t * segmento0 = new_segmento(0,0,cfg->TAMANIO_SEGMENTO_0,pozo);
+	  segmento_t* hueco = new_segmento(0,cfg->TAMANIO_SEGMENTO_0,cfg->TAMANIO_MEMORIA-cfg->TAMANIO_SEGMENTO_0,pozo); // primero creo el hueco.
 
 	  if (hueco == NULL) {
 	        log_error(log_memoria, "Fallo en la creacion de t_list* segmentos_libres");
