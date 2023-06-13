@@ -15,6 +15,7 @@ void manejar_fileSystem(pcb_t* ,uint32_t, float);
 void eliminarArchivoDeLista(char*, t_list*);
 void bloquear_procesoPorArchivo(void* );
 void bloquear_procesoPorAIO(void* );
+void recibir_actualizar_tablas_segmento(pcb_t*);
 
 recurso_sistema* encontrar_recurso(t_list*,char*);
 fcb_t* encontrar_archivo(t_list*, char*);

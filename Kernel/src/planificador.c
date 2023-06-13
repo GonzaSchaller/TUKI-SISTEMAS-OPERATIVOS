@@ -9,7 +9,6 @@ t_list* tabla_ArchivosAbiertosGlobal;
 
 pthread_mutex_t mutexNew;
 pthread_mutex_t mutexReady;
-pthread_mutex_t mutexBlock;
 pthread_mutex_t mutexExe;
 pthread_mutex_t mutexExit;
 pthread_mutex_t mutexHiloTruncate;
@@ -19,8 +18,6 @@ pthread_mutex_t multiprocesamiento;
 
 sem_t contadorNew;
 sem_t contadorReady;
-sem_t contadorExe;
-sem_t contadorBlock;
 sem_t semFWrite;
 sem_t semFRead;
 sem_t multiprogramacion;
@@ -58,7 +55,7 @@ void agregarNewAReady(pcb_t* pcb){
 	list_add(listaReady, pcb); //agrega a la listaReady
 
 	send_INICIAR_ESTRUCTURA_MEMORIA(conexion_memoria); //mandamos mensaje a memoria que incie sus estructuras
-
+	send_PID(conexion_memoria,pcb->contexto.PID); //mandamos a memoria pid para que lo asigne a cada segmento
 	if(!recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento
 		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto.PID);
 	}
@@ -172,26 +169,6 @@ void recalcular_rafagas_HRRN(pcb_t* pcb_siguiente, float tiempoDeFin){
 				pcb_siguiente->estimacion_rafaga_anterior = pcb_siguiente->estimacion_prox_rafaga;
 				pcb_siguiente->estimacion_prox_rafaga = (hrrn_alfa* pcb_siguiente->rafaga_anterior_real)+ ((1-hrrn_alfa)* pcb_siguiente-> estimacion_rafaga_anterior);
 				}
-}
-
-
-
-void recibir_actualizar_tablas_segmento(pcb_t* pcb_actual){
-	pcb_t* proceso_planificado= NULL;
-	t_list* tabla_nueva = NULL;
-	pthread_mutex_lock(&mutexReady);
-	int t = list_size(listaReady);
-	for(int i = 0; i < t; i++) { //para cada proceso enviamos la tabla que tiene y pedimo que memoria mande la nueva tabla
-	    proceso_planificado = list_get(listaReady, i);
-	    send_TABLA_SEGMENTOS(conexion_memoria,proceso_planificado->contexto.TSegmento);
-	    recv_TABLA_SEGMENTOS(conexion_memoria,&tabla_nueva);
-	    proceso_planificado->contexto.TSegmento = tabla_nueva;
-	    }
-	//para el proceso en exe
-	 	 send_TABLA_SEGMENTOS(conexion_memoria, proceso_planificado->contexto.TSegmento);
-	 	 recv_TABLA_SEGMENTOS(conexion_memoria,&tabla_nueva);
-	 	 proceso_planificado->contexto.TSegmento = tabla_nueva;
-	 	 pthread_mutex_unlock(&mutexReady);
 }
 
 
