@@ -115,7 +115,7 @@ bool borrar_segmento(uint32_t base,uint32_t pid){
 	memsetear_mp(seg->direccion_Base,seg->tamanio);
 	//elimino el segmento usado de la lista de segmentos usados.
 
-	remover_segmento_entso(seg->id); //cambiar esto TODO
+	remover_segmento_entso(seg->direccion_Base);
 
 	//dont remove
 	pthread_mutex_lock(&mutex_segmentos_libres);
@@ -197,9 +197,20 @@ bool compactar(uint32_t iteracion){
 	uint32_t base_actual = segmento->direccion_Base;
 	uint32_t base_nueva = hueco->direccion_Base;
 
+	segmento->direccion_Base = base_nueva;
+	hueco->direccion_Base = base_actual + segmento->tamanio;
+	//hasta aca tire el segmento para arriba y el hueco para abajo.
 
+	//corroborar que el segmento contiguo es vacio o no para unificarlo al hueco:
 
-	// lo que tengo que hacer es guardar
+	segmento_t* hueco2 = find_en_tsl_rango(hueco->direccion_Base+hueco->tamanio); // si encuentra un hueco con la misma base que su limite.
+	if(hueco2 != NULL){//lo encontre y tengo q unificar porque son dos huecos seguidos.
+		hueco->tamanio += hueco2->tamanio;
+	    remove_segmento_tsl(hueco2->direccion_Base);
+	}
+
+	actualizar_memoria_principal(base_actual,base_nueva,segmento->tamanio);
+	return true;
 }
 
 

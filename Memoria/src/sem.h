@@ -34,6 +34,9 @@ void memsetear_mp(uint32_t base,uint32_t tamanio);
 t_list * create_list_seg_by_pid(uint32_t pid);
 t_list* remover_xID(t_list* tabla);
 uint32_t find_id(t_list* tsegmentos_pid,uint32_t id);
-
+uint32_t size_tso();
+segmento_t* find_en_tsl_rango(uint32_t numero);
+segmento_t* get_en_lso(uint32_t pos);
+void actualizar_memoria_principal(uint32_t inicio,uint32_t destino, uint32_t tamanio);
 
 #endif

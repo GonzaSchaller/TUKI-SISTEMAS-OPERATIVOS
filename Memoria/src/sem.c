@@ -11,8 +11,10 @@ pthread_mutex_t mutex_compactar;
 extern t_list* segmentos_libres;
 extern t_list* segmentos_ocupados;
 static uint32_t magic = 0;
-static uint32_t pid_s;
-static uint32_t rango;
+static uint32_t id_s = 0;
+static uint32_t pid_s=0;
+static uint32_t rango = 0;
+
 extern void* memoria_principal;
 
 //los inicio.
@@ -77,23 +79,20 @@ bool seg_con_base_igual(void* segmento){
 	return seg->id == magic;
 }
 
-segmento_t* encontrar_base_tso(uint32_t id){
-	magic = id;
+segmento_t* encontrar_base_tso(uint32_t base){
+	magic = base;
 	pthread_mutex_lock(&mutex_segmentos_usados);
 	segmento_t* seg = (segmento_t*) list_find(segmentos_ocupados,&seg_con_base_igual);
 	pthread_mutex_unlock(&mutex_segmentos_usados);
 	return seg;
 }
 
-
-
 void remover_segmento_entso(uint32_t id){
 	magic = id;
 	pthread_mutex_lock(&mutex_segmentos_usados);
-	list_remove_by_condition(segmentos_ocupados,(void*) &seg_con_id_igual);
+	list_remove_by_condition(segmentos_ocupados,(void*) &seg_con_base_igual);
 	pthread_mutex_unlock(&mutex_segmentos_usados);
 }
-
 
 //just para el kernel.
 t_list* remover_xID(t_list* tabla){
@@ -101,10 +100,10 @@ t_list* remover_xID(t_list* tabla){
 	return tabla;
 }
 
-void remove_segmento_tsl(uint32_t id){
-	magic = id;
+void remove_segmento_tsl(uint32_t base){
+	magic = base;
 	pthread_mutex_lock(&mutex_segmentos_libres);
-	list_remove_by_condition(segmentos_libres,(void*) &seg_con_id_igual);
+	list_remove_by_condition(segmentos_libres,(void*) &seg_con_base_igual);
 	pthread_mutex_unlock(&mutex_segmentos_libres);
 }
 
@@ -123,9 +122,9 @@ t_list * create_list_seg_by_pid(uint32_t pid){
 }
 
 uint32_t find_id(t_list* tsegmentos_pid,uint32_t id){
-	magic = id;
-	uint32_t base_b = list_find(tsegmentos_pid, &seg_con_id_igual);
-	return base_b;
+	id_s = id;
+	uint32_t id_b = list_find(tsegmentos_pid, &seg_con_id_igual);
+	return id_b;
 }
 
 uint32_t size_tso(){
@@ -144,7 +143,7 @@ segmento_t* get_en_lso(uint32_t pos){
 
 bool esta_en_rango(void* segmento){
 	segmento_t* seg = (segmento_t*) segmento;
-	return (rango >= seg->direccion_Base) && (rango < (seg->direccion_Base+seg->tamanio));
+	return (seg->direccion_Base<=rango) && (rango < (seg->direccion_Base+seg->tamanio)); //    base <= rango < base+tamanio(limite)
 }
 
 segmento_t* find_en_tsl_rango(uint32_t numero){
@@ -155,7 +154,15 @@ segmento_t* find_en_tsl_rango(uint32_t numero){
 	return hueco;
 }
 
-
+void actualizar_memoria_principal(uint32_t inicio,uint32_t destino, uint32_t tamanio){
+    void* data = malloc(tamanio);
+	pthread_mutex_lock(&mutex_memoria_ocupada);
+	memcpy(data, memoria_principal+inicio, tamanio);
+	memset(memoria_principal+inicio, 0, tamanio);
+	memcpy(memoria_principal+destino, data, tamanio);
+	pthread_mutex_unlock(&mutex_memoria_ocupada);
+	free(data);
+}
 
 
 
