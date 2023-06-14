@@ -3,6 +3,10 @@
 
 extern t_log*log_memoria;
 extern segmento_t *segmento_0;
+extern t_list*segmentos_ocupados;
+
+uint32_t cant_procesos = 0;
+t_list* procesos;
 
 //conexiones de kernel, cpu, filesystem
 typedef struct{
@@ -57,6 +61,7 @@ static void procesar_conexionn(void* void_args){
 					list_add(tabla_de_segmentos,(void*)segmento_0);
 
 					send_TABLA_SEGMENTOS(cliente_socket,tabla_de_segmentos);
+					cant_procesos++;
 				}
 				else log_error(log_memoria,"fallo recibiendo iniciar_estructuras");
 
@@ -85,7 +90,15 @@ static void procesar_conexionn(void* void_args){
 
 					if(confirmacion == COMPACTAR){
 					log_info(log_memoria,"Inicio de compactacion");
-						//compactar_memoria(); TODO
+						if(compactar_memoria()){
+
+							//agarrar mi tabal de segmentos ocupados.
+							//y filtrar por pid.
+							for(int i = 0;i<cant_procesos;i++){
+								t_list*list_proceso_i = list_filter(segmentos_ocupados,&bypid);
+								send_TABLA_SEGMENTOS(cliente_socket,list_proceso_i);
+							}
+						}
 					}
 				}else{
 					log_info(log_memoria,"hay espacio disponible... creando segmento.");
@@ -139,6 +152,7 @@ static void procesar_conexionn(void* void_args){
 					 segmento_t* seg = list_get(ts, i);
 					 borrar_segmento(seg->direccion_Base,pid_fe);
 				}
+				cant_procesos--;
 
 				break;
 

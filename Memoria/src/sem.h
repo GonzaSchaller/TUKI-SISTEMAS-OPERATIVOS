@@ -25,7 +25,7 @@ void remover_segmento_entso(uint32_t id);
 //TABLA DE SEGMENTOS LIBRES
 void insertar_segmento_entsl(segmento_t* segmento);
 void remove_segmento_tsl(uint32_t id);
-
+bool bypid(void* segmento);
 
 //MEMORIA PRINCIPAL
 void memsetear_mp(uint32_t base,uint32_t tamanio);

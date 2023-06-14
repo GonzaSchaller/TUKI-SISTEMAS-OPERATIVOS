@@ -107,7 +107,7 @@ void remove_segmento_tsl(uint32_t base){
 	pthread_mutex_unlock(&mutex_segmentos_libres);
 }
 
-static bool bypid(void* segmento) {
+bool bypid(void* segmento) {
     segmento_t* seg = (segmento_t*) segmento;
     return seg->pid == pid_s;
 }

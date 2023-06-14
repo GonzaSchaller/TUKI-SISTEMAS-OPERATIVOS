@@ -218,7 +218,7 @@ uint32_t compactar_memoria(){
 	uint32_t size = size_tso();
 	for(int i=0;i<size;i++){
 		if(!compactar(i)){
-			return 0;
+			return 1;
 		}
 	}
 	return 0;
