@@ -166,16 +166,11 @@ static void procesar_conexionn(void* void_args){
 				//leo lo que hay
 
 
-
-
-
-
 			break;
 
 			case ESCRIBIR://cambair nombre TODO
 				uint32_t pid_es;
 				recv_PID(cliente_socket,&pid_es);
-
 
 
 				break;
