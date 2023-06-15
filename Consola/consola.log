@@ -53,3 +53,414 @@
 
 [ERROR] 16:37:11:950 consola/(30432:30432): Error al conectar (a Kernel)
 
+[ERROR] 00:04:23:483 consola/(12627:12627): Error al conectar (a Kernel)
+
+[INFO] 00:05:37:444 consola/(12649:12649): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 01:49:41:041 consola/(13259:13259): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[ERROR] 01:49:42:553 consola/(13275:13275): Error al conectar (a Kernel)
+
+[ERROR] 01:50:28:096 consola/(13312:13312): Error al conectar (a Kernel)
+
+[INFO] 01:51:02:835 consola/(13351:13351): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 01:52:33:784 consola/(13396:13396): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 01:54:58:385 consola/(13471:13471): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 01:55:57:862 consola/(13534:13534): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:02:11:333 consola/(13972:13972): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:10:06:369 consola/(14331:14331): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:13:57:878 consola/(14422:14422): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[ERROR] 02:27:07:928 consola/(14960:14960): Error al conectar (a Kernel)
+
+[ERROR] 02:27:38:927 consola/(15023:15023): Error al conectar (a Kernel)
+
+[INFO] 02:28:14:433 consola/(15098:15098): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:30:42:594 consola/(15305:15305): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:36:01:478 consola/(15706:15706): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:39:15:683 consola/(16002:16002): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:39:38:728 consola/(16050:16050): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:44:37:312 consola/(16302:16302): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:48:41:816 consola/(16989:16989): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[ERROR] 02:57:28:462 consola/(17872:17872): Error al conectar (a Kernel)
+
+[ERROR] 02:57:43:193 consola/(17886:17886): Error al conectar (a Kernel)
+
+[ERROR] 02:57:58:335 consola/(17905:17905): Error al conectar (a Kernel)
+
+[INFO] 02:58:20:859 consola/(17943:17943): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 03:05:53:833 consola/(18124:18124): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 03:12:38:761 consola/(18388:18388): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 03:15:55:800 consola/(18526:18526): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 03:25:32:195 consola/(19088:19088): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 03:29:16:340 consola/(19330:19330): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 03:29:47:988 consola/(19427:19427): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 03:30:34:993 consola/(19463:19463): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 03:31:40:629 consola/(19525:19525): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 03:33:00:980 consola/(19625:19625): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 03:40:28:164 consola/(20146:20146): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 03:41:26:956 consola/(20254:20254): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[ERROR] 03:55:35:629 consola/(21204:21204): Error al conectar (a Kernel)
+
+[INFO] 03:56:19:333 consola/(21310:21310): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[ERROR] 03:58:59:317 consola/(21635:21635): Error al conectar (a Kernel)
+
+[INFO] 03:59:55:381 consola/(21736:21736): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[ERROR] 04:01:17:845 consola/(21854:21854): Error al conectar (a Kernel)
+
+[ERROR] 04:01:31:909 consola/(21899:21899): Error al conectar (a Kernel)
+
+[ERROR] 04:01:42:496 consola/(21945:21945): Error al conectar (a Kernel)
+
+[ERROR] 04:01:59:318 consola/(21995:21995): Error al conectar (a Kernel)
+
+[INFO] 04:02:54:845 consola/(22097:22097): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[ERROR] 22:03:21:304 consola/(2853:2853): Error al conectar (a Kernel)
+
+[INFO] 22:04:23:297 consola/(2991:2991): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 22:16:44:806 consola/(3660:3660): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 22:23:36:215 consola/(3977:3977): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 22:27:15:423 consola/(4303:4303): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 22:29:02:266 consola/(4564:4564): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 22:37:34:161 consola/(5261:5261): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[ERROR] 22:41:31:112 consola/(5450:5450): Error al conectar (a Kernel)
+
+[ERROR] 22:41:45:176 consola/(5519:5519): Error al conectar (a Kernel)
+
+[ERROR] 22:41:57:422 consola/(5599:5599): Error al conectar (a Kernel)
+
+[ERROR] 22:42:23:235 consola/(5720:5720): Error al conectar (a Kernel)
+
+[ERROR] 22:42:32:780 consola/(5776:5776): Error al conectar (a Kernel)
+
+[INFO] 22:43:03:200 consola/(5869:5869): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[ERROR] 22:43:21:251 consola/(5956:5956): Error al conectar (a Kernel)
+
+[ERROR] 22:43:38:751 consola/(6051:6051): Error al conectar (a Kernel)
+
+[ERROR] 22:44:00:154 consola/(6161:6161): Error al conectar (a Kernel)
+
+[ERROR] 22:44:08:362 consola/(6214:6214): Error al conectar (a Kernel)
+
+[ERROR] 22:44:18:858 consola/(6269:6269): Error al conectar (a Kernel)
+
+[INFO] 22:44:43:174 consola/(6401:6401): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[ERROR] 01:32:54:440 consola/(11757:11757): Error al conectar (a Kernel)
+
+[INFO] 02:03:10:918 consola/(12618:12618): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:04:46:936 consola/(12904:12904): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[ERROR] 02:05:21:498 consola/(12945:12945): Error al conectar (a Kernel)
+
+[INFO] 02:05:34:449 consola/(12970:12970): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:06:54:383 consola/(13037:13037): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:08:58:063 consola/(13116:13116): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:09:00:870 consola/(13130:13130): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:09:46:622 consola/(13149:13149): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:10:01:494 consola/(13162:13162): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:10:06:375 consola/(13175:13175): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:11:07:549 consola/(13244:13244): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:11:14:509 consola/(13258:13258): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:11:18:461 consola/(13272:13272): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:11:30:128 consola/(13289:13289): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:11:52:943 consola/(13335:13335): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:11:58:814 consola/(13348:13348): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:12:02:112 consola/(13361:13361): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:12:06:470 consola/(13374:13374): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:37:17:994 consola/(15403:15403): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:37:23:455 consola/(15417:15417): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 02:37:25:580 consola/(15431:15431): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:07:28:884 consola/(2032:2032): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:10:14:341 consola/(2187:2187): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:16:24:756 consola/(2187:2187): Error recibiendo exit
+[INFO] 20:16:24:757 consola/(2187:2187): Finaliza Consola
+[ERROR] 20:16:41:670 consola/(3277:3277): Error al conectar (a Kernel)
+
+[INFO] 20:16:41:670 consola/(3277:3277): Error recibiendo exit
+[INFO] 20:16:41:670 consola/(3277:3277): Finaliza Consola
+[ERROR] 20:17:16:392 consola/(3305:3305): Error al conectar (a Kernel)
+
+[INFO] 20:17:16:392 consola/(3305:3305): Error recibiendo exit
+[INFO] 20:17:16:393 consola/(3305:3305): Finaliza Consola
+[INFO] 20:17:31:253 consola/(3331:3331): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:19:05:700 consola/(3331:3331): Error recibiendo exit
+[INFO] 20:19:05:700 consola/(3331:3331): Finaliza Consola
+[ERROR] 20:19:13:103 consola/(3510:3510): Error al conectar (a Kernel)
+
+[INFO] 20:19:13:103 consola/(3510:3510): Error recibiendo exit
+[INFO] 20:19:13:103 consola/(3510:3510): Finaliza Consola
+[ERROR] 20:19:25:966 consola/(3523:3523): Error al conectar (a Kernel)
+
+[INFO] 20:19:25:967 consola/(3523:3523): Error recibiendo exit
+[INFO] 20:19:25:967 consola/(3523:3523): Finaliza Consola
+[ERROR] 20:19:32:935 consola/(3533:3533): Error al conectar (a Kernel)
+
+[INFO] 20:19:32:936 consola/(3533:3533): Error recibiendo exit
+[INFO] 20:19:32:936 consola/(3533:3533): Finaliza Consola
+[ERROR] 20:19:48:602 consola/(3555:3555): Error al conectar (a Kernel)
+
+[INFO] 20:19:48:602 consola/(3555:3555): Error recibiendo exit
+[INFO] 20:19:48:602 consola/(3555:3555): Finaliza Consola
+[ERROR] 20:20:06:675 consola/(3579:3579): Error al conectar (a Kernel)
+
+[INFO] 20:20:06:675 consola/(3579:3579): Error recibiendo exit
+[INFO] 20:20:06:675 consola/(3579:3579): Finaliza Consola
+[INFO] 20:21:51:478 consola/(3676:3676): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:22:01:468 consola/(3676:3676): Error recibiendo exit
+[INFO] 20:22:01:469 consola/(3676:3676): Finaliza Consola
+[ERROR] 20:22:49:624 consola/(3756:3756): Error al conectar (a Kernel)
+
+[INFO] 20:27:23:033 consola/(4091:4091): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:35:26:180 consola/(4775:4775): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:44:20:332 consola/(4775:4775): Error recibiendo exit
+[INFO] 20:44:20:332 consola/(4775:4775): Finaliza Consola
+[ERROR] 20:44:27:131 consola/(5641:5641): Error al conectar (a Kernel)
+
+[INFO] 20:44:27:132 consola/(5641:5641): Error recibiendo exit
+[INFO] 20:44:27:132 consola/(5641:5641): Finaliza Consola
+[ERROR] 20:44:58:650 consola/(5685:5685): Error al conectar (a Kernel)
+
+[INFO] 20:44:58:650 consola/(5685:5685): Error recibiendo exit
+[INFO] 20:44:58:650 consola/(5685:5685): Finaliza Consola
+[ERROR] 20:45:13:806 consola/(5729:5729): Error al conectar (a Kernel)
+
+[INFO] 20:45:13:806 consola/(5729:5729): Error recibiendo exit
+[INFO] 20:45:13:806 consola/(5729:5729): Finaliza Consola
+[INFO] 20:45:32:949 consola/(5769:5769): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:45:58:267 consola/(5769:5769): Error recibiendo exit
+[INFO] 20:45:58:268 consola/(5769:5769): Finaliza Consola
+[ERROR] 20:46:52:213 consola/(5862:5862): Error al conectar (a Kernel)
+
+[INFO] 20:47:05:774 consola/(5902:5902): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:49:10:058 consola/(6007:6007): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:50:10:600 consola/(6115:6115): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:53:23:699 consola/(6591:6591): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:54:49:815 consola/(6591:6591): Error recibiendo exit
+[INFO] 20:54:49:815 consola/(6591:6591): Finaliza Consola
+[ERROR] 20:54:54:922 consola/(6971:6971): Error al conectar (a Kernel)
+
+[INFO] 20:54:54:922 consola/(6971:6971): Error recibiendo exit
+[ERROR] 20:55:11:243 consola/(7023:7023): Error al conectar (a Kernel)
+
+[INFO] 20:55:11:243 consola/(7023:7023): Error recibiendo exit
+[ERROR] 20:55:33:138 consola/(7071:7071): Error al conectar (a Kernel)
+
+[INFO] 20:55:33:138 consola/(7071:7071): Error recibiendo exit
+[ERROR] 20:55:49:197 consola/(7110:7110): Error al conectar (a Kernel)
+
+[INFO] 20:55:49:197 consola/(7110:7110): Error recibiendo exit
+[INFO] 20:56:03:038 consola/(7152:7152): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 20:56:22:083 consola/(7152:7152): Error recibiendo exit
+[ERROR] 20:56:33:720 consola/(7239:7239): Error al conectar (a Kernel)
+
+[ERROR] 20:56:47:928 consola/(7283:7283): Error al conectar (a Kernel)
+
+[ERROR] 20:56:57:763 consola/(7297:7297): Error al conectar (a Kernel)
+
+[ERROR] 20:56:59:698 consola/(7308:7308): Error al conectar (a Kernel)
+
+[ERROR] 20:57:01:681 consola/(7319:7319): Error al conectar (a Kernel)
+
+[ERROR] 20:57:03:615 consola/(7330:7330): Error al conectar (a Kernel)
+
+[ERROR] 20:57:05:502 consola/(7341:7341): Error al conectar (a Kernel)
+
+[ERROR] 20:57:07:196 consola/(7353:7353): Error al conectar (a Kernel)
+
+[ERROR] 20:57:09:198 consola/(7369:7369): Error al conectar (a Kernel)
+
+[ERROR] 20:57:23:172 consola/(7410:7410): Error al conectar (a Kernel)
+
+[INFO] 20:58:46:100 consola/(7471:7471): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 21:06:09:152 consola/(8055:8055): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 21:06:51:613 consola/(8055:8055): Finaliza Consola
+[ERROR] 21:07:50:809 consola/(8232:8232): Error al conectar (a Kernel)
+
+[INFO] 21:07:50:809 consola/(8232:8232): Error recibiendo exit
+[INFO] 21:08:05:834 consola/(8267:8267): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 21:08:09:431 consola/(8267:8267): Error recibiendo exit
+[ERROR] 21:08:33:629 consola/(8307:8307): Error al conectar (a Kernel)
+
+[INFO] 21:08:33:629 consola/(8307:8307): Error recibiendo exit
+[ERROR] 21:08:46:184 consola/(8341:8341): Error al conectar (a Kernel)
+
+[INFO] 21:08:46:184 consola/(8341:8341): Error recibiendo exit
+[ERROR] 21:08:58:411 consola/(8385:8385): Error al conectar (a Kernel)
+
+[INFO] 21:08:58:411 consola/(8385:8385): Error recibiendo exit
+[ERROR] 21:09:13:272 consola/(8414:8414): Error al conectar (a Kernel)
+
+[INFO] 21:09:13:272 consola/(8414:8414): Error recibiendo exit
+[INFO] 21:09:24:880 consola/(8459:8459): Cliente conectado en 127.0.0.1:8000 (a Kernel)
+
+[INFO] 21:16:30:757 consola/(8459:8459): Error recibiendo exit
+[ERROR] 21:16:37:308 consola/(8735:8735): Error al conectar (a Kernel)
+
+[ERROR] 21:17:02:328 consola/(8795:8795): Error al conectar (a Kernel)
+
+[INFO] 21:17:02:328 consola/(8795:8795): Finaliza Consola
+[ERROR] 21:17:19:820 consola/(8837:8837): Error al conectar (a Kernel)
+
+[INFO] 21:17:19:820 consola/(8837:8837): Finaliza Consola
+[ERROR] 21:17:33:137 consola/(8880:8880): Error al conectar (a Kernel)
+
+[INFO] 21:17:33:137 consola/(8880:8880): Finaliza Consola
+[INFO] 21:18:42:395 consola/(8936:8936): Cliente conectado en 127.0.0.1:54000 (a Kernel)
+
+[INFO] 21:21:30:193 consola/(8936:8936): Finaliza Consola
+[ERROR] 21:21:45:001 consola/(9232:9232): Error al conectar (a Kernel)
+
+[INFO] 21:21:45:001 consola/(9232:9232): Finaliza Consola
+[ERROR] 21:22:02:648 consola/(9301:9301): Error al conectar (a Kernel)
+
+[INFO] 21:22:02:648 consola/(9301:9301): Finaliza Consola
+[ERROR] 21:22:22:303 consola/(9348:9348): Error al conectar (a Kernel)
+
+[INFO] 21:22:22:303 consola/(9348:9348): Finaliza Consola
+[ERROR] 21:22:29:261 consola/(9364:9364): Error al conectar (a Kernel)
+
+[INFO] 21:22:29:261 consola/(9364:9364): Finaliza Consola
+[INFO] 21:22:46:641 consola/(9382:9382): Cliente conectado en 127.0.0.1:54000 (a Kernel)
+
+[INFO] 21:22:46:642 consola/(9382:9382): Finaliza Consola
+[INFO] 21:33:47:030 consola/(10122:10122): Cliente conectado en 127.0.0.1:54000 (a Kernel)
+
+[INFO] 21:33:47:031 consola/(10122:10122): Finaliza Consola
+[INFO] 00:35:58:987 consola/(17514:17514): Cliente conectado en 127.0.0.1:54000 (a Kernel)
+
+[INFO] 00:35:58:990 consola/(17514:17514): Finaliza Consola
+[INFO] 00:36:33:173 consola/(17534:17534): Cliente conectado en 127.0.0.1:54000 (a Kernel)
+
+[INFO] 00:36:33:174 consola/(17534:17534): Finaliza Consola
+[INFO] 01:52:34:482 consola/(17764:17764): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 01:52:34:482 consola/(17764:17764): Finaliza Consola
+[INFO] 01:53:32:264 consola/(17798:17798): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 01:53:32:264 consola/(17798:17798): Finaliza Consola
+[INFO] 01:53:38:590 consola/(17825:17825): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 01:53:38:590 consola/(17825:17825): Finaliza Consola
+[INFO] 01:54:30:245 consola/(17851:17851): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 01:54:30:250 consola/(17851:17851): Finaliza Consola
+[INFO] 01:54:39:430 consola/(17868:17868): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 01:54:39:439 consola/(17868:17868): Finaliza Consola
+[INFO] 01:54:46:741 consola/(17891:17891): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 01:54:46:750 consola/(17891:17891): Finaliza Consola
+[INFO] 01:54:59:579 consola/(17915:17915): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 01:54:59:583 consola/(17915:17915): Finaliza Consola
+[INFO] 02:23:52:623 consola/(19569:19569): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 02:23:52:623 consola/(19569:19569): Finaliza Consola
+[INFO] 02:24:19:313 consola/(19598:19598): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 02:24:19:313 consola/(19598:19598): Finaliza Consola
+[INFO] 03:08:08:792 consola/(5793:5793): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 03:08:08:793 consola/(5793:5793): Finaliza Consola
+[INFO] 03:09:52:582 consola/(6182:6182): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[ERROR] 03:13:15:239 consola/(6368:6368): Error al conectar (a Kernel)
+
+[INFO] 03:13:15:272 consola/(6368:6368): Finaliza Consola
+[ERROR] 03:14:18:839 consola/(6440:6440): Error al conectar (a Kernel)
+
+[INFO] 03:14:18:840 consola/(6440:6440): Finaliza Consola
+[INFO] 03:14:33:516 consola/(6499:6499): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 03:14:33:516 consola/(6499:6499): Finaliza Consola
+[INFO] 03:19:30:403 consola/(6904:6904): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 03:19:30:403 consola/(6904:6904): Finaliza Consola
+[ERROR] 03:20:50:062 consola/(7142:7142): Error al conectar (a Kernel)
+
+[INFO] 03:20:50:101 consola/(7142:7142): Finaliza Consola
+[INFO] 03:29:52:106 consola/(7946:7946): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 03:29:52:109 consola/(7946:7946): Finaliza Consola
+[INFO] 03:30:26:093 consola/(7983:7983): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 03:30:26:093 consola/(7983:7983): Finaliza Consola
+[INFO] 03:34:12:870 consola/(8150:8150): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 03:34:12:874 consola/(8150:8150): Finaliza Consola
+[ERROR] 03:38:59:640 consola/(8236:8236): Error al conectar (a Kernel)
+
+[INFO] 03:38:59:640 consola/(8236:8236): Finaliza Consola
+[INFO] 03:55:08:276 consola/(8771:8771): Cliente conectado en 127.0.0.1:54534 (a Kernel)
+
+[INFO] 03:55:08:297 consola/(8771:8771): Finaliza Consola

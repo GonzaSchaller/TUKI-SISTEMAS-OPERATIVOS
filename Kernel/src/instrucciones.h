@@ -8,61 +8,41 @@
 #include "configuraciones.h"
 #include <send_rcvs.h>
 
-
-
-
 typedef enum {
     NEW,
     READY,
     EXEC,
     BLOCK,
     FINISH
-}estado;
-
-
-//enum para mandar las instrucciones
-typedef enum{
-	AX,
-	BX,
-	CX,
-	DX,
-	EAX,
-	EBX,
-	ECX,
-	EDX,
-	RAX,
-	RBX,
-	RCX,
-	RDX
-}Registro;
-//set ax "sada"
-
-//Valores de registros que voy a guardar en el pcb
-
+}estado;// ESTADO PCB
 
 typedef struct{
-
     t_list* instrucciones; // Lista de instrucciones a ejecutar
-    contexto_ejecucion contexto_PCB; //tiene registros, tabla segmento, pid y PC
-
-
+    contexto_ejecucion contexto; //tiene registros, tabla segmento, pid y PC
     uint32_t estimacion_prox_rafaga; //S del HRRN
     float horaDeIngresoAReady; // Seria el timestamp en que el proceso llego a ready cambiar nombre
     t_list* tabla_archivosAbiertos ;// lista de fcb_t
     estado state ; //capaz ponerlo uint32
-
+    uint32_t state_anterior;
     float rafaga_anterior_real; // 0 al principio, despues es el tiempo real que se ejecuto. Seria el R(n)
     float estimacion_rafaga_anterior; // estimacion inicial
     float horaDeIngresoAExe; // timestamp cuando llega a execute para calcular la rafaga anterior
 	float horaDeSalidaDeExe;
 	float hrrn;
-	uint32_t tiempo_bloqueo;
+	t_list* recursos_asignados;
+	int socket_consola;
+	float tiempo_bloqueo;
 }pcb_t;
+
 void enviar_pcb_cpu(int , pcb_t*);
 void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
 void cargar_instruccion2(int, char* , uint32_t, char* ,uint32_t ,t_list* );
 void cargar_instruccion3(int, char* , char*, uint32_t ,uint32_t ,t_list* );
 void send_instrucciones_kernel_a_cpu(int,pcb_t*);
-void inicializarPCB(int, t_list*, pcb_t *);
+void inicializarPCB(int, t_list*, pcb_t *, int);
+void asignar_recurso(char* ,t_list* );
+void aumentar_instancias_recurso(char*,t_list* );
+
+extern recurso_sistema* encontrar_recurso(t_list*,char*);
 
 #endif

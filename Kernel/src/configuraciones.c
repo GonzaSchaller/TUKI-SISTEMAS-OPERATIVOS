@@ -40,7 +40,9 @@ t_list* obtener_recursos(t_config* config, char* rec, char* instancias){
 		posicion++;
 		free(recurso);
 	}
-
+	string_array_destroy(array_recursos);
+	string_array_destroy(array_instancias);
+    queue_destroy_and_destroy_elements(cola_bloqueados,free);
 	return lista_recursos;
 }
 int obtener_algoritmo_planificacion(char* algoritmo){
@@ -55,11 +57,11 @@ int obtener_algoritmo_planificacion(char* algoritmo){
 	        //log_info(log_kernel, "El algoritmo de planificacion elegido es FIFO.");
 	    }
 
-	    //SFJ SIN DESALOJO
+
 	    if (strcmp(algoritmo,"HRRN") == 0)
 	    {
 	    	algoritmo_planif = HRRN;
-	     //   log_info(log_kernel, "El algoritmo de planificacion elegido es SRT.");
+	     //   log_info(log_kernel, "El algoritmo de planificacion elegido es HRRN.");
 	    }
 	    return algoritmo_planif;
 }

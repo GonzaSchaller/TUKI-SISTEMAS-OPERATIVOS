@@ -28,14 +28,14 @@ typedef enum{
    	 COMPACTAR
 } estados_segmentos;
 
-typedef struct{ //A implmentar por FileSystem
+typedef struct{ //A implmentar por FileSystem //todo fijarse que sea asi
 	char* nombreArchivo;
 	uint32_t puntero_directo;
 	uint32_t puntero_indirecto;
+	uint32_t tamanio_archivo;
 	//... algo mas
 	t_queue* colaBloqueados;
-	pthread_mutex_t mutexArchivo; //para garantizar mutua exclusion //todo ver donde inicializarlo
-
+	pthread_mutex_t mutexArchivo; //para garantizar mutua exclusion
 } fcb_t;
 
 typedef struct{
@@ -53,6 +53,21 @@ typedef struct{
 	   char RDX[16];
 }registros_cpu;
 
+//enum para mandar las instrucciones
+typedef enum{
+	AX = 400,
+	BX = 500,
+	CX,
+	DX,
+	EAX,
+	EBX,
+	ECX,
+	EDX,
+	RAX,
+	RBX,
+	RCX,
+	RDX
+}Registro;
 typedef struct{
     uint32_t PID;
     uint32_t PC;
@@ -84,7 +99,12 @@ typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	COMPACTAR_MEMORIA
 }op_code;
 
-
+//
+typedef enum{ //para que filesystem deveulva ok o no
+	CORRECTO, //OK
+	INCORRECTO,
+	FINALIZAR //para que el filesystem avise a kernel cuando finaliza fread, fwirte, y ftruncate
+}extra_code;
 
 
 

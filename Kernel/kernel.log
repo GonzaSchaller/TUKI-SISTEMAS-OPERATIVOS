@@ -1,213 +1,180 @@
-[INFO] 03:24:03:448 Kernel/(7800:7800): Servidor listo para recibir cliente
-[INFO] 03:28:15:275 Kernel/(7883:7883): Servidor listo para recibir cliente
-[INFO] 03:28:40:794 Kernel/(7883:7883): Se conecto un cliente
-[INFO] 13:17:54:175 Kernel/(1959:1959): Servidor listo para recibir cliente
-[INFO] 13:21:40:847 Kernel/(1998:1998): Servidor listo para recibir cliente
-[INFO] 16:31:01:543 Kernel/(9760:9760): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[INFO] 03:07:44:941 Kernel/(5743:5743): Servidor listo para recibir cliente
+[ERROR] 03:07:44:941 Kernel/(5743:5743): Error al conectar (a CPU)
 
-[INFO] 16:31:01:556 Kernel/(9760:9760): Servidor listo para recibir cliente
-[INFO] 19:37:00:070 Kernel/(2105:2105): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[ERROR] 03:07:44:941 Kernel/(5743:5743): Error al conectar (a FileSystem)
 
-[INFO] 19:37:00:070 Kernel/(2105:2105): Servidor listo para recibir cliente
-[INFO] 19:37:40:813 Kernel/(2129:2129): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[ERROR] 03:07:44:941 Kernel/(5743:5743): Error al conectar (a Memoria)
 
-[INFO] 19:37:40:813 Kernel/(2129:2129): Servidor listo para recibir cliente
-[INFO] 19:38:23:027 Kernel/(2156:2156): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[INFO] 03:08:08:791 Kernel/(5743:5743): Se conecto un cliente
+[INFO] 03:08:08:793 Kernel/(5743:5798): Se crea el proceso <1> en NEW
+[WARNING] 03:08:08:793 Kernel/(5743:5798): El cliente se desconecto de Kernel server
+[INFO] 03:08:08:794 Kernel/(5743:5745): [NEW] Se saca el proceso de PID: 1 de la cola
+[INFO] 03:08:08:794 Kernel/(5743:5745): No se recibio tabla de segmentos para el proceso de PID: 1
+[INFO] 03:08:08:794 Kernel/(5743:5745): PID: <1> - Estado Anterior: <NEW> - Estado Actual: <READY>
+[INFO] 03:08:08:794 Kernel/(5743:5745): Cola Ready < HRRN >: [1]
+[INFO] 03:08:08:794 Kernel/(5743:5744): estamos en execute 1
+[INFO] 03:08:08:794 Kernel/(5743:5744): PID: <1> - Estado Anterior: <READY> - Estado Actual: <EXEC>
+[INFO] 03:09:20:252 Kernel/(6015:6015): Servidor listo para recibir cliente
+[ERROR] 03:09:21:490 Kernel/(6015:6015): Error al conectar (a CPU)
 
-[INFO] 19:38:23:027 Kernel/(2156:2156): Servidor listo para recibir cliente
-[INFO] 19:43:04:437 Kernel/(2415:2415): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[ERROR] 03:09:21:490 Kernel/(6015:6015): Error al conectar (a FileSystem)
 
-[INFO] 19:43:04:438 Kernel/(2415:2415): Servidor listo para recibir cliente
-[INFO] 19:44:06:826 Kernel/(2460:2460): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[ERROR] 03:09:21:490 Kernel/(6015:6015): Error al conectar (a Memoria)
 
-[INFO] 19:44:06:826 Kernel/(2460:2460): Servidor listo para recibir cliente                 
-[INFO] 19:49:02:347 Kernel/(2832:2832): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[INFO] 03:09:44:208 Kernel/(6109:6109): Servidor listo para recibir cliente
+[ERROR] 03:09:45:222 Kernel/(6109:6109): Error al conectar (a CPU)
 
-[INFO] 19:49:02:348 Kernel/(2832:2832): Servidor listo para recibir cliente
-[INFO] 19:50:39:651 Kernel/(2880:2880): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[ERROR] 03:09:45:222 Kernel/(6109:6109): Error al conectar (a FileSystem)
 
-[INFO] 19:50:39:651 Kernel/(2880:2880): Servidor listo para recibir cliente
-[INFO] 19:51:29:699 Kernel/(2901:2901): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[ERROR] 03:09:45:222 Kernel/(6109:6109): Error al conectar (a Memoria)
 
-[INFO] 19:51:29:699 Kernel/(2901:2901): Servidor listo para recibir cliente
-[INFO] 21:54:49:515 Kernel/(2065:2065): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[INFO] 03:09:52:582 Kernel/(6109:6109): Se conecto un cliente
+[INFO] 03:14:28:954 Kernel/(6470:6470): Servidor listo para recibir cliente
+[ERROR] 03:14:29:786 Kernel/(6470:6470): Error al conectar (a CPU)
 
-[INFO] 21:54:49:516 Kernel/(2065:2065): Servidor listo para recibir cliente
-[INFO] 22:04:07:718 Kernel/(2562:2562): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[ERROR] 03:14:29:786 Kernel/(6470:6470): Error al conectar (a FileSystem)
 
-[INFO] 22:04:07:718 Kernel/(2562:2562): Servidor listo para recibir cliente
-[INFO] 22:08:22:079 Kernel/(2629:2629): Memoria: Lei la ip 127.0.0.1 y el puerto 8002
+[ERROR] 03:14:29:786 Kernel/(6470:6470): Error al conectar (a Memoria)
 
-[INFO] 22:08:22:088 Kernel/(2629:2629): Servidor listo para recibir cliente
-[INFO] 22:08:33:709 Kernel/(2629:2629): Se conecto un cliente
-[ERROR] 22:08:33:709 Kernel/(2629:2629): Error al conectar (a Memoria)
+[INFO] 03:14:33:516 Kernel/(6470:6470): Se conecto un cliente
+[INFO] 03:19:24:438 Kernel/(6854:6854): Servidor listo para recibir cliente
+[ERROR] 03:19:25:757 Kernel/(6854:6854): Error al conectar (a CPU)
 
-[ERROR] 22:08:33:709 Kernel/(2629:2629): Error al conectar (a CPU)
+[ERROR] 03:19:25:757 Kernel/(6854:6854): Error al conectar (a FileSystem)
 
-[ERROR] 22:08:33:709 Kernel/(2629:2629): Error al conectar (a FileSystem)
+[ERROR] 03:19:25:757 Kernel/(6854:6854): Error al conectar (a Memoria)
 
-[INFO] 19:58:40:970 Kernel/(4578:4578): Servidor listo para recibir cliente
-[INFO] 20:01:13:442 Kernel/(4803:4803): Servidor listo para recibir cliente
-[INFO] 20:26:14:269 Kernel/(7299:7299): Servidor listo para recibir cliente
-[INFO] 20:26:50:380 Kernel/(7299:7299): Se conecto un cliente
-[ERROR] 20:26:50:380 Kernel/(7299:7299): Error al conectar (a Memoria)
+[INFO] 03:19:30:403 Kernel/(6854:6854): Se conecto un cliente
+[INFO] 03:20:02:310 Kernel/(6854:6854): Se crea el proceso <1> en NEW
+[INFO] 03:20:02:310 Kernel/(6854:6875): [NEW] Se saca el proceso de PID: 1 de la cola
+[INFO] 03:20:02:310 Kernel/(6854:6875): No se recibio tabla de segmentos para el proceso de PID: 1
+[INFO] 03:20:02:310 Kernel/(6854:6875): PID: <1> - Estado Anterior: <NEW> - Estado Actual: <READY>
+[INFO] 03:20:02:310 Kernel/(6854:6875): Cola Ready < HRRN >: [1]
+[INFO] 03:20:02:310 Kernel/(6854:6874): estamos en execute 1
+[INFO] 03:20:02:310 Kernel/(6854:6874): PID: <1> - Estado Anterior: <READY> - Estado Actual: <EXEC>
+[WARNING] 03:20:02:524 Kernel/(6854:6854): El cliente se desconecto de Kernel server
+[INFO] 03:22:13:706 Kernel/(7228:7228): Servidor listo para recibir cliente
+[ERROR] 03:22:13:774 Kernel/(7228:7228): Error al conectar (a CPU)
 
-[ERROR] 20:26:50:381 Kernel/(7299:7299): Error al conectar (a CPU)
+[ERROR] 03:22:13:784 Kernel/(7228:7228): Error al conectar (a FileSystem)
 
-[ERROR] 20:26:50:381 Kernel/(7299:7299): Error al conectar (a FileSystem)
+[ERROR] 03:22:13:784 Kernel/(7228:7228): Error al conectar (a Memoria)
 
-[INFO] 20:38:21:000 Kernel/(8217:8217): Servidor listo para recibir cliente
-[INFO] 20:44:48:634 Kernel/(8688:8688): Servidor listo para recibir cliente
-[INFO] 20:45:05:082 Kernel/(8688:8688): Se conecto un cliente
-[INFO] 20:45:05:083 Kernel/(8688:8688): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+[INFO] 03:22:27:957 Kernel/(7246:7246): Servidor listo para recibir cliente
+[ERROR] 03:22:28:023 Kernel/(7246:7246): Error al conectar (a CPU)
 
-[INFO] 20:45:05:083 Kernel/(8688:8688): Cliente conectado en 127.0.0.1:8001 (a CPU)
+[ERROR] 03:22:28:027 Kernel/(7246:7246): Error al conectar (a FileSystem)
 
-[INFO] 20:45:05:084 Kernel/(8688:8688): Cliente conectado en 127.0.0.1:8003 (a FileSystem)
+[ERROR] 03:22:28:027 Kernel/(7246:7246): Error al conectar (a Memoria)
 
-[INFO] 20:48:30:815 Kernel/(8784:8784): Servidor listo para recibir cliente
-[INFO] 20:48:36:923 Kernel/(8784:8784): Se conecto un cliente
-[INFO] 20:48:36:923 Kernel/(8784:8784): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+[INFO] 03:24:21:948 Kernel/(7342:7342): Servidor listo para recibir cliente
+[ERROR] 03:24:22:024 Kernel/(7342:7342): Error al conectar (a CPU)
 
-[INFO] 20:48:36:923 Kernel/(8784:8784): Cliente conectado en 127.0.0.1:8001 (a CPU)
+[ERROR] 03:24:22:027 Kernel/(7342:7342): Error al conectar (a FileSystem)
 
-[ERROR] 20:48:36:923 Kernel/(8784:8784): Error al conectar (a FileSystem)
+[ERROR] 03:24:22:028 Kernel/(7342:7342): Error al conectar (a Memoria)
 
-[INFO] 20:51:28:464 Kernel/(9137:9137): Servidor listo para recibir cliente
-[INFO] 20:51:31:979 Kernel/(9137:9137): Se conecto un cliente
-[INFO] 20:51:31:979 Kernel/(9137:9137): Cliente conectado en 127.0.0.1:8001 (a CPU)
+[INFO] 03:25:36:234 Kernel/(7435:7435): Servidor listo para recibir cliente
+[ERROR] 03:25:36:299 Kernel/(7435:7435): Error al conectar (a CPU)
 
-[ERROR] 20:51:31:979 Kernel/(9137:9137): Error al conectar (a FileSystem)
+[ERROR] 03:25:36:301 Kernel/(7435:7435): Error al conectar (a FileSystem)
 
-[INFO] 20:51:31:979 Kernel/(9137:9137): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+[ERROR] 03:25:36:301 Kernel/(7435:7435): Error al conectar (a Memoria)
 
-[INFO] 13:47:21:155 Kernel/(66526:66526): Servidor listo para recibir cliente
-[INFO] 13:50:06:498 Kernel/(66689:66689): Servidor listo para recibir cliente
-[INFO] 13:50:18:440 Kernel/(66689:66689): Se conecto un cliente
-[ERROR] 13:50:18:441 Kernel/(66689:66689): Error al conectar (a CPU)
+[INFO] 03:26:15:766 Kernel/(7522:7522): Servidor listo para recibir cliente
+[ERROR] 03:26:15:838 Kernel/(7522:7522): Error al conectar (a CPU)
 
-[ERROR] 13:50:18:441 Kernel/(66689:66689): Error al conectar (a FileSystem)
+[ERROR] 03:26:15:840 Kernel/(7522:7522): Error al conectar (a FileSystem)
 
-[INFO] 13:50:18:441 Kernel/(66689:66689): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+[ERROR] 03:26:15:840 Kernel/(7522:7522): Error al conectar (a Memoria)
 
-[INFO] 13:52:32:674 Kernel/(66878:66878): Servidor listo para recibir cliente
-[INFO] 15:13:20:514 Kernel/(68285:68285): Servidor listo para recibir cliente
-[INFO] 15:14:08:988 Kernel/(68285:68285): Se conecto un cliente
-[INFO] 15:14:57:141 Kernel/(68285:68285): Se conecto un cliente
-[INFO] 15:15:17:868 Kernel/(68285:68285): Se conecto un cliente
-[INFO] 15:17:43:884 Kernel/(68436:68436): Servidor listo para recibir cliente
-[INFO] 15:18:00:550 Kernel/(68436:68436): Se conecto un cliente
-[INFO] 15:20:34:642 Kernel/(68436:68436): Se conecto un cliente
-[INFO] 15:20:34:642 Kernel/(68436:68436): Se conecto un cliente
-[INFO] 15:49:48:439 Kernel/(69584:69584): Servidor listo para recibir cliente
-[ERROR] 15:49:48:439 Kernel/(69584:69584): Error al conectar (a CPU)
+[INFO] 03:29:21:313 Kernel/(7908:7908): Servidor listo para recibir cliente
+[ERROR] 03:29:21:386 Kernel/(7908:7908): Error al conectar (a CPU)
 
-[ERROR] 15:49:48:439 Kernel/(69584:69584): Error al conectar (a FileSystem)
+[ERROR] 03:29:21:390 Kernel/(7908:7908): Error al conectar (a FileSystem)
 
-[INFO] 15:49:48:439 Kernel/(69584:69584): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+[ERROR] 03:29:21:390 Kernel/(7908:7908): Error al conectar (a Memoria)
 
-[INFO] 15:50:22:691 Kernel/(69584:69584): Se conecto un cliente
-[INFO] 15:50:22:691 Kernel/(69584:69584): Se conecto un cliente
-[INFO] 16:04:03:421 Kernel/(70620:70620): Servidor listo para recibir cliente
-[ERROR] 16:04:03:422 Kernel/(70620:70620): Error al conectar (a CPU)
+[INFO] 03:29:40:108 Kernel/(7931:7931): Servidor listo para recibir cliente
+[ERROR] 03:29:40:182 Kernel/(7931:7931): Error al conectar (a CPU)
 
-[ERROR] 16:04:03:422 Kernel/(70620:70620): Error al conectar (a FileSystem)
+[ERROR] 03:29:40:184 Kernel/(7931:7931): Error al conectar (a FileSystem)
 
-[ERROR] 16:04:03:422 Kernel/(70620:70620): Error al conectar (a Memoria)
+[ERROR] 03:29:40:184 Kernel/(7931:7931): Error al conectar (a Memoria)
 
-[INFO] 16:04:09:577 Kernel/(70638:70638): Servidor listo para recibir cliente
-[ERROR] 16:04:09:577 Kernel/(70638:70638): Error al conectar (a CPU)
+[INFO] 03:29:52:105 Kernel/(7931:7931): Se conecto un cliente
+[INFO] 03:29:52:119 Kernel/(7931:7931): Se crea el proceso <1> en NEW
+[WARNING] 03:29:52:120 Kernel/(7931:7931): El cliente se desconecto de Kernel server
+[INFO] 03:29:52:123 Kernel/(7931:7938): [NEW] Se saca el proceso de PID: 1 de la cola
+[INFO] 03:29:52:126 Kernel/(7931:7938): No se recibio tabla de segmentos para el proceso de PID: 1
+[INFO] 03:29:52:126 Kernel/(7931:7938): PID: <1> - Estado Anterior: <NEW> - Estado Actual: <READY>
+[INFO] 03:29:52:128 Kernel/(7931:7938): Cola Ready < HRRN >: [1]
+[INFO] 03:29:52:130 Kernel/(7931:7937): estamos en execute 1
+[INFO] 03:29:52:145 Kernel/(7931:7937): PID: <1> - Estado Anterior: <READY> - Estado Actual: <EXEC>
+[INFO] 03:30:06:193 Kernel/(7970:7970): Servidor listo para recibir cliente
+[ERROR] 03:30:06:301 Kernel/(7970:7970): Error al conectar (a CPU)
 
-[ERROR] 16:04:09:577 Kernel/(70638:70638): Error al conectar (a FileSystem)
+[ERROR] 03:30:06:303 Kernel/(7970:7970): Error al conectar (a FileSystem)
 
-[ERROR] 16:04:09:577 Kernel/(70638:70638): Error al conectar (a Memoria)
+[ERROR] 03:30:06:303 Kernel/(7970:7970): Error al conectar (a Memoria)
 
-[INFO] 16:04:22:585 Kernel/(70638:70638): Se conecto un cliente
-[INFO] 16:04:39:867 Kernel/(70682:70682): Servidor listo para recibir cliente
-[ERROR] 16:04:39:868 Kernel/(70682:70682): Error al conectar (a CPU)
+[INFO] 03:30:26:093 Kernel/(7970:7970): Se conecto un cliente
+[INFO] 03:30:26:110 Kernel/(7970:7970): Se crea el proceso <1> en NEW
+[INFO] 03:30:26:111 Kernel/(7970:7977): [NEW] Se saca el proceso de PID: 1 de la cola
+[WARNING] 03:30:26:112 Kernel/(7970:7970): El cliente se desconecto de Kernel server
+[INFO] 03:30:26:114 Kernel/(7970:7977): No se recibio tabla de segmentos para el proceso de PID: 1
+[INFO] 03:30:26:115 Kernel/(7970:7977): PID: <1> - Estado Anterior: <NEW> - Estado Actual: <READY>
+[INFO] 03:30:26:116 Kernel/(7970:7977): Cola Ready < HRRN >: [1]
+[INFO] 03:30:26:118 Kernel/(7970:7976): estamos en execute 1
+[INFO] 03:30:26:135 Kernel/(7970:7976): PID: <1> - Estado Anterior: <READY> - Estado Actual: <EXEC>
+[INFO] 03:33:42:323 Kernel/(8069:8069): Servidor listo para recibir cliente
+[ERROR] 03:33:42:353 Kernel/(8069:8069): Error al conectar (a CPU)
 
-[ERROR] 16:04:39:868 Kernel/(70682:70682): Error al conectar (a FileSystem)
+[ERROR] 03:33:42:354 Kernel/(8069:8069): Error al conectar (a FileSystem)
 
-[ERROR] 16:04:39:868 Kernel/(70682:70682): Error al conectar (a Memoria)
+[ERROR] 03:33:42:354 Kernel/(8069:8069): Error al conectar (a Memoria)
 
-[INFO] 16:06:57:786 Kernel/(70731:70731): Servidor listo para recibir cliente
-[ERROR] 16:06:57:786 Kernel/(70731:70731): Error al conectar (a CPU)
+[INFO] 03:33:45:878 Kernel/(8087:8087): Servidor listo para recibir cliente
+[ERROR] 03:33:45:916 Kernel/(8087:8087): Error al conectar (a CPU)
 
-[ERROR] 16:06:57:786 Kernel/(70731:70731): Error al conectar (a FileSystem)
+[ERROR] 03:33:45:917 Kernel/(8087:8087): Error al conectar (a FileSystem)
 
-[INFO] 16:06:57:786 Kernel/(70731:70731): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+[ERROR] 03:33:45:918 Kernel/(8087:8087): Error al conectar (a Memoria)
 
-[INFO] 16:07:07:411 Kernel/(70731:70731): Se conecto un cliente
-[INFO] 16:07:10:987 Kernel/(70731:70731): Se conecto un cliente
-[INFO] 16:07:13:359 Kernel/(70731:70731): Se conecto un cliente
-[INFO] 20:40:40:363 Kernel/(3077:3077): Servidor listo para recibir cliente
-[ERROR] 20:40:40:365 Kernel/(3077:3077): Error al conectar (a CPU)
+[INFO] 03:33:49:058 Kernel/(8110:8110): Servidor listo para recibir cliente
+[ERROR] 03:33:49:086 Kernel/(8110:8110): Error al conectar (a CPU)
 
-[ERROR] 20:40:40:365 Kernel/(3077:3077): Error al conectar (a FileSystem)
+[ERROR] 03:33:49:086 Kernel/(8110:8110): Error al conectar (a FileSystem)
 
-[ERROR] 20:40:40:365 Kernel/(3077:3077): Error al conectar (a Memoria)
+[ERROR] 03:33:49:087 Kernel/(8110:8110): Error al conectar (a Memoria)
 
-[INFO] 20:41:03:388 Kernel/(3117:3117): Servidor listo para recibir cliente
-[ERROR] 20:41:03:388 Kernel/(3117:3117): Error al conectar (a CPU)
+[INFO] 03:34:04:069 Kernel/(8133:8133): Servidor listo para recibir cliente
+[ERROR] 03:34:04:095 Kernel/(8133:8133): Error al conectar (a CPU)
 
-[ERROR] 20:41:03:389 Kernel/(3117:3117): Error al conectar (a FileSystem)
+[ERROR] 03:34:04:102 Kernel/(8133:8133): Error al conectar (a FileSystem)
 
-[ERROR] 20:41:03:389 Kernel/(3117:3117): Error al conectar (a Memoria)
+[ERROR] 03:34:04:103 Kernel/(8133:8133): Error al conectar (a Memoria)
 
-[INFO] 20:42:16:262 Kernel/(3077:3077): Se conecto un cliente
-[INFO] 20:43:04:806 Kernel/(3077:3077): Se conecto un cliente
-[INFO] 21:10:13:992 Kernel/(5298:5298): Servidor listo para recibir cliente
-[ERROR] 21:10:13:992 Kernel/(5298:5298): Error al conectar (a CPU)
+[INFO] 03:34:12:869 Kernel/(8133:8133): Se conecto un cliente
+[INFO] 03:34:12:878 Kernel/(8133:8133): Se crea el proceso <1> en NEW
+[WARNING] 03:34:12:879 Kernel/(8133:8133): El cliente se desconecto de Kernel server
+[INFO] 03:34:12:880 Kernel/(8133:8142): [NEW] Se saca el proceso de PID: 1 de la cola
+[INFO] 03:34:12:882 Kernel/(8133:8142): No se recibio tabla de segmentos para el proceso de PID: 1
+[INFO] 03:34:12:883 Kernel/(8133:8142): PID: <1> - Estado Anterior: <NEW> - Estado Actual: <READY>
+[INFO] 03:34:12:885 Kernel/(8133:8142): Cola Ready < HRRN >: [1]
+[INFO] 03:34:12:887 Kernel/(8133:8141): estamos en execute 1
+[INFO] 03:55:00:031 Kernel/(8732:8732): Servidor listo para recibir cliente
+[ERROR] 03:55:00:058 Kernel/(8732:8732): Error al conectar (a CPU)
 
-[ERROR] 21:10:13:993 Kernel/(5298:5298): Error al conectar (a FileSystem)
+[ERROR] 03:55:00:059 Kernel/(8732:8732): Error al conectar (a FileSystem)
 
-[ERROR] 21:10:13:993 Kernel/(5298:5298): Error al conectar (a Memoria)
+[ERROR] 03:55:00:060 Kernel/(8732:8732): Error al conectar (a Memoria)
 
-[INFO] 23:34:32:578 Kernel/(7935:7935): Servidor listo para recibir cliente
-[ERROR] 23:34:32:580 Kernel/(7935:7935): Error al conectar (a CPU)
-
-[ERROR] 23:34:32:580 Kernel/(7935:7935): Error al conectar (a FileSystem)
-
-[ERROR] 23:34:32:580 Kernel/(7935:7935): Error al conectar (a Memoria)
-
-[INFO] 23:35:30:942 Kernel/(7974:7974): Servidor listo para recibir cliente
-[ERROR] 23:35:30:942 Kernel/(7974:7974): Error al conectar (a CPU)
-
-[ERROR] 23:35:30:942 Kernel/(7974:7974): Error al conectar (a FileSystem)
-
-[ERROR] 23:35:30:944 Kernel/(7974:7974): Error al conectar (a Memoria)
-
-[INFO] 23:46:04:812 Kernel/(8472:8472): DISCO
-[INFO] 23:46:04:813 Kernel/(8472:8472): RECURSO_1
-[INFO] 23:46:04:813 Kernel/(8472:8472): Servidor listo para recibir cliente
-[ERROR] 23:46:04:813 Kernel/(8472:8472): Error al conectar (a CPU)
-
-[ERROR] 23:46:04:814 Kernel/(8472:8472): Error al conectar (a FileSystem)
-
-[ERROR] 23:46:04:814 Kernel/(8472:8472): Error al conectar (a Memoria)
-
-[INFO] 23:47:36:604 Kernel/(8587:8587): DISCO
-[INFO] 23:47:36:604 Kernel/(8587:8587): RECURSO_1
-[INFO] 23:47:36:604 Kernel/(8587:8587): Servidor listo para recibir cliente
-[ERROR] 23:47:36:604 Kernel/(8587:8587): Error al conectar (a CPU)
-
-[ERROR] 23:47:36:605 Kernel/(8587:8587): Error al conectar (a FileSystem)
-
-[ERROR] 23:47:36:605 Kernel/(8587:8587): Error al conectar (a Memoria)
-
-[INFO] 23:52:36:354 Kernel/(8721:8721): 1
-[INFO] 23:52:36:354 Kernel/(8721:8721): 2
-[INFO] 23:52:36:354 Kernel/(8721:8721): Servidor listo para recibir cliente
-[ERROR] 23:52:36:354 Kernel/(8721:8721): Error al conectar (a CPU)
-
-[ERROR] 23:52:36:355 Kernel/(8721:8721): Error al conectar (a FileSystem)
-
-[ERROR] 23:52:36:355 Kernel/(8721:8721): Error al conectar (a Memoria)
-
-[INFO] 16:36:14:346 Kernel/(30409:30409): Servidor listo para recibir cliente
-[ERROR] 16:36:14:347 Kernel/(30409:30409): Error al conectar (a CPU)
-
-[ERROR] 16:36:14:347 Kernel/(30409:30409): Error al conectar (a FileSystem)
-
-[ERROR] 16:36:14:347 Kernel/(30409:30409): Error al conectar (a Memoria)
-
+[INFO] 03:55:08:274 Kernel/(8732:8732): Se conecto un cliente
+[INFO] 03:55:08:300 Kernel/(8732:8732): Se crea el proceso <1> en NEW
+[WARNING] 03:55:08:302 Kernel/(8732:8732): El cliente se desconecto de Kernel server
+[INFO] 03:55:08:303 Kernel/(8732:8740): [NEW] Se saca el proceso de PID: 1 de la cola
+[INFO] 03:55:08:306 Kernel/(8732:8740): No se recibio tabla de segmentos para el proceso de PID: 1
+[INFO] 03:55:08:307 Kernel/(8732:8740): PID: <1> - Estado Anterior: <NEW> - Estado Actual: <READY>
+[INFO] 03:55:08:308 Kernel/(8732:8740): Cola Ready < HRRN >: [1]
+[INFO] 03:55:08:310 Kernel/(8732:8739): estamos en execute 1

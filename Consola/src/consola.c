@@ -35,12 +35,18 @@ int main (int argc, char* argv[]){
 
 	send_instrucciones_a_kernel();
 	//int conexion2 = crear_conexion(log_consola,"Kernel", ip, puerto );
+	int cop;
+	if(recv(conexion_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)){
+		log_info(log_consola, "Error recibiendo exit");
+		return EXIT_FAILURE;
+	}
+	log_info(log_consola, "Finaliza Consola");
 	terminar_programa(conexion_kernel, log_consola, config_consola);
-
 	return EXIT_SUCCESS;
+
 }
 
-
-
+// TODO nos falta poner la cantidad de consolas que pueden estar activas, para mi semaforo, para gonza contador
+// TODO revisar lo de recibir terminar ejecucion.
 
 
