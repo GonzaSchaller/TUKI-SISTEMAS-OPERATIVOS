@@ -146,8 +146,8 @@ void generar_conexiones(){
 }
 
 int server_escuchar(int server_kernel){
+   // seamforo cantidad consolas max
 	int consola_socket = esperar_cliente(log_kernel, server_kernel);
-
 	if(consola_socket != -1){
 		pthread_t hilo;
 		args_atender_cliente* args = malloc(sizeof(args_atender_cliente));
@@ -155,8 +155,10 @@ int server_escuchar(int server_kernel){
 		args->socket = consola_socket;
 		args->server_name = "Kernel";
 		procesar_conexion_consola((void*) args);
-		//pthread_create(&hilo, NULL, (void*) procesar_conexion_consola, (void*) args);
-		//pthread_detach(hilo);
+		pthread_create(&hilo, NULL, (void*) procesar_conexion_consola, (void*) args);
+		pthread_detach(hilo);
+		// wait semaforo 1
+		// post semaforo consola
 		return 1;
 	}
 	return 0;

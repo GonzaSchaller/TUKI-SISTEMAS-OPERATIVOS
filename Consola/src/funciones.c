@@ -347,6 +347,7 @@ void send_instrucciones_a_kernel(){
 					}
 					indice++;
 				}
+		send_CANT_INSTRUCCIONES(conexion_kernel, 153); //todo revisar numero tosquedad para frenar el rcv consola de kernel
 		list_destroy_and_destroy_elements(lista_instrucciones,free);
 }
 
