@@ -1,15 +1,27 @@
 #include "ejecutar_instrucciones.h"
 
-void ejecutar_SET(int socket, contexto_ejecucion contexto_de_ejecucion){
-	contexto_de_ejecucion -> PC += 1;
-	send_CONTEXTO_EJECUCION(socket, contexto_de_ejecucion);
-	send(socket, SET, sizeof(op_code), NULL);
 
+void ejecutar_SET(int socket, pcb_cpu* pcb_proceso){
+	pcb_proceso->PC += 1;
+	//send_CONTEXTO_EJECUCION(socket, contexto_de_ejecucion);
+	//send(socket, SET, sizeof(op_code), NULL);
+	//uso los datos registro_cpu y ahi guardo el parametro string (los que estan en pcb)
+	//mandar el char registro
 }
 
-void ejecutar_MOV_IN(){}
+//traducir la DL a DF
+//preguntar a memoria que hay en esa DL
+//guardar la info en el registro que me dan
+void ejecutar_MOV_IN(){
+	//cosas que tengo que mandar a Memoria: aplica para mov_out
+	//PID
+	//TAMANIO
+	//QUIEN SOS? OPCIONAL (maniana preguntamos).
+}
 
-void ejecutar_MOV_OUT(){}
+void ejecutar_MOV_OUT(){
+
+}
 
 void ejecutar_IO(int socket, uint32_t tiempo, contexto_ejecucion* contexto_de_ejecucion){
 	contexto_de_ejecucion -> PC += 1;

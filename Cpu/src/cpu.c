@@ -17,6 +17,8 @@ void establecer_conexion_kernel(){
 
 void establecer_conexion_memoria(){
 	conexion = crear_conexion(logger,"Memoria", ip, puerto_memoria);
+
+
 }
 
 void establecer_conexiones(){

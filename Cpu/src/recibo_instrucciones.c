@@ -28,7 +28,6 @@ void procesar_instrucciones(int socket_cliente, t_log* logger){
 	}
 
 	// paso el contexto a un pcb y ese a una lista
-	//revisar
 	pcb_cpu* pcb_proceso = malloc(sizeof(pcb_cpu));
 
 	pcb_proceso -> PID = contexto -> PID;
@@ -36,7 +35,7 @@ void procesar_instrucciones(int socket_cliente, t_log* logger){
 	pcb_proceso -> instrucciones = lista_instrucciones;
 	pcb_proceso -> registros = contexto -> registros;
 
-	//revisar
+	// para tener todos los procesos juntos
 	list_add(lista_pcb, pcb_proceso);
 
 	instruccion* instruccion_en_execute = malloc(sizeof(instruccion));
@@ -45,6 +44,7 @@ void procesar_instrucciones(int socket_cliente, t_log* logger){
 	while(pcb_proceso -> PC < list_size(pcb_proceso -> instrucciones)){
 		instruccion_en_execute = fetch(pcb_proceso);
 		decode_execute(socket_cliente, pcb_proceso, instruccion_en_execute, logger);
+		//agregar break o algo si el proceso se bloquea, para que no siga ejecutando
 	}
 	//send_PC(socket_cliente,pcb_proceso -> PC);
 
@@ -286,7 +286,7 @@ instruccion* fetch(pcb_cpu* un_pcb ){
 	proxima_instruccion = list_get(un_pcb -> instrucciones, un_pcb -> PC);
 	return proxima_instruccion;
 }
-
+// ver si tengo que retornar en vez de ser void (para cortar el while)
 void decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccion, t_log* logger){
 	op_code code_instruccion = una_instruccion -> id;
 
@@ -305,7 +305,7 @@ void decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instrucci
 		case YIELD:{
 			log_info(logger, "Ejecutando YIELD");
 
-			ejecutar_YIELD(socket,);
+			ejecutar_YIELD(socket); // AGREGAR
 			break;
 		}
 		case EXIT:{
@@ -324,7 +324,7 @@ void decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instrucci
 			break;
 		}
 		case SIGNAL:{
-			//log_info(logger, "PID: %d - Ejecutando: %d - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
 			ejecutar_SIGNAL();
 			break;
 		}
