@@ -1,7 +1,7 @@
 // mutex y semaforos
 #include "sem.h"
 pthread_mutex_t mutex_segmentos_libres;
-pthread_mutex_t mutex_segmentos_usados;
+pthread_mutex_t mutex_segmentos_ocupados;
 pthread_mutex_t mutex_memoria_ocupada;
 pthread_mutex_t mutex_compactacion;
 pthread_mutex_t mutex_segm_0;
@@ -20,7 +20,7 @@ extern void* memoria_principal;
 //los inicio.
 void iniciar_mutex() {
     pthread_mutex_init(&mutex_segmentos_libres, NULL);
-    pthread_mutex_init(&mutex_segmentos_usados, NULL);
+    pthread_mutex_init(&mutex_segmentos_ocupados, NULL);
     pthread_mutex_init(&mutex_memoria_ocupada, NULL);
     pthread_mutex_init(&mutex_compactacion, NULL);
     pthread_mutex_init(&mutex_segm_0, NULL);
@@ -32,7 +32,7 @@ void iniciar_mutex() {
 //los destruyo.
 void finalizar_mutex() {
     pthread_mutex_destroy(&mutex_segmentos_libres);
-    pthread_mutex_destroy(&mutex_segmentos_usados);
+    pthread_mutex_destroy(&mutex_segmentos_ocupados);
     pthread_mutex_destroy(&mutex_memoria_ocupada);
     pthread_mutex_destroy(&mutex_compactacion);
     pthread_mutex_destroy(&mutex_segm_0);
@@ -49,9 +49,9 @@ static bool por_base_menor(void* s1, void* s2) {
 
 //insertar unsegmento en tabla de segmentos usados
 void insertar_segmento_entso(segmento_t * segmento){
-	pthread_mutex_lock(&mutex_segmentos_usados);
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
 	list_add_sorted(segmentos_ocupados, (void*) segmento, &por_base_menor);
-	pthread_mutex_unlock(&mutex_segmentos_usados);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 }
 
 //ordenada de menor a mayor.
@@ -81,17 +81,17 @@ bool seg_con_base_igual(void* segmento){
 
 segmento_t* encontrar_base_tso(uint32_t base){
 	magic = base;
-	pthread_mutex_lock(&mutex_segmentos_usados);
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
 	segmento_t* seg = (segmento_t*) list_find(segmentos_ocupados,&seg_con_base_igual);
-	pthread_mutex_unlock(&mutex_segmentos_usados);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 	return seg;
 }
 
 void remover_segmento_entso(uint32_t id){
 	magic = id;
-	pthread_mutex_lock(&mutex_segmentos_usados);
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
 	list_remove_by_condition(segmentos_ocupados,(void*) &seg_con_base_igual);
-	pthread_mutex_unlock(&mutex_segmentos_usados);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 }
 
 //just para el kernel.
@@ -115,9 +115,9 @@ bool bypid(void* segmento) {
 
 t_list * create_list_seg_by_pid(uint32_t pid){
 	pid_s = pid;
-	pthread_mutex_lock(&mutex_segmentos_usados);
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
 	t_list* lista = list_filter(segmentos_ocupados, &bypid);
-	pthread_mutex_unlock(&mutex_segmentos_usados);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 	return lista;
 }
 
@@ -128,16 +128,16 @@ uint32_t find_id(t_list* tsegmentos_pid,uint32_t id){
 }
 
 uint32_t size_tso(){
-	pthread_mutex_lock(&mutex_segmentos_usados);
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
 	uint32_t size = list_size(segmentos_ocupados);
-	pthread_mutex_unlock(&mutex_segmentos_usados);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 	return size;
 }
 
 segmento_t* get_en_lso(uint32_t pos){
-	pthread_mutex_lock(&mutex_segmentos_usados);
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
 	segmento_t* segmento = list_get(segmentos_ocupados,pos);
-	pthread_mutex_unlock(&mutex_segmentos_usados);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 	return segmento;
 }
 

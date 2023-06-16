@@ -99,7 +99,7 @@ static void procesar_conexionn(void* void_args){
 								send_TABLA_SEGMENTOS(cliente_socket,list_proceso_i);
 								uint32_t cant = list_size(list_proceso_i);
 								for(int u=0;u<cant;u++){
-									log_info(log_memoria,"Semento : %d\n",u);
+									log_info(log_memoria,"Segmento : %d\n",u);
 									segmento_t* segmento = list_get(list_proceso_i,u);
 									log_info(log_memoria,"PID <%d> - Segmento <%d> - Base <%d> - Tamanio <%d> \n",segmento->pid,segmento->direccion_Base,segmento->tamanio);
 									log_info(log_memoria,"\n");

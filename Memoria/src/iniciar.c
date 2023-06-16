@@ -13,7 +13,7 @@ int memoria_disponible;
 
 
 uint8_t init() {
-	cfg = inicializar_cfg();
+	cfg = malloc(sizeof(t_config_memoria));
 	iniciar_mutex();
    // config = inicializar_configuracion(); //inicializacion del struct de configuracion.
     log_memoria = log_create("memoria.log", "MEMORIA", 1, LOG_LEVEL_INFO);
@@ -79,4 +79,17 @@ uint8_t cargar_memoria(){
 
 void terminar_memoria(){
 		log_destroy(log_memoria);
+
+		pthread_mutex_lock(&mutex_segmentos_libres);
+		list_destroy_and_destroy_elements(segmentos_libres, (void*) free);
+		pthread_mutex_unlock(&mutex_segmentos_libres);
+
+		pthread_mutex_lock(&mutex_segmentos_ocupados);
+		list_destroy_and_destroy_elements(segmentos_ocupados, (void*) free);
+	    pthread_mutex_unlock(&mutex_segmentos_ocupados);
+
+	    free(cfg);
+	    free(memoria_principal);
+	    finalizar_mutex();
+
 }
