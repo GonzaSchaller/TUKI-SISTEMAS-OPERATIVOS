@@ -10,14 +10,17 @@ void establecer_conexion_kernel(){
 
 	if(cliente_kernel_fd != -1){
 		procesar_instrucciones(cliente_kernel_fd, logger);
-
 	}
 
 }
 
 void establecer_conexion_memoria(){
 	conexion = crear_conexion(logger,"Memoria", ip, puerto_memoria);
-
+	uint32_t handshake =1;
+	uint32_t result;
+	send_handshake(conexion,handshake);
+	recv_handshake(conexion,&result);
+	if(result == 1) log_info(logger,"todo ok capo");
 
 }
 

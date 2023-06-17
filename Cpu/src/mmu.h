@@ -18,15 +18,6 @@
 #include <string.h>
 #include "send_rcvs.h"
 #include "estructuras_compartidas.h"
-#include "recibo_instrucciones.h"
 //#include "configuraciones.h"
-
-typedef struct{
-	uint32_t PID;
-	uint32_t PC;
-	t_list* instrucciones;
-	registros_cpu registros;
-
-}pcb_cpu;
 
 #endif

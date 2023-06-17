@@ -1,9 +1,57 @@
 #include "ejecutar_instrucciones.h"
 
-
-void ejecutar_SET(int socket, pcb_cpu* pcb_proceso){
+void ejecutar_SET(int socket, pcb_cpu* pcb_proceso, uint32_t param1, char param2){
 	pcb_proceso->PC += 1;
-	//send_CONTEXTO_EJECUCION(socket, contexto_de_ejecucion);
+	switch(param1){
+		case AX:{
+			pcb_proceso -> registros -> AX = param2;
+			break;
+		}
+		case BX:{
+			pcb_proceso -> registros -> BX = param2;
+			break;
+		}
+		case CX:{
+			pcb_proceso -> registros -> CX = param2;
+			break;
+		}
+		case DX:{
+			pcb_proceso -> registros -> DX = param2;
+			break;
+		}
+		case EAX:{
+			pcb_proceso -> registros -> EAX = param2;
+			break;
+		}
+		case EBX:{
+			pcb_proceso -> registros -> EBX = param2;
+			break;
+		}
+		case ECX:{
+			pcb_proceso -> registros -> ECX = param2;
+			break;
+		}
+		case EDX:{
+			pcb_proceso -> registros -> EDX = param2;
+			break;
+		}
+		case RAX:{
+			pcb_proceso -> registros -> RAX = param2;
+			break;
+		}
+		case RBX:{
+			pcb_proceso -> registros -> RBX = param2;
+			break;
+		}
+		case RCX:{
+			pcb_proceso -> registros -> RCX = param2;
+			break;
+		}
+		case RDX:{
+			pcb_proceso -> registros -> RDX = param2;
+			break;
+		}
+	}
 	//send(socket, SET, sizeof(op_code), NULL);
 	//uso los datos registro_cpu y ahi guardo el parametro string (los que estan en pcb)
 	//mandar el char registro
@@ -15,6 +63,9 @@ void ejecutar_SET(int socket, pcb_cpu* pcb_proceso){
 void ejecutar_MOV_IN(){
 	//cosas que tengo que mandar a Memoria: aplica para mov_out
 	//PID
+	//send_PID(socket_memoria,pcb_proceso->PID); //ijarse del socket de memoria.
+	//traducir.
+	//mandar a memoria.
 	//TAMANIO
 	//QUIEN SOS? OPCIONAL (maniana preguntamos).
 }
