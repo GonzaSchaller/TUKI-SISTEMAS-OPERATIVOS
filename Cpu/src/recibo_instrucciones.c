@@ -290,11 +290,13 @@ instruccion* fetch(pcb_cpu* un_pcb ){
 	return proxima_instruccion;
 }
 // ver si tengo que retornar en vez de ser void (para cortar el while)
-int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccion, t_log* logger){
+bool decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccion, t_log* logger){
 	op_code code_instruccion = una_instruccion -> id;
 
 	uint32_t retardo = *retardo_instruccion; // quiero asignar el valor al que esta apuntando el puntero en retardo
 	retardo = retardo / 1000; //paso de segundos a milisegundos
+
+
 
 	switch (code_instruccion){
 		case SET:{

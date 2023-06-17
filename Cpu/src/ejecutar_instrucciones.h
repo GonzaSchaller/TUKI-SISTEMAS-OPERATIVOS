@@ -29,4 +29,6 @@ typedef struct{
 
 }pcb_cpu;
 
+void pasar_al_registro(char*, char);
+
 #endif
