@@ -47,6 +47,17 @@ void procesar_instrucciones(int socket_cliente, t_log* logger){
 			break;
 		//agregar que pasa con los otros procesos cuando dejo de ejecutar uno, paso al siguiente en teoria
 	}
+	/*
+	ver que hacer con lista_pcb.
+	entiendo que deberia:
+		buscar un pcb en la lista_pcb
+		ejecutar hasta que tenga que parar (diferentes motivos que cortan el while)
+		buscar el siguiente pcb en la lista_pcb
+
+	a la par ir cargandose los pcb mientras se va ejecutando alguno,
+	ó ¿mejor esperar a que se carguen todos los pcb?
+	*/
+
 }
 
 uint32_t recibir_cant_instrucciones(int socket, t_log* logger){

@@ -19,7 +19,7 @@
 #include "send_rcvs.h"
 #include "estructuras_compartidas.h"
 #include "recibo_instrucciones.h"
-//#include "configuraciones.h"
+#include "mmu.h"
 
 typedef struct{
 	uint32_t PID;

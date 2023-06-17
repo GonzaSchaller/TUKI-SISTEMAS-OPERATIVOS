@@ -1,75 +1,75 @@
 #include "ejecutar_instrucciones.h"
 
-void ejecutar_SET(int socket, pcb_cpu* pcb_proceso, uint32_t param1, char* param2){
-	pcb_proceso->PC += 1;
-	switch(param1){
+void ejecutar_SET(pcb_cpu* pcb_proceso, uint32_t registro, char* valor){
+	switch(registro){
 		case AX:{
-			strcpy(pcb_proceso -> registros.AX, param2);
+			strcpy(pcb_proceso -> registros.AX, valor);
 			//pcb_proceso -> registros.AX = param2;
 			break;
 		}
 		case BX:{
-			strcpy(pcb_proceso -> registros.BX, param2);
+			strcpy(pcb_proceso -> registros.BX, valor);
 			//pcb_proceso -> registros.BX = param2;
 			break;
 		}
 		case CX:{
-			strcpy(pcb_proceso -> registros.CX, param2);
+			strcpy(pcb_proceso -> registros.CX, valor);
 			//pcb_proceso -> registros.CX = param2;
 			break;
 		}
 		case DX:{
-			strcpy(pcb_proceso -> registros.DX, param2);
+			strcpy(pcb_proceso -> registros.DX, valor);
 			//pcb_proceso -> registros.DX = param2;
 			break;
 		}
 		case EAX:{
-			strcpy(pcb_proceso -> registros.EAX, param2);
+			strcpy(pcb_proceso -> registros.EAX, valor);
 			//pcb_proceso -> registros.EAX = param2;
 			break;
 		}
 		case EBX:{
-			strcpy(pcb_proceso -> registros.EBX, param2);
+			strcpy(pcb_proceso -> registros.EBX, valor);
 			//pcb_proceso -> registros.EBX = param2;
 			break;
 		}
 		case ECX:{
-			strcpy(pcb_proceso -> registros.ECX, param2);
+			strcpy(pcb_proceso -> registros.ECX, valor);
 			//pcb_proceso -> registros.ECX = param2;
 			break;
 		}
 		case EDX:{
-			strcpy(pcb_proceso -> registros.EDX, param2);
+			strcpy(pcb_proceso -> registros.EDX, valor);
 			//pcb_proceso -> registros.EDX = param2;
 			break;
 		}
 		case RAX:{
-			strcpy(pcb_proceso -> registros.RAX, param2);
+			strcpy(pcb_proceso -> registros.RAX, valor);
 			//pcb_proceso -> registros.RAX = param2;
 			break;
 		}
 		case RBX:{
-			strcpy(pcb_proceso -> registros.RBX, param2);
+			strcpy(pcb_proceso -> registros.RBX, valor);
 			//pcb_proceso -> registros.RBX = param2;
 			break;
 		}
 		case RCX:{
-			strcpy(pcb_proceso -> registros.RCX, param2);
+			strcpy(pcb_proceso -> registros.RCX, valor);
 			//pcb_proceso -> registros.RCX = param2;
 			break;
 		}
 		case RDX:{
-			strcpy(pcb_proceso -> registros.RDX, param2);
+			strcpy(pcb_proceso -> registros.RDX, valor);
 			//pcb_proceso -> registros.RDX = param2;
 			break;
 		}
 	}
+	pcb_proceso -> PC += 1;
 }
 
 //traducir la DL a DF
 //preguntar a memoria que hay en esa DL
 //guardar la info en el registro que me dan
-void ejecutar_MOV_IN(){
+void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
 	//cosas que tengo que mandar a Memoria: aplica para mov_out
 	//PID
 	//send_PID(socket_memoria,pcb_proceso->PID); //ijarse del socket de memoria.
@@ -77,10 +77,135 @@ void ejecutar_MOV_IN(){
 	//mandar a memoria.
 	//TAMANIO
 	//QUIEN SOS? OPCIONAL (maniana preguntamos).
+
+	//************************************************************* traduzco la DL
+	uint32_t tam_segmento; //ver como conseguir tamanio segmento
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, tam_segmento);
+
+	// pedir a memoria que me pase y lo guardo en valor
+	char* valor;
+
+	//guardo en el registro:
+	switch(registro){
+			case AX:{
+				strcpy(pcb_proceso -> registros.AX, valor);
+				//pcb_proceso -> registros.AX = param2;
+				break;
+			}
+			case BX:{
+				strcpy(pcb_proceso -> registros.BX, valor);
+				//pcb_proceso -> registros.BX = param2;
+				break;
+			}
+			case CX:{
+				strcpy(pcb_proceso -> registros.CX, valor);
+				//pcb_proceso -> registros.CX = param2;
+				break;
+			}
+			case DX:{
+				strcpy(pcb_proceso -> registros.DX, valor);
+				//pcb_proceso -> registros.DX = param2;
+				break;
+			}
+			case EAX:{
+				strcpy(pcb_proceso -> registros.EAX, valor);
+				//pcb_proceso -> registros.EAX = param2;
+				break;
+			}
+			case EBX:{
+				strcpy(pcb_proceso -> registros.EBX, valor);
+				//pcb_proceso -> registros.EBX = param2;
+				break;
+			}
+			case ECX:{
+				strcpy(pcb_proceso -> registros.ECX, valor);
+				//pcb_proceso -> registros.ECX = param2;
+				break;
+			}
+			case EDX:{
+				strcpy(pcb_proceso -> registros.EDX, valor);
+				//pcb_proceso -> registros.EDX = param2;
+				break;
+			}
+			case RAX:{
+				strcpy(pcb_proceso -> registros.RAX, valor);
+				//pcb_proceso -> registros.RAX = param2;
+				break;
+			}
+			case RBX:{
+				strcpy(pcb_proceso -> registros.RBX, valor);
+				//pcb_proceso -> registros.RBX = param2;
+				break;
+			}
+			case RCX:{
+				strcpy(pcb_proceso -> registros.RCX, valor);
+				//pcb_proceso -> registros.RCX = param2;
+				break;
+			}
+			case RDX:{
+				strcpy(pcb_proceso -> registros.RDX, valor);
+				//pcb_proceso -> registros.RDX = param2;
+				break;
+			}
+		}
+	pcb_proceso -> PC += 1;
 }
 
-void ejecutar_MOV_OUT(){
-
+void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
+	char* valor;
+	//obtengo el dato del registro
+	switch(registro){
+		case AX:{
+			valor = pcb_proceso -> registros.AX;
+			break;
+		}
+		case BX:{
+			valor = pcb_proceso -> registros.BX;
+			break;
+		}
+		case CX:{
+			valor = pcb_proceso -> registros.CX;
+			break;
+		}
+		case DX:{
+			valor = pcb_proceso -> registros.DX;
+			break;
+		}
+		case EAX:{
+			valor = pcb_proceso -> registros.EAX;
+			break;
+		}
+		case EBX:{
+			valor = pcb_proceso -> registros.EBX;
+			break;
+		}
+		case ECX:{
+			valor = pcb_proceso -> registros.ECX;
+			break;
+		}
+		case EDX:{
+			valor = pcb_proceso -> registros.EDX;
+			break;
+		}
+		case RAX:{
+			valor = pcb_proceso -> registros.RAX;
+			break;
+		}
+		case RBX:{
+			valor = pcb_proceso -> registros.RBX;
+			break;
+		}
+		case RCX:{
+			valor = pcb_proceso -> registros.RCX;
+			break;
+		}
+		case RDX:{
+			valor = pcb_proceso -> registros.RDX;
+			break;
+		}
+	}
+	//se lo mando a memoria para guardarlo en la DF
+	// paso la DF y el valor
 }
 
 void ejecutar_IO(int socket, uint32_t tiempo, contexto_ejecucion* contexto_de_ejecucion){
