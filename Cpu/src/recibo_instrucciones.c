@@ -58,13 +58,13 @@ uint32_t recibir_cant_instrucciones(int socket, t_log* logger){
 	return cantidad;
 }
 
-
-bool verificacion_recibo_code_correctamente(int socket, t_log* logger, op_code code){
+//era bool pero me tiraba error
+int verificacion_recibo_code_correctamente(int socket, t_log* logger, op_code code){
 	if (recv(socket, &code, sizeof(op_code), 0) != sizeof(op_code)) {
 		log_error(logger, "Error al recibir el code");
-		return false;
+		return 0;
 	}
-	return true;
+	return 1;
 }
 
 void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista, t_log* logger){
@@ -111,7 +111,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion1(IO,"IO", param1, 0, 0,lista);
-			return 1;
 			break;
 		}
 		case F_OPEN:{
@@ -224,7 +223,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 		case YIELD:{
 			if(!recv_YIELD(socket_cliente)){
 				log_error(logger, "Error al recibir YIELD");
-				return 1;
 				break;
 			}
 			cargar_instruccion1(YIELD, "YIELD", 0, 0, 0, lista);
@@ -236,7 +234,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion1(EXIT,"EXIT", 0, 0, 0, lista);
-			return 1;
 			break;
 		}
 
@@ -289,14 +286,16 @@ instruccion* fetch(pcb_cpu* un_pcb ){
 	proxima_instruccion = list_get(un_pcb -> instrucciones, un_pcb -> PC);
 	return proxima_instruccion;
 }
+
+//era bool pero me tiraba error
 // ver si tengo que retornar en vez de ser void (para cortar el while)
-bool decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccion, t_log* logger){
+int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccion, t_log* logger){
 	op_code code_instruccion = una_instruccion -> id;
 
 	uint32_t retardo = *retardo_instruccion; // quiero asignar el valor al que esta apuntando el puntero en retardo
 	retardo = retardo / 1000; //paso de segundos a milisegundos
 
-
+	int corta_ejecucion = 0;
 
 	switch (code_instruccion){
 		case SET:{
@@ -306,45 +305,46 @@ bool decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instrucci
 			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
 			ejercutar_SET(socket, pcb_proceso, param1, *param2);
 
-			return 0;
-			//break;
+			corta_ejecucion = 0;
+			break;
 		}
 		case YIELD:{
 			log_info(logger, "Ejecutando YIELD");
 
 			ejecutar_YIELD(socket); // AGREGAR
 
-			return 1;
-			//break;
+			corta_ejecucion = 1;
+			break;
 		}
 		case EXIT:{
 			log_info(logger, "Ejecutando EXIT");
 			//ejecutar_EXIT();
 
-			return 1;
-			//break;
+			corta_ejecucion = 1;
+			break;
 		}
 		case IO:{
 			log_info(logger, "Ejecutando IO");
 			ejecutar_IO();
 
-			return 1;
-			//break;
+			corta_ejecucion = 1;
+			break;
 		}
 		case WAIT:{
 			log_info(logger, "Ejecutando WAIT");
 			ejecutar_WAIT();
 
-			return 0;
-			//break;
+			corta_ejecucion = 0;
+			break;
 		}
 		case SIGNAL:{
 			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
 			ejecutar_SIGNAL();
 
-			return 0;
-			//break;
+			corta_ejecucion = 0;
+			break;
 		}
 	}
+	return corta_ejecucion;
 }
 
