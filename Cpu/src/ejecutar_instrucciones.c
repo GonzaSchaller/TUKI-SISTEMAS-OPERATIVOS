@@ -225,58 +225,146 @@ void ejecutar_IO(pcb_cpu* pcb_proceso, uint32_t tiempo){
 	contexto_ejecucion contexto_para_kernel;
 
 	pcb_proceso -> PC += 1;
-	contexto_para_kernel -> PID = pcb_proceso -> PID;
-	contexto_para_kernel -> PC = pcb_proceso -> PC;
-	contexto_para_kernel -> registros = pcb_proceso -> registros;
-	contexto_para_kernel -> TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
+	contexto_para_kernel.PID = pcb_proceso -> PID;
+	contexto_para_kernel.PC = pcb_proceso -> PC;
+	contexto_para_kernel.registros = pcb_proceso -> registros;
+	contexto_para_kernel.TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
 	actualizado porque es el mismo que me mandan en su momento*/
 
-	send(socket_cliente_kernel, IO, sizeof(op_code), NULL);
-	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel); //agregar el socket
+	//send(socket_cliente_kernel, IO, sizeof(op_code), 0);
+	//send_IO(socket_cliente_kernel, tiempo);
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_tiempo_bloqueante(socket_cliente_kernel, tiempo);
 }
 
-void ejecutar_F_OPEN(){}
+void ejecutar_F_OPEN(pcb_cpu* pcb_proceso, char* archivo){
+	contexto_ejecucion contexto_para_kernel;
 
-void ejecutar_F_CLOSE(){}
+	pcb_proceso -> PC += 1;
+	contexto_para_kernel.PID = pcb_proceso -> PID;
+	contexto_para_kernel.PC = pcb_proceso -> PC;
+	contexto_para_kernel.registros = pcb_proceso -> registros;
+	contexto_para_kernel.TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
+	actualizado porque es el mismo que me mandan en su momento*/
 
-void ejecutar_F_READ(){}
+	//send(socket_cliente_kernel, F_OPEN, sizeof(op_code), NULL);
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
+	send_F_OPEN(socket_cliente_kernel, archivo);
+}
+
+void ejecutar_F_CLOSE(pcb_cpu* pcb_proceso, char* archivo){
+	contexto_ejecucion contexto_para_kernel;
+
+	pcb_proceso -> PC += 1;
+	contexto_para_kernel.PID = pcb_proceso -> PID;
+	contexto_para_kernel.PC = pcb_proceso -> PC;
+	contexto_para_kernel.registros = pcb_proceso -> registros;
+	contexto_para_kernel.TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
+	actualizado porque es el mismo que me mandan en su momento*/
+
+	//send(socket_cliente_kernel, F_CLOSE, sizeof(op_code), NULL);
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
+	send_F_CLOSE(socket_cliente_kernel, archivo);
+}
+
+void ejecutar_F_SEEK(pcb_cpu* pcb_proceso, char* archivo, uint32_t posicion){
+	contexto_ejecucion contexto_para_kernel;
+
+	pcb_proceso -> PC += 1;
+	contexto_para_kernel.PID = pcb_proceso -> PID;
+	contexto_para_kernel.PC = pcb_proceso -> PC;
+	contexto_para_kernel.registros = pcb_proceso -> registros;
+	contexto_para_kernel.TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
+	actualizado porque es el mismo que me mandan en su momento*/
+
+	//send(socket_cliente_kernel, F_SEEK, sizeof(op_code), NULL);
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
+	send_F_SEEK(socket_cliente_kernel, archivo, posicion);
+}
+
+void ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
+	contexto_ejecucion contexto_actualizado;
+
+	pcb_proceso -> PC += 1;
+	contexto_actualizado.PID = pcb_proceso -> PID;
+	contexto_actualizado.PC = pcb_proceso -> PC;
+	contexto_actualizado.registros = pcb_proceso -> registros;
+	contexto_actualizado.TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
+	actualizado porque es el mismo que me mandan en su momento*/
+
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+
+	uint32_t tam_segmento;
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, tam_segmento);
+
+	//escribir en la DF de memoria l odel archivo
+}
 
 void ejecutar_F_WRITE(){}
 
 void ejecutar_F_TRUNCATE(){}
 
-void ejecutar_WAIT(int socket, contexto_ejecucion contexto_de_ejecucion, char* recurso){
-	contexto_de_ejecucion -> PC += 1;
-	send(socket, WAIT, sizeof(op_code), NULL);
-	send_WAIT(socket, recurso);
+void ejecutar_WAIT(pcb_cpu* pcb_proceso , char* recurso){
+	contexto_ejecucion contexto_actualizado;
+	pcb_proceso -> PC += 1;
+
+	contexto_actualizado.PID = pcb_proceso -> PID;
+	contexto_actualizado.PC = pcb_proceso -> PC;
+	contexto_actualizado.registros = pcb_proceso -> registros;
+	contexto_actualizado.TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
+	actualizado porque es el mismo que me mandan en su momento*/
+
+	send(socket_cliente_kernel, WAIT, sizeof(op_code), NULL);
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_WAIT(socket_cliente_kernel, recurso);
 }
 
-void ejecutar_SIGNAL(int socket, contexto_ejecucion contexto_de_ejecucion, char* recurso){
-	send(socket, SIGNAL, sizeof(op_code), NULL);
-	contexto_de_ejecucion -> PC += 1;
-	send_SIGNAL(socket, recurso);
+void ejecutar_SIGNAL(pcb_cpu* pcb_proceso , char* recurso){
+	contexto_ejecucion contexto_actualizado;
+	pcb_proceso -> PC += 1;
+
+	contexto_actualizado.PID = pcb_proceso -> PID;
+	contexto_actualizado.PC = pcb_proceso -> PC;
+	contexto_actualizado.registros = pcb_proceso -> registros;
+	contexto_actualizado.TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
+	actualizado porque es el mismo que me mandan en su momento*/
+
+	send(socket_cliente_kernel, WAIT, sizeof(op_code), NULL);
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_SIGNAL(socket_cliente_kernel, recurso);
 }
 
 void ejecutar_CREATE_SEGMENT(){}
 
 void ejecutar_DELETE_SEGMENT(){}
 
-void ejecuctar_YIELD(int socket, pcb_cpu* pcb_proceso){
-	contexto_ejecucion* contexto_de_ejecucion = pcb_proceso -> instrucciones;
-	contexto_de_ejecucion -> PID = pcb_proceso -> PID;
-	contexto_de_ejecucion -> PC = pcb_proceso -> PC + 1;
-	contexto_de_ejecucion -> registros = pcb_proceso -> registros;
+void ejecuctar_YIELD(pcb_cpu* pcb_proceso){
+	contexto_ejecucion contexto_actualizado;
+
+	pcb_proceso -> PC += 1;
+	contexto_actualizado.PID = pcb_proceso -> PID;
+	contexto_actualizado.PC = pcb_proceso -> PC;
+	contexto_actualizado.registros = pcb_proceso -> registros;
+	contexto_actualizado.TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
+	actualizado porque es el mismo que me mandan en su momento*/
 
 	// en teoria el contexto de ejecucion tiene los TSegmento pero el pcb_proceso no, no se de donde sacarlo
-	send_CONTEXTO_EJECUCION(socket, contexto_de_ejecucion);
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send(socket, YIELD, sizeof(op_code), NULL);
 }
 
 //FALTA, esta funcion hace que no no busque la siguiente isntruccion
-void ejecutar_EXIT(int socket, contexto_ejecucion contexto_de_ejecucion){
-	contexto_de_ejecucion.PC += 1; //si lo pongo con la -> me salta error
-	send_CONTEXTO_EJECUCION(socket, contexto_de_ejecucion);
+void ejecutar_EXIT(pcb_cpu* pcb_proceso){
+	contexto_ejecucion contexto_actualizado;
+
+	//pcb_proceso -> PC += 1;
+	contexto_actualizado.PID = pcb_proceso -> PID;
+	contexto_actualizado.PC = pcb_proceso -> PC;
+	contexto_actualizado.registros = pcb_proceso -> registros;
+	contexto_actualizado.TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
+	actualizado porque es el mismo que me mandan en su momento*/
+
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send(socket, EXIT, sizeof(op_code), NULL);
 }
 

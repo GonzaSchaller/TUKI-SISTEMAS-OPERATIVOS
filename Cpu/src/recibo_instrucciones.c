@@ -311,17 +311,21 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 	switch (code_instruccion){
 		case SET:{
 			uint32_t param1 = una_instruccion -> parametro1.tipo_int;
-			char* param2 = una_instruccion -> parametro1.tipo_string;
+			char* param2 = una_instruccion -> parametro2.tipo_string;
+
 			sleep(retardo);
 			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
-			ejercutar_SET(socket, pcb_proceso, param1, *param2);
+			ejercutar_SET(pcb_proceso, param1, *param2);
 
 			corta_ejecucion = 0;
 			break;
 		}
 		case MOV_IN:{
+			uint32_t param1 = una_instruccion -> parametro1.tipo_int;
+			uint32_t param2 = una_instruccion -> parametro2.tipo_int;
+
 			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
-			//ejecutar_MOV_IN(pcb_proceso, registro, dir_logica);
+			ejecutar_MOV_IN(pcb_proceso, param1, param2);
 			break;
 		}
 		case MOV_OUT:{
@@ -330,10 +334,18 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			break;
 		}
 		case IO:{
+			uint32_t tiempo = una_instruccion -> parametro1.tipo_int;
+
 			log_info(logger, "Ejecutando IO");
-			ejecutar_IO();
+			ejecutar_IO(pcb_proceso, tiempo);
 
 			corta_ejecucion = 1;
+			break;
+		}
+		case F_OPEN:{
+			char* param1 = una_instruccion -> parametro1.tipo_string;
+
+			ejecutar_F_OPEN(pcb_proceso, param1);
 			break;
 		}
 		case YIELD:{
