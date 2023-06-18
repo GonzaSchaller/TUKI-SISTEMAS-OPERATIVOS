@@ -1,5 +1,7 @@
 #include "ejecutar_instrucciones.h"
 
+int socket_cliente_kernel;
+
 void ejecutar_SET(pcb_cpu* pcb_proceso, uint32_t registro, char* valor){
 	switch(registro){
 		case AX:{
@@ -338,7 +340,7 @@ void ejecutar_CREATE_SEGMENT(){}
 
 void ejecutar_DELETE_SEGMENT(){}
 
-void ejecuctar_YIELD(pcb_cpu* pcb_proceso){
+void ejecutar_YIELD(pcb_cpu* pcb_proceso){
 	contexto_ejecucion contexto_actualizado;
 
 	pcb_proceso -> PC += 1;

@@ -314,8 +314,8 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			char* param2 = una_instruccion -> parametro2.tipo_string;
 
 			sleep(retardo);
-			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
-			ejercutar_SET(pcb_proceso, param1, *param2);
+			//log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			ejecutar_SET(pcb_proceso, param1, param2);
 
 			corta_ejecucion = 0;
 			break;
@@ -324,13 +324,20 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			uint32_t param1 = una_instruccion -> parametro1.tipo_int;
 			uint32_t param2 = una_instruccion -> parametro2.tipo_int;
 
-			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			//log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
 			ejecutar_MOV_IN(pcb_proceso, param1, param2);
+
+			corta_ejecucion = 0;
 			break;
 		}
 		case MOV_OUT:{
-			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
-			//ejecutar_MOV_OUT(pcb_proceso, registro, dir_logica);
+			uint32_t param1 = una_instruccion -> parametro1.tipo_int;
+			uint32_t param2 = una_instruccion -> parametro2.tipo_int;
+
+			//log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			ejecutar_MOV_OUT(pcb_proceso, param1, param2);
+
+			corta_ejecucion = 0;
 			break;
 		}
 		case IO:{
@@ -346,35 +353,70 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			char* param1 = una_instruccion -> parametro1.tipo_string;
 
 			ejecutar_F_OPEN(pcb_proceso, param1);
+			corta_ejecucion = 0;
+			break;
+		}
+		case F_CLOSE:{
+			char* param1 = una_instruccion -> parametro1.tipo_string;
+
+			ejecutar_F_CLOSE(pcb_proceso, param1);
+			corta_ejecucion = 0;
+			break;
+		}
+		case F_SEEK:{
+			corta_ejecucion = 0;
+			break;
+		}
+		case F_READ:{
+			corta_ejecucion = 0;
+			break;
+		}
+		case F_WRITE:{
+			corta_ejecucion = 0;
+			break;
+		}
+		case F_TRUNCATE:{
+			corta_ejecucion = 0;
+			break;
+		}
+		case WAIT:{
+			char* param1 = una_instruccion -> parametro1.tipo_string;
+			log_info(logger, "Ejecutando WAIT");
+			ejecutar_WAIT(pcb_proceso, param1);
+
+			corta_ejecucion = 0;
+			break;
+		}
+		case SIGNAL:{
+			char* param1 = una_instruccion -> parametro1.tipo_string;
+			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			ejecutar_SIGNAL(pcb_proceso, param1);
+
+			corta_ejecucion = 0;
+			break;
+		}
+		case CREATE_SEGMENT:{
+			corta_ejecucion = 0;
+			break;
+		}
+		case DELETE_SEGMENT:{
+			corta_ejecucion = 0;
 			break;
 		}
 		case YIELD:{
 			log_info(logger, "Ejecutando YIELD");
 
-			ejecutar_YIELD(socket); // AGREGAR
+			ejecutar_YIELD(pcb_proceso);
 
 			corta_ejecucion = 1;
 			break;
 		}
 		case EXIT:{
 			log_info(logger, "Ejecutando EXIT");
-			//ejecutar_EXIT();
+
+			ejecutar_EXIT(pcb_proceso);
 
 			corta_ejecucion = 1;
-			break;
-		}
-		case WAIT:{
-			log_info(logger, "Ejecutando WAIT");
-			ejecutar_WAIT();
-
-			corta_ejecucion = 0;
-			break;
-		}
-		case SIGNAL:{
-			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
-			ejecutar_SIGNAL();
-
-			corta_ejecucion = 0;
 			break;
 		}
 	}

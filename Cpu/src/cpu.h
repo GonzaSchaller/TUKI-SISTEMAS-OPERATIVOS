@@ -40,5 +40,6 @@ void leer_consola(t_log*);
 void paquete(int);
 void terminar_programa(int, t_log*, t_config*);
 void recibir_instrucciones();
+void procesar_instrucciones(int, t_log*);
 
 #endif

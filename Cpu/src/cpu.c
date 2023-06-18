@@ -1,12 +1,14 @@
 #include "cpu.h"
 
+int conexion_memoria;
+
 void establecer_conexion_kernel(){
 	// genera el servidor de cpu
 	int server_fd = iniciar_servidor(logger, "Cpu", ip, puerto_cpu);
 	log_info(logger, "Servidor listo para recibir cliente");
 
 	// almacena el socket_cliente (kernel)
-	socket_cliente_kernel = esperar_cliente(logger, server_fd);
+	int socket_cliente_kernel = esperar_cliente(logger, server_fd);
 
 	if(socket_cliente_kernel != -1){
 		procesar_instrucciones(socket_cliente_kernel, logger);
