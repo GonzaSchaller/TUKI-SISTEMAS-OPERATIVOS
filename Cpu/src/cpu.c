@@ -6,20 +6,20 @@ void establecer_conexion_kernel(){
 	log_info(logger, "Servidor listo para recibir cliente");
 
 	// almacena el socket_cliente (kernel)
-	int cliente_kernel_fd = esperar_cliente(logger, server_fd);
+	socket_cliente_kernel = esperar_cliente(logger, server_fd);
 
-	if(cliente_kernel_fd != -1){
-		procesar_instrucciones(cliente_kernel_fd, logger);
+	if(socket_cliente_kernel != -1){
+		procesar_instrucciones(socket_cliente_kernel, logger);
 	}
 
 }
 
 void establecer_conexion_memoria(){
-	conexion = crear_conexion(logger,"Memoria", ip, puerto_memoria);
+	conexion_memoria = crear_conexion(logger,"Memoria", ip, puerto_memoria);
 	uint32_t handshake =1;
 	uint32_t result;
-	send_handshake(conexion,handshake);
-	recv_handshake(conexion,&result);
+	send_handshake(conexion_memoria,handshake);
+	recv_handshake(conexion_memoria,&result);
 	if(result == 1) log_info(logger,"todo ok capo");
 
 }
@@ -54,7 +54,7 @@ int main (){
 	establecer_conexiones();
 
 
-	terminar_programa(conexion, logger, config);
+	terminar_programa(conexion_memoria, logger, config);
 
 	return EXIT_SUCCESS;
 

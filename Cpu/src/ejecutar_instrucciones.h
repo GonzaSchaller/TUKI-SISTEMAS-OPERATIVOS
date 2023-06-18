@@ -20,6 +20,9 @@
 #include "estructuras_compartidas.h"
 #include "recibo_instrucciones.h"
 #include "mmu.h"
+//#include "cpu.h" //para agregar conexion_memoria
+
+extern int socket_cliente_kernel; //ver como agregar aca el socket kernel
 
 typedef struct{
 	uint32_t PID;

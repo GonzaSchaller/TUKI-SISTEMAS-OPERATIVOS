@@ -319,6 +319,23 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			corta_ejecucion = 0;
 			break;
 		}
+		case MOV_IN:{
+			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			//ejecutar_MOV_IN(pcb_proceso, registro, dir_logica);
+			break;
+		}
+		case MOV_OUT:{
+			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			//ejecutar_MOV_OUT(pcb_proceso, registro, dir_logica);
+			break;
+		}
+		case IO:{
+			log_info(logger, "Ejecutando IO");
+			ejecutar_IO();
+
+			corta_ejecucion = 1;
+			break;
+		}
 		case YIELD:{
 			log_info(logger, "Ejecutando YIELD");
 
@@ -330,13 +347,6 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 		case EXIT:{
 			log_info(logger, "Ejecutando EXIT");
 			//ejecutar_EXIT();
-
-			corta_ejecucion = 1;
-			break;
-		}
-		case IO:{
-			log_info(logger, "Ejecutando IO");
-			ejecutar_IO();
 
 			corta_ejecucion = 1;
 			break;

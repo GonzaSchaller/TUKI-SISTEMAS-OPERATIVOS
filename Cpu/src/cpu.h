@@ -22,7 +22,8 @@
 extern t_log* logger;
 extern t_config* config;
 
-extern int conexion;
+extern int socket_cliente_kernel;
+extern int conexion_memoria;
 /*
 extern char* ip;
 extern char* puerto_cpu;
