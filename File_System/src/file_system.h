@@ -16,6 +16,7 @@
 #include <netdb.h>
 #include <string.h>
 #include <pthread.h>
+#include "iniciar.h"
 
 extern int conexion;
 extern char* ip;
