@@ -85,7 +85,7 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, tam_segmento);
 
 	// pedir a memoria que me pase y lo guardo en valor
-	char* valor;
+	char* valor = NULL;
 
 	//guardo en el registro:
 	switch(registro){
@@ -154,7 +154,7 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 }
 
 void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
-	char* valor;
+	char* valor = NULL;
 	//obtengo el dato del registro
 	switch(registro){
 		case AX:{

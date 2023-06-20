@@ -304,7 +304,7 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 	op_code code_instruccion = una_instruccion -> id;
 
 	uint32_t retardo = *retardo_instruccion; // quiero asignar el valor al que esta apuntando el puntero en retardo
-	retardo = retardo / 1000; //paso de segundos a milisegundos
+	retardo = retardo * 1000; //paso de milisegundos a microsegundos para usar usleep()
 
 	int corta_ejecucion = 0;
 
@@ -313,8 +313,8 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			uint32_t param1 = una_instruccion -> parametro1.tipo_int;
 			char* param2 = una_instruccion -> parametro2.tipo_string;
 
-			sleep(retardo);
-			//log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			usleep(retardo);
+			//log_info(logger, "PID: < %d > - Ejecutando: < %c > - < %d, %d >", pcb_proceso->PID, una_instruccion->id);
 			ejecutar_SET(pcb_proceso, param1, param2);
 
 			corta_ejecucion = 0;
