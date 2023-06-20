@@ -28,6 +28,9 @@ void establecer_conexion_kernel(){
 	int server_fd = iniciar_servidor(logger, "fileSystem", ip, puerto_escucha);
 	log_info(logger, "Servidor listo para recibir cliente");
 	int cliente_fd = esperar_cliente(logger, server_fd);
+	if(cliente_fd!=-1){
+		procesar_peticiones(cliente_fd);
+	}
 }
 
 void establecer_conexion_memoria(){
