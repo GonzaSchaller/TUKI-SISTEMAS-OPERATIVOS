@@ -11,7 +11,7 @@ int tam_hueco_mas_grande;
 segmento_t* segmento_0;
 int memoria_disponible;
 
-
+//kaljfskfkja
 uint8_t init() {
 	cfg = malloc(sizeof(t_config_memoria));
 	iniciar_mutex();
