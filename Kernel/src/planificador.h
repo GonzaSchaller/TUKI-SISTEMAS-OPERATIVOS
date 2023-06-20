@@ -32,7 +32,6 @@ void sacarDeBlock(pcb_t*);
 void recalcular_rafagas_HRRN(pcb_t*, float);
 void print_lista_PID();
 void liberar_Recursos(pcb_t*);
-void recibir_actualizar_tablas_segmento(pcb_t*);
 
 pcb_t* obtener_siguiente_FIFO();
 pcb_t* obtener_siguiente_ready();

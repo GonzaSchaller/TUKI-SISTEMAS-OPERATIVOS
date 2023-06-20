@@ -20,6 +20,7 @@ typedef struct{
     uint32_t id;
     uint32_t direccion_Base;
     uint32_t tamanio;
+    uint32_t pid;
 }segmento_t;
 
 typedef enum{

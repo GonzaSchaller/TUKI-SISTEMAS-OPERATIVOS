@@ -90,6 +90,38 @@ recurso_sistema* encontrar_recurso(t_list* lista, char* nombre_buscar) {
 
     return (recurso_sistema*)list_find(lista, buscar_recurso);
 }
+void recibir_actualizar_tablas_segmento(pcb_t* pcb_actual){
+	pcb_t* proceso_planificado= NULL;
+	t_list* tabla_nueva = NULL;
+	segmento_t* segmento = NULL;
+	bool buscandoPID = true;
+	pthread_mutex_lock(&mutexReady);
+	int t = list_size(listaReady);
+
+	//t+1 porque hay uno ejecutando
+	for(int i = 0; i < t + 1; i++) { //para cada proceso enviamos la tabla que tiene y pedimo que memoria mande la nueva tabla
+		int j = 0;
+	    recv_TABLA_SEGMENTOS(conexion_memoria,&tabla_nueva);
+	    segmento = list_get(tabla_nueva, 0); //agarramos el primer segmento
+	    //pid = 2
+	    while(buscandoPID){
+	    	proceso_planificado = list_get(listaReady, j);
+	    	//pid = 1
+//	    	if(proceso_planificado->contexto.PID == segmento->PID){ //Todo descomentar cuando este el pid de segmento
+//	    		proceso_planificado->contexto.TSegmento = tabla_nueva;
+//	    		buscandoPID = false;
+//
+//	    	}
+//	    	else if(pcb_actual->contexto.PID == segmento->PID){
+//	    		pcb_actual->contexto.TSegmento = tabla_nueva;
+//	    		buscandoPID = false;
+//	    	}
+//	    	j++;
+	    }
+	}
+	 	 pthread_mutex_unlock(&mutexReady);
+}
+
 void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 	uint32_t id_segmento,tamanio,base_nuevo_segmento,estado_segmento;
 	segmento_t* segmento= NULL;
@@ -203,8 +235,8 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				        fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 				        if (archivo != NULL)
 				        {// se agrega la entrada en la tabla de archivos abietos del proceso con el puntero en 0
-				        	archivo->puntero_directo = 0;
 
+				        	archivo->puntero_directo = 0;
 							list_add(pcb_siguiente->tabla_archivosAbiertos,archivo->nombreArchivo); // agrego a la tabla de archivos abiertos del proceso
 
 							queue_push(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
@@ -228,17 +260,10 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 										log_error(log_kernel, "Fallo enviado crear_archivo a FILESYSTEM");
 									}
 								}
-								fcb_t* nuevo_archivo = malloc(sizeof(fcb_t));
-								nuevo_archivo->colaBloqueados = queue_create();
-								pthread_mutex_init(&(nuevo_archivo->mutexArchivo),NULL);
-								nuevo_archivo->nombreArchivo = nombre_archivo;
-								nuevo_archivo->tamanio_archivo =0;
-								nuevo_archivo->puntero_directo =0;
-								//nuevo_archivo->puntero_indirecto;// todo que iria aca?
-								pthread_mutex_lock(&(nuevo_archivo->mutexArchivo));
-								list_add(tabla_ArchivosAbiertosGlobal,nuevo_archivo); // TODO deberia ser el archivo nuevo, no el nombre del archivo nuevo solamente.
-
-								list_add(pcb_siguiente->tabla_archivosAbiertos,nuevo_archivo->nombreArchivo); // agrego a la tabla de archivos abiertos del proceso
+								fcb_t* archivo_creado = NULL;
+								//recv_ARCHIVO_CREADO(conexion_fileSystem, archivo_creado); todo
+								list_add(tabla_ArchivosAbiertosGlobal,archivo_creado);
+								list_add(pcb_siguiente->tabla_archivosAbiertos,archivo_creado->nombreArchivo); // agrego a la tabla de archivos abiertos del proceso
 								send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);
 							}
 
@@ -254,11 +279,10 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 			    fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 			    if (archivo != NULL)
 			    {
-					// init del mutex
-			    	//pthread_mutex_lock(&(archivo->mutexArchivo));
 			    	uint32_t tamanioLista = queue_size(archivo->colaBloqueados);
 					if(tamanioLista > 0){ // algun proceso quiere ese archivo
 					pcb_t* pcb_bloqueado= queue_pop(archivo->colaBloqueados);
+					eliminarArchivoDeLista(nombre_archivo, pcb_siguiente->tabla_archivosAbiertos);
 					agregarAReady(pcb_bloqueado);
 					}
 					else{
@@ -269,7 +293,6 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 					//free(archivo);
 					}
 				}
-				pthread_mutex_unlock(&(archivo->mutexArchivo)); //desbloquea el archivo para que otro proceso pueda usarlo
 			}
 		else log_error(log_kernel, "Fallo recibiendo FCLOSE");
 	}

@@ -7,7 +7,8 @@
 #include <commons/collections/queue.h>
 #include <commons/config.h>
 #include <commons/collections/list.h>
-
+#include <commons/string.h>
+#include <pthread.h>
 typedef struct{
 	char* nombre;
 	int instancia;

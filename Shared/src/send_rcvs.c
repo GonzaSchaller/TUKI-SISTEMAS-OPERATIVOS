@@ -1012,8 +1012,7 @@ bool recv_REG_CPU(int fd, registros_cpu* registros) {
 }
 
 static void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion contexto, int* tamanio_serializado) {
-    int cant_segmentos = list_size(contexto.TSegmento);
-    *tamanio_serializado = sizeof(segmento_t) * cant_segmentos;
+    *tamanio_serializado = sizeof(segmento_t) * list_size(contexto.TSegmento);
     void* stream = malloc(2 * sizeof(uint32_t) + sizeof(registros_cpu) + *tamanio_serializado);
 
     int offset = 0;
@@ -1059,7 +1058,7 @@ static void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion contexto, int* tam
     memcpy(stream + offset, &(contexto.registros.RDX), sizeof(char[16]));
     offset += sizeof(char[16]);
 
-    for (int i = 0; i < cant_segmentos; i++) {
+    for (int i = 0; i < list_size(contexto.TSegmento); i++) {
         segmento_t* segmento = list_get(contexto.TSegmento, i);
         memcpy(stream + offset, segmento, sizeof(segmento_t));
         offset += sizeof(segmento_t);

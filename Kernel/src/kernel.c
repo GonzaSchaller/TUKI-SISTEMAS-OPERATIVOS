@@ -44,7 +44,6 @@ void inicializar_semaforos(){
 
 	pthread_mutex_init(&mutexNew, NULL);
 	pthread_mutex_init(&mutexReady, NULL);
-	pthread_mutex_init(&mutexBlock, NULL);
 	pthread_mutex_init(&mutexExe, NULL);
 	pthread_mutex_init(&mutexExit, NULL);
 	pthread_mutex_init(&multiprocesamiento, NULL);
@@ -55,7 +54,6 @@ void inicializar_semaforos(){
 
 	sem_init(&contadorNew, 0, 0); // Estado New
 	sem_init(&contadorReady, 0, 0); // Estado Ready
-	sem_init(&contadorExe, 0, 0); // Estado Exe
 	sem_init(&multiprogramacion, 0, grado_max_multiprogramacion); // hasta 4 procesos en ready
 	sem_init(&semFWrite,0, 1);
 	sem_init(&semFRead,0,1);
@@ -108,7 +106,6 @@ void destruir_semaforos_listas(){
 
     pthread_mutex_destroy(&mutexNew);
     pthread_mutex_destroy(&mutexReady);
-    pthread_mutex_destroy(&mutexBlock);
     pthread_mutex_destroy(&mutexExit);
     pthread_mutex_destroy(&multiprocesamiento);
     pthread_mutex_destroy(&mutexHiloTruncate);
@@ -149,17 +146,19 @@ void generar_conexiones(){
 }
 
 int server_escuchar(int server_kernel){
+   // seamforo cantidad consolas max
 	int consola_socket = esperar_cliente(log_kernel, server_kernel);
-
 	if(consola_socket != -1){
 		pthread_t hilo;
 		args_atender_cliente* args = malloc(sizeof(args_atender_cliente));
 		args->log = log_kernel;
 		args->socket = consola_socket;
 		args->server_name = "Kernel";
-		//procesar_conexion_consola((void*) args);
+		procesar_conexion_consola((void*) args);
 		pthread_create(&hilo, NULL, (void*) procesar_conexion_consola, (void*) args);
 		pthread_detach(hilo);
+		// wait semaforo 1
+		// post semaforo consola
 		return 1;
 	}
 	return 0;
