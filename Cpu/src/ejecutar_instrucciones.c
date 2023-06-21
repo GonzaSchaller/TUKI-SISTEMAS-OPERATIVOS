@@ -153,6 +153,7 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	pcb_proceso -> PC += 1;
 }
 
+//VER SI LE TENGO QUE PASAR EL TAMAÑO DE SEGMENTO.
 void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
 	char* valor = NULL;
 	//obtengo el dato del registro
@@ -336,9 +337,31 @@ void ejecutar_SIGNAL(pcb_cpu* pcb_proceso , char* recurso){
 	send_SIGNAL(socket_cliente_kernel, recurso);
 }
 
-void ejecutar_CREATE_SEGMENT(){}
+void ejecutar_CREATE_SEGMENT(pcb_cpu* pcb_proceso){
+	contexto_ejecucion contexto_actualizado;
+	pcb_proceso -> PC += 1;
 
-void ejecutar_DELETE_SEGMENT(){}
+	contexto_actualizado.PID = pcb_proceso -> PID;
+	contexto_actualizado.PC = pcb_proceso -> PC;
+	contexto_actualizado.registros = pcb_proceso -> registros;
+	contexto_actualizado.TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
+	actualizado porque es el mismo que me mandan en su momento*/
+
+	//send_CREATE_SEGMENT(socket_cliente_kernel,,);
+}
+void ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso){
+	contexto_ejecucion contexto_actualizado;
+
+	pcb_proceso -> PC += 1;
+
+	contexto_actualizado.PID = pcb_proceso -> PID;
+	contexto_actualizado.PC = pcb_proceso -> PC;
+	contexto_actualizado.registros = pcb_proceso -> registros;
+	contexto_actualizado.TSegmento = NULL; /* no manda nada, en kernel no van a pasar este dato
+	actualizado porque es el mismo que me mandan en su momento*/
+
+	//send_CREATE_SEGMENT(socket_cliente_kernel,,);
+}
 
 void ejecutar_YIELD(pcb_cpu* pcb_proceso){
 	contexto_ejecucion contexto_actualizado;
@@ -352,7 +375,7 @@ void ejecutar_YIELD(pcb_cpu* pcb_proceso){
 
 	// en teoria el contexto de ejecucion tiene los TSegmento pero el pcb_proceso no, no se de donde sacarlo
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-	send(socket, YIELD, sizeof(op_code), NULL);
+	send(socket_cliente_kernel, YIELD, sizeof(op_code), NULL);
 }
 
 //FALTA, esta funcion hace que no no busque la siguiente isntruccion
@@ -367,6 +390,6 @@ void ejecutar_EXIT(pcb_cpu* pcb_proceso){
 	actualizado porque es el mismo que me mandan en su momento*/
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-	send(socket, EXIT, sizeof(op_code), NULL);
+	send(socket_cliente_kernel, EXIT, sizeof(op_code), NULL);
 }
 
