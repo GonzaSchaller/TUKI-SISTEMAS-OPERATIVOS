@@ -314,6 +314,7 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			char* param2 = una_instruccion -> parametro2.tipo_string;
 
 			usleep(retardo);
+			log_info(logger,"Ejecutando SET");
 			//log_info(logger, "PID: < %d > - Ejecutando: < %c > - < %d, %d >", pcb_proceso->PID, una_instruccion->id);
 			ejecutar_SET(pcb_proceso, param1, param2);
 
