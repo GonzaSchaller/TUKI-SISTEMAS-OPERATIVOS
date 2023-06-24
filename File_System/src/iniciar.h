@@ -34,6 +34,6 @@ typedef struct {
 
 extern t_superbloque* superbloque;
 extern t_config_fs *c;
-void cargar_superbloque();
+uint32_t cargar_superbloque();
 
 #endif

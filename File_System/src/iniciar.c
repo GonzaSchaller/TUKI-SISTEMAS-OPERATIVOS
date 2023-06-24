@@ -1,6 +1,7 @@
 #include "iniciar.h"
 t_config_fs *c;
 extern t_log* logger;
+t_superbloque* superbloque;
 
 
 void levantar_config(){
@@ -19,9 +20,18 @@ void levantar_config(){
 }
 
 
-void cargar_superbloque(){
+uint32_t cargar_superbloque(){
 	char* path = strdup(c->superbloque);
-	FILE*f = fopen(path,"wb+");
+	t_config* cnf_fs = config_create(path);
+	superbloque = malloc(sizeof(t_superbloque));
+	if(cnf_fs == NULL) {
+		        log_error(logger, "no se encontro el archivo del superbloque");
+		        return 0;
+		    }
+	superbloque->block_size = config_get_string_value(config,"BLOCK_SIZE");
+	superbloque->blocks = config_get_string_value(config,"BLOCK_COUNT");
+	free(cnf_fs);
 
 
+	return 0;
 }
