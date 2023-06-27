@@ -6,23 +6,33 @@ t_config* config;
 extern int fd_fs;
 extern int fd_memoria;
 
+void inicializar() {
+    c = malloc(sizeof(t_config_fs));
+    c->bitmap= NULL;
+    c->bloques = NULL;
+    c->fcb= NULL;
+    c->ip_memoria= NULL;
+    c->puerto_escucha = NULL;
+    c->puerto_memoria = NULL;
+    c->superbloque= NULL;
 
-
+}
 
 void levantar_config(){
-	c = malloc(sizeof(t_config_fs)); //para la config
+	inicializar();
 
 	config = config_create("fileSystem.config");
 	if(config ==NULL) log_error(logger,"no se encontro el config");
 
-	c->ip_memoria  = config_get_string_value(config,"IP_MEMORIA");
-	c->puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
-	c->puerto_escucha = config_get_string_value(config,"PUERTO_ESCUCHA");
-	c->superbloque = config_get_string_value(config,"PATH_SUPERBLOQUE");
-	c->bitmap = config_get_string_value(config,"PATH_BITMAP");
-	c->bloques = config_get_string_value(config,"PATH_BLOQUES");
-	c->fcb = config_get_string_value(config,"PATH_FCB");
-	c->retardo_acceso_bloque = config_get_string_value(config,"RETARDO_ACCESO_BLOQUE");
+	c->ip_memoria  = strdup(config_get_string_value(config,"IP_MEMORIA"));
+	c->puerto_memoria = strdup(config_get_string_value(config,"PUERTO_MEMORIA"));
+	c->puerto_escucha = strdup(config_get_string_value(config,"PUERTO_ESCUCHA"));
+	c->superbloque = strdup(config_get_string_value(config,"PATH_SUPERBLOQUE"));
+	c->bitmap = strdup(config_get_string_value(config,"PATH_BITMAP"));
+	c->bloques = strdup(config_get_string_value(config,"PATH_BLOQUES"));
+	c->fcb = strdup(config_get_string_value(config,"PATH_FCB"));
+	c->retardo_acceso_bloque = (uint32_t) strtol(config_get_string_value(config, "RETARDO_ACCESO_BLOQUE"), NULL, 10);
+
 
 	config_destroy(config);
 
@@ -30,9 +40,26 @@ void levantar_config(){
 
 
 void cargar_superbloque(){
+	log_info(logger,"IP MMOERIA %s \n",c->ip_memoria);
+		log_info(logger,"PATH BITMAP %s \n",c->bitmap);
+		log_info(logger,"PATH BLOQUES %s \n",c->bloques);
+		log_info(logger,"PATH FCB %s \n",c->fcb);
+		log_info(logger,"MYPUERTP %s \n",c->puerto_escucha);
+		log_info(logger,"PMEMORIA %s \n",c->puerto_memoria);
+		log_info(logger,"RETARDO %d \n",c->retardo_acceso_bloque);
+		log_info(logger,"SUPERBLOQUE %s \n",c->superbloque);
+
+
+
+
+
+
 	char* path = strdup(c->superbloque);
+	log_info(logger,"%s",path);
 	t_config* cnf_fs = config_create(path);
+
 	superbloque = malloc(sizeof(t_superbloque));
+
 	if(cnf_fs == NULL) {
 		        log_error(logger, "no se encontro el archivo del superbloque");
 		    }
@@ -44,7 +71,6 @@ void cargar_superbloque(){
 
 void terminar_fs(){
 	log_destroy(logger);
-
 	close(fd_fs);
 	close(fd_memoria);
 }

@@ -15,3 +15,374 @@
 [INFO] 20:43:58:420 FileSystem/(8617:8617): Servidor listo para recibir cliente
 [INFO] 20:45:05:084 FileSystem/(8617:8617): Se conecto un cliente
 [INFO] 13:48:03:305 FileSystem/(66590:66590): Servidor listo para recibir cliente
+[ERROR] 22:52:22:297 FileSystem/(10835:10835): no se encontro el archivo del superbloque
+[ERROR] 22:52:22:300 FileSystem/(10835:10835): Error al conectar (a Memoria)
+
+[ERROR] 23:16:38:084 FileSystem/(11127:11127): no se encontro el archivo del superbloque
+[INFO] 23:16:38:090 FileSystem/(11127:11127): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+
+[ERROR] 23:42:32:296 FileSystem/(11828:11828): no se encontro el archivo del superbloque
+[ERROR] 23:42:32:299 FileSystem/(11828:11828): Error al conectar (a Memoria)
+
+[ERROR] 23:43:00:384 FileSystem/(11852:11852): no se encontro el archivo del superbloque
+[INFO] 23:43:00:389 FileSystem/(11852:11852): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+
+[INFO] 23:44:04:409 FileSystem/(11828:11828): Se conecto un cliente
+[ERROR] 23:47:21:496 FileSystem/(11979:11979): no se encontro el archivo del superbloque
+[INFO] 23:47:21:507 FileSystem/(11979:11979): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+
+[ERROR] 23:47:42:593 FileSystem/(12002:12002): no se encontro el archivo del superbloque
+[INFO] 23:47:42:593 FileSystem/(12002:12002): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+
+[ERROR] 23:59:47:963 FileSystem/(12176:12176): no se encontro el archivo del superbloque
+[INFO] 23:59:47:965 FileSystem/(12176:12176): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+
+[INFO] 23:59:54:845 FileSystem/(12176:12176): Se conecto un cliente
+[INFO] 23:59:54:846 FileSystem/(12176:12176): SE CONECTO UN CLIENTE
+[ERROR] 00:01:12:624 FileSystem/(12362:12362): no se encontro el archivo del superbloque
+[ERROR] 00:01:12:627 FileSystem/(12362:12362): Error al conectar (a Memoria)
+
+[ERROR] 00:02:23:332 FileSystem/(12422:12422): no se encontro el archivo del superbloque
+[INFO] 00:02:23:337 FileSystem/(12422:12422): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+
+[INFO] 00:02:29:696 FileSystem/(12422:12422): Se conecto un cliente
+[ERROR] 00:04:46:241 FileSystem/(12606:12606): no se encontro el archivo del superbloque
+[INFO] 00:04:46:246 FileSystem/(12606:12606): Cliente conectado en 127.0.0.1:8002 (a Memoria)
+
+[ERROR] 00:12:51:108 FileSystem/(13005:13005): no se encontro el archivo del superbloque
+[ERROR] 00:16:28:539 FileSystem/(13043:13043): no se encontro el archivo del superbloque
+[ERROR] 00:22:35:542 FileSystem/(13162:13162): no se encontro el archivo del superbloque
+[ERROR] 00:26:35:032 FileSystem/(13265:13265): no se encontro el archivo del superbloque
+[ERROR] 00:27:17:931 FileSystem/(13286:13286): no se encontro el archivo del superbloque
+[ERROR] 00:27:53:111 FileSystem/(13305:13305): no se encontro el archivo del superbloque
+[ERROR] 00:27:54:200 FileSystem/(13317:13317): no se encontro el archivo del superbloque
+[ERROR] 00:28:29:336 FileSystem/(13339:13339): no se encontro el archivo del superbloque
+[INFO] 00:32:00:560 FileSystem/(13538:13538): 127.0.0.1 /n
+[INFO] 00:32:00:571 FileSystem/(13538:13538): /home/utnso/fs/bitmap.dat /n
+[INFO] 00:32:00:571 FileSystem/(13538:13538): /home/utnso/File_System/bloques.dat /n
+[INFO] 00:32:00:572 FileSystem/(13538:13538): /home/utnso/fs/fcb /n
+[INFO] 00:32:00:572 FileSystem/(13538:13538): 8003 /n
+[INFO] 00:32:00:572 FileSystem/(13538:13538): 8002 /n
+[INFO] 00:32:36:335 FileSystem/(13603:13603): 127.0.0.1 
+
+[INFO] 00:32:36:350 FileSystem/(13603:13603): /home/utnso/fs/bitmap.dat 
+
+[INFO] 00:32:36:350 FileSystem/(13603:13603): /home/utnso/File_System/bloques.dat 
+
+[INFO] 00:32:36:351 FileSystem/(13603:13603): /home/utnso/fs/fcb 
+
+[INFO] 00:32:36:351 FileSystem/(13603:13603): 8003 
+
+[INFO] 00:32:36:351 FileSystem/(13603:13603): 8002 
+
+[INFO] 00:33:45:454 FileSystem/(13656:13656): 127.0.0.1 
+
+[INFO] 00:33:45:454 FileSystem/(13656:13656): /home/utnso/fs/bitmap.dat 
+
+[INFO] 00:33:45:454 FileSystem/(13656:13656): /home/utnso/File_System/bloques.dat 
+
+[INFO] 00:33:45:454 FileSystem/(13656:13656): /home/utnso/fs/fcb 
+
+[INFO] 00:33:45:454 FileSystem/(13656:13656): 8003 
+
+[INFO] 00:33:45:455 FileSystem/(13656:13656): 8002 
+
+[INFO] 00:35:28:320 FileSystem/(13723:13723): IP MMOERIA 127.0.0.1 
+
+[INFO] 00:35:28:324 FileSystem/(13723:13723): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 00:35:28:327 FileSystem/(13723:13723): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 00:35:28:327 FileSystem/(13723:13723): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 00:35:28:327 FileSystem/(13723:13723): MYPUERTP 8003 
+
+[INFO] 00:35:28:327 FileSystem/(13723:13723): PMEMORIA 8002 
+
+[INFO] 00:37:15:300 FileSystem/(13856:13856): IP MMOERIA 127.0.0.1 
+
+[INFO] 00:37:15:328 FileSystem/(13856:13856): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 00:37:15:328 FileSystem/(13856:13856): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 00:37:15:328 FileSystem/(13856:13856): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 00:37:15:328 FileSystem/(13856:13856): MYPUERTP 8003 
+
+[INFO] 00:37:15:328 FileSystem/(13856:13856): PMEMORIA 8002 
+
+[INFO] 00:37:15:328 FileSystem/(13856:13856): RETARDO -1992610224 
+
+[INFO] 00:37:15:329 FileSystem/(13856:13856): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[ERROR] 00:37:15:329 FileSystem/(13856:13856): no se encontro el archivo del superbloque
+[INFO] 00:45:14:929 FileSystem/(14115:14115): IP MMOERIA 127.0.0.1 
+
+[INFO] 00:45:14:930 FileSystem/(14115:14115): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 00:45:14:930 FileSystem/(14115:14115): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 00:45:14:930 FileSystem/(14115:14115): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 00:45:14:930 FileSystem/(14115:14115): MYPUERTP 8003 
+
+[INFO] 00:45:14:930 FileSystem/(14115:14115): PMEMORIA 8002 
+
+[INFO] 00:45:14:931 FileSystem/(14115:14115): RETARDO 2143530576 
+
+[INFO] 00:45:14:931 FileSystem/(14115:14115): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[ERROR] 00:45:14:931 FileSystem/(14115:14115): no se encontro el archivo del superbloque
+[INFO] 00:51:45:312 FileSystem/(14211:14211): IP MMOERIA 127.0.0.1 
+
+[INFO] 00:51:45:315 FileSystem/(14211:14211): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 00:51:45:316 FileSystem/(14211:14211): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 00:51:45:317 FileSystem/(14211:14211): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 00:51:45:317 FileSystem/(14211:14211): MYPUERTP 8003 
+
+[INFO] 00:51:45:317 FileSystem/(14211:14211): PMEMORIA 8002 
+
+[INFO] 00:51:45:317 FileSystem/(14211:14211): RETARDO 15000 
+
+[INFO] 00:51:45:317 FileSystem/(14211:14211): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[ERROR] 00:51:45:317 FileSystem/(14211:14211): no se encontro el archivo del superbloque
+[INFO] 00:53:25:153 FileSystem/(14276:14276): IP MMOERIA 127.0.0.1 
+
+[INFO] 00:53:25:162 FileSystem/(14276:14276): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 00:53:25:162 FileSystem/(14276:14276): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 00:53:25:162 FileSystem/(14276:14276): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 00:53:25:162 FileSystem/(14276:14276): MYPUERTP 8003 
+
+[INFO] 00:53:25:162 FileSystem/(14276:14276): PMEMORIA 8002 
+
+[INFO] 00:53:25:163 FileSystem/(14276:14276): RETARDO 15000 
+
+[INFO] 00:53:25:163 FileSystem/(14276:14276): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[INFO] 00:53:25:163 FileSystem/(14276:14276): Ìê~´ÚU
+[ERROR] 00:53:25:163 FileSystem/(14276:14276): no se encontro el archivo del superbloque
+[INFO] 00:53:41:652 FileSystem/(14321:14321): IP MMOERIA 127.0.0.1 
+
+[INFO] 00:53:41:656 FileSystem/(14321:14321): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 00:53:41:657 FileSystem/(14321:14321): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 00:53:41:657 FileSystem/(14321:14321): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 00:53:41:657 FileSystem/(14321:14321): MYPUERTP 8003 
+
+[INFO] 00:53:41:657 FileSystem/(14321:14321): PMEMORIA 8002 
+
+[INFO] 00:53:41:657 FileSystem/(14321:14321): RETARDO 15000 
+
+[INFO] 00:53:41:657 FileSystem/(14321:14321): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[INFO] 00:53:41:657 FileSystem/(14321:14321): Ú7§hU
+[ERROR] 00:53:41:657 FileSystem/(14321:14321): no se encontro el archivo del superbloque
+[INFO] 00:53:48:030 FileSystem/(14340:14340): IP MMOERIA 127.0.0.1 
+
+[INFO] 00:53:48:032 FileSystem/(14340:14340): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 00:53:48:032 FileSystem/(14340:14340): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 00:53:48:032 FileSystem/(14340:14340): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 00:53:48:032 FileSystem/(14340:14340): MYPUERTP 8003 
+
+[INFO] 00:53:48:033 FileSystem/(14340:14340): PMEMORIA 8002 
+
+[INFO] 00:53:48:033 FileSystem/(14340:14340): RETARDO 15000 
+
+[INFO] 00:53:48:033 FileSystem/(14340:14340): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[INFO] 00:53:48:033 FileSystem/(14340:14340): ßF
+ìV
+[ERROR] 00:53:48:033 FileSystem/(14340:14340): no se encontro el archivo del superbloque
+[INFO] 00:56:46:136 FileSystem/(14442:14442): IP MMOERIA 127.0.0.1 
+
+[INFO] 00:56:46:245 FileSystem/(14442:14442): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 00:56:46:245 FileSystem/(14442:14442): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 00:56:46:245 FileSystem/(14442:14442): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 00:56:46:245 FileSystem/(14442:14442): MYPUERTP 8003 
+
+[INFO] 00:56:46:246 FileSystem/(14442:14442): PMEMORIA 8002 
+
+[INFO] 00:56:46:246 FileSystem/(14442:14442): RETARDO 15000 
+
+[INFO] 00:56:46:246 FileSystem/(14442:14442): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[INFO] 00:56:46:246 FileSystem/(14442:14442): SUPERBLOQUE `5•`U 
+
+[INFO] 00:56:46:246 FileSystem/(14442:14442): `5•`U
+[ERROR] 00:56:46:247 FileSystem/(14442:14442): no se encontro el archivo del superbloque
+[INFO] 00:59:37:088 FileSystem/(14614:14614): IP MMOERIA 127.0.0.1 
+
+[INFO] 00:59:37:097 FileSystem/(14614:14614): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 00:59:37:097 FileSystem/(14614:14614): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 00:59:37:099 FileSystem/(14614:14614): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 00:59:37:099 FileSystem/(14614:14614): MYPUERTP 8003 
+
+[INFO] 00:59:37:099 FileSystem/(14614:14614): PMEMORIA 8002 
+
+[INFO] 00:59:37:099 FileSystem/(14614:14614): RETARDO 15000 
+
+[INFO] 00:59:37:099 FileSystem/(14614:14614): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[INFO] 00:59:37:099 FileSystem/(14614:14614): SUPERBLOQUE ﬂßêp[U 
+
+[INFO] 00:59:37:099 FileSystem/(14614:14614): PATH FCB Ô´êp[U 
+
+[INFO] 00:59:37:099 FileSystem/(14614:14614): RETARDO 15000 
+
+[INFO] 00:59:37:099 FileSystem/(14614:14614): ﬂßêp[U
+[ERROR] 00:59:37:099 FileSystem/(14614:14614): no se encontro el archivo del superbloque
+[INFO] 01:06:18:071 FileSystem/(14998:14998): IP MMOERIA 127.0.0.1 
+
+[INFO] 01:06:18:080 FileSystem/(14998:14998): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 01:06:18:080 FileSystem/(14998:14998): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 01:06:18:080 FileSystem/(14998:14998): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 01:06:18:080 FileSystem/(14998:14998): MYPUERTP 8003 
+
+[INFO] 01:06:18:080 FileSystem/(14998:14998): PMEMORIA 8002 
+
+[INFO] 01:06:18:080 FileSystem/(14998:14998): RETARDO 15000 
+
+[INFO] 01:06:18:081 FileSystem/(14998:14998): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[INFO] 01:06:18:081 FileSystem/(14998:14998): SUPERBLOQUE ˛—U2V 
+
+[INFO] 01:06:18:081 FileSystem/(14998:14998): PATH FCB Œ›U2V 
+
+[INFO] 01:06:18:081 FileSystem/(14998:14998): RETARDO 15000 
+
+[INFO] 01:06:18:081 FileSystem/(14998:14998): ˛—U2V
+[ERROR] 01:06:18:081 FileSystem/(14998:14998): no se encontro el archivo del superbloque
+[INFO] 01:06:56:935 FileSystem/(15067:15067): SUPERBLOQUE (null) 
+
+[INFO] 01:06:56:936 FileSystem/(15067:15067): IP MMOERIA 127.0.0.1 
+
+[INFO] 01:06:56:936 FileSystem/(15067:15067): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 01:06:56:936 FileSystem/(15067:15067): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 01:06:56:936 FileSystem/(15067:15067): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 01:06:56:936 FileSystem/(15067:15067): MYPUERTP 8003 
+
+[INFO] 01:06:56:936 FileSystem/(15067:15067): PMEMORIA 8002 
+
+[INFO] 01:06:56:937 FileSystem/(15067:15067): RETARDO 15000 
+
+[INFO] 01:06:56:937 FileSystem/(15067:15067): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[INFO] 01:06:56:937 FileSystem/(15067:15067): SUPERBLOQUE bì\oU 
+
+[INFO] 01:06:56:937 FileSystem/(15067:15067): PATH FCB ¢ä\oU 
+
+[INFO] 01:06:56:937 FileSystem/(15067:15067): RETARDO 15000 
+
+[INFO] 01:06:56:937 FileSystem/(15067:15067): bì\oU
+[ERROR] 01:06:56:937 FileSystem/(15067:15067): no se encontro el archivo del superbloque
+[INFO] 01:07:11:726 FileSystem/(15106:15106): INit SUPERBLOQUE (null) 
+
+[INFO] 01:07:11:728 FileSystem/(15106:15106): IP MMOERIA 127.0.0.1 
+
+[INFO] 01:07:11:730 FileSystem/(15106:15106): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 01:07:11:731 FileSystem/(15106:15106): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 01:07:11:731 FileSystem/(15106:15106): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 01:07:11:731 FileSystem/(15106:15106): MYPUERTP 8003 
+
+[INFO] 01:07:11:731 FileSystem/(15106:15106): PMEMORIA 8002 
+
+[INFO] 01:07:11:731 FileSystem/(15106:15106): RETARDO 15000 
+
+[INFO] 01:07:11:731 FileSystem/(15106:15106): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[INFO] 01:07:11:731 FileSystem/(15106:15106): SUPERBLOQUE Õ∫a∞QV 
+
+[INFO] 01:07:11:731 FileSystem/(15106:15106): PATH FCB ÌÄa∞QV 
+
+[INFO] 01:07:11:731 FileSystem/(15106:15106): RETARDO 15000 
+
+[INFO] 01:07:11:731 FileSystem/(15106:15106): Õ∫a∞QV
+[ERROR] 01:07:11:731 FileSystem/(15106:15106): no se encontro el archivo del superbloque
+[INFO] 01:09:20:941 FileSystem/(15311:15311): INit SUPERBLOQUE (null) 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): IP MMOERIA 127.0.0.1 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): MYPUERTP 8003 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): PMEMORIA 8002 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): RETARDO 15000 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): RETARDO 15000 
+
+[INFO] 01:09:20:944 FileSystem/(15311:15311): /home/utnso/File_System/superbloque.dat
+[ERROR] 01:09:20:944 FileSystem/(15311:15311): no se encontro el archivo del superbloque
+[INFO] 01:10:01:309 FileSystem/(15429:15429): IP MMOERIA 127.0.0.1 
+
+[INFO] 01:10:01:312 FileSystem/(15429:15429): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 01:10:01:314 FileSystem/(15429:15429): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 01:10:01:314 FileSystem/(15429:15429): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 01:10:01:314 FileSystem/(15429:15429): MYPUERTP 8003 
+
+[INFO] 01:10:01:315 FileSystem/(15429:15429): PMEMORIA 8002 
+
+[INFO] 01:10:01:315 FileSystem/(15429:15429): RETARDO 15000 
+
+[INFO] 01:10:01:315 FileSystem/(15429:15429): SUPERBLOQUE /home/utnso/File_System/superbloque.dat 
+
+[INFO] 01:10:01:315 FileSystem/(15429:15429): /home/utnso/File_System/superbloque.dat
+[ERROR] 01:10:01:315 FileSystem/(15429:15429): no se encontro el archivo del superbloque
+[INFO] 01:11:33:869 FileSystem/(15837:15837): IP MMOERIA 127.0.0.1 
+
+[INFO] 01:11:33:870 FileSystem/(15837:15837): PATH BITMAP /home/utnso/fs/bitmap.dat 
+
+[INFO] 01:11:33:870 FileSystem/(15837:15837): PATH BLOQUES /home/utnso/File_System/bloques.dat 
+
+[INFO] 01:11:33:870 FileSystem/(15837:15837): PATH FCB /home/utnso/fs/fcb 
+
+[INFO] 01:11:33:870 FileSystem/(15837:15837): MYPUERTP 8003 
+
+[INFO] 01:11:33:870 FileSystem/(15837:15837): PMEMORIA 8002 
+
+[INFO] 01:11:33:870 FileSystem/(15837:15837): RETARDO 15000 
+
+[INFO] 01:11:33:870 FileSystem/(15837:15837): SUPERBLOQUE /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat 
+
+[INFO] 01:11:33:870 FileSystem/(15837:15837): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat

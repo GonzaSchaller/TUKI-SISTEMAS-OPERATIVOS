@@ -14,6 +14,7 @@ static void procesar_peticiones(int cliente_socket){
 				switch(cop){
 
 				case F_OPEN:
+
 				break;
 
 

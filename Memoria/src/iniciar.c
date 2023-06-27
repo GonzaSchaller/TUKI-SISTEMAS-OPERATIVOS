@@ -39,6 +39,10 @@ uint8_t cargar_configuracion(char*path){
 	    cfg->ALGORITMO_ASIGNACION = strdup(config_get_string_value(config_memoria, "ALGORITMO_ASIGNACION"));
 	    cfg->PUERTO_ESCUCHA = strdup(config_get_string_value(config_memoria, "PUERTO_ESCUCHA"));
 
+
+	    log_info(log_memoria,"%d",cfg->TAMANIO_MEMORIA);
+	    log_info(log_memoria,"%s",cfg->ALGORITMO_ASIGNACION);
+
 	    if(strcmp(cfg->ALGORITMO_ASIGNACION,"BEST") == 0){
 	    	proximo_hueco = &proximo_hueco_best_fit;
 	    }else if(strcmp(cfg->ALGORITMO_ASIGNACION,"FIRST")==0){
