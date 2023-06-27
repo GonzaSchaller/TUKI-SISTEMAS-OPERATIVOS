@@ -10,6 +10,8 @@ segmento_t* (*proximo_hueco) (uint32_t);
 int tam_hueco_mas_grande;
 segmento_t* segmento_0;
 int memoria_disponible;
+extern pthread_mutex_t mutex_segmentos_libres;
+extern pthread_mutex_t mutex_segmentos_ocupados;
 
 //kaljfskfkja
 uint8_t init() {
@@ -36,6 +38,10 @@ uint8_t cargar_configuracion(char*path){
 	    cfg->RETARDO_COMPACTACION = config_get_int_value(config_memoria, "RETARDO_COMPACTACION");
 	    cfg->ALGORITMO_ASIGNACION = strdup(config_get_string_value(config_memoria, "ALGORITMO_ASIGNACION"));
 	    cfg->PUERTO_ESCUCHA = strdup(config_get_string_value(config_memoria, "PUERTO_ESCUCHA"));
+
+
+	    log_info(log_memoria,"%d",cfg->TAMANIO_MEMORIA);
+	    log_info(log_memoria,"%s",cfg->ALGORITMO_ASIGNACION);
 
 	    if(strcmp(cfg->ALGORITMO_ASIGNACION,"BEST") == 0){
 	    	proximo_hueco = &proximo_hueco_best_fit;

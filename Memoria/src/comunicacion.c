@@ -101,7 +101,7 @@ static void procesar_conexionn(void* void_args){
 								for(int u=0;u<cant;u++){
 									log_info(log_memoria,"Segmento : %d\n",u);
 									segmento_t* segmento = list_get(list_proceso_i,u);
-									log_info(log_memoria,"PID <%d> - Segmento <%d> - Base <%d> - Tamanio <%d> \n",segmento->pid,segmento->direccion_Base,segmento->tamanio);
+									log_info(log_memoria,"PID <%d> - Segmento <%d> - Base <%d> - Tamanio <%d> \n",segmento->pid,segmento->id,segmento->direccion_Base,segmento->tamanio);
 									log_info(log_memoria,"\n");
 								}
 							}
@@ -171,24 +171,24 @@ static void procesar_conexionn(void* void_args){
 			case MOV_IN: //cambiar nombre. TODO
 				//recibo la direccion fisica
 				//leo lo que hay
-				uint32_t pid_leer;
-				uint32_t direccion_fisica;
+	//			uint32_t pid_leer;
+//				uint32_t direccion_fisica;
 
-				recv_PID(cliente_socket, &pid_leer);
-				recv_DIREC_FISICA(cliente_socket,&direccion_fisica);
+			//	recv_PID(cliente_socket, &pid_leer);
+			//	recv_DIREC_FISICA(cliente_socket,&direccion_fisica);
 				//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>”
-				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>",pid_leer,direccion_fisica);
+			//	log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>",pid_leer,direccion_fisica);
 
 			break;
 
 			case MOV_OUT://cambair nombre TODO
-				uint32_t pid_escribir;
-				uint32_t direccion_fisica_e;
+//				uint32_t pid_escribir;
+//				uint32_t direccion_fisica_e;
 
-				recv_PID(cliente_socket, &pid_escribir);
-				recv_DIREC_FISICA(cliente_socket,&direccion_fisica_e);
+			//	recv_PID(cliente_socket, &pid_escribir);
+			//	recv_DIREC_FISICA(cliente_socket,&direccion_fisica_e);
 
-				log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>",pid_leer,direccion_fisica_e);
+			//	log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>",pid_leer,direccion_fisica_e);
 
 
 				break;

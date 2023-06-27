@@ -17,19 +17,20 @@
 #include <string.h>
 #include <pthread.h>
 #include "iniciar.h"
+#include "comunicacion.h"
 
-extern int conexion;
-extern char* ip;
-extern char* puerto_escucha; //puerto para si mismo (file system)
-extern char* puerto_memoria;
-extern char* superbloque;
-extern char* bitmap;
-extern char* bloques;
-extern char* fcb;
-extern char* retardo_acceso_bloque;
+//extern int conexion;
+//extern char* ip;
+//extern char* puerto_escucha; //puerto para si mismo (file system)
+//extern char* puerto_memoria;
+//extern char* superbloque;
+//extern char* bitmap;
+//extern char* bloques;
+//extern char* fcb;
+//extern char* retardo_acceso_bloque;
 
-extern t_log* logger;
-extern t_config* config;
+extern int fd_fs;
+extern int fd_memoria;
 
 t_log* iniciar_logger(void);
 t_config* iniciar_config(void);
