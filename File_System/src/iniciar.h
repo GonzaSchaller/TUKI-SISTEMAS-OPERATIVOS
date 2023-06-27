@@ -28,12 +28,16 @@ typedef struct{
 } t_config_fs;
 
 typedef struct {
-    uint32_t block_size;
-    uint32_t blocks;
-} t_superbloque;
+	uint32_t block_size;
+	uint32_t block_count;
+}t_superbloque;
+
 
 extern t_superbloque* superbloque;
 extern t_config_fs *c;
-uint32_t cargar_superbloque();
+
+void cargar_superbloque();
+void levantar_config();
+void terminar_fs();
 
 #endif

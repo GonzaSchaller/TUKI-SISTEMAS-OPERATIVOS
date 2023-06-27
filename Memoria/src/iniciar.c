@@ -10,6 +10,8 @@ segmento_t* (*proximo_hueco) (uint32_t);
 int tam_hueco_mas_grande;
 segmento_t* segmento_0;
 int memoria_disponible;
+extern pthread_mutex_t mutex_segmentos_libres;
+extern pthread_mutex_t mutex_segmentos_ocupados;
 
 //kaljfskfkja
 uint8_t init() {

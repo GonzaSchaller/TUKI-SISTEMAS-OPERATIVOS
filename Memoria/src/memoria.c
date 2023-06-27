@@ -20,6 +20,8 @@ int main(){
 	if(server_escuchar(log_memoria,"MEMORIA",server_fd)==1){
 		log_info(log_memoria,"Conexiones establecidas");
 	}
+
 	terminar_memoria();
+
 	return EXIT_SUCCESS;
 }

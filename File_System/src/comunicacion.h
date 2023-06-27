@@ -17,18 +17,10 @@
 #include <string.h>
 #include <pthread.h>
 #include <send_rcvs.h>
-
-extern int conexion;
-extern char* ip;
-extern char* puerto_escucha; //puerto para si mismo (file system)
-extern char* puerto_memoria;
-extern char* superbloque;
-extern char* bitmap;
-extern char* bloques;
-extern char* fcb;
-extern char* retardo_acceso_bloque;
+#include "iniciar.h"
 
 
-void terminar_programa(int, t_log*, t_config*);
 
+int generar_conexion_con_memoria();
+void conexion_kernel();
 #endif

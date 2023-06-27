@@ -2,9 +2,15 @@
 t_config_fs *c;
 extern t_log* logger;
 t_superbloque* superbloque;
+t_config* config;
+extern int fd_fs;
+extern int fd_memoria;
+
+
 
 
 void levantar_config(){
+	c = malloc(sizeof(t_config_fs)); //para la config
 
 	config = config_create("fileSystem.config");
 	if(config ==NULL) log_error(logger,"no se encontro el config");
@@ -17,21 +23,37 @@ void levantar_config(){
 	c->bloques = config_get_string_value(config,"PATH_BLOQUES");
 	c->fcb = config_get_string_value(config,"PATH_FCB");
 	c->retardo_acceso_bloque = config_get_string_value(config,"RETARDO_ACCESO_BLOQUE");
+
+	config_destroy(config);
+
 }
 
 
-uint32_t cargar_superbloque(){
+void cargar_superbloque(){
 	char* path = strdup(c->superbloque);
 	t_config* cnf_fs = config_create(path);
 	superbloque = malloc(sizeof(t_superbloque));
 	if(cnf_fs == NULL) {
 		        log_error(logger, "no se encontro el archivo del superbloque");
-		        return 0;
 		    }
 	superbloque->block_size = config_get_string_value(config,"BLOCK_SIZE");
-	superbloque->blocks = config_get_string_value(config,"BLOCK_COUNT");
+	superbloque->block_count = config_get_string_value(config,"BLOCK_COUNT");
 	free(cnf_fs);
 
-
-	return 0;
 }
+
+void terminar_fs(){
+	log_destroy(logger);
+
+	close(fd_fs);
+	close(fd_memoria);
+}
+
+
+
+
+
+
+
+
+
