@@ -10,7 +10,7 @@ void establecer_conexion_kernel(){
 	// almacena el socket_cliente (kernel)
 	int socket_cliente_kernel = esperar_cliente(logger, server_fd);
 
-	if(socket_cliente_kernel != -1){
+	while(socket_cliente_kernel != -1){ //para que siga ejecutando
 		procesar_instrucciones(socket_cliente_kernel, logger);
 	}
 
@@ -44,12 +44,10 @@ void establecer_conexiones(){
 int main (){
 	logger = log_create("cpu.log","Cpu",1,LOG_LEVEL_DEBUG);
 	config = config_create("cpu.config");
-
 	levantar_config();
 	//int server_fd = iniciar_servidor(logger, "Cpu", ip, puerto_cpu);
 	//log_info(logger , "Servidor listo para recibir cliente");
 	//int cliente_fd = esperar_cliente(logger, server_fd);
-
 	//crear conexion para memoria
 	//conexion = crear_conexion(logger,"Memoria", ip_memoria, puerto_memoria );
 	//cuando el cpu es server del kernel

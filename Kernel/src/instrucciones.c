@@ -46,11 +46,10 @@ void asignar_recurso(char* nombre,t_list* lista){
 
 	recurso_sistema* recurso = malloc(sizeof(recurso_sistema));
 
-	recurso->nombre = nombre;
+	recurso->nombre = strdup(nombre);
 	recurso->instancia = 1;
 
 	list_add(lista, recurso);
-	free(recurso);
 }
 void aumentar_instancias_recurso( char* nombre,t_list* lista){
 
@@ -59,13 +58,31 @@ void aumentar_instancias_recurso( char* nombre,t_list* lista){
 }
 
 void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb,int socket_cliente){
-	registros_cpu* registrosInicializados = malloc(sizeof(registros_cpu));
-	memset(registrosInicializados, 0, sizeof(registros_cpu));
+	pcb->contexto.registros.AX[sizeof(pcb->contexto.registros.AX) - 1] = '\0';
+	pcb->contexto.registros.BX[sizeof(pcb->contexto.registros.BX) - 1] = '\0';
+	pcb->contexto.registros.CX[sizeof(pcb->contexto.registros.CX) - 1] = '\0';
+	pcb->contexto.registros.DX[sizeof(pcb->contexto.registros.DX) - 1] = '\0';
+	pcb->contexto.registros.EAX[sizeof(pcb->contexto.registros.EAX) - 1] = '\0';
+	pcb->contexto.registros.EBX[sizeof(pcb->contexto.registros.EBX) - 1] = '\0';
+	pcb->contexto.registros.ECX[sizeof(pcb->contexto.registros.ECX) - 1] = '\0';
+	pcb->contexto.registros.EDX[sizeof(pcb->contexto.registros.EDX) - 1] = '\0';
+	pcb->contexto.registros.RAX[sizeof(pcb->contexto.registros.RAX) - 1] = '\0';
+	pcb->contexto.registros.RBX[sizeof(pcb->contexto.registros.RBX) - 1] = '\0';
+	pcb->contexto.registros.RCX[sizeof(pcb->contexto.registros.RCX) - 1] = '\0';
+	pcb->contexto.registros.RDX[sizeof(pcb->contexto.registros.RDX) - 1] = '\0';
+	//pcb->instrucciones = list_create();
     pcb->contexto.PID = contadorProceso;
-    pcb->instrucciones = listaInstrucciones;
+    pcb->instrucciones = list_create(); // Crear una nueva lista vacía
+
+        // Copiar elementos de la lista pasada como parámetro a la lista del PCB
+        for (int i = 0; i < list_size(listaInstrucciones); i++) {
+            void* instruccion = list_get(listaInstrucciones, i);
+            list_add(pcb->instrucciones, instruccion);
+        }
     pcb->contexto.PC = 0;
-   	pcb->contexto.registros = *registrosInicializados;
-    pcb->contexto.TSegmento= NULL;
+    t_list* lista = list_create();
+   	//pcb->contexto.registros = *registrosInicializados;
+    pcb->contexto.TSegmento= lista;
     pcb->horaDeIngresoAReady= 0;
     pcb->tabla_archivosAbiertos = list_create();
     pcb->recursos_asignados = list_create();
@@ -78,13 +95,13 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb,
 	pcb->estimacion_prox_rafaga = (hrrn_alfa* pcb->rafaga_anterior_real)+ ((1-hrrn_alfa)* pcb-> estimacion_rafaga_anterior);
 	pcb->socket_consola = socket_cliente;
 	pcb->tiempo_bloqueo = -1;
-	free(registrosInicializados);
+	//free(&listaInstrucciones);
 }
 
 void enviar_pcb_cpu(int fd_cpu, pcb_t* pcb_proceso){
-	send_CONTEXTO_EJECUCION(fd_cpu,pcb_proceso->contexto);
-	send_CANT_INSTRUCCIONES(fd_cpu,list_size(pcb_proceso->instrucciones));
+	send_CANT_INSTRUCCIONES(fd_cpu, list_size(pcb_proceso->instrucciones));
 	send_instrucciones_kernel_a_cpu(fd_cpu,pcb_proceso);
+	send_CONTEXTO_EJECUCION(fd_cpu,pcb_proceso->contexto);
 }
 
 void send_instrucciones_kernel_a_cpu(int fd_cpu,pcb_t* pcb_proceso){

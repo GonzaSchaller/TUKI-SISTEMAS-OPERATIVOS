@@ -30,6 +30,10 @@ int socket_servidor;
 	if(socket_servidor == -1){
 		log_info(logger, "Error creando el socket del server %s", nombre_server);
 	}
+
+	//agrego esto para evitar que a veces no se ponga el servidor en ese socket
+	int yes = 1;
+	setsockopt(socket_servidor, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes);
 	// Asociamos el socket a un puerto
 	bind(socket_servidor, servinfo->ai_addr, servinfo->ai_addrlen);
 	// Escuchamos las conexiones entrantes

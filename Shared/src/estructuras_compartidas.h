@@ -2,6 +2,56 @@
 #define SRC_ESTRUCTURAS_COMPARTIDAS_H_
 #include <commons/collections/queue.h>
 
+typedef enum {
+    NEW,
+    READY,
+    EXEC,
+    BLOCK,
+    FINISH
+}estado;// ESTADO PCB
+typedef struct{
+	   char AX[4]; // Registro AX de 4 bytes
+	   char BX[4];
+	   char CX[4];
+	   char DX[4];
+	   char EAX[8]; // Registro EAX de 8 bytes
+	   char EBX[8];
+	   char ECX[8];
+	   char EDX[8];
+	   char RAX[16]; // Registro RAX de 16 bytes
+	   char RBX[16];
+	   char RCX[16];
+	   char RDX[16];
+}registros_cpu;
+
+typedef struct{
+    uint32_t PID;
+    uint32_t PC;
+    registros_cpu registros;
+    t_list* TSegmento;
+
+}contexto_ejecucion;
+
+
+
+typedef struct{
+    t_list* instrucciones; // Lista de instrucciones a ejecutar
+    contexto_ejecucion contexto; //tiene registros, tabla segmento, pid y PC
+    uint32_t estimacion_prox_rafaga; //S del HRRN
+    float horaDeIngresoAReady; // Seria el timestamp en que el proceso llego a ready cambiar nombre
+    t_list* tabla_archivosAbiertos ;// lista de fcb_t
+    estado state ; //capaz ponerlo uint32
+    uint32_t state_anterior;
+    float rafaga_anterior_real; // 0 al principio, despues es el tiempo real que se ejecuto. Seria el R(n)
+    float estimacion_rafaga_anterior; // estimacion inicial
+    float horaDeIngresoAExe; // timestamp cuando llega a execute para calcular la rafaga anterior
+	float horaDeSalidaDeExe;
+	float hrrn;
+	t_list* recursos_asignados;
+	int socket_consola;
+	float tiempo_bloqueo;
+}pcb_t;
+
 typedef union {//porque puedo recibir int o char*
 	uint32_t tipo_int;
 	char* tipo_string;
@@ -39,20 +89,6 @@ typedef struct{ //A implmentar por FileSystem //todo fijarse que sea asi
 	pthread_mutex_t mutexArchivo; //para garantizar mutua exclusion
 } fcb_t;
 
-typedef struct{
-	   char AX[4]; // Registro AX de 4 bytes
-	   char BX[4];
-	   char CX[4];
-	   char DX[4];
-	   char EAX[8]; // Registro EAX de 8 bytes
-	   char EBX[8];
-	   char ECX[8];
-	   char EDX[8];
-	   char RAX[16]; // Registro RAX de 16 bytes
-	   char RBX[16];
-	   char RCX[16];
-	   char RDX[16];
-}registros_cpu;
 
 //enum para mandar las instrucciones
 typedef enum{
@@ -69,13 +105,7 @@ typedef enum{
 	RCX,
 	RDX
 }Registro;
-typedef struct{
-    uint32_t PID;
-    uint32_t PC;
-    registros_cpu registros;
-    t_list* TSegmento;
 
-}contexto_ejecucion;
 
 typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	SET = 100,  // 2

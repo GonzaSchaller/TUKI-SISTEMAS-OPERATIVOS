@@ -5,38 +5,55 @@ t_list* lista_pcb;
 void procesar_instrucciones(int socket_cliente, t_log* logger){
 	////////////////////////////////////////////////////////////////////// RECIBIR INSTRUCCIONES /////////////////////////
 	op_code code_instruccion = -10;
-
-	uint32_t cant_instrucciones = recibir_cant_instrucciones(socket_cliente, logger);
+	uint32_t cant_instrucciones;
+	if(!recv_CANT_INSTRUCCIONES(socket_cliente, &cant_instrucciones)){
+		log_error(logger, "Error al recibir el valor que indica la cantidad de instrucciones");
+	}
+	log_info(logger, "cant instruc: <%d> ",cant_instrucciones);
 	t_list* lista_instrucciones = list_create();
 
 	if(cant_instrucciones > 0){
 		int i;
 		for(i = 0; i < cant_instrucciones; i++){
-			if(verificacion_recibo_code_correctamente(socket_cliente, logger, code_instruccion))
+			if(verificacion_recibo_code_correctamente(socket_cliente, logger, &code_instruccion))
 				cargar_instruccion_a_lista(socket_cliente, code_instruccion, lista_instrucciones, logger);
 		}
 	}
 
-
 	/////////////////////////////////////////////////////////////////// RECIBIR CONTEXTO DE EJECUCION ////////////////////
-	contexto_ejecucion* contexto;
+	contexto_ejecucion contexto;
+	contexto.TSegmento = list_create(); //todo hacer los destroy al final
 
 	//revisar que con este recv ya obtengo el contexto completo
-	if(!recv_CONTEXTO_EJECUCION(socket_cliente, contexto)){
+	if(!recv_CONTEXTO_EJECUCION(socket_cliente, &contexto)){
 		log_error(logger, "Error al recibir el contexto de ejecucion");
-		return;
 	}
-
+//	else{
+//	log_info(logger, "PID: <%d>",contexto.PID);
+//	log_info(logger, "PC:<%d>", contexto.PC);
+//	log_info(logger, "AX: %s", contexto.registros.AX);
+//    log_info(logger, "BX: %s", contexto.registros.BX);
+//	log_info(logger, "CX: %s", contexto.registros.CX);
+//	log_info(logger, "DX: %s", contexto.registros.DX);
+//	log_info(logger, "EA: %s", contexto.registros.EAX);
+//	log_info(logger, "EBX: %s", contexto.registros.EBX);
+//	log_info(logger, "ECX: %s", contexto.registros.ECX);
+//	log_info(logger, "EDX: %s", contexto.registros.EDX);
+//	log_info(logger, "RAX: %s", contexto.registros.RAX);
+//	log_info(logger, "RBX: %s", contexto.registros.RBX);
+//	log_info(logger, "RCX: %s", contexto.registros.RCX);
+//	log_info(logger, "RDX: %s", contexto.registros.RDX);
+//	log_info(logger, "Tabla: %d", list_size(contexto.TSegmento));
+//	}
 	// paso el contexto a un pcb y ese a una lista
 	pcb_cpu* pcb_proceso = malloc(sizeof(pcb_cpu));
-
-	pcb_proceso -> PID = contexto -> PID;
-	pcb_proceso -> PC = contexto -> PC;
+	pcb_proceso -> PID = contexto .PID;
+	pcb_proceso -> PC = contexto . PC;
 	pcb_proceso -> instrucciones = lista_instrucciones;
-	pcb_proceso -> registros = contexto -> registros;
-
-	// para tener todos los procesos juntos
-	list_add(lista_pcb, pcb_proceso);
+	pcb_proceso -> registros = contexto . registros;
+	//pcb_proceso ->TSegmento = list_create();
+	pcb_proceso->TSegmento = contexto .TSegmento;
+	//list_add(lista_pcb, pcb_proceso); // creo que no haria falta porque el kernel te manda el pcb con el pc que envia el cpu anteriormente
 
 	instruccion* instruccion_en_execute = malloc(sizeof(instruccion));
 
@@ -60,18 +77,16 @@ void procesar_instrucciones(int socket_cliente, t_log* logger){
 
 }
 
-uint32_t recibir_cant_instrucciones(int socket, t_log* logger){
-	uint32_t cantidad;
-	if(!recv_CANT_INSTRUCCIONES(socket, &cantidad)){
-		log_error(logger, "Error al recibir el valor que indica la cantidad de instrucciones");
-		return -1;
-	}
-	return cantidad;
-}
+//void recibir_cant_instrucciones(int socket, t_log* logger, uint32_t* cantidad){
+//	if(recv(socket, &cantidad, sizeof(uint32_t), 0) != sizeof(uint32_t)){
+//		log_error(logger, "Error al recibir el valor que indica la cantidad de instrucciones");
+//
+//	}
+//}
 
 //era bool pero me tiraba error
-int verificacion_recibo_code_correctamente(int socket, t_log* logger, op_code code){
-	if (recv(socket, &code, sizeof(op_code), 0) != sizeof(op_code)) {
+int verificacion_recibo_code_correctamente(int socket, t_log* logger, op_code* code){
+	if (recv(socket, code, sizeof(op_code), 0) != sizeof(op_code)) {
 		log_error(logger, "Error al recibir el code");
 		return 0;
 	}
@@ -232,18 +247,10 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 			break;
 		}
 		case YIELD:{
-			if(!recv_YIELD(socket_cliente)){
-				log_error(logger, "Error al recibir YIELD");
-				break;
-			}
 			cargar_instruccion1(YIELD, "YIELD", 0, 0, 0, lista);
 			break;
 		}
 		case EXIT:{
-			if(!recv_EXIT(socket_cliente)){
-				log_error(logger, "Error al recibir EXIT");
-				break;
-			}
 			cargar_instruccion1(EXIT,"EXIT", 0, 0, 0, lista);
 			break;
 		}
@@ -302,8 +309,8 @@ instruccion* fetch(pcb_cpu* un_pcb ){
 // ver si tengo que retornar en vez de ser void (para cortar el while)
 int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccion, t_log* logger){
 	op_code code_instruccion = una_instruccion -> id;
-
-	uint32_t retardo = *retardo_instruccion; // quiero asignar el valor al que esta apuntando el puntero en retardo
+	set_socket_kernel(socket); //todo hay mejor manera, no hace falta una funcion pero paja
+	uint32_t retardo = (uint32_t)retardo_instruccion; // quiero asignar el valor al que esta apuntando el puntero en retardo
 	retardo = retardo * 1000; //paso de milisegundos a microsegundos para usar usleep()
 
 	int corta_ejecucion = 0;
@@ -326,18 +333,18 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			uint32_t param2 = una_instruccion -> parametro2.tipo_int;
 
 			//log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
-			ejecutar_MOV_IN(pcb_proceso, param1, param2);
-
+			//ejecutar_MOV_IN(pcb_proceso, param1, param2);
+			pcb_proceso -> PC += 1; //todo lo agrego para probar
 			corta_ejecucion = 0;
 			break;
 		}
 		case MOV_OUT:{
 			uint32_t param1 = una_instruccion -> parametro1.tipo_int;
-			uint32_t param2 = una_instruccion -> parametro2.tipo_int;
+			uint32_t param2 = una_instruccion -> parametro2.tipo_int; //registro
 
 			//log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
-			ejecutar_MOV_OUT(pcb_proceso, param1, param2);
-
+			//ejecutar_MOV_OUT(pcb_proceso, param2, param1);
+			pcb_proceso -> PC += 1;
 			corta_ejecucion = 0;
 			break;
 		}
@@ -352,32 +359,32 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 		}
 		case F_OPEN:{
 			char* param1 = una_instruccion -> parametro1.tipo_string;
-
-			ejecutar_F_OPEN(pcb_proceso, param1);
+			pcb_proceso -> PC += 1;
+			//ejecutar_F_OPEN(pcb_proceso, param1);
 			corta_ejecucion = 0;
 			break;
 		}
 		case F_CLOSE:{
 			char* param1 = una_instruccion -> parametro1.tipo_string;
-
-			ejecutar_F_CLOSE(pcb_proceso, param1);
+			pcb_proceso -> PC += 1;
+			//ejecutar_F_CLOSE(pcb_proceso, param1);
 			corta_ejecucion = 0;
 			break;
 		}
 		case F_SEEK:{
-			corta_ejecucion = 0;
+			corta_ejecucion = 0;pcb_proceso -> PC += 1;
 			break;
 		}
 		case F_READ:{
-			corta_ejecucion = 0;
+			corta_ejecucion = 0;pcb_proceso -> PC += 1;
 			break;
 		}
 		case F_WRITE:{
-			corta_ejecucion = 0;
+			corta_ejecucion = 0;pcb_proceso -> PC += 1;
 			break;
 		}
 		case F_TRUNCATE:{
-			corta_ejecucion = 0;
+			corta_ejecucion = 0;pcb_proceso -> PC += 1;
 			break;
 		}
 		case WAIT:{
@@ -397,11 +404,11 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			break;
 		}
 		case CREATE_SEGMENT:{
-			corta_ejecucion = 0;
+			corta_ejecucion = 0;pcb_proceso -> PC += 1;
 			break;
 		}
 		case DELETE_SEGMENT:{
-			corta_ejecucion = 0;
+			corta_ejecucion = 0;pcb_proceso -> PC += 1;
 			break;
 		}
 		case YIELD:{

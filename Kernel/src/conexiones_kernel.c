@@ -27,8 +27,9 @@ void procesar_conexion_consola(void *void_args)
                         // aca irian las cosas que recibo que no son una instruccion
                         contadorProcesos++;
                         inicializarPCB(contadorProcesos, lista_instrucciones, pcb, socket_cliente); // inicializamos el pcb que le vamos a mandar al cpu
-                        agregarANew(pcb);                                                           // agregamos cada proceso a NEW
-                        // log_info(log_kernel, "No recibí una instruccion");
+                        agregarANew(pcb);
+                        //list_destroy_and_destroy_elements(lista_instrucciones, free);// agregamos cada proceso a NEW
+                         //log_info(log_kernel, "Numero de inst %d", list_siz);
                         recibo_instrucciones = false;
                         break; // Importante
                     }

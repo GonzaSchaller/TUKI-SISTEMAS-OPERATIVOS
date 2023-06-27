@@ -27,15 +27,15 @@ typedef struct{
 	uint32_t PC;
 	t_list* instrucciones;
 	registros_cpu registros;
-
+	t_list* TSegmento;
 }pcb_cpu;
 
-t_list* lista_pcb;
+extern t_list* lista_pcb;
 
 void procesar_instrucciones(int, t_log*);
 void cargar_instruccion_a_lista(int, op_code, t_list*, t_log*);
-int verificacion_recibo_code_correctamente(int, t_log*, op_code);
-uint32_t recibir_cant_instrucciones(int, t_log*);
+int verificacion_recibo_code_correctamente(int, t_log*, op_code*);
+void recibir_cant_instrucciones(int, t_log*, uint32_t* cantidad_instrucciones);
 
 void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
 void cargar_instruccion2(int, char* , uint32_t, char* ,uint32_t ,t_list* );
@@ -44,19 +44,6 @@ void cargar_instruccion3(int, char* , char*, uint32_t ,uint32_t ,t_list* );
 instruccion* fetch();
 int decode_execute(int, pcb_cpu*, instruccion*, t_log*);
 
-void ejecutar_SET(pcb_cpu*, uint32_t, char*);
-void ejecutar_MOV_IN(pcb_cpu*, uint32_t, uint32_t);
-void ejecutar_MOV_OUT(pcb_cpu*, uint32_t, uint32_t);
-void ejecutar_IO(pcb_cpu*, uint32_t);
-void ejecutar_F_OPEN(pcb_cpu*, char*);
-void ejecutar_F_CLOSE(pcb_cpu*, char*);
-void ejecutar_F_SEEK(pcb_cpu*, char*, uint32_t);
-void ejecutar_F_READ(pcb_cpu*, char*, uint32_t, uint32_t);
-void ejecutar_F_WRITE(pcb_cpu*, char*, uint32_t, uint32_t);
-void ejecutar_F_TRUNCATE(pcb_cpu*, char*, uint32_t);
-void ejecutar_WAIT(pcb_cpu*, char*);
-void ejecutar_SIGNAL(pcb_cpu*, char*);
-void ejecutar_YIELD(pcb_cpu*);
-void ejecutar_EXIT(pcb_cpu*);
+
 
 #endif

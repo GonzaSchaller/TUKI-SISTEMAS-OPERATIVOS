@@ -46,20 +46,22 @@ void print_lista_PID(){
 
 void agregarNewAReady(pcb_t* pcb){
 	//log_trace(log_kernel,"Entre en agregar a ready");
-
+	log_info(log_kernel,"a(gregarNewAReady)Numero de inst: %d" ,list_size(pcb->instrucciones));
 	time_t a = time(NULL) * 1000; //momento en el que entra un proceso, sirve para el HRRN
 	pcb->horaDeIngresoAReady = a;
 	pthread_mutex_lock(&mutexReady); //para el execute a ready y de blocked a ready y de new a ready
 
 	t_list* tseg;
 	list_add(listaReady, pcb); //agrega a la listaReady
-
 	send_INICIAR_ESTRUCTURA_MEMORIA(conexion_memoria); //mandamos mensaje a memoria que incie sus estructuras
 	send_PID(conexion_memoria,pcb->contexto.PID); //mandamos a memoria pid para que lo asigne a cada segmento
-	if(!recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento
-		log_info(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto.PID);
+	if(recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento
+		list_destroy(pcb->contexto.TSegmento);
+		pcb->contexto.TSegmento = tseg;
 	}
-	pcb->contexto.TSegmento = tseg;
+	else{
+		log_error(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto.PID);
+	}
 	pcb->state_anterior = pcb->state;
 	pcb->state = READY;
 	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb->contexto.PID,estado_pcb_a_string(pcb->state_anterior),estado_pcb_a_string(pcb->state));
@@ -78,6 +80,7 @@ void agregarAReady(pcb_t* pcb){
 	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb->contexto.PID,estado_pcb_a_string(pcb->state_anterior),estado_pcb_a_string(pcb->state));
 	print_lista_PID();
 	pthread_mutex_unlock(&mutexReady);
+	sem_post(&contadorReady);
 
 }
 
@@ -89,7 +92,7 @@ void hiloNew_Ready(){
 		pcb_t* proceso = sacarDeNew();
 		//log_error(log_kernel,"[===========] agregue a ready desde hilo new ready");
 		agregarNewAReady(proceso);
-
+		log_info(log_kernel, "Numero de instrucciones: <%d> ",list_size(proceso->instrucciones));
 	}
 
 }
@@ -173,26 +176,41 @@ void recalcular_rafagas_HRRN(pcb_t* pcb_siguiente, float tiempoDeFin){
 
 
 void hiloReady_Execute(){
+
 	while(1)
 	{
 		pthread_mutex_lock(&multiprocesamiento);
 		pcb_t* pcb_siguiente = obtener_siguiente_ready();
-
+		contexto_ejecucion contexto;
+		contexto.TSegmento = list_create();
 		log_info(log_kernel, "estamos en execute %d", pcb_siguiente->contexto.PID); // log de prueba
+//		log_info(log_kernel, "Numero de instrucciones: <%d> ",list_size(pcb_siguiente->instrucciones)); //todo a veces llega 0
+//		log_info(log_kernel, "PC: %d", pcb_siguiente->contexto.PC);
+//		log_info(log_kernel, "AX: %s", pcb_siguiente->contexto.registros.AX);
+//		log_info(log_kernel, "BX: %s", pcb_siguiente->contexto.registros.BX);
+//		log_info(log_kernel, "CX: %s", pcb_siguiente->contexto.registros.CX);
+//		log_info(log_kernel, "DX: %s", pcb_siguiente->contexto.registros.DX);
+//		log_info(log_kernel, "EA: %s", pcb_siguiente->contexto.registros.EAX);
+//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.EBX);
+//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.ECX);
+//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.EDX);
+//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RAX);
+//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RBX);
+//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RCX);
+//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RDX);
+//		log_info(log_kernel, "Tabla: %d", list_size(pcb_siguiente->contexto.TSegmento));
 		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
 		pcb_siguiente->state_anterior = pcb_siguiente->state;
 		pcb_siguiente->state = EXEC;
 		log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
 		pcb_siguiente->horaDeIngresoAExe = ((float) time(NULL)) * 1000;
-
-
-		while(pcb_siguiente->state == EXEC){ //que ejecute cada instruccion hasta que cambie de estado
-			manejar_contextosDeEjecucion(pcb_siguiente);
-
-		 }
+		noSalePorIO = true;
+		while(pcb_siguiente->state == EXEC && noSalePorIO){ //que ejecute cada instruccion hasta que cambie de estado
+			manejar_contextosDeEjecucion(pcb_siguiente, contexto);
+		 	 }
 		pthread_mutex_unlock(&multiprocesamiento);
-
 	}
+
   }
 
 void liberar_Recursos(pcb_t* pcb) { //para liberar recursos asignados de un proceso

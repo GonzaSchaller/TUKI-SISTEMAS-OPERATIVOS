@@ -8,31 +8,7 @@
 #include "configuraciones.h"
 #include <send_rcvs.h>
 
-typedef enum {
-    NEW,
-    READY,
-    EXEC,
-    BLOCK,
-    FINISH
-}estado;// ESTADO PCB
 
-typedef struct{
-    t_list* instrucciones; // Lista de instrucciones a ejecutar
-    contexto_ejecucion contexto; //tiene registros, tabla segmento, pid y PC
-    uint32_t estimacion_prox_rafaga; //S del HRRN
-    float horaDeIngresoAReady; // Seria el timestamp en que el proceso llego a ready cambiar nombre
-    t_list* tabla_archivosAbiertos ;// lista de fcb_t
-    estado state ; //capaz ponerlo uint32
-    uint32_t state_anterior;
-    float rafaga_anterior_real; // 0 al principio, despues es el tiempo real que se ejecuto. Seria el R(n)
-    float estimacion_rafaga_anterior; // estimacion inicial
-    float horaDeIngresoAExe; // timestamp cuando llega a execute para calcular la rafaga anterior
-	float horaDeSalidaDeExe;
-	float hrrn;
-	t_list* recursos_asignados;
-	int socket_consola;
-	float tiempo_bloqueo;
-}pcb_t;
 
 void enviar_pcb_cpu(int , pcb_t*);
 void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );

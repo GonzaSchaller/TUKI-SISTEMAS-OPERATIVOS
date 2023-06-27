@@ -71,7 +71,7 @@ void inicializar_listas(){
 	listaBlock = list_create();
 	listaExit = list_create();
 	tabla_ArchivosAbiertosGlobal = list_create();
-
+	//lista_recursos = list_create();
 	//lista_instrucciones_kernel = list_create();
 	//lista_pcb_en_memoria = list_create();
 
@@ -156,7 +156,7 @@ int server_escuchar(int server_kernel){
 		args->server_name = "Kernel";
 		procesar_conexion_consola((void*) args);
 		pthread_create(&hilo, NULL, (void*) procesar_conexion_consola, (void*) args);
-		pthread_detach(hilo);
+		pthread_join(hilo, NULL);
 		// wait semaforo 1
 		// post semaforo consola
 		return 1;
@@ -172,11 +172,11 @@ int main (){
 		int server_kernel = iniciar_servidor(log_kernel, "Kernel", ip, puerto_escucha);
 		log_info(log_kernel , "Servidor listo para recibir cliente");
 
-		iniciar_planificacion();
+
 
 		//kernel se conecta a cpu, memoria y fileSystem
 		generar_conexiones();
-
+		iniciar_planificacion();
 		//atiende los clientes y procesa las tareas de cada uno
 		while(server_escuchar(server_kernel));
 

@@ -1,4 +1,5 @@
 #include "manejos.h"
+bool noSalePorIO;
 
 void bloquear_procesoPorIO(void* arg) {
     // Obtén el PCB del proceso a bloquear desde el argumento pasado al hilo
@@ -83,13 +84,16 @@ fcb_t* encontrar_archivo(t_list* lista_archivos, char* nombre_archivo) {
     return archivo_encontrado;
 }
 recurso_sistema* encontrar_recurso(t_list* lista, char* nombre_buscar) {
-    bool buscar_recurso(void* elemento) {
-        recurso_sistema* recurso = (recurso_sistema*)elemento;
-        return strcmp(recurso->nombre, nombre_buscar) == 0;
+    int t = list_size(lista);
+    for (int i = 0; i < t; i++) {
+        recurso_sistema* recurso = (recurso_sistema*)list_get(lista, i);
+        if (strcmp(recurso->nombre, nombre_buscar) == 0) {
+            return recurso;
+        }
     }
-
-    return (recurso_sistema*)list_find(lista, buscar_recurso);
+    return NULL;  // Si no se encuentra el recurso, se devuelve NULL
 }
+
 void recibir_actualizar_tablas_segmento(pcb_t* pcb_actual){
 	pcb_t* proceso_planificado= NULL;
 	t_list* tabla_nueva = NULL;
@@ -168,6 +172,7 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 								//log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <SEG_FAULT>", pcb_proceso->contexto_PCB.PID); //todo log este
 
 						}
+						send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
 						sem_post(&semFWrite);
 						sem_post(&semFRead);
 					}
@@ -185,18 +190,19 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 				send_TABLA_SEGMENTOS(conexion_memoria, pcb_siguiente->contexto.TSegmento);//mandamos para que memoria la actualice
 				recv_TABLA_SEGMENTOS(conexion_memoria,&nueva_tabla_segmentos); // cambie esto ahora nomas
 				pcb_siguiente->contexto.TSegmento = nueva_tabla_segmentos;// cambie esto ahora nomas
+				send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
 			}
 			else log_error(log_kernel, "Fallo recibiendo DELETE_SEGMENT");
 		}
 
-		send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
+
 }
 void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempoDeFin){
-	float tiempo_bloqueo_kernel;
+	uint32_t tiempo_bloqueo_kernel;
 	 if (cop == IO)
 			{
 
-		 	 	 if (!recv_tiempo_bloqueante(conexion_cpu, &tiempo_bloqueo_kernel)) { //tiempo que pasar en block
+		 	 	 if (!recv_IO(conexion_cpu, &tiempo_bloqueo_kernel)) { //tiempo que pasar en block
 		 				log_error(log_kernel, "Fallo recibiendo el tiempo bloqueante");
 		 			}
 
@@ -209,6 +215,7 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 
 					pthread_create(&hilo_Block, NULL, (void*)bloquear_procesoPorIO,(void*)pcb_siguiente);
 					pthread_detach(hilo_Block);
+					noSalePorIO = false;
 					}
 			}
 	 else if(cop == YIELD){
@@ -217,14 +224,14 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 
 	 }
 	 else if(cop == EXIT){// caso EXIT
+		 	 	 	log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <SUCCESS> ", pcb_siguiente->contexto.PID);
 					terminarEjecucion(pcb_siguiente);
-					log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <SUCCESS> ", pcb_siguiente->contexto.PID);
 					sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
 				}
-	 else{
-		 terminarEjecucion(pcb_siguiente);
-		 log_error(log_kernel, "Finaliza por error");
-	 }
+//	 else{
+//		 terminarEjecucion(pcb_siguiente);
+//		 log_error(log_kernel, "Finaliza por error");
+//	 }
 }
 void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 	if (cop == F_OPEN) // es un wait
@@ -446,29 +453,23 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				}
 
 }
-void manejar_contextosDeEjecucion(pcb_t* pcb_siguiente){ // maneja lo que  nos manda cpu
+void manejar_contextosDeEjecucion(pcb_t* pcb_siguiente, contexto_ejecucion contexto){ // maneja lo que  nos manda cpu
 	uint32_t cop;
-	contexto_ejecucion contexto;
-
-
-	if(recv(conexion_cpu, &cop, sizeof(op_code), 0) == sizeof(op_code)) // Las que recibimos que SI son instruccion
+	if(recv_CONTEXTO_EJECUCION(conexion_cpu, &contexto)) // Las que recibimos que SI son instruccion
 			{
-				if (!recv_CONTEXTO_EJECUCION(conexion_cpu, &contexto))
-				{
-				log_error(log_kernel, "Fallo recibiendo el Contexto de Ejecucion");
-				}
-
-				else{
+			if(recv(conexion_cpu, &cop, sizeof(op_code), 0) == sizeof(op_code)){
 				pcb_siguiente->contexto= contexto;
 				time_t fin_exe = time(NULL);
 				float tiempoDeFin = ((float) fin_exe) * 1000;
-				//aca
+
 				manejar_recursos(pcb_siguiente, cop, tiempoDeFin);
 				manejar_memoria(pcb_siguiente, cop);
 				manejar_fileSystem(pcb_siguiente, cop, tiempoDeFin);
 				manejar_otras_instrucciones(pcb_siguiente, cop, tiempoDeFin);
-				}
+			}
 
 			}// del if del opcode
-
+	else {
+		log_error(log_kernel, "Fallo recibiendo el Contexto de Ejecucion");
+	}
 }// de la funcion

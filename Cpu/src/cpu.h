@@ -18,7 +18,7 @@
 #include "configuraciones.h"
 #include <pthread.h>
 #include "send_rcvs.h"
-
+#include "recibo_instrucciones.h"
 extern t_log* logger;
 extern t_config* config;
 

@@ -23,27 +23,27 @@ void validar_alfa(float alfa){
 		}
 }
 //mete cada recurso en una lista con su instancia
-t_list* obtener_recursos(t_config* config, char* rec, char* instancias){
-	t_list* lista_recursos = list_create();
-	char** array_recursos = config_get_array_value(config, rec);
-	char** array_instancias = config_get_array_value(config, instancias);
-	int posicion = 0;
-	t_queue* cola_bloqueados = queue_create();
+t_list* obtener_recursos(t_config* config, char* rec, char* instancias) {
+    t_list* lista_recursos = list_create();
+    char** array_recursos = config_get_array_value(config, rec);
+    char** array_instancias = config_get_array_value(config, instancias);
+    int posicion = 0;
+    t_queue* cola_bloqueados = queue_create();
 
-	while(array_recursos[posicion] != NULL){
-		recurso_sistema* recurso = malloc(sizeof(recurso_sistema));
-		recurso->nombre = array_recursos[posicion];
-		recurso->instancia = atoi(array_instancias[posicion]); //capaz necesito chequear que no falle atoi
-		recurso->colaBloqueados = cola_bloqueados;
-		pthread_mutex_init(&recurso->mutexRecurso, NULL); //inicializo el mutex
-		list_add(lista_recursos, recurso);
-		posicion++;
-		free(recurso);
-	}
-	string_array_destroy(array_recursos);
-	string_array_destroy(array_instancias);
-    queue_destroy_and_destroy_elements(cola_bloqueados,free);
-	return lista_recursos;
+    while (array_recursos[posicion] != NULL) {
+        recurso_sistema* recurso = malloc(sizeof(recurso_sistema));
+        recurso->nombre = strdup(array_recursos[posicion]);
+        recurso->instancia = atoi(array_instancias[posicion]);
+        recurso->colaBloqueados = cola_bloqueados;
+        pthread_mutex_init(&recurso->mutexRecurso, NULL);
+        list_add(lista_recursos, recurso);
+        posicion++;
+    }
+
+    string_array_destroy(array_recursos);
+    string_array_destroy(array_instancias);
+
+    return lista_recursos;
 }
 int obtener_algoritmo_planificacion(char* algoritmo){
 
