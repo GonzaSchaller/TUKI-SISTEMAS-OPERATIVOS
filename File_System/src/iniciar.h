@@ -37,12 +37,12 @@ typedef struct {
 	t_bitarray*bitarray;
 	uint32_t bytes_bitarray;
 	uint64_t tamanio_fs;
-} t_bitarray;
+} bitarray_s;
 
 
 extern t_superbloque* superbloque;
 extern t_config_fs *c;
-extern t_bitarray*bitarray;
+extern bitarray_s*bitarray;
 
 void cargar_superbloque();
 void levantar_config();

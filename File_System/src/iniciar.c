@@ -62,11 +62,20 @@ void cargar_bitmap(){
 
 	char*path = strdup(c->bitmap);
 
+	FILE* f_bitmap = fopen(path,"rb");
+	if(f_bitmap==NULL) log_error(logger,"error abriendo archivo de bitmap");
 
 
+	bitarray = malloc(sizeof(t_bitarray));
+	bitarray->bytes_bitarray = ceil(superbloque->block_count / 8);
+	bitarray->tamanio_fs = superbloque->block_count * superbloque ->block_size;
 
-
-
+	char *bitmap_de_bloques = mmap(NULL,bitarray->bytes_bitarray, PROT_READ|PROT_WRITE| PROT_EXEC, MAP_SHARED, fileno(f_bitmap), 0);
+	if (bitmap_de_bloques == MAP_FAILED) {
+	        perror("Error al mapear el archivo");
+	        close(f_bitmap);
+	    }
+	bitarray->bitarray = bitarray_create(bitmap_de_bloques,bitarray->bytes_bitarray);
 
 }
 
