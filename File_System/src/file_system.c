@@ -21,6 +21,7 @@ int main (){
 	conexion_kernel();
 	
 	cargar_superbloque();
+	cargar_bitmap();
 
 	terminar_fs();
 

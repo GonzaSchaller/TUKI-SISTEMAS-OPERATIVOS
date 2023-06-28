@@ -18,16 +18,7 @@
 #include <pthread.h>
 #include "iniciar.h"
 #include "comunicacion.h"
-
-//extern int conexion;
-//extern char* ip;
-//extern char* puerto_escucha; //puerto para si mismo (file system)
-//extern char* puerto_memoria;
-//extern char* superbloque;
-//extern char* bitmap;
-//extern char* bloques;
-//extern char* fcb;
-//extern char* retardo_acceso_bloque;
+#include <commons/bitarray.h>
 
 extern int fd_fs;
 extern int fd_memoria;

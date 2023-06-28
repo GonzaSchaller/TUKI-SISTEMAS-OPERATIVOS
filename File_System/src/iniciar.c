@@ -2,6 +2,7 @@
 t_config_fs *c;
 extern t_log* logger;
 t_superbloque* superbloque;
+t_bitarray*bitarray;
 t_config* config;
 extern int fd_fs;
 extern int fd_memoria;
@@ -40,19 +41,6 @@ void levantar_config(){
 
 
 void cargar_superbloque(){
-	log_info(logger,"IP MMOERIA %s \n",c->ip_memoria);
-		log_info(logger,"PATH BITMAP %s \n",c->bitmap);
-		log_info(logger,"PATH BLOQUES %s \n",c->bloques);
-		log_info(logger,"PATH FCB %s \n",c->fcb);
-		log_info(logger,"MYPUERTP %s \n",c->puerto_escucha);
-		log_info(logger,"PMEMORIA %s \n",c->puerto_memoria);
-		log_info(logger,"RETARDO %d \n",c->retardo_acceso_bloque);
-		log_info(logger,"SUPERBLOQUE %s \n",c->superbloque);
-
-
-
-
-
 
 	char* path = strdup(c->superbloque);
 	log_info(logger,"%s",path);
@@ -66,6 +54,19 @@ void cargar_superbloque(){
 	superbloque->block_size = config_get_string_value(config,"BLOCK_SIZE");
 	superbloque->block_count = config_get_string_value(config,"BLOCK_COUNT");
 	free(cnf_fs);
+
+}
+
+
+void cargar_bitmap(){
+
+	char*path = strdup(c->bitmap);
+
+
+
+
+
+
 
 }
 

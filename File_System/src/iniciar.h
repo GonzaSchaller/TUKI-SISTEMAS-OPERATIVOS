@@ -15,6 +15,7 @@
 #include <netdb.h>
 #include <string.h>
 #include <pthread.h>
+#include <sys/mman.h>
 
 typedef struct{
 	char* ip_memoria;
@@ -32,12 +33,20 @@ typedef struct {
 	uint32_t block_count;
 }t_superbloque;
 
+typedef struct {
+	t_bitarray*bitarray;
+	uint32_t bytes_bitarray;
+	uint64_t tamanio_fs;
+} t_bitarray;
+
 
 extern t_superbloque* superbloque;
 extern t_config_fs *c;
+extern t_bitarray*bitarray;
 
 void cargar_superbloque();
 void levantar_config();
 void terminar_fs();
+void cargar_bitmap();
 
 #endif
