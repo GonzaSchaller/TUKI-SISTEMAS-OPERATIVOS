@@ -386,3 +386,36 @@
 [INFO] 01:11:33:870 FileSystem/(15837:15837): SUPERBLOQUE /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat 
 
 [INFO] 01:11:33:870 FileSystem/(15837:15837): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 22:52:55:826 FileSystem/(22453:22453): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 22:53:38:005 FileSystem/(22527:22527): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 22:54:38:457 FileSystem/(22594:22594): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[ERROR] 22:56:05:938 FileSystem/(22638:22638): Error al conectar (a Memoria)
+
+[ERROR] 22:56:51:715 FileSystem/(22724:22724): Error al conectar (a Memoria)
+
+[INFO] 22:57:15:445 FileSystem/(22774:22774): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 22:57:27:465 FileSystem/(22813:22813): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 22:58:04:629 FileSystem/(22905:22905): levante config ok
+[INFO] 22:58:04:636 FileSystem/(22905:22905): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 22:58:32:367 FileSystem/(22958:22958): levante config ok
+[INFO] 22:58:32:374 FileSystem/(22958:22958): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 22:58:55:894 FileSystem/(23010:23010): levante config ok
+[INFO] 22:58:55:902 FileSystem/(23010:23010): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 22:58:55:903 FileSystem/(23010:23010): levante superbloque ok
+[INFO] 22:59:39:000 FileSystem/(23076:23076): levante config ok
+[INFO] 22:59:39:007 FileSystem/(23076:23076): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 22:59:52:368 FileSystem/(23166:23166): levante config ok
+[INFO] 22:59:52:369 FileSystem/(23166:23166): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 23:00:45:594 FileSystem/(23232:23232): levante config ok
+[INFO] 23:00:45:597 FileSystem/(23232:23232): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 23:00:45:598 FileSystem/(23232:23232): levante superbloque ok 64
+[INFO] 23:01:01:497 FileSystem/(23273:23273): levante config ok
+[INFO] 23:01:01:498 FileSystem/(23273:23273): /home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat
+[INFO] 23:01:01:498 FileSystem/(23273:23273): levante superbloque ok
+[INFO] 23:01:10:690 FileSystem/(23313:23313): levante config ok
+[INFO] 23:01:10:694 FileSystem/(23313:23313): levante superbloque ok
+[INFO] 23:01:31:125 FileSystem/(23350:23350): levante config ok
+[INFO] 23:01:31:128 FileSystem/(23350:23350): levante superbloque ok
+[ERROR] 23:01:31:129 FileSystem/(23350:23350): error abriendo archivo de bitmap
+[INFO] 23:02:27:424 FileSystem/(23380:23380): levante config ok
+[INFO] 23:02:27:431 FileSystem/(23380:23380): levante superbloque ok

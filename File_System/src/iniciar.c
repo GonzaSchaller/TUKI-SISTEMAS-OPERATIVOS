@@ -2,7 +2,7 @@
 t_config_fs *c;
 extern t_log* logger;
 t_superbloque* superbloque;
-t_bitarray*bitarray;
+bitarray_s*bitarrayx;
 t_config* config;
 extern int fd_fs;
 extern int fd_memoria;
@@ -34,7 +34,7 @@ void levantar_config(){
 	c->fcb = strdup(config_get_string_value(config,"PATH_FCB"));
 	c->retardo_acceso_bloque = (uint32_t) strtol(config_get_string_value(config, "RETARDO_ACCESO_BLOQUE"), NULL, 10);
 
-
+	log_info(logger,"levante config ok");
 	config_destroy(config);
 
 }
@@ -43,16 +43,25 @@ void levantar_config(){
 void cargar_superbloque(){
 
 	char* path = strdup(c->superbloque);
-	log_info(logger,"%s",path);
+
 	t_config* cnf_fs = config_create(path);
 
 	superbloque = malloc(sizeof(t_superbloque));
 
 	if(cnf_fs == NULL) {
 		        log_error(logger, "no se encontro el archivo del superbloque");
+
 		    }
-	superbloque->block_size = config_get_string_value(config,"BLOCK_SIZE");
-	superbloque->block_count = config_get_string_value(config,"BLOCK_COUNT");
+
+
+	superbloque->block_size = (uint32_t) strtol(config_get_string_value(cnf_fs, "BLOCK_SIZE"), NULL, 10);
+
+	superbloque->block_count = (uint32_t) strtol(config_get_string_value(cnf_fs, "BLOCK_COUNT"), NULL, 10);
+
+	log_info(logger,"levante superbloque ok");
+
+
+
 	free(cnf_fs);
 
 }
@@ -66,16 +75,20 @@ void cargar_bitmap(){
 	if(f_bitmap==NULL) log_error(logger,"error abriendo archivo de bitmap");
 
 
-	bitarray = malloc(sizeof(t_bitarray));
-	bitarray->bytes_bitarray = ceil(superbloque->block_count / 8);
-	bitarray->tamanio_fs = superbloque->block_count * superbloque ->block_size;
+	bitarrayx = malloc(sizeof(bitarray_s));
+	bitarrayx->bytes_bitarray = ceil(superbloque->block_count / 8);
+	bitarrayx->tamanio_fs = superbloque->block_count * superbloque ->block_size;
 
-	char *bitmap_de_bloques = mmap(NULL,bitarray->bytes_bitarray, PROT_READ|PROT_WRITE| PROT_EXEC, MAP_SHARED, fileno(f_bitmap), 0);
+	char *bitmap_de_bloques = mmap(NULL,bitarrayx->bytes_bitarray, PROT_READ|PROT_WRITE| PROT_EXEC, MAP_SHARED, fileno(f_bitmap), 0);
 	if (bitmap_de_bloques == MAP_FAILED) {
 	        perror("Error al mapear el archivo");
-	        close(f_bitmap);
+	        fclose(f_bitmap);
 	    }
-	bitarray->bitarray = bitarray_create(bitmap_de_bloques,bitarray->bytes_bitarray);
+	bitarrayx->bitarray = bitarray_create(bitmap_de_bloques,bitarrayx->bytes_bitarray);
+
+	for(int i=0;i<bitarrayx->bytes_bitarray;i++){
+		printf("%p /n",bitmap_de_bloques[i]);
+	}
 
 }
 

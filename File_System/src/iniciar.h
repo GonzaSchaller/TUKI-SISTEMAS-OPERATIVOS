@@ -16,6 +16,8 @@
 #include <string.h>
 #include <pthread.h>
 #include <sys/mman.h>
+#include <commons/bitarray.h>
+#include <math.h>
 
 typedef struct{
 	char* ip_memoria;
