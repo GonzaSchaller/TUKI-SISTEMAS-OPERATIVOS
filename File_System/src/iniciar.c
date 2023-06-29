@@ -2,7 +2,6 @@
 t_config_fs *c;
 extern t_log* logger;
 t_superbloque* superbloque;
-bitarray_s*bitarrayx;
 t_config* config;
 extern int fd_fs;
 extern int fd_memoria;
@@ -74,21 +73,15 @@ void cargar_bitmap(){
 	FILE* f_bitmap = fopen(path,"rb+");
 	if(f_bitmap==NULL) log_error(logger,"error abriendo archivo de bitmap");
 
+	uint32_t size_bitmap = ceil(superbloque->block_count / 8);
 
-	bitarrayx = malloc(sizeof(bitarray_s));
-	bitarrayx->bytes_bitarray = ceil(superbloque->block_count / 8);
-	bitarrayx->tamanio_fs = superbloque->block_count * superbloque ->block_size;
-
-	char *bitmap_de_bloques = mmap(NULL,bitarrayx->bytes_bitarray, PROT_READ|PROT_WRITE| PROT_EXEC, MAP_SHARED, fileno(f_bitmap), 0);
+	char *bitmap_de_bloques = mmap(NULL,size_bitmap, PROT_READ|PROT_WRITE| PROT_EXEC, MAP_SHARED, fileno(f_bitmap), 0);
 	if (bitmap_de_bloques == MAP_FAILED) {
 	        perror("Error al mapear el archivo");
 	        fclose(f_bitmap);
 	    }
-	bitarrayx->bitarray = bitarray_create(bitmap_de_bloques,bitarrayx->bytes_bitarray);
+	t_bitarray* bitarray = bitarray_create(bitmap_de_bloques,size_bitmap);
 
-	for(int i=0;i<bitarrayx->bytes_bitarray;i++){
-		printf("%p \n",bitmap_de_bloques[i]);
-	}
 
 }
 

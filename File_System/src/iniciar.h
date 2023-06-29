@@ -35,11 +35,6 @@ typedef struct {
 	uint32_t block_count;
 }t_superbloque;
 
-typedef struct {
-	t_bitarray*bitarray;
-	uint32_t bytes_bitarray;
-	uint64_t tamanio_fs;
-} bitarray_s;
 
 
 extern t_superbloque* superbloque;
