@@ -1038,14 +1038,12 @@ static void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion* contexto) {
     return stream;
 }
 
-static void deserializar_CONTEXTO_EJECUCION(void* stream, contexto_ejecucion* contexto) {
+static void deserializar_CONTEXTO_EJECUCION(void* stream, contexto_ejecucion* contexto, uint32_t num_elementos) {
     memcpy(&(contexto->PID), stream, sizeof(uint32_t));
     memcpy(&(contexto->PC), stream + sizeof(uint32_t), sizeof(uint32_t));
     memcpy(&(contexto->registros), stream + sizeof(uint32_t) * 2, sizeof(registros_cpu));
-
-    // Deserializar la lista TSegmentos sin pasar el número de elementos como parámetro
     t_list* tsegmentos = list_create();
-    deserializar_lista(stream + sizeof(uint32_t) * 2 + sizeof(registros_cpu), tsegmentos, contexto->TSegmento->elements_count);
+    deserializar_lista(stream + sizeof(uint32_t) * 2 + sizeof(registros_cpu),tsegmentos, num_elementos);
     contexto->TSegmento = tsegmentos;
 }
 
@@ -1053,7 +1051,14 @@ static void deserializar_CONTEXTO_EJECUCION(void* stream, contexto_ejecucion* co
 bool send_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion contexto) {
     // Serializar el contexto de ejecución
     void* stream = serializar_CONTEXTO_EJECUCION(&contexto);
-    size_t size = sizeof(uint32_t) * 2 + sizeof(registros_cpu) + sizeof(uint32_t) + sizeof(uint32_t) * contexto.TSegmento->elements_count;
+    uint32_t num_elementos = contexto.TSegmento->elements_count;
+    size_t size = sizeof(uint32_t) * 2 + sizeof(registros_cpu) + sizeof(uint32_t) + sizeof(uint32_t) * num_elementos;
+
+    // Enviar el tamaño del stream serializado
+    if (send(socket_cliente, &size, sizeof(size_t), 0) != sizeof(size_t)) {
+        free(stream);
+        return false;
+    }
 
     // Enviar el stream serializado
     if (send(socket_cliente, stream, size, 0) != size) {
@@ -1067,7 +1072,11 @@ bool send_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion contexto) {
 }
 
 bool recv_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion* contexto) {
-    size_t size = sizeof(uint32_t) * 2 + sizeof(registros_cpu) + sizeof(uint32_t);
+    size_t size;
+    if (recv(socket_cliente, &size, sizeof(size_t), 0) != sizeof(size_t)) {
+        return false;
+    }
+
     void* stream = malloc(size);
 
     // Recibir el stream serializado
@@ -1077,7 +1086,8 @@ bool recv_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion* contexto) {
     }
 
     // Deserializar el contexto de ejecución
-    deserializar_CONTEXTO_EJECUCION(stream, contexto);
+    uint32_t num_elementos = (size - sizeof(uint32_t) * 2 - sizeof(registros_cpu) - sizeof(uint32_t)) / sizeof(uint32_t);
+    deserializar_CONTEXTO_EJECUCION(stream, contexto, num_elementos);
 
     // Liberar la memoria asignada
     free(stream);
@@ -1132,40 +1142,32 @@ bool recv_handshake(int socket,uint8_t* resultado){
 }
 
 static void* serializar_TABLA_SEGMENTOS(t_list* tabla_segmentos, int* tamanio_serializado) {
-    int cant_segmentos = list_size(tabla_segmentos);
-    *tamanio_serializado = sizeof(segmento_t) * cant_segmentos;
-
-    void* stream = malloc(*tamanio_serializado);
-    int offset = 0;
-
-    for (int i = 0; i < cant_segmentos; i++) {
-        segmento_t* segmento = list_get(tabla_segmentos, i);
-        memcpy(stream + offset, &segmento, sizeof(segmento_t));
-        offset += sizeof(segmento_t);
+    *tamanio_serializado = 0;
+    void* stream = serializar_lista(tabla_segmentos);
+    if (stream != NULL) {
+        *tamanio_serializado = sizeof(uint32_t) + tabla_segmentos->elements_count * sizeof(segmento_t);
     }
-
     return stream;
 }
+
 static t_list* deserializar_TABLA_SEGMENTOS(void* stream, int tamanio_serializado) {
-    int num_segmentos = tamanio_serializado / sizeof(segmento_t) ;
-    int offset = 0;
-
     t_list* tabla_segmentos = list_create();
-
-    for (int i = 0; i < num_segmentos; i++) {
-        segmento_t* segmento = malloc(sizeof(segmento_t));
-
-        memcpy(&segmento, stream + offset, sizeof(segmento_t));
-        offset += sizeof(segmento_t);
-        list_add(tabla_segmentos, segmento);
-	    free(segmento);
-    }
-
+    deserializar_lista(stream, tabla_segmentos, tamanio_serializado);
     return tabla_segmentos;
 }
+
 bool send_TABLA_SEGMENTOS(int fd, t_list* lista_segmentos) {
     int tamanio_serializado;
     void* stream = serializar_TABLA_SEGMENTOS(lista_segmentos, &tamanio_serializado);
+
+    if (tamanio_serializado == 0) {
+        return false;  // La lista está vacía, no se envía nada
+    }
+
+    if (send(fd, &tamanio_serializado, sizeof(int), 0) != sizeof(int)) {
+        free(stream);
+        return false;
+    }
 
     if (send(fd, stream, tamanio_serializado, 0) != tamanio_serializado) {
         free(stream);
@@ -1175,6 +1177,7 @@ bool send_TABLA_SEGMENTOS(int fd, t_list* lista_segmentos) {
     free(stream);
     return true;
 }
+
 bool recv_TABLA_SEGMENTOS(int fd, t_list** lista_segmentos) {
     int tamanio_serializado;
     if (recv(fd, &tamanio_serializado, sizeof(int), 0) != sizeof(int)) {
@@ -1186,7 +1189,9 @@ bool recv_TABLA_SEGMENTOS(int fd, t_list** lista_segmentos) {
         free(stream);
         return false;
     }
+
     *lista_segmentos = deserializar_TABLA_SEGMENTOS(stream, tamanio_serializado);
+
     free(stream);
     return true;
 }

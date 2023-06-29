@@ -51,13 +51,12 @@ void agregarNewAReady(pcb_t* pcb){
 	pcb->horaDeIngresoAReady = a;
 	pthread_mutex_lock(&mutexReady); //para el execute a ready y de blocked a ready y de new a ready
 
-	t_list* tseg;
 	list_add(listaReady, pcb); //agrega a la listaReady
 	send_INICIAR_ESTRUCTURA_MEMORIA(conexion_memoria); //mandamos mensaje a memoria que incie sus estructuras
 	send_PID(conexion_memoria,pcb->contexto.PID); //mandamos a memoria pid para que lo asigne a cada segmento
-	if(recv_TABLA_SEGMENTOS(conexion_memoria, &tseg)){ //recibimos la direccion de la tabla de segmento
-		list_destroy(pcb->contexto.TSegmento);
-		pcb->contexto.TSegmento = tseg;
+	if(recv_TABLA_SEGMENTOS(conexion_memoria, &pcb->contexto.TSegmento)){ //recibimos la direccion de la tabla de segmento
+		segmento_t* s=list_get(pcb->contexto.TSegmento,0);
+		log_info(log_kernel, "Segmento : %d, %d, %d, %d", s->direccion_Base, s->id, s->pid, s->tamanio);
 	}
 	else{
 		log_error(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto.PID);
@@ -185,7 +184,7 @@ void hiloReady_Execute(){
 		contexto.TSegmento = list_create();
 		log_info(log_kernel, "estamos en execute %d", pcb_siguiente->contexto.PID); // log de prueba
 //		log_info(log_kernel, "Numero de instrucciones: <%d> ",list_size(pcb_siguiente->instrucciones)); //todo a veces llega 0
-//		log_info(log_kernel, "PC: %d", pcb_siguiente->contexto.PC);
+		log_info(log_kernel, "PC: %d", pcb_siguiente->contexto.PC);
 //		log_info(log_kernel, "AX: %s", pcb_siguiente->contexto.registros.AX);
 //		log_info(log_kernel, "BX: %s", pcb_siguiente->contexto.registros.BX);
 //		log_info(log_kernel, "CX: %s", pcb_siguiente->contexto.registros.CX);
@@ -198,7 +197,7 @@ void hiloReady_Execute(){
 //		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RBX);
 //		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RCX);
 //		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RDX);
-//		log_info(log_kernel, "Tabla: %d", list_size(pcb_siguiente->contexto.TSegmento));
+		log_info(log_kernel, "Tabla: %d", list_size(pcb_siguiente->contexto.TSegmento));
 		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
 		pcb_siguiente->state_anterior = pcb_siguiente->state;
 		pcb_siguiente->state = EXEC;

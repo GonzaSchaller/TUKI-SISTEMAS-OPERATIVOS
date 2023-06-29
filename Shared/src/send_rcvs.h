@@ -108,8 +108,6 @@ bool recv_CONTEXTO_EJECUCION(int , contexto_ejecucion*);
 bool send_handshake(int,uint8_t );
 bool recv_handshake(int ,uint8_t*);
 
-bool send_TABLA_SEGMENTOS(int , t_list*);
-bool recv_TABLA_SEGMENTOS(int, t_list** );
 
 bool send_FINALIZAR_ESTRUCTURAS(int);
 bool recv_FINALIZAR_ESTRUCTURAS(int);

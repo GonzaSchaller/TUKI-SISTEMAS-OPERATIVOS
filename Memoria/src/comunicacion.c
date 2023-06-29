@@ -51,7 +51,7 @@ static void procesar_conexionn(void* void_args){
 
 			case INICIAR_ESTRUCTURAS:
 				uint32_t pid;
-				if(recv_INICIAR_ESTRUCTURA_MEMORIA(cliente_socket)){
+				//if(recv_INICIAR_ESTRUCTURA_MEMORIA(cliente_socket)){ //el send ya manda el opcode
 					recv_PID(cliente_socket, &pid);
 					log_info(log_memoria,"Creación de Proceso PID: %d",pid);
 
@@ -62,8 +62,8 @@ static void procesar_conexionn(void* void_args){
 
 					send_TABLA_SEGMENTOS(cliente_socket,tabla_de_segmentos);
 					cant_procesos++;
-				}
-				else log_error(log_memoria,"fallo recibiendo iniciar_estructuras");
+				//}
+			//else log_error(log_memoria,"fallo recibiendo iniciar_estructuras");
 
 				break;
 			case CREATE_SEGMENT:
@@ -126,7 +126,7 @@ static void procesar_conexionn(void* void_args){
 				t_list* ts_kernel;
 				uint32_t pid_dlt;
 
-				recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
+				recv_TABLA_SEGMENTOS(cliente_socket,ts_kernel);
 			    recv_ID_SEGMENTO(cliente_socket, &id);
 			    recv_PID(cliente_socket,&pid_dlt);
 
@@ -174,7 +174,7 @@ static void procesar_conexionn(void* void_args){
 
 
 				recv_PID(cliente_socket, &pid_mi);
-				recv_DIREC_FISICA(cliente_socket,&direccion_fisica);
+				//recv_DIREC_FISICA(cliente_socket,&direccion_fisica);
 
 
 				//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>”

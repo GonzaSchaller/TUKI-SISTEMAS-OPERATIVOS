@@ -32,8 +32,6 @@ typedef struct{
 
 }contexto_ejecucion;
 
-
-
 typedef struct{
     t_list* instrucciones; // Lista de instrucciones a ejecutar
     contexto_ejecucion contexto; //tiene registros, tabla segmento, pid y PC
