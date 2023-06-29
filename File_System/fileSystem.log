@@ -419,3 +419,11 @@
 [ERROR] 23:01:31:129 FileSystem/(23350:23350): error abriendo archivo de bitmap
 [INFO] 23:02:27:424 FileSystem/(23380:23380): levante config ok
 [INFO] 23:02:27:431 FileSystem/(23380:23380): levante superbloque ok
+[INFO] 00:32:03:560 FileSystem/(23633:23633): levante config ok
+[INFO] 00:32:03:561 FileSystem/(23633:23633): levante superbloque ok
+[INFO] 00:37:06:898 FileSystem/(23700:23700): levante config ok
+[INFO] 00:37:06:909 FileSystem/(23700:23700): levante superbloque ok
+[INFO] 00:37:39:998 FileSystem/(23720:23720): levante config ok
+[INFO] 00:37:40:000 FileSystem/(23720:23720): levante superbloque ok
+[INFO] 00:38:15:379 FileSystem/(23771:23771): levante config ok
+[INFO] 00:38:15:392 FileSystem/(23771:23771): levante superbloque ok

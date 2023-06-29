@@ -71,7 +71,7 @@ void cargar_bitmap(){
 
 	char*path = strdup(c->bitmap);
 
-	FILE* f_bitmap = fopen(path,"rb");
+	FILE* f_bitmap = fopen(path,"rb+");
 	if(f_bitmap==NULL) log_error(logger,"error abriendo archivo de bitmap");
 
 
@@ -87,7 +87,7 @@ void cargar_bitmap(){
 	bitarrayx->bitarray = bitarray_create(bitmap_de_bloques,bitarrayx->bytes_bitarray);
 
 	for(int i=0;i<bitarrayx->bytes_bitarray;i++){
-		printf("%p /n",bitmap_de_bloques[i]);
+		printf("%p \n",bitmap_de_bloques[i]);
 	}
 
 }
