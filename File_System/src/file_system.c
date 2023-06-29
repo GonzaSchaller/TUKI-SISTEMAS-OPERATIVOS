@@ -22,6 +22,7 @@ int main (){
 	
 	cargar_superbloque();
 	cargar_bitmap();
+	cargar_bloques();
 
 	terminar_fs();
 

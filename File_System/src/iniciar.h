@@ -39,7 +39,9 @@ typedef struct {
 
 extern t_superbloque* superbloque;
 extern t_config_fs *c;
-extern bitarray_s*bitarray;
+extern FILE* f_bloques;
+extern FILE* f_bitmap;
+extern t_bitarray* bitarray;
 
 void cargar_superbloque();
 void levantar_config();

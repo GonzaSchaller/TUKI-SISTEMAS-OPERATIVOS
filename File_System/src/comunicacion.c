@@ -13,18 +13,23 @@ static void procesar_peticiones(int cliente_socket){
 
 				switch(cop){
 
+
+				//case CREAR_ARCHIVO:
+
+			   //		break;
+
 				case F_OPEN:
 
 				break;
 
 
-				   case F_WRITE:
+				case F_WRITE:
 
 					   break;
-				   case F_READ:
+				case F_READ:
 					   break;
 
-				   case F_TRUNCATE:
+				case F_TRUNCATE:
 					   break;
 
 

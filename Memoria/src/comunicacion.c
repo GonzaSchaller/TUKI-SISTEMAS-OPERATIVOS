@@ -169,13 +169,14 @@ static void procesar_conexionn(void* void_args){
 
 
 			case MOV_IN: //cambiar nombre. TODO
-				//recibo la direccion fisica
-				//leo lo que hay
-	//			uint32_t pid_leer;
-//				uint32_t direccion_fisica;
+				uint32_t pid_mi;
 
-			//	recv_PID(cliente_socket, &pid_leer);
-			//	recv_DIREC_FISICA(cliente_socket,&direccion_fisica);
+
+
+				recv_PID(cliente_socket, &pid_mi);
+				recv_DIREC_FISICA(cliente_socket,&direccion_fisica);
+
+
 				//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>”
 			//	log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>",pid_leer,direccion_fisica);
 
