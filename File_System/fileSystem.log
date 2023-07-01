@@ -427,3 +427,13 @@
 [INFO] 00:37:40:000 FileSystem/(23720:23720): levante superbloque ok
 [INFO] 00:38:15:379 FileSystem/(23771:23771): levante config ok
 [INFO] 00:38:15:392 FileSystem/(23771:23771): levante superbloque ok
+[INFO] 23:25:53:050 FileSystem/(29230:29230): levante config ok
+[INFO] 23:25:53:054 FileSystem/(29230:29230): levante superbloque ok
+[INFO] 23:27:02:229 FileSystem/(29319:29319): levante config ok
+[INFO] 23:27:02:236 FileSystem/(29319:29319): levante superbloque ok
+[INFO] 23:27:02:236 FileSystem/(29319:29319): Aca me rompo :(
+[INFO] 23:27:02:236 FileSystem/(29319:29319): bits 65536
+[INFO] 23:29:59:628 FileSystem/(29375:29375): levante config ok
+[INFO] 23:29:59:632 FileSystem/(29375:29375): levante superbloque ok
+[INFO] 23:29:59:632 FileSystem/(29375:29375): Aca me rompo :(
+[INFO] 23:29:59:632 FileSystem/(29375:29375): bits 65536

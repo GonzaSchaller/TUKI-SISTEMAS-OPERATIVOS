@@ -22,9 +22,9 @@ int main (){
 	
 	cargar_superbloque();
 	cargar_bitmap();
-	cargar_bloques();
+	//cargar_bloques();
 
-	terminar_fs();
+	//terminar_fs();
 
 	return EXIT_SUCCESS;
 

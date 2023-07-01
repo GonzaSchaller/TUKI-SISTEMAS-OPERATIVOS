@@ -73,18 +73,23 @@ void cargar_bitmap(){
 
 	char*path = strdup(c->bitmap);
 
+
 	FILE* f_bitmap = fopen(path,"rb+");
 	if(f_bitmap==NULL) log_error(logger,"error abriendo archivo de bitmap");
 
 	uint32_t size_bitmap = ceil(superbloque->block_count / 8);
 
 	char *bitmap_de_bloques = mmap(NULL,size_bitmap, PROT_READ|PROT_WRITE, MAP_SHARED, fileno(f_bitmap), 0);
+
 	if (bitmap_de_bloques == MAP_FAILED) {
 	        perror("Error al mapear el archivo");
 	        fclose(f_bitmap);
 	    }
 	bitarray = bitarray_create(bitmap_de_bloques,size_bitmap);
+	uint32_t cant = bitarray_get_max_bit(bitarray);
+	log_info(logger,"bits %d",cant);
 
+	free(path);
 
 }
 
