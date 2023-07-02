@@ -5,9 +5,6 @@ int fd_fs;
 int fd_memoria;
 
 
-
-
-
 int main (){
 
 	// Issue 2967 es donde está la info de por qué definí las variables del .h en el .c también

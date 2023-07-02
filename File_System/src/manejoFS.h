@@ -20,7 +20,8 @@
 #include <math.h>
 
 
-
+bool existe_y_abrir(char*nombre_archivo);
+bool crear_archivo(char*nombre,uint32_t tamanio);
 
 
 #endif

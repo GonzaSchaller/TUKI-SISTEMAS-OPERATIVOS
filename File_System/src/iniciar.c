@@ -89,7 +89,7 @@ void cargar_bitmap(){
 	uint32_t cant = bitarray_get_max_bit(bitarray);
 	log_info(logger,"bits %d",cant);
 
-
+	fclose(f_bitmap);
 	free(path);
 
 }
@@ -103,7 +103,7 @@ void terminar_fs(){
 	log_destroy(logger);
 
 	fclose(f_bloques);
-	fclose(f_bitmap);
+
 
 }
 
