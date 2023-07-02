@@ -14,11 +14,21 @@ static void procesar_peticiones(int cliente_socket){
 				switch(cop){
 
 
-				//case CREAR_ARCHIVO:
-
-			   //		break;
-
 				case F_OPEN:
+					extra_code estado;
+					char*nombre_archivo;
+					recv_F_OPEN(cliente_socket,&nombre_archivo);
+					log_info(logger,"abrir archivo %s",nombre_archivo);
+					bool resultado = existe_y_abrir(nombre_archivo);
+					if(!resultado){
+						estado = INCORRECTO;
+						send_OK_CODE(cliente_socket, estado);
+					}
+					else{
+						estado = CORRECTO;
+						send_OK_CODE(cliente_socket, estado);
+					}
+
 
 				break;
 

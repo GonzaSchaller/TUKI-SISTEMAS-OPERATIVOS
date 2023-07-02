@@ -47,5 +47,6 @@ void cargar_superbloque();
 void levantar_config();
 void terminar_fs();
 void cargar_bitmap();
+void cargar_bloque();
 
 #endif

@@ -73,7 +73,6 @@ void cargar_bitmap(){
 
 	char*path = strdup(c->bitmap);
 
-
 	FILE* f_bitmap = fopen(path,"rb+");
 	if(f_bitmap==NULL) log_error(logger,"error abriendo archivo de bitmap");
 
@@ -86,8 +85,10 @@ void cargar_bitmap(){
 	        fclose(f_bitmap);
 	    }
 	bitarray = bitarray_create(bitmap_de_bloques,size_bitmap);
+
 	uint32_t cant = bitarray_get_max_bit(bitarray);
 	log_info(logger,"bits %d",cant);
+
 
 	free(path);
 
@@ -104,9 +105,6 @@ void terminar_fs(){
 	fclose(f_bloques);
 	fclose(f_bitmap);
 
-
-	close(fd_fs);
-	close(fd_memoria);
 }
 
 
