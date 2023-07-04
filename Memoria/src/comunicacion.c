@@ -168,8 +168,11 @@ static void procesar_conexionn(void* void_args){
 
 
 
-			case MOV_IN: //cambiar nombre. TODO
+			case MOV_IN:
 				uint32_t pid_mi;
+				char*contenido;
+				uint32_t df;
+			//	recv_MOV_IN(cliente_socket,&contenido,&dl);
 
 
 
@@ -182,7 +185,7 @@ static void procesar_conexionn(void* void_args){
 
 			break;
 
-			case MOV_OUT://cambair nombre TODO
+			case MOV_OUT:
 //				uint32_t pid_escribir;
 //				uint32_t direccion_fisica_e;
 
@@ -194,14 +197,11 @@ static void procesar_conexionn(void* void_args){
 
 				break;
 
-			case COMPACTAR_MEMORIA:
-				//compactar_memoria();
-				break;
 
 
              }//break
        }//while
-		log_warning(log_memoria,"cliente desconectado");
+		log_warning(log_memoria,"cliente %s desconectado ",server_name);
 		return;
 }
 

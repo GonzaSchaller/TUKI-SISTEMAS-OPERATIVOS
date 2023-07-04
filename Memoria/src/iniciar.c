@@ -1,17 +1,20 @@
 #include "iniciar.h"
-#define pozo 9999
+#define POZO 9999
 
 t_log*log_memoria;
 t_config_memoria *cfg;
+
 void* memoria_principal;
+int tam_hueco_mas_grande;
+int memoria_disponible;
+
 t_list* segmentos_libres;
 t_list* segmentos_ocupados;
 segmento_t* (*proximo_hueco) (uint32_t);
-int tam_hueco_mas_grande;
 segmento_t* segmento_0;
-int memoria_disponible;
-extern pthread_mutex_t mutex_segmentos_libres;
-extern pthread_mutex_t mutex_segmentos_ocupados;
+
+
+
 
 //kaljfskfkja
 uint8_t init() {
@@ -31,11 +34,11 @@ uint8_t cargar_configuracion(char*path){
 	        return 0;
 	    }
 
-		cfg->TAMANIO_MEMORIA = config_get_int_value(config_memoria, "TAM_MEMORIA");
+		cfg->TAMANIO_MEMORIA = (uint32_t) strtol(config_get_string_value(config_memoria, "TAM_MEMORIA"), NULL, 10);
 	    cfg->TAMANIO_SEGMENTO_0 = (uint32_t) strtol(config_get_string_value(config_memoria, "TAM_SEGMENTO_0"), NULL, 10);
-	    cfg->CANT_SEGMENTOS = config_get_int_value(config_memoria, "CANT_SEGMENTOS");
-	    cfg->RETARDO_MEMORIA = config_get_int_value(config_memoria, "RETARDO_MEMORIA");
-	    cfg->RETARDO_COMPACTACION = config_get_int_value(config_memoria, "RETARDO_COMPACTACION");
+	    cfg->CANT_SEGMENTOS = (uint32_t) strtol(config_get_string_value(config_memoria, "CANT_SEGMENTOS"), NULL, 10);
+	    cfg->RETARDO_MEMORIA = (uint32_t) strtol(config_get_string_value(config_memoria, "RETARDO_MEMORIA"), NULL, 10);
+	    cfg->RETARDO_COMPACTACION = (uint32_t) strtol(config_get_string_value(config_memoria, "RETARDO_COMPACTACION"), NULL, 10);
 	    cfg->ALGORITMO_ASIGNACION = strdup(config_get_string_value(config_memoria, "ALGORITMO_ASIGNACION"));
 	    cfg->PUERTO_ESCUCHA = strdup(config_get_string_value(config_memoria, "PUERTO_ESCUCHA"));
 
@@ -63,8 +66,8 @@ uint8_t cargar_memoria(){
 	  segmentos_ocupados = list_create();
 	  segmentos_libres = list_create();
 
-	 segmento_0 = new_segmento(0,0,cfg->TAMANIO_SEGMENTO_0,pozo);
-	  segmento_t* hueco = new_segmento(0,cfg->TAMANIO_SEGMENTO_0,cfg->TAMANIO_MEMORIA-cfg->TAMANIO_SEGMENTO_0,pozo); // primero creo el hueco.
+	 segmento_0 = new_segmento(0,0,cfg->TAMANIO_SEGMENTO_0,POZO);
+	  segmento_t* hueco = new_segmento(0,cfg->TAMANIO_SEGMENTO_0,cfg->TAMANIO_MEMORIA-cfg->TAMANIO_SEGMENTO_0,POZO); // primero creo el hueco.
 
 	  if (hueco == NULL) {
 	        log_error(log_memoria, "Fallo en la creacion de t_list* segmentos_libres");
@@ -86,13 +89,10 @@ uint8_t cargar_memoria(){
 void terminar_memoria(){
 		log_destroy(log_memoria);
 
-		pthread_mutex_lock(&mutex_segmentos_libres);
-		list_destroy_and_destroy_elements(segmentos_libres, (void*) free);
-		pthread_mutex_unlock(&mutex_segmentos_libres);
 
-		pthread_mutex_lock(&mutex_segmentos_ocupados);
+		list_destroy_and_destroy_elements(segmentos_libres, (void*) free);
 		list_destroy_and_destroy_elements(segmentos_ocupados, (void*) free);
-	    pthread_mutex_unlock(&mutex_segmentos_ocupados);
+
 
 	    free(cfg);
 	    free(memoria_principal);

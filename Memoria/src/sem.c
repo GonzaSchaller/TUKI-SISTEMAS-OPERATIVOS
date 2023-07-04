@@ -62,9 +62,9 @@ void insertar_segmento_entsl(segmento_t* segmento){
 }
 
 //pone en 0 algun lugar de la memoria pricipal despues de que fue borrado un segmento
-void memsetear_mp(uint32_t base,uint32_t tamanio){
+void memsetear_mp(uint32_t base,uint32_t tamanio,uint32_t contenido){
 	pthread_mutex_lock(&mutex_memoria_ocupada);
-	memset(memoria_principal+base,0,tamanio);
+	memset(memoria_principal+base,contenido,tamanio);
 	pthread_mutex_unlock(&mutex_memoria_ocupada);
 }
 

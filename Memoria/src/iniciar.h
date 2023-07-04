@@ -37,11 +37,7 @@ typedef struct {
 } t_config_memoria;
 
 
-static t_config_memoria* inicializar_cfg() {
-    t_config_memoria* cfg = malloc(sizeof(t_config_memoria));
-    cfg->ALGORITMO_ASIGNACION=NULL;
-    return cfg;
-}
+
 
 uint8_t init();
 uint8_t cargar_configuracion(char*path);
