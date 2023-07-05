@@ -100,10 +100,11 @@ void cargar_bloque(){
 
 void terminar_fs(){
 	log_destroy(logger);
-
 	fclose(f_bloques);
 
-
+	free(c);
+	free(superbloque);
+	free(bitarray);
 
 }
 
