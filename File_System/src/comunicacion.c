@@ -27,7 +27,10 @@ static void procesar_peticiones(int cliente_socket){
 						//crear el arcchivo.
 						recv_CREAR_ARCHIVO(cliente_socket, &nombre_archivo,&tamanio); //para mi que no deberia recibir nada
 
-					//	if(crear_archivo(nombre_archivo,tamanio)) : send_OK_CODE le mando que ok.
+						if(crear_archivo(nombre_archivo,tamanio)){
+							estado = CORRECTO;
+							send_OK_CODE(cliente_socket,estado);
+						}
 					}
 					else{
 						estado = CORRECTO;

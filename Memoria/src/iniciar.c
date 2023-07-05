@@ -34,11 +34,11 @@ uint8_t cargar_configuracion(char*path){
 	        return 0;
 	    }
 
-		cfg->TAMANIO_MEMORIA = (uint32_t) strtol(config_get_string_value(config_memoria, "TAM_MEMORIA"), NULL, 10);
-	    cfg->TAMANIO_SEGMENTO_0 = (uint32_t) strtol(config_get_string_value(config_memoria, "TAM_SEGMENTO_0"), NULL, 10);
-	    cfg->CANT_SEGMENTOS = (uint32_t) strtol(config_get_string_value(config_memoria, "CANT_SEGMENTOS"), NULL, 10);
-	    cfg->RETARDO_MEMORIA = (uint32_t) strtol(config_get_string_value(config_memoria, "RETARDO_MEMORIA"), NULL, 10);
-	    cfg->RETARDO_COMPACTACION = (uint32_t) strtol(config_get_string_value(config_memoria, "RETARDO_COMPACTACION"), NULL, 10);
+		cfg->TAMANIO_MEMORIA = config_get_int_value(config_memoria, "TAM_MEMORIA");
+	    cfg->TAMANIO_SEGMENTO_0 = config_get_int_value(config_memoria, "TAM_SEGMENTO_0");
+	    cfg->CANT_SEGMENTOS = config_get_int_value(config_memoria, "CANT_SEGMENTOS");
+	    cfg->RETARDO_MEMORIA = config_get_int_value(config_memoria, "RETARDO_MEMORIA");
+	    cfg->RETARDO_COMPACTACION = config_get_int_value(config_memoria, "RETARDO_COMPACTACION");
 	    cfg->ALGORITMO_ASIGNACION = strdup(config_get_string_value(config_memoria, "ALGORITMO_ASIGNACION"));
 	    cfg->PUERTO_ESCUCHA = strdup(config_get_string_value(config_memoria, "PUERTO_ESCUCHA"));
 
