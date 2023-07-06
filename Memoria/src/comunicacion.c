@@ -172,8 +172,10 @@ static void procesar_conexionn(void* void_args){
 				uint32_t pid_mi;
 				char*contenido;
 				uint32_t df;
-			//	recv_MOV_IN(cliente_socket,&contenido,&dl);
 
+				recv_w_mas_r(cliente_socket,&df,&contenido);
+
+				uint32_t longitud = srtlen(contenido);
 
 
 				recv_PID(cliente_socket, &pid_mi);
@@ -181,7 +183,7 @@ static void procesar_conexionn(void* void_args){
 
 
 				//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>”
-			//	log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>",pid_leer,direccion_fisica);
+				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>",pid_mi,df,longitud,server_name);
 
 			break;
 

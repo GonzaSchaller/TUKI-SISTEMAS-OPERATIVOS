@@ -131,6 +131,7 @@ bool recv_FINALIZAR_READ(int,uint32_t*);
 bool send_FINALIZAR_WRITE(int,uint32_t );
 bool recv_FINALIZAR_WRITE(int,uint32_t* );
 
-
+bool recv_w_mas_r(int fd,uint32_t* parametro1,char** parametro2);
+bool send_w_mas_r(int fd,uint32_t parametro1 , char* parametro2);
 
 #endif

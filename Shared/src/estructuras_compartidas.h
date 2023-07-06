@@ -125,7 +125,7 @@ typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	HANDSHAKE,
 	INICIAR_ESTRUCTURAS,
 	FINALIZAR_ESTRUCTURAS,
-	COMPACTAR_MEMORIA
+	W_MAS_R
 }op_code;
 
 //
