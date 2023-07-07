@@ -18,6 +18,8 @@
 #include <string.h>
 #include "send_rcvs.h"
 #include "estructuras_compartidas.h"
-//#include "configuraciones.h"
+#include <math.h>
+#include "configuraciones.h"
+
 
 #endif

@@ -78,14 +78,17 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	//cosas que tengo que mandar a Memoria: aplica para mov_out
 	//PID
 	//send_PID(socket_memoria,pcb_proceso->PID); //ijarse del socket de memoria.
-	//traducir.
-	//mandar a memoria.
+	//[DONE] traducir
+	//mandar a memoria
 	//TAMANIO
 	//QUIEN SOS? OPCIONAL (maniana preguntamos).
 
 	//************************************************************* traduzco la DL
-	uint32_t tam_segmento; //ver como conseguir tamanio segmento
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, tam_segmento);
+	t_list* listaSegmentos = pcb_proceso -> TSegmento;
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
+
+	//aca mando a memoria la DF
+	//hago un recv
 
 	// pedir a memoria que me pase y lo guardo en valor
 	char* valor = NULL;
@@ -154,6 +157,7 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			}
 		}
 	pcb_proceso -> PC += 1;
+
 }
 
 //VER SI LE TENGO QUE PASAR EL TAMAÑO DE SEGMENTO.
@@ -222,6 +226,10 @@ void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logi
 			break;
 		}
 	}
+	//************************************************************* traduzco la DL
+	t_list* listaSegmentos = pcb_proceso -> TSegmento;
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
+
 	//se lo mando a memoria para guardarlo en la DF
 	// paso la DF y el valor
 	pcb_proceso -> PC += 1;
@@ -300,7 +308,7 @@ void ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 
-	uint32_t tam_segmento;
+	uint32_t tam_segmento = 0;
 	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, tam_segmento);
 
 	//escribir en la DF de memoria l odel archivo
