@@ -95,6 +95,7 @@ void inicializarPCB(int contadorProceso, t_list* listaInstrucciones, pcb_t *pcb,
 	pcb->estimacion_prox_rafaga = (hrrn_alfa* pcb->rafaga_anterior_real)+ ((1-hrrn_alfa)* pcb-> estimacion_rafaga_anterior);
 	pcb->socket_consola = socket_cliente;
 	pcb->tiempo_bloqueo = -1;
+	pcb->finalizar_proceso=false;
 	//free(&listaInstrucciones);
 }
 

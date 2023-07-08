@@ -175,7 +175,7 @@ static void procesar_conexionn(void* void_args){
 
 				recv_w_mas_r(cliente_socket,&df,&contenido);
 
-				uint32_t longitud = srtlen(contenido);
+				uint32_t longitud = strlen(contenido);
 
 
 				recv_PID(cliente_socket, &pid_mi);

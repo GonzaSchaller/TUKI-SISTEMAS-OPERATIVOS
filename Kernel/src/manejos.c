@@ -110,17 +110,16 @@ void recibir_actualizar_tablas_segmento(pcb_t* pcb_actual){
 	    //pid = 2
 	    while(buscandoPID){
 	    	proceso_planificado = list_get(listaReady, j);
-	    	//pid = 1
-//	    	if(proceso_planificado->contexto.PID == segmento->PID){ //Todo descomentar cuando este el pid de segmento
-//	    		proceso_planificado->contexto.TSegmento = tabla_nueva;
-//	    		buscandoPID = false;
-//
-//	    	}
-//	    	else if(pcb_actual->contexto.PID == segmento->PID){
-//	    		pcb_actual->contexto.TSegmento = tabla_nueva;
-//	    		buscandoPID = false;
-//	    	}
-//	    	j++;
+	    	if(proceso_planificado->contexto.PID == segmento->pid){ //Todo descomentar cuando este el pid de segmento
+	    		proceso_planificado->contexto.TSegmento = tabla_nueva;
+	    		buscandoPID = false;
+
+	    	}
+	    	else if(pcb_actual->contexto.PID == segmento->pid){
+	    		pcb_actual->contexto.TSegmento = tabla_nueva;
+	    		buscandoPID = false;
+	    	}
+	    	j++;
 	    }
 	}
 	 	 pthread_mutex_unlock(&mutexReady);
@@ -157,10 +156,8 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 						}
 						else if(estado_segmento == FALLIDO)
 						{
-							terminarEjecucion(pcb_siguiente);
-
-							log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <OUT OF MEMORY>", pcb_siguiente->contexto.PID);
-							sem_post(&multiprogramacion);
+                            pcb_siguiente->motivo_exit = "OUT OF MEMORY";
+                            pcb_siguiente->finalizar_proceso = true;
 							estado_while = false;
 						}
 						else if(estado_segmento == COMPACTAR)
@@ -224,9 +221,10 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 
 	 }
 	 else if(cop == EXIT){// caso EXIT
-		 	 	 	log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <SUCCESS> ", pcb_siguiente->contexto.PID);
+
+		 	 	 	pcb_siguiente->motivo_exit = "SUCCESS";
 					terminarEjecucion(pcb_siguiente);
-					sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
+					//sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
 				}
 //	 else{
 //		 terminarEjecucion(pcb_siguiente);
@@ -418,9 +416,10 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				            log_info(log_kernel,"PID: <%d> - Wait: < %s > - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
 				        }
 				        else { // si no existe el recurso
-				        	terminarEjecucion(pcb_siguiente);
-							log_info(log_kernel, "Finaliza el proceso <%d> porque no existe una instancia del recurso", pcb_siguiente->contexto.PID);
-				        	sem_post(&multiprogramacion);
+				        	pcb_siguiente->motivo_exit ="INVALID_RESOURCE";
+				        	pcb_siguiente->finalizar_proceso = true;
+				        	//terminarEjecucion(pcb_siguiente);
+				        	//sem_post(&multiprogramacion);
 				        }
 
 				    }
@@ -445,9 +444,10 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				            }
 				            log_info(log_kernel,"PID: <%d> - Signal: <%s> - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
 				        } else{
-							terminarEjecucion(pcb_siguiente);
-							log_info(log_kernel, "Finaliza el proceso <%d> porque no existe una instancia del recurso", pcb_siguiente->contexto.PID);
-							sem_post(&multiprogramacion);
+							pcb_siguiente->motivo_exit ="INVALID_RESOURCE";
+							pcb_siguiente->finalizar_proceso = true;
+							//terminarEjecucion(pcb_siguiente);
+							//sem_post(&multiprogramacion);
 						}
 				    } else  log_error(log_kernel, "Fallo recibiendo SIGNAL");
 				}
@@ -455,17 +455,24 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 }
 void manejar_contextosDeEjecucion(pcb_t* pcb_siguiente, contexto_ejecucion contexto){ // maneja lo que  nos manda cpu
 	uint32_t cop;
+
 	if(recv_CONTEXTO_EJECUCION(conexion_cpu, &contexto)) // Las que recibimos que SI son instruccion
 			{
 			if(recv(conexion_cpu, &cop, sizeof(op_code), 0) == sizeof(op_code)){
 				pcb_siguiente->contexto= contexto;
 				time_t fin_exe = time(NULL);
 				float tiempoDeFin = ((float) fin_exe) * 1000;
-
+				if (pcb_siguiente->finalizar_proceso == false)
+				{
 				manejar_recursos(pcb_siguiente, cop, tiempoDeFin);
 				manejar_memoria(pcb_siguiente, cop);
 				manejar_fileSystem(pcb_siguiente, cop, tiempoDeFin);
 				manejar_otras_instrucciones(pcb_siguiente, cop, tiempoDeFin);
+				}
+				else if (cop == EXIT){ // caso del error
+				terminarEjecucion(pcb_siguiente);
+				sem_post(&multiprogramacion);
+				}
 			}
 
 			}// del if del opcode

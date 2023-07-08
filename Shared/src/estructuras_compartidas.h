@@ -48,6 +48,8 @@ typedef struct{
 	t_list* recursos_asignados;
 	int socket_consola;
 	float tiempo_bloqueo;
+	bool finalizar_proceso;
+	char* motivo_exit;
 }pcb_t;
 
 typedef union {//porque puedo recibir int o char*

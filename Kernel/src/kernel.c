@@ -156,7 +156,7 @@ int server_escuchar(int server_kernel){
 		args->server_name = "Kernel";
 		procesar_conexion_consola((void*) args);
 		pthread_create(&hilo, NULL, (void*) procesar_conexion_consola, (void*) args);
-		pthread_join(hilo, NULL);
+		pthread_detach(hilo);
 		// wait semaforo 1
 		// post semaforo consola
 		return 1;
