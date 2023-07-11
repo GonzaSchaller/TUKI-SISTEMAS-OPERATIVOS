@@ -1441,8 +1441,9 @@ bool send_FINALIZAR_WRITE(int socket_cliente, uint32_t){
 }
 
 
+//si un profe de disenio ve esto se pega un tiro//
 
-static void* serializar_w_mas_r(size_t* size, char* parametro2, uint32_t parametro1) {
+static void* serializar_READ(size_t* size, char* parametro2, uint32_t parametro1) {
 	// Carga los parametros al reves pero funciona como deberia funcionar
 	size_t size_parametro2 = strlen(parametro2) + 1;
     *size =
@@ -1453,7 +1454,7 @@ static void* serializar_w_mas_r(size_t* size, char* parametro2, uint32_t paramet
         + sizeof(uint32_t);  // parametro1
     size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
     void* stream = malloc(*size);
-    op_code cop = W_MAS_R;
+    op_code cop = READ;
     memcpy(stream, &cop, sizeof(op_code));
     memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
     memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_parametro2, sizeof(size_t));
@@ -1462,7 +1463,7 @@ static void* serializar_w_mas_r(size_t* size, char* parametro2, uint32_t paramet
 
     return stream;
 }
-static void deserializar_w_mas_r(void* stream, char** parametro2, uint32_t* parametro1) {
+static void deserializar_READ(void* stream, char** parametro2, uint32_t* parametro1) {
 	// Carga los parametros al reves pero funciona como deberia funcionar
 	size_t size_parametro2;
     memcpy(&size_parametro2, stream, sizeof(size_t));
@@ -1473,7 +1474,7 @@ static void deserializar_w_mas_r(void* stream, char** parametro2, uint32_t* para
 
     memcpy(parametro1, stream+sizeof(size_t)+size_parametro2, sizeof(uint32_t));
 }
-bool recv_w_mas_r(int fd,uint32_t* parametro1,char** parametro2) {
+bool recv_READ(int fd,uint32_t* parametro1,char** parametro2) {
 
     size_t size_payload;
     if (recv(fd, &size_payload, sizeof(size_t), 0) != sizeof(size_t))
@@ -1485,14 +1486,14 @@ bool recv_w_mas_r(int fd,uint32_t* parametro1,char** parametro2) {
         return false;
     }
 
-    deserializar_w_mas_r(stream, parametro2, parametro1);
+    deserializar_READ(stream, parametro2, parametro1);
 
     free(stream);
     return true;
 }
-bool send_w_mas_r(int fd,uint32_t parametro1 , char* parametro2) {
+bool send_READ(int fd,uint32_t parametro1 , char* parametro2) {
     size_t size;
-    void* stream = serializar_w_mas_r(&size, parametro2, parametro1);
+    void* stream = serializar_READ(&size, parametro2, parametro1);
     if (send(fd, stream, size, 0) != size) {
         free(stream);
         return false;
@@ -1502,6 +1503,64 @@ bool send_w_mas_r(int fd,uint32_t parametro1 , char* parametro2) {
 }
 
 
+static void* serializar_WRITE(size_t* size, char* parametro2, uint32_t parametro1) {
+	// Carga los parametros al reves pero funciona como deberia funcionar
+	size_t size_parametro2 = strlen(parametro2) + 1;
+    *size =
+          sizeof(op_code)   // cop
+        + sizeof(size_t)    // total
+        + sizeof(size_t)    // size de char* parametro2
+        + size_parametro2         // char* parametro2
+        + sizeof(uint32_t);  // parametro1
+    size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
+    void* stream = malloc(*size);
+    op_code cop = WRITE;
+    memcpy(stream, &cop, sizeof(op_code));
+    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
+    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_parametro2, sizeof(size_t));
+    memcpy(stream+sizeof(op_code)+sizeof(size_t)*2, parametro2, size_parametro2);
+    memcpy(stream+sizeof(op_code)+sizeof(size_t)*2+size_parametro2, &parametro1, sizeof(uint32_t));
+
+    return stream;
+}
+static void deserializar_WRITE(void* stream, char** parametro2, uint32_t* parametro1) {
+	// Carga los parametros al reves pero funciona como deberia funcionar
+	size_t size_parametro2;
+    memcpy(&size_parametro2, stream, sizeof(size_t));
+
+    char* p2 = malloc(size_parametro2);
+    memcpy(p2, stream+sizeof(size_t), size_parametro2);
+    *parametro2 = p2;
+
+    memcpy(parametro1, stream+sizeof(size_t)+size_parametro2, sizeof(uint32_t));
+}
+bool recv_WRITE(int fd,uint32_t* parametro1,char** parametro2) {
+
+    size_t size_payload;
+    if (recv(fd, &size_payload, sizeof(size_t), 0) != sizeof(size_t))
+        return false;
+
+    void* stream = malloc(size_payload);
+    if (recv(fd, stream, size_payload, 0) != size_payload) {
+        free(stream);
+        return false;
+    }
+
+    deserializar_WRITE(stream, parametro2, parametro1);
+
+    free(stream);
+    return true;
+}
+bool send_WRITE(int fd,uint32_t parametro1 , char* parametro2) {
+    size_t size;
+    void* stream = serializar_WRITE(&size, parametro2, parametro1);
+    if (send(fd, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
 
 
 

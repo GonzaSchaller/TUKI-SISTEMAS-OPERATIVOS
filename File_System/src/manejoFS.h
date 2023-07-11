@@ -22,6 +22,6 @@
 
 bool existe_y_abrir(char*nombre_archivo);
 bool crear_archivo(char*nombre,uint32_t tamanio);
-
+char* buscar_contenido(uint32_t puntero,uint32_t cb);
 
 #endif

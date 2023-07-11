@@ -1,7 +1,7 @@
 #include "manejoFS.h"
+extern t_config_fs *c;
 
-
-char*PATH_STATIC="/home/utnso/tp-2023-1c-Kernel-Masters/File_System/fcb";
+char*PATH_STATIC=c->fcb;
 
 char* concat(char*nombre_archivo){
 	char*path = strdup(PATH_STATIC);
@@ -42,3 +42,31 @@ bool crear_archivo(char*nombre,uint32_t tamanio){
 	config_destroy(config);
 	return true;
 }
+
+char* buscar_contenido(uint32_t puntero,uint32_t cb){
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

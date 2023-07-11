@@ -173,7 +173,7 @@ static void procesar_conexionn(void* void_args){
 				char*contenido;
 				uint32_t df;
 
-				recv_w_mas_r(cliente_socket,&df,&contenido);
+				recv_READ(cliente_socket,&df,&contenido);
 
 				uint32_t longitud = strlen(contenido);
 

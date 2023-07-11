@@ -23,4 +23,5 @@
 
 int generar_conexion_con_memoria();
 void conexion_kernel();
+
 #endif

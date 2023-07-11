@@ -41,10 +41,16 @@ static void procesar_peticiones(int cliente_socket){
 
 
 				case F_WRITE:
-					uint32_t cant_bytes;
-					uint32_t direccion_logica;
-				//	if(!recv_F_WRITE(cliente_socket,&direccion_logica,&cant_bytes)) log_error(logger,"fallo recibiendo f_write de kernel");
-					//recibir puntero?
+					char* nombre_archivow;
+				    uint32_t dlw;
+					uint32_t cbw;
+
+					recv_F_WRITE(cliente_socket, nombre_archivow,dlw, cbw);
+
+
+
+
+
 
 
 
@@ -52,9 +58,17 @@ static void procesar_peticiones(int cliente_socket){
 					   break;
 				case F_READ:
 
-					uint32_t dl;
+					char* nombre_archivo;
+					uint32_t df;
 					uint32_t cb;
-					//if(!recv_F_READ(cliente_socket,)) log_error(logger,"fallo recibiendo d_read de kernel");
+					uint32_t puntero;
+					recv_F_READ(cliente_socket, nombre_archivo,df,cb);
+					//necesito recibir un punero (? o supongo que lo saco de mi fcb?
+					log_info(logger,"Leer: Archivo: %s - Puntero: %d  - Memoria: <%d>  - Tamanio: <%d>",puntero,nombre_archivo,df,cb);
+
+					char*contenido = buscar_contenido(puntero,cb);
+					//le mando a memoria lo que tiene que escribir
+					send_READ(fd_memoria,contenido,df);
 
 
 

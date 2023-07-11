@@ -127,7 +127,8 @@ typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	HANDSHAKE,
 	INICIAR_ESTRUCTURAS,
 	FINALIZAR_ESTRUCTURAS,
-	W_MAS_R
+	READ, //pa q memoria escriba lo que manda cpu y fs
+	WRITE
 }op_code;
 
 //
