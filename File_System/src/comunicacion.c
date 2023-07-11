@@ -46,8 +46,8 @@ static void procesar_peticiones(int cliente_socket){
 					uint32_t cbw;
 
 					recv_F_WRITE(cliente_socket, nombre_archivow,dlw, cbw);
-					send_READ(fd_memoria,dlw); //read con un parametro nomas?
-
+					send_direccion_fisica(fd_memoria,dlw); //read con un parametro nomas?
+					//aca recibo el contenido.
 
 
 

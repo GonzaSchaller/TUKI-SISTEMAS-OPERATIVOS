@@ -1593,7 +1593,37 @@ bool send_direccion_fisica (int socket_cliente, uint32_t  parametro1){
 }
 
 
-
+static void* serializar_READ2(uint32_t parametro1) {
+   void* stream = malloc(sizeof(op_code) + sizeof(uint32_t));
+   op_code cop = READ;
+    memcpy(stream, &cop, sizeof(op_code));
+    memcpy(stream+sizeof(op_code), &parametro1, sizeof(uint32_t));
+    return stream;
+}
+static void deserializar_READ2(void* stream, uint32_t* parametro1) {
+    memcpy(parametro1, stream ,sizeof(uint32_t));
+}
+bool recv_READ2(int socket_cliente, uint32_t* parametro1){
+    size_t size = sizeof(uint32_t);
+    void* stream = malloc(size);
+    if (recv(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    deserializar_READ2(stream, parametro1);
+    free(stream);
+	return true;
+}
+bool send_READ2(int socket_cliente, uint32_t  parametro1){
+    size_t size = sizeof(op_code) + sizeof(uint32_t);
+    void* stream = serializar_READ2(parametro1);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
 
 
 
