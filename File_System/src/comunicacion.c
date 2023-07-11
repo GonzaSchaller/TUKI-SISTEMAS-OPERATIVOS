@@ -46,7 +46,7 @@ static void procesar_peticiones(int cliente_socket){
 					uint32_t cbw;
 
 					recv_F_WRITE(cliente_socket, nombre_archivow,dlw, cbw);
-
+					send_READ(fd_memoria,dlw); //read con un parametro nomas?
 
 
 
@@ -68,13 +68,14 @@ static void procesar_peticiones(int cliente_socket){
 
 					char*contenido = buscar_contenido(puntero,cb);
 					//le mando a memoria lo que tiene que escribir
-					send_READ(fd_memoria,contenido,df);
+					send_WRITE(fd_memoria,df,contenido);
 
 
 
 					   break;
 
 				case F_TRUNCATE:
+
 					   break;
 
 

@@ -1562,9 +1562,35 @@ bool send_WRITE(int fd,uint32_t parametro1 , char* parametro2) {
     return true;
 }
 
-
-
-
+static void* serializar_direccion_fisica(uint32_t parametro1) {
+    void* stream = malloc( sizeof(uint32_t));
+    memcpy(stream, &parametro1, sizeof(uint32_t));
+    return stream;
+}
+static void deserializar_direccion_fisica(void* stream, uint32_t* parametro1) {
+    memcpy(parametro1, stream, sizeof(uint32_t));
+}
+bool recv_direccion_fisica(int socket_cliente, uint32_t* parametro1){
+    size_t size = sizeof(uint32_t);
+    void* stream = malloc(size);
+    if (recv(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    deserializar_direccion_fisica(stream, parametro1);
+    free(stream);
+	return true;
+}
+bool send_direccion_fisica (int socket_cliente, uint32_t  parametro1){
+    size_t size = sizeof(uint32_t);
+    void* stream = serializar_direccion_fisica(parametro1);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
 
 
 
