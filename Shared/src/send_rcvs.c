@@ -1625,7 +1625,52 @@ bool send_READ2(int socket_cliente, uint32_t  parametro1){
     return true;
 }
 
+static void* serializar_contenido_leido(size_t* size,char* archivo){
+		size_t size_archivo = strlen(archivo)+1; // No sabemos si agregar +1 PREGUNTAR
+		*size =2*sizeof(size_t)+ size_archivo;
+		size_t size_payload = *size- sizeof(size_t);
+		void* stream = malloc(*size);
+		    memcpy(stream, &size_payload, sizeof(size_t));
+		    memcpy(stream+sizeof(size_t), &size_archivo, sizeof(size_t));
+		    memcpy(stream+sizeof(size_t)+size_archivo, archivo, size_archivo);
+	// copio al stream en orden cop,payload,sizep2,p2
+		    return stream;
+}
 
+static void deserializar_contenido_leido(void* stream,char** archivo){
+	size_t size_archivo;
+	memcpy(&size_archivo, stream, sizeof(size_t));
+	char* p2 = malloc(size_archivo);
+	*archivo = p2;
+	memcpy(p2,stream+sizeof(size_t) ,size_archivo);
+// OPCODE,PAYLOAD, SIZE P2, P2
+}
+bool recv_contenido_leido(int socket_cliente, char** contenido){
+	 size_t size_payload ;
+
+	    if (recv(socket_cliente,&size_payload,sizeof(size_t), 0) != sizeof(size_t)) {
+	        return false;
+	    }
+	    void* stream = malloc(size_payload);
+
+	    if (recv(socket_cliente,stream ,size_payload, 0) != size_payload) {
+	        free(stream);
+	        return false;
+	    }
+	    deserializar_contenido_leido(stream, contenido);
+	    free(stream);
+	    return true;
+}
+bool send_contenido_leido(int socket_cliente, char* contenido){
+    size_t size;
+    void* stream = serializar_contenido_leido(&size ,contenido);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
 
 
 
