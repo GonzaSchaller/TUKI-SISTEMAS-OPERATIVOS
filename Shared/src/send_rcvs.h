@@ -144,5 +144,7 @@ bool send_direccion_fisica (int socket_cliente, uint32_t  parametro1);
 bool recv_READ2(int socket_cliente, uint32_t* parametro1);
 bool send_READ2(int socket_cliente, uint32_t  parametro1);
 
+bool recv_contenido_leido(int socket_cliente, char** contenido);
+bool send_contenido_leido(int socket_cliente, char* contenido);
 
 #endif

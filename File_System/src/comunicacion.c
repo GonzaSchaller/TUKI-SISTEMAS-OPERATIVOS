@@ -48,19 +48,19 @@ static void procesar_peticiones(int cliente_socket){
 					uint32_t cbw;
 					char*contenido;
 					uint32_t punterow;
-					extra_code estadok;
+					uint32_t estadok;
 
 					recv_F_WRITE(cliente_socket,&nombre_archivow,&dlw,&cbw); //
 
-					log_info(logger,"Escribir Archivo: <%s> - Puntero: <%d> - Memoria <%s> - Tamanio: <%d>",nombre_archivow,punterow,dlw,cbw);
+					log_info(logger,"Escribir Archivo: <%s> - Puntero: <%d> - Memoria <%d> - Tamanio: <%d>",nombre_archivow,punterow,dlw,cbw);
 
 					//solicito a memoria lo que hay enla direccion logica mandada
 					send_READ2(fd_memoria, dlw);
 					//aca recibo el contenido que le pediu a memoria
-					recv_contenido_leido(fd_memoria,&contenido);
+					recv_contenido_leido(fd_memoria,&contenido); //TODO
 					//recibo un puntero?
 
-					if(escribir_contenido(contenido,punterow)){
+					if(escribir_contenido(contenido,punterow)){ //TODO
 						estadok = EXITOSO; //escribio bien
 						send_OK_CODE(cliente_socket,estadok);
 					}else {
@@ -70,19 +70,19 @@ static void procesar_peticiones(int cliente_socket){
 
 					   break;
 				case F_READ:
-					extra_code estado_memoria;
-					extra_code estado_kernel;
-					char* nombre_archivo;
+					uint32_t estado_memoria;
+					uint32_t estado_kernel;
+					char* nombre_archivor;
 					uint32_t df;
 					uint32_t cb;
 					uint32_t puntero;
-					recv_F_READ(cliente_socket,&nombre_archivo,&df,&cb);
+					recv_F_READ(cliente_socket,&nombre_archivor,&df,&cb);
 					//necesito recibir un punero (? o supongo que lo saco de mi fcb?
-					log_info(logger,"Leer: Archivo: %s - Puntero: %d  - Memoria: <%d>  - Tamanio: <%d>",puntero,nombre_archivo,df,cb);
+					log_info(logger,"Leer: Archivo: %s - Puntero: %d  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivor,puntero,df,cb);
 
-					char*contenido = buscar_contenido(puntero,cb);
+					char*contenidor = buscar_contenido(puntero,cb);
 					//le mando a memoria lo que tiene que escribir
-					send_WRITE(fd_memoria,df,contenido);
+					send_WRITE(fd_memoria,df,contenidor);
 					recv_OK_CODE(fd_memoria,&estado_memoria);
 					if(estado_memoria == EXITOSO){
 						estado_kernel = EXITOSO;
@@ -107,8 +107,8 @@ static void procesar_peticiones(int cliente_socket){
 
 int generar_conexion_con_memoria(){
 	int conexion = crear_conexion(logger,"Memoria",c->ip_memoria, c->puerto_memoria);
-	uint32_t handshake =1;
-	uint32_t result;
+	uint8_t handshake =1;
+	uint8_t result;
 	send_handshake(conexion,handshake);
 	recv_handshake(conexion,&result);
 	if(result == 1) log_info(logger,"todo ok capo");
