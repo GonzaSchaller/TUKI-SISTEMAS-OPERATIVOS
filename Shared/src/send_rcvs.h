@@ -139,7 +139,7 @@ bool recv_WRITE(int fd,uint32_t* parametro1,char** parametro2);
 bool send_WRITE(int fd,uint32_t parametro1 , char* parametro2);
 
 bool recv_direccion_fisica(int socket_cliente, uint32_t* parametro1);
-bool send_direccion_fisica (int socket_cliente, uint32_t  parametro1)
+bool send_direccion_fisica (int socket_cliente, uint32_t  parametro1);
 
 
 
