@@ -5,7 +5,7 @@ extern int fd_fs;
 extern
 
 
-static void procesar_peticiones(int cliente_socket){
+void procesar_peticiones(int cliente_socket){
 	op_code cop;
 	while(cliente_socket!=-1){
 		if(recv(cliente_socket,&cop,sizeof(op_code),0) == 0){
@@ -57,7 +57,7 @@ static void procesar_peticiones(int cliente_socket){
 					//solicito a memoria lo que hay enla direccion logica mandada
 					send_READ2(fd_memoria, dlw);
 					//aca recibo el contenido que le pediu a memoria
-					recv_contenido_leido(fd_memoria,&contenido); //TODO
+					recv_contenido_leido(fd_memoria,&contenido);
 					//recibo un puntero?
 
 					if(escribir_contenido(contenido,punterow)){ //TODO
@@ -80,7 +80,7 @@ static void procesar_peticiones(int cliente_socket){
 					//necesito recibir un punero (? o supongo que lo saco de mi fcb?
 					log_info(logger,"Leer: Archivo: %s - Puntero: %d  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivor,puntero,df,cb);
 
-					char*contenidor = buscar_contenido(puntero,cb);
+					char*contenidor = buscar_contenido(puntero,cb); //TODO
 					//le mando a memoria lo que tiene que escribir
 					send_WRITE(fd_memoria,df,contenidor);
 					recv_OK_CODE(fd_memoria,&estado_memoria);

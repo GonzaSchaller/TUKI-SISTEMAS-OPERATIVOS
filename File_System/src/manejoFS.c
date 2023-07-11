@@ -1,10 +1,11 @@
 #include "manejoFS.h"
 extern t_config_fs *c;
+extern t_log* logger;
 
-char*PATH_STATIC=c->fcb;
+
 
 char* concat(char*nombre_archivo){
-	char*path = strdup(PATH_STATIC);
+	char*path = strdup(c->fcb);
 	string_append(&path,"/");
 	string_append(&path,nombre_archivo);
 	return path;
@@ -14,7 +15,7 @@ bool existe_y_abrir(char*nombre_archivo){
 	//hay quer abrir el archivo
 	char*path = concat(nombre_archivo);
 	t_config* archivo = config_create(path);
-	if(archivo==NULL) {
+	if(archivo == NULL) {
 		log_error(logger,"el archivo NO existe");
 		return false;
 	}
