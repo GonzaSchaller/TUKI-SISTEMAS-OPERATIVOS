@@ -52,7 +52,11 @@ char* buscar_contenido(uint32_t puntero,uint32_t cb){
 
 
 
+bool escribir_contenido(char* contenido,uint32_t punterow){
 
+
+	return true;
+}
 
 
 

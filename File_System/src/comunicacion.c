@@ -2,6 +2,8 @@
 extern t_log* logger;
 extern t_config_fs *c;
 extern int fd_fs;
+extern
+
 
 static void procesar_peticiones(int cliente_socket){
 	op_code cop;
@@ -44,33 +46,51 @@ static void procesar_peticiones(int cliente_socket){
 					char* nombre_archivow;
 				    uint32_t dlw;
 					uint32_t cbw;
+					char*contenido;
+					uint32_t punterow;
+					extra_code estadok;
 
-					recv_F_WRITE(cliente_socket, nombre_archivow,dlw, cbw);
-					send_direccion_fisica(fd_memoria,dlw); //read con un parametro nomas?
-					//aca recibo el contenido.
+					recv_F_WRITE(cliente_socket,&nombre_archivow,&dlw,&cbw); //
 
+					log_info(logger,"Escribir Archivo: <%s> - Puntero: <%d> - Memoria <%s> - Tamanio: <%d>",nombre_archivow,punterow,dlw,cbw);
 
+					//solicito a memoria lo que hay enla direccion logica mandada
+					send_READ2(fd_memoria, dlw);
+					//aca recibo el contenido que le pediu a memoria
+					recv_contenido_leido(fd_memoria,&contenido);
+					//recibo un puntero?
 
-
-
-
+					if(escribir_contenido(contenido,punterow)){
+						estadok = EXITOSO; //escribio bien
+						send_OK_CODE(cliente_socket,estadok);
+					}else {
+						estadok= FALLIDO; //escribio mal
+						send_OK_CODE(cliente_socket,estadok);
+					}
 
 					   break;
 				case F_READ:
-
+					extra_code estado_memoria;
+					extra_code estado_kernel;
 					char* nombre_archivo;
 					uint32_t df;
 					uint32_t cb;
 					uint32_t puntero;
-					recv_F_READ(cliente_socket, nombre_archivo,df,cb);
+					recv_F_READ(cliente_socket,&nombre_archivo,&df,&cb);
 					//necesito recibir un punero (? o supongo que lo saco de mi fcb?
 					log_info(logger,"Leer: Archivo: %s - Puntero: %d  - Memoria: <%d>  - Tamanio: <%d>",puntero,nombre_archivo,df,cb);
 
 					char*contenido = buscar_contenido(puntero,cb);
 					//le mando a memoria lo que tiene que escribir
 					send_WRITE(fd_memoria,df,contenido);
-
-
+					recv_OK_CODE(fd_memoria,&estado_memoria);
+					if(estado_memoria == EXITOSO){
+						estado_kernel = EXITOSO;
+						send_OK_CODE(cliente_socket,estado_kernel);
+					}else{
+						estado_kernel = FALLIDO;
+						send_OK_CODE(cliente_socket,estado_kernel);
+					}
 
 					   break;
 
