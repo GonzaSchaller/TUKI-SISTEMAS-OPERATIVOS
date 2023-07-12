@@ -253,7 +253,7 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 							recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 				        }
 				        else{
-							if(!send_EXISTE_ARCHIVO(conexion_memoria, nombre_archivo)){
+							if(!send_EXISTE_ARCHIVO(conexion_fileSystem, nombre_archivo)){
 								log_error(log_kernel, "Fallo enviado existe_archivo a FILESYSTEM");
 							}
 								extra_code estado;

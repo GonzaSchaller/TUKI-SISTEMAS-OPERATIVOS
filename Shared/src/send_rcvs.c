@@ -1015,9 +1015,12 @@ static void* serializar_lista(t_list* lista) {
     return stream;
 }
 
-static void deserializar_lista(void* stream, t_list* lista, uint32_t num_elementos) {
+static void deserializar_lista(void* stream, t_list* lista, uint32_t tamanio_serializado) {
     list_clean(lista);
-    for (uint32_t i = 0; i < num_elementos; i++) {
+
+    int num_elementos = tamanio_serializado/sizeof(segmento_t);
+
+    for (uint32_t i = 0; i < tamanio_serializado; i++) {
     	segmento_t* elemento = malloc(sizeof(segmento_t));
         memcpy(elemento, stream + sizeof(segmento_t) * i, sizeof(segmento_t));
         list_add(lista, elemento);

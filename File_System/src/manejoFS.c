@@ -27,6 +27,8 @@ bool existe_y_abrir(char*nombre_archivo){
 	return true;
 }
 
+
+
 bool crear_archivo(char*nombre,uint32_t tamanio){
 	t_config* config = malloc(sizeof(t_config));
 	config->path = concat(nombre);
