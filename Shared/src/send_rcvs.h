@@ -131,6 +131,20 @@ bool recv_FINALIZAR_READ(int,uint32_t*);
 bool send_FINALIZAR_WRITE(int,uint32_t );
 bool recv_FINALIZAR_WRITE(int,uint32_t* );
 
+bool recv_READ(int fd,uint32_t* parametro1,char** parametro2);
+bool send_READ(int fd,uint32_t parametro1 , char* parametro2);
 
+
+bool recv_WRITE(int fd,uint32_t* parametro1,char** parametro2);
+bool send_WRITE(int fd,uint32_t parametro1 , char* parametro2);
+
+bool recv_direccion_fisica(int socket_cliente, uint32_t* parametro1);
+bool send_direccion_fisica (int socket_cliente, uint32_t  parametro1);
+
+bool recv_READ2(int socket_cliente, uint32_t* parametro1);
+bool send_READ2(int socket_cliente, uint32_t  parametro1);
+
+bool recv_contenido_leido(int socket_cliente, char** contenido);
+bool send_contenido_leido(int socket_cliente, char* contenido);
 
 #endif

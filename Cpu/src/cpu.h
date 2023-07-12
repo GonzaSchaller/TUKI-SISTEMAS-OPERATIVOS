@@ -41,5 +41,5 @@ void paquete(int);
 void terminar_programa(int, t_log*, t_config*);
 void recibir_instrucciones();
 void procesar_instrucciones(int, t_log*);
-
+void recibir_cant_instrucciones(int, t_log*, uint32_t* cantidad_instrucciones);
 #endif

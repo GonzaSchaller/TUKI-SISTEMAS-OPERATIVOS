@@ -2,16 +2,15 @@
 
 t_list* lista_pcb;
 
-void procesar_instrucciones(int socket_cliente, t_log* logger){
+void procesar_instrucciones(int socket_cliente, t_log* logger ){
 	////////////////////////////////////////////////////////////////////// RECIBIR INSTRUCCIONES /////////////////////////
 	op_code code_instruccion = -10;
-	uint32_t cant_instrucciones;
-	if(!recv_CANT_INSTRUCCIONES(socket_cliente, &cant_instrucciones)){
-		log_error(logger, "Error al recibir el valor que indica la cantidad de instrucciones");
-	}
-	log_info(logger, "cant instruc: <%d> ",cant_instrucciones);
+	//log_info(logger, "cant instruc: <%d> ",cant_instrucciones);
 	t_list* lista_instrucciones = list_create();
-
+	uint32_t cant_instrucciones;
+		if(!recv_CANT_INSTRUCCIONES(socket_cliente, &cant_instrucciones)){
+			log_error(logger, "Error al recibir el valor que indica la cantidad de instrucciones");
+		}
 	if(cant_instrucciones > 0){
 		int i;
 		for(i = 0; i < cant_instrucciones; i++){
@@ -55,13 +54,14 @@ void procesar_instrucciones(int socket_cliente, t_log* logger){
 	pcb_proceso->TSegmento = contexto .TSegmento;
 	//list_add(lista_pcb, pcb_proceso); // creo que no haria falta porque el kernel te manda el pcb con el pc que envia el cpu anteriormente
 
-	instruccion* instruccion_en_execute = malloc(sizeof(instruccion));
+	//instruccion* instruccion_en_execute = malloc(sizeof(instruccion));
 
 	// ¿no tendria que primero buscar el proceso en la lista_pcb y despues buscar el la intruccion?
 	while(pcb_proceso -> PC < list_size(pcb_proceso -> instrucciones)){
-		instruccion_en_execute = fetch(pcb_proceso);
+		instruccion* instruccion_en_execute = fetch(pcb_proceso);
 		if(decode_execute(socket_cliente, pcb_proceso, instruccion_en_execute, logger))
 			break;
+		free(instruccion_en_execute);
 		//agregar que pasa con los otros procesos cuando dejo de ejecutar uno, paso al siguiente en teoria
 	}
 	/*
@@ -74,7 +74,9 @@ void procesar_instrucciones(int socket_cliente, t_log* logger){
 	a la par ir cargandose los pcb mientras se va ejecutando alguno,
 	ó ¿mejor esperar a que se carguen todos los pcb?
 	*/
-
+	list_destroy_and_destroy_elements(lista_instrucciones, free);
+	list_destroy_and_destroy_elements(contexto.TSegmento, free);
+	free(pcb_proceso);
 }
 
 //void recibir_cant_instrucciones(int socket, t_log* logger, uint32_t* cantidad){
@@ -321,7 +323,8 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			char* param2 = una_instruccion -> parametro2.tipo_string;
 
 			usleep(retardo);
-			log_info(logger,"Ejecutando SET");
+
+			log_info(logger, "PID: <%d> - Ejecutando: <SET> - <%d %s>" , pcb_proceso->PID, param1, param2);
 			//log_info(logger, "PID: < %d > - Ejecutando: < %c > - < %d, %d >", pcb_proceso->PID, una_instruccion->id);
 			ejecutar_SET(pcb_proceso, param1, param2);
 
@@ -350,8 +353,8 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 		}
 		case IO:{
 			uint32_t tiempo = una_instruccion -> parametro1.tipo_int;
-
-			log_info(logger, "Ejecutando IO");
+			log_info(logger, "PID: <%d> - Ejecutando: <IO> - <%d>" , pcb_proceso->PID, tiempo);
+			//log_info(logger, "Ejecutando IO del proceso PID < %d >" , pcb_proceso->PID);
 			ejecutar_IO(pcb_proceso, tiempo);
 
 			corta_ejecucion = 1;
@@ -389,7 +392,8 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 		}
 		case WAIT:{
 			char* param1 = una_instruccion -> parametro1.tipo_string;
-			log_info(logger, "Ejecutando WAIT");
+			log_info(logger, "PID: <%d> - Ejecutando: <WAIT> - <%s>", pcb_proceso->PID, param1);
+			//log_info(logger, "Ejecutando WAIT del proceso PID < %d >" , pcb_proceso->PID);
 			ejecutar_WAIT(pcb_proceso, param1);
 
 			corta_ejecucion = 0;
@@ -397,7 +401,8 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 		}
 		case SIGNAL:{
 			char* param1 = una_instruccion -> parametro1.tipo_string;
-			log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
+			log_info(logger, "PID: <%d> - Ejecutando: <SIGNAL> - <%s>" , pcb_proceso->PID, param1);
+			//log_info(logger, "PID: %d - Ejecutando: %c - %d, %d", pcb_proceso->PID, una_instruccion->id);
 			ejecutar_SIGNAL(pcb_proceso, param1);
 
 			corta_ejecucion = 0;
@@ -412,7 +417,8 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			break;
 		}
 		case YIELD:{
-			log_info(logger, "Ejecutando YIELD");
+			log_info(logger, "PID: <%d> - Ejecutando: <YIELD>" , pcb_proceso->PID);
+			//log_info(logger, "Ejecutando YIELD del proceso PID < %d >" , pcb_proceso->PID);
 
 			ejecutar_YIELD(pcb_proceso);
 
@@ -420,7 +426,8 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			break;
 		}
 		case EXIT:{
-			log_info(logger, "Ejecutando EXIT");
+			log_info(logger, "PID: <%d> - Ejecutando: <EXIT> " , pcb_proceso->PID);
+			//log_info(logger, "Ejecutando EXIT del proceso PID < %d >" , pcb_proceso->PID);
 
 			ejecutar_EXIT(pcb_proceso);
 
@@ -428,6 +435,7 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			break;
 		}
 	}
+
 	return corta_ejecucion;
 }
 

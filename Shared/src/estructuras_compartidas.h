@@ -48,6 +48,8 @@ typedef struct{
 	t_list* recursos_asignados;
 	int socket_consola;
 	float tiempo_bloqueo;
+	bool finalizar_proceso;
+	char* motivo_exit;
 }pcb_t;
 
 typedef union {//porque puedo recibir int o char*
@@ -125,7 +127,8 @@ typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	HANDSHAKE,
 	INICIAR_ESTRUCTURAS,
 	FINALIZAR_ESTRUCTURAS,
-	COMPACTAR_MEMORIA
+	READ, //pa q memoria escriba lo que manda cpu y fs
+	WRITE
 }op_code;
 
 //

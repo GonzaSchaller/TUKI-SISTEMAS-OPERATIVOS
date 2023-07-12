@@ -46,7 +46,6 @@ void print_lista_PID(){
 
 void agregarNewAReady(pcb_t* pcb){
 	//log_trace(log_kernel,"Entre en agregar a ready");
-	log_info(log_kernel,"a(gregarNewAReady)Numero de inst: %d" ,list_size(pcb->instrucciones));
 	time_t a = time(NULL) * 1000; //momento en el que entra un proceso, sirve para el HRRN
 	pcb->horaDeIngresoAReady = a;
 	pthread_mutex_lock(&mutexReady); //para el execute a ready y de blocked a ready y de new a ready
@@ -91,13 +90,13 @@ void hiloNew_Ready(){
 		pcb_t* proceso = sacarDeNew();
 		//log_error(log_kernel,"[===========] agregue a ready desde hilo new ready");
 		agregarNewAReady(proceso);
-		log_info(log_kernel, "Numero de instrucciones: <%d> ",list_size(proceso->instrucciones));
+		//log_info(log_kernel, "Numero de instrucciones: <%d> ",list_size(proceso->instrucciones));
 	}
 
 }
 int tamanioDeListaReady(){
 
-	int tamanio;
+	int tamanio = 0;
 	pthread_mutex_lock(&mutexReady);
 	tamanio = list_size(listaReady);
 	pthread_mutex_unlock(&mutexReady);
@@ -182,9 +181,9 @@ void hiloReady_Execute(){
 		pcb_t* pcb_siguiente = obtener_siguiente_ready();
 		contexto_ejecucion contexto;
 		contexto.TSegmento = list_create();
-		log_info(log_kernel, "estamos en execute %d", pcb_siguiente->contexto.PID); // log de prueba
+		//log_info(log_kernel, "Estamos en execute %d", pcb_siguiente->contexto.PID); // log epico
 //		log_info(log_kernel, "Numero de instrucciones: <%d> ",list_size(pcb_siguiente->instrucciones)); //todo a veces llega 0
-		log_info(log_kernel, "PC: %d", pcb_siguiente->contexto.PC);
+		//log_info(log_kernel, "PC: %d", pcb_siguiente->contexto.PC);
 //		log_info(log_kernel, "AX: %s", pcb_siguiente->contexto.registros.AX);
 //		log_info(log_kernel, "BX: %s", pcb_siguiente->contexto.registros.BX);
 //		log_info(log_kernel, "CX: %s", pcb_siguiente->contexto.registros.CX);
@@ -197,7 +196,7 @@ void hiloReady_Execute(){
 //		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RBX);
 //		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RCX);
 //		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RDX);
-		log_info(log_kernel, "Tabla: %d", list_size(pcb_siguiente->contexto.TSegmento));
+		//log_info(log_kernel, "Tabla: %d", list_size(pcb_siguiente->contexto.TSegmento));
 		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
 		pcb_siguiente->state_anterior = pcb_siguiente->state;
 		pcb_siguiente->state = EXEC;
@@ -224,12 +223,13 @@ void liberar_Recursos(pcb_t* pcb) { //para liberar recursos asignados de un proc
 void terminarEjecucion(pcb_t* pcb){
 	pthread_mutex_lock(&mutexExit);
 	liberar_Recursos(pcb);
-	list_add(listaExit, pcb);
+	list_add(listaExit, pcb); //todo revisar
+
 	pcb->state_anterior = pcb->state;
 	pcb->state = FINISH;
 	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb->contexto.PID,estado_pcb_a_string(pcb->state_anterior),estado_pcb_a_string(pcb->state));
+	log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <%s>", pcb->contexto.PID,pcb->motivo_exit);
 	send_FINALIZAR_ESTRUCTURAS(conexion_memoria);
-	log_info(log_kernel, "[EXIT] Finaliza el proceso de PID: %d", pcb->contexto.PID);
 	if(!send_EXIT(pcb->socket_consola)){
 		log_info(log_kernel, "Error enviandole a consola exit"); //todo ver el de consola, para mi es una especie del hanshake tuneado de utnso.
 	};
@@ -239,6 +239,7 @@ void terminarEjecucion(pcb_t* pcb){
 	list_destroy_and_destroy_elements(pcb->instrucciones, free);
 	list_destroy_and_destroy_elements(pcb->contexto.TSegmento, free);
 	free(pcb);
+	sem_post(&multiprogramacion);
 	pthread_mutex_unlock(&mutexExit);
 
 }

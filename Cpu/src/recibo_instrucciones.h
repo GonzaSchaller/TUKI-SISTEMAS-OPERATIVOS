@@ -32,10 +32,10 @@ typedef struct{
 
 extern t_list* lista_pcb;
 
-void procesar_instrucciones(int, t_log*);
+
 void cargar_instruccion_a_lista(int, op_code, t_list*, t_log*);
 int verificacion_recibo_code_correctamente(int, t_log*, op_code*);
-void recibir_cant_instrucciones(int, t_log*, uint32_t* cantidad_instrucciones);
+
 
 void cargar_instruccion1(int, char* , uint32_t, uint32_t ,uint32_t ,t_list* );
 void cargar_instruccion2(int, char* , uint32_t, char* ,uint32_t ,t_list* );

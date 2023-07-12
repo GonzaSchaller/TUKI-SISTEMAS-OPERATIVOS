@@ -14,7 +14,7 @@ extern segmento_t* (*proximo_hueco)(uint32_t);
 
 //static
 static uint32_t tamanioStc = 0;
-#define pozo 9999
+#define POZO 9999
 
 //semaforos
 //extern pthread_mutex_t mutex_segmentos_usados;
@@ -64,8 +64,8 @@ bool actualizar_segmentos_libres (segmento_t* seg, uint32_t size){
 	if(seg->tamanio > size){
 		seg->tamanio-= size;
 		seg->direccion_Base +=size;
-	} else { //elimino el segmento quue tenga el id del segmento.
-			remove_segmento_tsl(seg->id);
+	} else { //eliminar por base?
+			remove_segmento_tsl(seg->direccion_Base);
 		}
 
 	if(seg->tamanio > tam_hueco_mas_grande) tam_hueco_mas_grande = seg->tamanio;
@@ -107,12 +107,12 @@ bool borrar_segmento(uint32_t base,uint32_t pid){
 	if(seg == NULL) return false;
 	log_info(log_memoria,"PID: %d - Eliminar Segmento: %d  - Base: %d - Tamanio %d \n",pid,seg->id,seg->direccion_Base,seg->tamanio);
 
-	segmento_t* new_hueco_libre = new_segmento(pozo,seg->direccion_Base,seg->tamanio,pozo);
+	segmento_t* new_hueco_libre = new_segmento(POZO,seg->direccion_Base,seg->tamanio,POZO);
 	//meto el segmento nuevo en segmetos libres
 
 	insertar_segmento_entsl(new_hueco_libre);
 	//poner en 0 la direccion que apuntaba ese segmento en memoria.
-	memsetear_mp(seg->direccion_Base,seg->tamanio);
+	memsetear_mp(seg->direccion_Base,seg->tamanio,0);
 	//elimino el segmento usado de la lista de segmentos usados.
 
 	remover_segmento_entso(seg->direccion_Base);

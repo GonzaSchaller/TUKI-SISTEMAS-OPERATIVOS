@@ -42,6 +42,7 @@ extern t_config_fs *c;
 extern FILE* f_bloques;
 extern FILE* f_bitmap;
 extern t_bitarray* bitarray;
+extern int fd_memoria;
 
 void cargar_superbloque();
 void levantar_config();

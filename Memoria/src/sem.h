@@ -28,7 +28,7 @@ void remove_segmento_tsl(uint32_t id);
 bool bypid(void* segmento);
 
 //MEMORIA PRINCIPAL
-void memsetear_mp(uint32_t base,uint32_t tamanio);
+void memsetear_mp(uint32_t base,uint32_t tamanio,uint32_t contenido);
 
 //RELLENO
 t_list * create_list_seg_by_pid(uint32_t pid);

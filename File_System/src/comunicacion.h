@@ -18,9 +18,10 @@
 #include <pthread.h>
 #include <send_rcvs.h>
 #include "iniciar.h"
-
+#include "manejoFS.h"
 
 
 int generar_conexion_con_memoria();
 void conexion_kernel();
+
 #endif

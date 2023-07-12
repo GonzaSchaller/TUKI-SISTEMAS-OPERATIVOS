@@ -63,7 +63,8 @@ void ejecutar_SET(pcb_cpu* pcb_proceso, uint32_t registro, char* valor){
 			break;
 		}
 		case RDX:{
-			strcpy(pcb_proceso -> registros.RDX, valor);
+			size_t max_size = sizeof(pcb_proceso->registros.RDX); // Tamaño máximo del destino
+			strncpy(pcb_proceso->registros.RDX, valor, max_size);
 			//pcb_proceso -> registros.RDX = param2;
 			break;
 		}
@@ -91,7 +92,7 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	//hago un recv
 
 	// pedir a memoria que me pase y lo guardo en valor
-	char* valor = NULL;
+	char* valor;
 
 	//guardo en el registro:
 	switch(registro){
@@ -162,7 +163,7 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 
 //VER SI LE TENGO QUE PASAR EL TAMAÑO DE SEGMENTO.
 void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
-	char* valor = NULL;
+	char* valor;
 	//obtengo el dato del registro
 	switch(registro){
 		case AX:{

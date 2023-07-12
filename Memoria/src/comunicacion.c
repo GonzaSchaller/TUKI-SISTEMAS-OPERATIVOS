@@ -1,4 +1,4 @@
-#include "comunicacion.h"
+ \#include "comunicacion.h"
 #include <send_rcvs.h>
 
 extern t_log*log_memoria;
@@ -168,9 +168,14 @@ static void procesar_conexionn(void* void_args){
 
 
 
-			case MOV_IN: //cambiar nombre. TODO
+			case MOV_IN:
 				uint32_t pid_mi;
+				char*contenido;
+				uint32_t df;
 
+				recv_READ(cliente_socket,&df,&contenido);
+
+				uint32_t longitud = strlen(contenido);
 
 
 				recv_PID(cliente_socket, &pid_mi);
@@ -178,11 +183,11 @@ static void procesar_conexionn(void* void_args){
 
 
 				//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>”
-			//	log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>",pid_leer,direccion_fisica);
+				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>",pid_mi,df,longitud,server_name);
 
 			break;
 
-			case MOV_OUT://cambair nombre TODO
+			case MOV_OUT:
 //				uint32_t pid_escribir;
 //				uint32_t direccion_fisica_e;
 
@@ -194,14 +199,11 @@ static void procesar_conexionn(void* void_args){
 
 				break;
 
-			case COMPACTAR_MEMORIA:
-				//compactar_memoria();
-				break;
 
 
              }//break
        }//while
-		log_warning(log_memoria,"cliente desconectado");
+		log_warning(log_memoria,"cliente %s desconectado ",server_name);
 		return;
 }
 
