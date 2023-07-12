@@ -1,24 +1,27 @@
-#ifndef SEND_RCVS_H_
-#define SEND_RCVS_H_
+#ifndef MANEJO_FS_H
+#define MANEJO_FS_H
 
 #include <stdint.h> // pasarlo a todos los archivos
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
 #include <commons/log.h>
 #include <commons/string.h>
 #include <commons/config.h>
+#include <commons/bitarray.h>
 
 #include <sockets.h>
+#include <sys/socket.h>
+#include <pthread.h>
+
 #include <signal.h>
 #include <unistd.h>
-#include <sys/socket.h>
 #include <netdb.h>
-#include <string.h>
-#include <pthread.h>
+
 #include <sys/mman.h>
-#include <commons/bitarray.h>
-#include <math.h>
+
 #include "iniciar.h"
 #include <stdbool.h>
 

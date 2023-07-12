@@ -1,4 +1,4 @@
-#include "comunicacion.h"
+ \#include "comunicacion.h"
 #include <send_rcvs.h>
 
 extern t_log*log_memoria;

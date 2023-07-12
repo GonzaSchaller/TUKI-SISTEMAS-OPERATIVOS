@@ -47,7 +47,7 @@ void procesar_peticiones(int cliente_socket){
 				    uint32_t dlw;
 					uint32_t cbw;
 					char*contenido;
-					uint32_t punterow;
+					uint32_t punterow=0;
 					uint32_t estadok;
 
 					recv_F_WRITE(cliente_socket,&nombre_archivow,&dlw,&cbw); //
@@ -75,11 +75,9 @@ void procesar_peticiones(int cliente_socket){
 					char* nombre_archivor;
 					uint32_t df;
 					uint32_t cb;
-					uint32_t puntero;
+					uint32_t puntero=0;
 					recv_F_READ(cliente_socket,&nombre_archivor,&df,&cb);
-					//necesito recibir un punero (? o supongo que lo saco de mi fcb?
 					log_info(logger,"Leer: Archivo: %s - Puntero: %d  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivor,puntero,df,cb);
-
 					char*contenidor = buscar_contenido(puntero,cb); //TODO
 					//le mando a memoria lo que tiene que escribir
 					send_WRITE(fd_memoria,df,contenidor);
