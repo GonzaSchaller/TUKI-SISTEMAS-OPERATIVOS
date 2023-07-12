@@ -77,6 +77,7 @@ void procesar_peticiones(int cliente_socket){
 					uint32_t cb;
 					uint32_t puntero=0;
 					recv_F_READ(cliente_socket,&nombre_archivor,&df,&cb);
+
 					log_info(logger,"Leer: Archivo: %s - Puntero: %d  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivor,puntero,df,cb);
 					char*contenidor = buscar_contenido(puntero,cb); //TODO
 					//le mando a memoria lo que tiene que escribir
