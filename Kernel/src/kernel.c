@@ -57,7 +57,7 @@ void inicializar_semaforos(){
 	sem_init(&multiprogramacion, 0, grado_max_multiprogramacion); // hasta 4 procesos en ready
 	sem_init(&semFWrite,0, 1);
 	sem_init(&semFRead,0,1);
-	sem_init(&largoPlazo, 0, 1);
+	sem_init(&largoPlazo, 0, 0);
 
 
 	//sem_init(&hilo_sincro_cpu_kernel, 0, 0);
@@ -154,7 +154,7 @@ int server_escuchar(int server_kernel){
 		args->log = log_kernel;
 		args->socket = consola_socket;
 		args->server_name = "Kernel";
-		procesar_conexion_consola((void*) args);
+		//procesar_conexion_consola((void*) args); //el que descomenta esto lo mato
 		pthread_create(&hilo, NULL, (void*) procesar_conexion_consola, (void*) args);
 		pthread_detach(hilo);
 		// wait semaforo 1
@@ -163,8 +163,12 @@ int server_escuchar(int server_kernel){
 	}
 	return 0;
 }
+//void sighandler(int s){
+//	cerrar
+//}
 
 int main (){
+		//signal(SIGINT, sighandler);
 	 	log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
 		t_config* config_kernel = config_create("kernel.config");
 		iniciar_config(config_kernel);

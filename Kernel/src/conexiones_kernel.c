@@ -23,7 +23,7 @@ void procesar_conexion_consola(void *void_args)
             {
                 if (cop == 153)
                 {
-                    { // si no recibo una instruccion
+                     // si no recibo una instruccion
                         // aca irian las cosas que recibo que no son una instruccion
                         contadorProcesos++;
                         inicializarPCB(contadorProcesos, lista_instrucciones, pcb, socket_cliente); // inicializamos el pcb que le vamos a mandar al cpu
@@ -31,18 +31,10 @@ void procesar_conexion_consola(void *void_args)
                         //list_destroy_and_destroy_elements(lista_instrucciones, free);// agregamos cada proceso a NEW
                          //log_info(log_kernel, "Numero de inst %d", list_siz);
                         recibo_instrucciones = false;
-                        break; // Importante
-                    }
+                        return; // Importante
                 }
                 else
                 {
-                    //		log_info(log_kernel, "%d", cop);
-                    //		//creo que va aca
-                    //		contadorProcesos++;
-                    //		inicializarPCB(contadorProcesos,lista_instrucciones, pcb); //inicializamos el pcb que le vamos a mandar al cpu
-                    //		agregarANew(pcb); //agregamos cada proceso a NEW
-
-                    // me fijo que instruccion es segun el codigo de operacion
                     switch (cop)
                     {
                     case SET:
@@ -229,10 +221,12 @@ void procesar_conexion_consola(void *void_args)
                     default:
                         log_error(log_kernel, "Algo anduvo mal en el server de %s", server_name);
                         log_info(log_kernel, "Cop: %d", cop);
-                        return;
+                        recibo_instrucciones = false;
+                        break;
                     }
                 }
             }
+
         }
     }
     //    log_warning(log_kernel, "El cliente se desconecto de %s server", server_name);

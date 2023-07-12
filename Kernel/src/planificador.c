@@ -231,7 +231,7 @@ void terminarEjecucion(pcb_t* pcb){
 	log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <%s>", pcb->contexto.PID,pcb->motivo_exit);
 	send_FINALIZAR_ESTRUCTURAS(conexion_memoria);
 	if(!send_EXIT(pcb->socket_consola)){
-		log_info(log_kernel, "Error enviandole a consola exit"); //todo ver el de consola, para mi es una especie del hanshake tuneado de utnso.
+		log_info(log_kernel, "Error enviandole a consola exit");
 	};
 
 	list_destroy_and_destroy_elements(pcb->tabla_archivosAbiertos, free);
