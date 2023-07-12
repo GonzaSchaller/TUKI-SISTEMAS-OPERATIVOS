@@ -1,6 +1,7 @@
 #include "ejecutar_instrucciones.h"
 
 int socket_cliente_kernel;
+int socket_memoria; //hacer
 
 void set_socket_kernel(int socket){
 	socket_cliente_kernel = socket;
@@ -94,7 +95,7 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	// pedir a memoria que me pase y lo guardo en valor
 	char* valor;
 
-	//guardo en el registro:
+	//************************************************************* guardo en el registro:
 	switch(registro){
 			case AX:{
 				strcpy(pcb_proceso -> registros.AX, valor);
@@ -161,9 +162,8 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 
 }
 
-//VER SI LE TENGO QUE PASAR EL TAMAÑO DE SEGMENTO.
 void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
-	char* valor;
+	char* valor = NULL;
 	//obtengo el dato del registro
 	switch(registro){
 		case AX:{
@@ -243,11 +243,8 @@ void ejecutar_IO(pcb_cpu* pcb_proceso, uint32_t tiempo){
 	contexto_para_kernel.PID = pcb_proceso -> PID;
 	contexto_para_kernel.PC = pcb_proceso -> PC;
 	contexto_para_kernel.registros = pcb_proceso -> registros;
-	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
-
-	//send_IO(socket_cliente_kernel, tiempo);
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_IO(socket_cliente_kernel, tiempo);
 }
@@ -259,10 +256,8 @@ void ejecutar_F_OPEN(pcb_cpu* pcb_proceso, char* archivo){
 	contexto_para_kernel.PID = pcb_proceso -> PID;
 	contexto_para_kernel.PC = pcb_proceso -> PC;
 	contexto_para_kernel.registros = pcb_proceso -> registros;
-	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
-	//send(socket_cliente_kernel, F_OPEN, sizeof(op_code), NULL);
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_F_OPEN(socket_cliente_kernel, archivo);
 }
@@ -274,10 +269,8 @@ void ejecutar_F_CLOSE(pcb_cpu* pcb_proceso, char* archivo){
 	contexto_para_kernel.PID = pcb_proceso -> PID;
 	contexto_para_kernel.PC = pcb_proceso -> PC;
 	contexto_para_kernel.registros = pcb_proceso -> registros;
-	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
-	//send(socket_cliente_kernel, F_CLOSE, sizeof(op_code), NULL);
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_F_CLOSE(socket_cliente_kernel, archivo);
 }
@@ -289,30 +282,29 @@ void ejecutar_F_SEEK(pcb_cpu* pcb_proceso, char* archivo, uint32_t posicion){
 	contexto_para_kernel.PID = pcb_proceso -> PID;
 	contexto_para_kernel.PC = pcb_proceso -> PC;
 	contexto_para_kernel.registros = pcb_proceso -> registros;
-	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
-	//send(socket_cliente_kernel, F_SEEK, sizeof(op_code), NULL);
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_F_SEEK(socket_cliente_kernel, archivo, posicion);
 }
 
 void ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
+	t_list* listaSegmentos = pcb_proceso -> TSegmento;
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
+	//escribir en la DF de memoria lo del archivo
+
 	contexto_ejecucion contexto_actualizado;
 
 	pcb_proceso -> PC += 1;
 	contexto_actualizado.PID = pcb_proceso -> PID;
 	contexto_actualizado.PC = pcb_proceso -> PC;
 	contexto_actualizado.registros = pcb_proceso -> registros;
-	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 
-	uint32_t tam_segmento = 0;
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, tam_segmento);
 
-	//escribir en la DF de memoria l odel archivo
+
 }
 
 //void ejecutar_F_WRITE(){}

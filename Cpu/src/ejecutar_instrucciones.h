@@ -24,6 +24,7 @@
 //#include "cpu.h" //para agregar conexion_memoria
 
 extern int socket_cliente_kernel; //ver como agregar aca el socket kernel
+extern int socket_memoria;
 
 typedef struct{
 	uint32_t PID;
