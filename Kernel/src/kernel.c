@@ -22,6 +22,7 @@ char* estado_pcb_a_string(uint32_t estado_int){// CAMBIE
 	    }
 }
 
+
 //lee el archivo config
 void iniciar_config(t_config* config){
 	ip = "127.0.0.1";
@@ -69,7 +70,6 @@ void inicializar_listas(){
 	listaReady = list_create();
 	listaExe = list_create();
 	listaBlock = list_create();
-	listaExit = list_create();
 	tabla_ArchivosAbiertosGlobal = list_create();
 	//lista_recursos = list_create();
 	//lista_instrucciones_kernel = list_create();
@@ -95,14 +95,19 @@ void destruir_semaforos_listas(){
     list_destroy_and_destroy_elements(listaExe,free);
     list_destroy_and_destroy_elements(listaBlock,free);
 
-    list_destroy_and_destroy_elements(listaExit,free);
     list_destroy_and_destroy_elements(listaReady,free);
     //list_destroy_and_destroy_elements(lista_instrucciones,free);
     //list_destroy_and_destroy_elements(lista_pcb_en_memoria,free);
     queue_destroy_and_destroy_elements(colaNew,free);
 
     list_destroy_and_destroy_elements(lista_recursos, free);
-    list_destroy_and_destroy_elements(tabla_ArchivosAbiertosGlobal, free);
+
+	for(int i;i<list_size(tabla_ArchivosAbiertosGlobal);i++){
+		fcb_kernel* archivo = list_remove(tabla_ArchivosAbiertosGlobal,i);
+		free(&archivo->colaBloqueados);
+		free(&archivo);
+	}
+    free(tabla_ArchivosAbiertosGlobal);
 
     pthread_mutex_destroy(&mutexNew);
     pthread_mutex_destroy(&mutexReady);

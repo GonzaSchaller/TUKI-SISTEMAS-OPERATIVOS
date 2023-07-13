@@ -1,7 +1,36 @@
 #include "recibo_instrucciones.h"
 
 t_list* lista_pcb;
-
+char* registros_a_string(uint32_t estado_int) {
+    switch (estado_int) {
+        case AX:
+            return "AX";
+        case BX:
+            return "BX";
+        case CX:
+            return "CX";
+        case DX:
+            return "DX";
+        case EAX:
+            return "EAX";
+        case EBX:
+            return "EBX";
+        case ECX:
+            return "ECX";
+        case EDX:
+            return "EDX";
+        case RAX:
+            return "RAX";
+        case RBX:
+            return "RBX";
+        case RCX:
+            return "RCX";
+        case RDX:
+            return "RDX";
+        default:
+            return "Registro desconocido";
+    }
+}
 void procesar_instrucciones(int socket_cliente, t_log* logger ){
 	////////////////////////////////////////////////////////////////////// RECIBIR INSTRUCCIONES /////////////////////////
 	op_code code_instruccion = -10;
@@ -324,7 +353,7 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 
 			usleep(retardo);
 
-			log_info(logger, "PID: <%d> - Ejecutando: <SET> - <%d %s>" , pcb_proceso->PID, param1, param2);
+			log_info(logger, "PID: <%d> - Ejecutando: <SET> - <%s %s>" , pcb_proceso->PID, registros_a_string(param1), param2);
 			//log_info(logger, "PID: < %d > - Ejecutando: < %c > - < %d, %d >", pcb_proceso->PID, una_instruccion->id);
 			ejecutar_SET(pcb_proceso, param1, param2);
 

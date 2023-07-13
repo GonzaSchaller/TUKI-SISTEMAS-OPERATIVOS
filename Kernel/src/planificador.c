@@ -208,7 +208,6 @@ void liberar_Recursos(pcb_t* pcb) { //para liberar recursos asignados de un proc
 void terminarEjecucion(pcb_t* pcb){
 	pthread_mutex_lock(&mutexExit);
 	liberar_Recursos(pcb);
-	list_add(listaExit, pcb); //todo revisar
 
 	pcb->state_anterior = pcb->state;
 	pcb->state = FINISH;
@@ -223,15 +222,13 @@ void terminarEjecucion(pcb_t* pcb){
 	list_destroy_and_destroy_elements(pcb->recursos_asignados, free);
 	list_destroy_and_destroy_elements(pcb->instrucciones, free);
 	list_destroy_and_destroy_elements(pcb->contexto.TSegmento, free);
+
 	free(pcb);
 	sem_post(&multiprogramacion);
 	pthread_mutex_unlock(&mutexExit);
 
 }
 
-
-// TODO recalcular_rafagas_hrrn sacarlo de todos las funciones de manejo, y ponerlo despues del while en el hilo_ready_exe
-// TODO avisarle que para F_READ Y F_WRITE, le pasamos el nombre del archivo y ella tiene que buscarlo para hacer lo que tenga que hacer
 
 //void remover_segmento(t_list* tabla_segmento, uint32_t id_segmento){
 //	    bool encontrarSegmento(void* elemento) {
