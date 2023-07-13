@@ -2,7 +2,7 @@
 extern t_log* logger;
 extern t_config_fs *c;
 extern int fd_fs;
-extern
+//extern
 
 
 void procesar_peticiones(int cliente_socket){
@@ -94,6 +94,13 @@ void procesar_peticiones(int cliente_socket){
 						break;
 
 				case F_TRUNCATE:
+					char* nombre_archivo;
+					uint32_t tamanio;
+					recv_F_TRUNCATE(cliente_socket, &nombre_archivo, &tamanio);
+
+					//uso funcion concat para obtener el path y asi usar c
+					//no se como llegar al FCB
+
 					// var pasada por parametro: el nuevo tamanio
 					// a partir de ahí ver si es más chico o más grande y hacer lo necesario:
 						//TODO TRUNCATE: Actualizar el tamanio del archivo en FCB
