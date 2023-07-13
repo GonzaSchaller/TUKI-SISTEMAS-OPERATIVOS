@@ -14,11 +14,11 @@ void procesar_peticiones(int cliente_socket){
 
 
 				switch(cop){
-
+				// TODO: ver como pasar los datos nombre archivo y tamanio porque despues lo usamos en config_set_value que usa punteros
 				case F_OPEN:
 					extra_code estado;
 					char*nombre_archivo;
-					uint32_t tamanio;
+					uint32_t tamanio; //ver si cambiarlo a char* o castear
 					if(!recv_F_OPEN(cliente_socket,&nombre_archivo)) log_error(logger, "Fallo recibiendo f_open de kernel");
 
 					log_info(logger,"abrir archivo %s",nombre_archivo);
@@ -27,7 +27,7 @@ void procesar_peticiones(int cliente_socket){
 						estado = INCORRECTO;
 						send_OK_CODE(cliente_socket, estado);
 						//crear el arcchivo.
-						recv_CREAR_ARCHIVO(cliente_socket, &nombre_archivo,&tamanio); //para mi que no deberia recibir nada
+						recv_CREAR_ARCHIVO(cliente_socket, &nombre_archivo, &tamanio); //para mi que no deberia recibir nada
 
 						if(crear_archivo(nombre_archivo,tamanio)){
 							estado = CORRECTO;
@@ -44,18 +44,18 @@ void procesar_peticiones(int cliente_socket){
 
 				case F_WRITE:
 					char* nombre_archivow;
-				    uint32_t dlw;
-					uint32_t cbw;
+				    uint32_t dfw; // la DF
+					uint32_t cbw; // cant bytes
 					char*contenido;
-					uint32_t punterow=0;
+					uint32_t punterow = 0;
 					uint32_t estadok;
 
-					recv_F_WRITE(cliente_socket,&nombre_archivow,&dlw,&cbw); //
+					recv_F_WRITE(cliente_socket,&nombre_archivow,&dfw,&cbw);
 
-					log_info(logger,"Escribir Archivo: <%s> - Puntero: <%d> - Memoria <%d> - Tamanio: <%d>",nombre_archivow,punterow,dlw,cbw);
+					log_info(logger,"Escribir Archivo: <%s> - Puntero: <%d> - Memoria <%d> - Tamanio: <%d>",nombre_archivow,punterow,dfw,cbw);
 
-					//solicito a memoria lo que hay enla direccion logica mandada
-					send_READ2(fd_memoria, dlw);
+					//solicito a memoria lo que hay en la direccion logica mandada
+					send_READ2(fd_memoria, dfw);
 					//aca recibo el contenido que le pediu a memoria
 					recv_contenido_leido(fd_memoria,&contenido);
 					//recibo un puntero?
@@ -74,7 +74,7 @@ void procesar_peticiones(int cliente_socket){
 					uint32_t estado_kernel;
 					char* nombre_archivor;
 					uint32_t df;
-					uint32_t cb;
+					uint32_t cb; //cant bytes
 					uint32_t puntero=0;
 					recv_F_READ(cliente_socket,&nombre_archivor,&df,&cb);
 
@@ -91,12 +91,17 @@ void procesar_peticiones(int cliente_socket){
 						send_OK_CODE(cliente_socket,estado_kernel);
 					}
 
-					   break;
+						break;
 
 				case F_TRUNCATE:
-
-					   break;
-
+					// var pasada por parametro: el nuevo tamanio
+					// a partir de ahí ver si es más chico o más grande y hacer lo necesario:
+						//TODO TRUNCATE: Actualizar el tamanio del archivo en FCB
+						// Si es mas chico que el de antes:
+							//Marcar libres los bloques (no hace falta borrar el contenido)
+						// Si es más grande que el de antes:
+							//TODO Asignar nuevos bloques (ver que significa)
+						break;
 
 				}
 
