@@ -65,9 +65,6 @@ void procesar_peticiones(int cliente_socket){
 					if(escribir_contenido(contenido,punterow)){ //escribir_contenido INCOMPLETA
 						estadok = EXITOSO; //escribio bien
 						send_OK_CODE(cliente_socket,estadok);
-					}else {
-						estadok= FALLIDO; //escribio mal
-						send_OK_CODE(cliente_socket,estadok);
 					}
 
 					   break;

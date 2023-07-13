@@ -1,4 +1,4 @@
- \#include "comunicacion.h"
+#include "comunicacion.h"
 #include <send_rcvs.h>
 
 extern t_log*log_memoria;
@@ -31,6 +31,7 @@ static void procesar_conexionn(void* void_args){
 
 			switch(cop){
 			case HANDSHAKE:
+			{
 				uint8_t handshake;
 				uint8_t resultOk = 0;
 				uint8_t resultError = -1;
@@ -40,42 +41,48 @@ static void procesar_conexionn(void* void_args){
 					break;
 				}
 				if(handshake == 1){
-							    log_info(log_memoria,"handshake exitoso");
-							    send_handshake(cliente_socket,resultOk);
-							}
-							else{
-								   log_error(log_memoria,"no t conozcoleer() capo");
-								   send_handshake(cliente_socket,resultError);
-								}
+					log_info(log_memoria,"handshake exitoso");
+					send_handshake(cliente_socket,resultOk);
+				}
+				else{
+					log_error(log_memoria,"no t conozcoleer() capo");
+					send_handshake(cliente_socket,resultError);
+				}
 				break;
+			}
 
 			case INICIAR_ESTRUCTURAS:
+			{
 				uint32_t pid;
-				//if(recv_INICIAR_ESTRUCTURA_MEMORIA(cliente_socket)){ //el send ya manda el opcode
-					recv_PID(cliente_socket, &pid);
-					log_info(log_memoria,"Creación de Proceso PID: %d",pid);
+				if(!recv_INICIAR_ESTRUCTURA_MEMORIA(cliente_socket)){
+					log_error(log_memoria,"fallo recibiendo iniciar_estructuras");
+					break;
+				}
 
-				    t_list* tabla_de_segmentos = list_create();
-				    segmento_0->pid = pid;
+				recv_PID(cliente_socket, &pid);
+				log_info(log_memoria,"Creación de Proceso PID: %d",pid);
 
-					list_add(tabla_de_segmentos,(void*)segmento_0);
+				t_list* tabla_de_segmentos = list_create();
+				segmento_0->pid = pid;
 
-					send_TABLA_SEGMENTOS(cliente_socket,tabla_de_segmentos);
-					cant_procesos++;
-				//}
-			//else log_error(log_memoria,"fallo recibiendo iniciar_estructuras");
+				list_add(tabla_de_segmentos,(void*)segmento_0);
+
+				send_TABLA_SEGMENTOS(cliente_socket,tabla_de_segmentos);
+				cant_procesos++;
 
 				break;
+			}
 			case CREATE_SEGMENT:
-				uint32_t ide;
+			{
+				uint32_t id;
 				uint32_t size;
 				estados_segmentos estado;
-				uint32_t pid_cts;
+				uint32_t pid;
 
-				if(!recv_CREATE_SEGMENT(cliente_socket, & ide, &size)) {
-				log_error(log_memoria,"error recibiendo CREATE_SEGMENT"); break;}
+				if(!recv_CREATE_SEGMENT(cliente_socket, & id, &size)) {
+					log_error(log_memoria,"error recibiendo CREATE_SEGMENT"); break;}
 
-				recv_PID(cliente_socket, &pid_cts);
+				recv_PID(cliente_socket, &pid);
 
 				if(!entra_en_memoria(size)){
 					estado = FALLIDO;
@@ -89,7 +96,7 @@ static void procesar_conexionn(void* void_args){
 					recv(cliente_socket, &confirmacion, sizeof(confirmacion), 0);
 
 					if(confirmacion == COMPACTAR){
-					log_info(log_memoria,"Inicio de compactacion");
+						log_info(log_memoria,"Inicio de compactacion");
 						if(compactar_memoria()){
 
 							//agarrar mi tabal de segmentos ocupados.
@@ -111,39 +118,42 @@ static void procesar_conexionn(void* void_args){
 					log_info(log_memoria,"hay espacio disponible... creando segmento.");
 					send(cliente_socket,&estado,sizeof(estado),0);
 
-					segmento_t* segmento = crear_segmento(ide,size,pid_cts);
+					segmento_t* segmento = crear_segmento(id,size,pid);
 
 					if(segmento == NULL){
-					   log_error(log_memoria,"algo salio mal creando el segmento ");
+						log_error(log_memoria,"algo salio mal creando el segmento ");
 					}
 					uint32_t base = segmento->direccion_Base;
 					send_BASE_SEGMENTO(cliente_socket,base);
 				}
 				break;
+			}
 
-			case DELETE_SEGMENT:
-				uint32_t id;
-				t_list* ts_kernel;
-				uint32_t pid_dlt;
+			case DELETE_SEGMENT: {
+		uint32_t id;
+		t_list* ts_kernel = malloc(sizeof(t_list));
+		uint32_t pid;
 
-				recv_TABLA_SEGMENTOS(cliente_socket,ts_kernel);
-			    recv_ID_SEGMENTO(cliente_socket, &id);
-			    recv_PID(cliente_socket,&pid_dlt);
+		recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
+		recv_ID_SEGMENTO(cliente_socket, &id);
+		recv_PID(cliente_socket,&pid);
 
-			    // me devuelve la tabla de ese segmento.
-			    t_list * tsegmentos_pid = create_list_seg_by_pid(pid_dlt);
-			    uint32_t base = find_id(tsegmentos_pid,id); //busco la base del id a eliminar.
-			    //elimino por base
-				if(borrar_segmento(base,pid_dlt)) {
-					log_info(log_memoria,"eliminacion ok");
-				}
+		// me devuelve la tabla de ese segmento.
+		t_list * tsegmentos_pid = create_list_seg_by_pid(pid);
+		uint32_t base = find_id(tsegmentos_pid,id); //busco la base del id a eliminar.
+		//elimino por base
+		if(borrar_segmento(base,pid)) {
+			log_info(log_memoria,"eliminacion ok");
+		}
 
-				list_remove_by_condition(ts_kernel,(void*) &seg_con_id_igual);
+		list_remove_by_condition(ts_kernel,(void*) &seg_con_id_igual);
 
-				send_TABLA_SEGMENTOS(cliente_socket,ts_kernel);
-				//deletear la lista. TODO
+		send_TABLA_SEGMENTOS(cliente_socket,ts_kernel);
+		free(ts_kernel);
+		//deletear la lista. TODO
 
-				break;
+		break;
+			}
 
 			case FINALIZAR_ESTRUCTURAS:
 				uint32_t pid_fe;
@@ -156,53 +166,60 @@ static void procesar_conexionn(void* void_args){
 
 				uint32_t lenght = list_size(ts);
 				for(int i=0;i<lenght;i++){
-					 segmento_t* seg = list_get(ts, i);
-					 borrar_segmento(seg->direccion_Base,pid_fe);
+					segmento_t* seg = list_get(ts, i);
+					borrar_segmento(seg->direccion_Base,pid_fe);
 				}
 				cant_procesos--;
 
 				break;
 
 
-			//espacio de usuario :)
+				//espacio de usuario :)
 
 
 
-			case MOV_IN:
-				uint32_t pid_mi;
-				char*contenido;
-				uint32_t df;
+			case READ: //ven
+			{
+				char*contenido = NULL;
+				uint32_t pid; //nice
+				uint32_t direccion_fisica;//nice
+				uint32_t tamanio;
+				extra_code estado;
 
-				recv_READ(cliente_socket,&df,&contenido);
+				recv_READ(cliente_socket,&direccion_fisica,&tamanio); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
+				recv_PID(cliente_socket, &pid);
 
-				uint32_t longitud = strlen(contenido);
+				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <%d> - Origen: <%s>",pid,direccion_fisica,tamanio,server_name);
 
-
-				recv_PID(cliente_socket, &pid_mi);
-				//recv_DIREC_FISICA(cliente_socket,&direccion_fisica);
-
-
-				//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>”
-				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>",pid_mi,df,longitud,server_name);
+				//poner semaforo?
+				contenido = leer_contenido(direccion_fisica,tamanio);
+				send_contenido_leido(cliente_socket,contenido);
+			}
 
 			break;
 
-			case MOV_OUT:
-//				uint32_t pid_escribir;
-//				uint32_t direccion_fisica_e;
+			case WRITE:{
+				uint32_t pid;
+				uint32_t tamanio;
+				uint32_t direccion_fisica;
+				extra_code estado;
+				char*contenido;
 
-			//	recv_PID(cliente_socket, &pid_escribir);
-			//	recv_DIREC_FISICA(cliente_socket,&direccion_fisica_e);
 
-			//	log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <TAMAÑO> - Origen: <CPU / FS>",pid_leer,direccion_fisica_e);
+				recv_WRITE(cliente_socket,&direccion_fisica,&contenido);
+				recv_cant_bytes(cliente_socket,&tamanio);
+				recv_PID(cliente_socket, &pid);
 
+				log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <%d> - Origen: <s%>",pid,direccion_fisica,tamanio,server_name);
+
+				if(escribir_contenido((void*)contenido,direccion_fisica,tamanio)){
+					estado = EXITOSO;
+					send_OK_CODE(cliente_socket,estado);
+				}
 
 				break;
-
-
-
-             }//break
-       }//while
+				}}
+				}//while
 		log_warning(log_memoria,"cliente %s desconectado ",server_name);
 		return;
 }
@@ -210,22 +227,20 @@ static void procesar_conexionn(void* void_args){
 
 int server_escuchar(t_log* log_memoria,char* server_name, int server_socket) {
 
-	while(1){
-		int cliente_socket = esperar_cliente(log_memoria, server_socket);
+while(1){
+int cliente_socket = esperar_cliente(log_memoria, server_socket);
 
-		    if (cliente_socket != -1) {
-		        pthread_t hilo;
-		        t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
-		        args->fd = cliente_socket;
-		        args->server_name = server_name;
-		        pthread_create(&hilo, NULL, (void*) procesar_conexionn, (void*) args);
-		        pthread_detach(hilo);
-		    }
-	}
-	return 0;
+   if (cliente_socket != -1) {
+       pthread_t hilo;
+       t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
+       args->fd = cliente_socket;
+       args->server_name = server_name;
+       pthread_create(&hilo, NULL, (void*) procesar_conexionn, (void*) args);
+       pthread_detach(hilo);
+   }
+}
+return 0;
 
 }
-
-
 
 

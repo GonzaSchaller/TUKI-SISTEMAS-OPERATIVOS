@@ -65,10 +65,10 @@ bool actualizar_segmentos_libres (segmento_t* seg, uint32_t size){
 		seg->tamanio-= size;
 		seg->direccion_Base +=size;
 	} else { //eliminar por base?
-			remove_segmento_tsl(seg->direccion_Base);
-		}
+		remove_segmento_tsl(seg->direccion_Base);
+}
 
-	if(seg->tamanio > tam_hueco_mas_grande) tam_hueco_mas_grande = seg->tamanio;
+if(seg->tamanio > tam_hueco_mas_grande) tam_hueco_mas_grande = seg->tamanio;
 	return 0;
 }
 
@@ -99,25 +99,20 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 
 
 bool borrar_segmento(uint32_t base,uint32_t pid){
-	//tengo que buscar el segmeto en mi lista de segmentos usados,
-	//borrar lo que habia en ese espacio en memoria?
-	//actualizar mi lista de huecos libres, si tengo dos huecoos contiguos los tengo que compactar.
-
 	segmento_t* seg = encontrar_base_tso(base);
 	if(seg == NULL) return false;
 	log_info(log_memoria,"PID: %d - Eliminar Segmento: %d  - Base: %d - Tamanio %d \n",pid,seg->id,seg->direccion_Base,seg->tamanio);
 
 	segmento_t* new_hueco_libre = new_segmento(POZO,seg->direccion_Base,seg->tamanio,POZO);
-	//meto el segmento nuevo en segmetos libres
 
 	insertar_segmento_entsl(new_hueco_libre);
-	//poner en 0 la direccion que apuntaba ese segmento en memoria.
+
 	memsetear_mp(seg->direccion_Base,seg->tamanio,0);
-	//elimino el segmento usado de la lista de segmentos usados.
+
 
 	remover_segmento_entso(seg->direccion_Base);
 
-	//dont remove
+
 	pthread_mutex_lock(&mutex_segmentos_libres);
 	uint32_t tamanio_si_unifico = unificar_huecos_tsl();
 	pthread_mutex_unlock(&mutex_segmentos_libres);
@@ -135,11 +130,11 @@ bool borrar_segmento(uint32_t base,uint32_t pid){
 }
 
 
-//delegacion innecesaria? quizas
+
 t_list* actualizar_tabla_kernel(t_list* tabla){
-	t_list* ts_kernel;
-	ts_kernel = remover_xID(tabla);
-	return ts_kernel;
+		t_list* ts_kernel;
+		ts_kernel = remover_xID(tabla);
+		return ts_kernel;
 }
 
 uint32_t unificar_huecos_tsl() {
@@ -150,7 +145,7 @@ uint32_t unificar_huecos_tsl() {
         segmento_t* hueco = list_get(segmentos_libres, i);
         segmento_t* hueco_next = list_get(segmentos_libres, i+1);
         if (hueco->direccion_Base + hueco->tamanio == hueco_next->direccion_Base) {
-        	size_total = hueco->tamanio + hueco_next->tamanio;
+        size_total = hueco->tamanio + hueco_next->tamanio;
             hueco->tamanio += hueco_next->tamanio;
             list_remove_and_destroy_element(segmentos_libres, i+1, (void*) free);
             i--;
@@ -160,7 +155,7 @@ uint32_t unificar_huecos_tsl() {
     return size_total;
 }
 
-// busca el hueco mas chico donde entre el proceso
+
 segmento_t* proximo_hueco_best_fit(uint32_t tamanio){
 	tamanioStc= tamanio;
 	pthread_mutex_lock(&mutex_segmentos_libres);
@@ -169,23 +164,23 @@ segmento_t* proximo_hueco_best_fit(uint32_t tamanio){
 	segmento_t *seg = (segmento_t*)list_get_minimum(huecos_disponibles,(void*)&hueco_menor);
 	return seg;
 }
-// busca el hueco mas garnde donde entre el proceso
+
 segmento_t* proximo_hueco_worst_fit(uint32_t tamanio){
 	tamanioStc= tamanio;
-		pthread_mutex_lock(&mutex_segmentos_libres);
-		t_list* huecos_disponibles = list_filter(segmentos_libres,&segmento_entra);
-		pthread_mutex_unlock(&mutex_segmentos_libres);
-		segmento_t *seg = (segmento_t*)list_get_maximum(huecos_disponibles,(void*)&hueco_mayor);
-		return seg;
+	pthread_mutex_lock(&mutex_segmentos_libres);
+	t_list* huecos_disponibles = list_filter(segmentos_libres,&segmento_entra);
+	pthread_mutex_unlock(&mutex_segmentos_libres);
+	segmento_t *seg = (segmento_t*)list_get_maximum(huecos_disponibles,(void*)&hueco_mayor);
+	return seg;
 }
 
-//busca el primer hueco disponible desde el comienzo de la memoria donde encaje.
+
 segmento_t* proximo_hueco_first_fit(uint32_t tamanio){
 	tamanioStc = tamanio;
 	pthread_mutex_lock(&mutex_segmentos_libres);
 	segmento_t *seg = (segmento_t*) list_find(segmentos_libres,&segmento_entra); // se castea porque me devuelve un void *
 	pthread_mutex_unlock(&mutex_segmentos_libres);
-		return seg;
+	return seg;
 }
 
 bool compactar(uint32_t iteracion){
@@ -199,14 +194,11 @@ bool compactar(uint32_t iteracion){
 
 	segmento->direccion_Base = base_nueva;
 	hueco->direccion_Base = base_actual + segmento->tamanio;
-	//hasta aca tire el segmento para arriba y el hueco para abajo.
-
-	//corroborar que el segmento contiguo es vacio o no para unificarlo al hueco:
 
 	segmento_t* hueco2 = find_en_tsl_rango(hueco->direccion_Base+hueco->tamanio); // si encuentra un hueco con la misma base que su limite.
 	if(hueco2 != NULL){//lo encontre y tengo q unificar porque son dos huecos seguidos.
 		hueco->tamanio += hueco2->tamanio;
-	    remove_segmento_tsl(hueco2->direccion_Base);
+		remove_segmento_tsl(hueco2->direccion_Base);
 	}
 
 	actualizar_memoria_principal(base_actual,base_nueva,segmento->tamanio);
@@ -224,10 +216,17 @@ uint32_t compactar_memoria(){
 	return 0;
 }
 
+//delegacion innecesaria? quizas
+char *leer_contenido(uint32_t direccion, uint32_t tamanio){
+	char*contenido = (char*)get_contenido(direccion,tamanio);
+	return contenido;
+}
 
 
-
-
+bool escribir_contenido(void*contenido,uint32_t offset,uint32_t size){
+	set_contenido(contenido, offset, size);
+	return true;
+}
 
 
 
