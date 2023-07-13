@@ -94,12 +94,12 @@ void procesar_peticiones(int cliente_socket){
 						break;
 
 				case F_TRUNCATE:
-					char* nombre_archivo;
-					uint32_t tamanio;
+					char* nombre_archivo_truncate; //TODO DUDAS como es una variable deberia ser una general en vez de hacer varias para cada case
+					uint32_t tamanio_truncate;
 					recv_F_TRUNCATE(cliente_socket, &nombre_archivo, &tamanio);
 
 					//uso funcion concat para obtener el path y asi usar c
-					//no se como llegar al FCB
+					//TODO DUDAS no se como llegar al FCB
 
 					// var pasada por parametro: el nuevo tamanio
 					// a partir de ahí ver si es más chico o más grande y hacer lo necesario:

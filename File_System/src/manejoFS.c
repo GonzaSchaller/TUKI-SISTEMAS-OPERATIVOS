@@ -11,9 +11,9 @@ char* concat(char*nombre_archivo){
 	return path;
 }
 
-bool existe_y_abrir(char*nombre_archivo){ //TODO ver de partir esta funciones en varias para reutilizarlas
+bool existe_y_abrir(char*nombre_archivo){ //TODO DUDAS ver de partir esta funciones en varias para reutilizarlas
 	//hay quer abrir el archivo
-	char*path = concat(nombre_archivo); //TODO CONCAT: ver si nombre_archivo va así o con el * o &
+	char*path = concat(nombre_archivo); //TODO DUDAS (CONCAT): ver si nombre_archivo va así o con el * o &
 	t_config* archivo = config_create(path);
 	if(archivo == NULL) {
 		log_error(logger,"el archivo NO existe");
