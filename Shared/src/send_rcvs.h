@@ -155,4 +155,10 @@ bool send_contenido_leido(int socket_cliente, char* contenido);
 bool recv_EXISTE_ARCHIVO2(int socket_cliente, char** archivo);
 bool send_EXISTE_ARCHIVO2(int socket_cliente, char* archivo);
 
+bool recv_PUNTERO_FS(int, uint32_t* );
+bool send_PUNTERO_FS(int, uint32_t );
+
+bool recv_ERROR(int );
+bool send_ERROR(int );
+
 #endif

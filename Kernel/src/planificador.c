@@ -181,22 +181,7 @@ void hiloReady_Execute(){
 		pcb_t* pcb_siguiente = obtener_siguiente_ready();
 		contexto_ejecucion contexto;
 		contexto.TSegmento = list_create();
-		//log_info(log_kernel, "Estamos en execute %d", pcb_siguiente->contexto.PID); // log epico
-//		log_info(log_kernel, "Numero de instrucciones: <%d> ",list_size(pcb_siguiente->instrucciones)); //todo a veces llega 0
-		//log_info(log_kernel, "PC: %d", pcb_siguiente->contexto.PC);
-//		log_info(log_kernel, "AX: %s", pcb_siguiente->contexto.registros.AX);
-//		log_info(log_kernel, "BX: %s", pcb_siguiente->contexto.registros.BX);
-//		log_info(log_kernel, "CX: %s", pcb_siguiente->contexto.registros.CX);
-//		log_info(log_kernel, "DX: %s", pcb_siguiente->contexto.registros.DX);
-//		log_info(log_kernel, "EA: %s", pcb_siguiente->contexto.registros.EAX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.EBX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.ECX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.EDX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RAX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RBX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RCX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RDX);
-		//log_info(log_kernel, "Tabla: %d", list_size(pcb_siguiente->contexto.TSegmento));
+
 		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
 		pcb_siguiente->state_anterior = pcb_siguiente->state;
 		pcb_siguiente->state = EXEC;

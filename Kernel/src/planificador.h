@@ -14,7 +14,7 @@
 
 typedef struct{
 	pcb_t* pcb;
-	fcb_t* archivo;
+	fcb_kernel* archivo;
 	uint32_t nombre_instruccion;
 }arg_archivo_bloqueado;
 

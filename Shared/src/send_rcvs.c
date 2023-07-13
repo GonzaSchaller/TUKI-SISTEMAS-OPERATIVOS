@@ -1787,6 +1787,65 @@ bool send_READ(int socket_cliente, uint32_t  parametro1,uint32_t  parametro2){
     return true;
 }
 
+static void* serializar_PUNTERO_FS(uint32_t parametro1) {
+    void* stream = malloc( sizeof(uint32_t));
+    memcpy(stream, &parametro1, sizeof(uint32_t));
+    return stream;
+}
+static void deserializar_PUNTERO_FS(void* stream, uint32_t* parametro1) {
+    memcpy(parametro1, stream, sizeof(uint32_t));
+}
+bool recv_PUNTERO_FS(int socket_cliente, uint32_t* parametro1){
+    size_t size = sizeof(uint32_t);
+    void* stream = malloc(size);
+    if (recv(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    deserializar_PUNTERO_FS(stream, parametro1);
+    free(stream);
+	return true;
+}
+bool send_PUNTERO_FS(int socket_cliente, uint32_t  parametro1){
+    size_t size = sizeof(uint32_t);
+    void* stream = serializar_PUNTERO_FS(parametro1);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
 
 
+static void* serializar_ERROR() {
+   void* stream = malloc(sizeof(op_code));
+    op_code cop = ERROR;
+    memcpy(stream, &cop, sizeof(op_code));
+    return stream;
+}
+bool recv_ERROR(int socket_cliente){
 
+	    size_t size = sizeof(op_code);
+	    void* stream = malloc(size);
+
+	    if (recv(socket_cliente, stream, size, 0) != size) {
+	        free(stream);
+	        return false;
+	    }
+	    //deserializar_YIELD(stream);
+	    free(stream);
+	    return true;
+
+}
+bool send_ERROR(int socket_cliente){
+   size_t size = sizeof(op_code);
+    void* stream = serializar_ERROR();
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+
+    free(stream);
+    return true;
+}

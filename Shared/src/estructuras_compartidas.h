@@ -85,15 +85,15 @@ typedef struct{ //A implmentar por FileSystem //todo fijarse que sea asi
 	uint32_t puntero_indirecto;
 	uint32_t tamanio_archivo;
 	//... algo mas
-	t_queue* colaBloqueados;
-	pthread_mutex_t mutexArchivo; //para garantizar mutua exclusion
+	//t_queue* colaBloqueados; Lo pasamos a otra struct de kernel
+	//pthread_mutex_t mutexArchivo; //para garantizar mutua exclusion
 } fcb_t;
 
 
 //enum para mandar las instrucciones
 typedef enum{
 	AX = 400,
-	BX = 500,
+	BX,
 	CX,
 	DX,
 	EAX,
@@ -129,7 +129,8 @@ typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	INICIAR_ESTRUCTURAS,
 	FINALIZAR_ESTRUCTURAS,
 	READ, //pa q memoria escriba lo que manda cpu y fs
-	WRITE
+	WRITE,
+	ERROR //segmentation fault
 }op_code;
 
 //
