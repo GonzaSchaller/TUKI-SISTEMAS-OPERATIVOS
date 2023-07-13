@@ -1494,7 +1494,7 @@ bool send_FINALIZAR_WRITE(int socket_cliente, uint32_t){
 
 //si un profe de disenio ve esto se pega un tiro//
 
-static void* serializar_READ(size_t* size, char* parametro2, uint32_t parametro1) {
+static void* serializar_READ2(size_t* size, char* parametro2, uint32_t parametro1) {
 	// Carga los parametros al reves pero funciona como deberia funcionar
 	size_t size_parametro2 = strlen(parametro2) + 1;
     *size =
@@ -1514,7 +1514,7 @@ static void* serializar_READ(size_t* size, char* parametro2, uint32_t parametro1
 
     return stream;
 }
-static void deserializar_READ(void* stream, char** parametro2, uint32_t* parametro1) {
+static void deserializar_READ2(void* stream, char** parametro2, uint32_t* parametro1) {
 	// Carga los parametros al reves pero funciona como deberia funcionar
 	size_t size_parametro2;
     memcpy(&size_parametro2, stream, sizeof(size_t));
@@ -1525,7 +1525,7 @@ static void deserializar_READ(void* stream, char** parametro2, uint32_t* paramet
 
     memcpy(parametro1, stream+sizeof(size_t)+size_parametro2, sizeof(uint32_t));
 }
-bool recv_READ(int fd,uint32_t* parametro1,char** parametro2) {
+bool recv_READ2(int fd,uint32_t* parametro1,char** parametro2) {
 
     size_t size_payload;
     if (recv(fd, &size_payload, sizeof(size_t), 0) != sizeof(size_t))
@@ -1537,14 +1537,14 @@ bool recv_READ(int fd,uint32_t* parametro1,char** parametro2) {
         return false;
     }
 
-    deserializar_READ(stream, parametro2, parametro1);
+    deserializar_READ2(stream, parametro2, parametro1);
 
     free(stream);
     return true;
 }
-bool send_READ(int fd,uint32_t parametro1 , char* parametro2) {
+bool send_READ2(int fd,uint32_t parametro1 , char* parametro2) {
     size_t size;
-    void* stream = serializar_READ(&size, parametro2, parametro1);
+    void* stream = serializar_READ2(&size, parametro2, parametro1);
     if (send(fd, stream, size, 0) != size) {
         free(stream);
         return false;
@@ -1644,30 +1644,60 @@ bool send_direccion_fisica (int socket_cliente, uint32_t  parametro1){
 }
 
 
-static void* serializar_READ2(uint32_t parametro1) {
+static void* serializar_tamanio_a_leer(uint32_t parametro1) {
    void* stream = malloc(sizeof(op_code) + sizeof(uint32_t));
    op_code cop = READ;
     memcpy(stream, &cop, sizeof(op_code));
     memcpy(stream+sizeof(op_code), &parametro1, sizeof(uint32_t));
     return stream;
 }
-static void deserializar_READ2(void* stream, uint32_t* parametro1) {
+static void deserializar_tamanio_a_leer(void* stream, uint32_t* parametro1) {
     memcpy(parametro1, stream ,sizeof(uint32_t));
 }
-bool recv_READ2(int socket_cliente, uint32_t* parametro1){
+bool recv_tamanio_a_leer(int socket_cliente, uint32_t* parametro1){
     size_t size = sizeof(uint32_t);
     void* stream = malloc(size);
     if (recv(socket_cliente, stream, size, 0) != size) {
         free(stream);
         return false;
     }
-    deserializar_READ2(stream, parametro1);
+    deserializar_tamanio_a_leer(stream, parametro1);
     free(stream);
 	return true;
 }
-bool send_READ2(int socket_cliente, uint32_t  parametro1){
+bool send_tamanio_a_leer(int socket_cliente, uint32_t  parametro1){
     size_t size = sizeof(op_code) + sizeof(uint32_t);
-    void* stream = serializar_READ2(parametro1);
+    void* stream = serializar_tamanio_a_leer(parametro1);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
+
+static void* serializar_cant_bytes(uint32_t parametro1) {
+    void* stream = malloc( sizeof(uint32_t));
+    memcpy(stream, &parametro1, sizeof(uint32_t));
+    return stream;
+}
+static void deserializar_cant_bytes(void* stream, uint32_t* parametro1) {
+    memcpy(parametro1, stream, sizeof(uint32_t));
+}
+bool recv_cant_bytes(int socket_cliente, uint32_t* parametro1){
+    size_t size = sizeof(uint32_t);
+    void* stream = malloc(size);
+    if (recv(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    deserializar_cant_bytes(stream, parametro1);
+    free(stream);
+	return true;
+}
+bool send_cant_bytes(int socket_cliente, uint32_t  parametro1){
+    size_t size = sizeof(uint32_t);
+    void* stream = serializar_cant_bytes(parametro1);
     if (send(socket_cliente, stream, size, 0) != size) {
         free(stream);
         return false;
@@ -1723,15 +1753,37 @@ bool send_contenido_leido(int socket_cliente, char* contenido){
     return true;
 }
 
-
-
-
-
-
-
-
-
-
-
-
+static void* serializar_READ(uint32_t parametro1, uint32_t parametro2) {
+    void* stream = malloc(sizeof(op_code) + sizeof(uint32_t) * 2);
+    op_code cop = READ;
+    memcpy(stream, &cop, sizeof(op_code));
+    memcpy(stream+sizeof(op_code), &parametro1, sizeof(uint32_t));
+    memcpy(stream+sizeof(op_code)+sizeof(uint32_t), &parametro2, sizeof(uint32_t));
+    return stream;
+}
+static void deserializar_READ(void* stream, uint32_t* parametro1, uint32_t* parametro2) {
+    memcpy(parametro1, stream, sizeof(uint32_t));
+    memcpy(parametro2, stream+sizeof(uint32_t), sizeof(uint32_t));
+}
+bool recv_READ(int socket_cliente, uint32_t* parametro1,uint32_t* parametro2){
+	 size_t size = sizeof(uint32_t) * 2;
+	    void* stream = malloc(size);
+	    if (recv(socket_cliente, stream, size, 0) != size) {
+	        free(stream);
+	        return false;
+	    }
+	    deserializar_READ(stream, parametro1, parametro2);
+	    free(stream);
+		return true;
+}
+bool send_READ(int socket_cliente, uint32_t  parametro1,uint32_t  parametro2){
+    size_t size = sizeof(op_code) + sizeof(uint32_t) * 2;
+    void* stream = serializar_READ(parametro1, parametro2);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
 

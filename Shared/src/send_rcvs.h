@@ -43,21 +43,21 @@ bool recv_YIELD(int);
 
 
 bool send_F_TRUNCATE(int, char*, uint32_t);
-bool recv_F_TRUNCATE(int, char**, uint32_t*);
+bool recv_F_TRUNCATE(int, char*, uint32_t);
 
 
 bool send_F_SEEK(int, char*, uint32_t);
-bool recv_F_SEEK(int, char**, uint32_t*);
+bool recv_F_SEEK(int, char*, uint32_t);
 
 bool send_CREATE_SEGMENT(int, uint32_t, uint32_t);
 bool recv_CREATE_SEGMENT(int, uint32_t*, uint32_t*);
 
 
 bool send_F_WRITE(int, char*,uint32_t, uint32_t );
-bool recv_F_WRITE(int, char**,uint32_t*, uint32_t*);
+bool recv_F_WRITE(int, char*,uint32_t, uint32_t*);
 
 bool send_F_READ(int, char*,uint32_t, uint32_t);
-bool recv_F_READ(int, char**,uint32_t*, uint32_t*);
+bool recv_F_READ(int, char*,uint32_t, uint32_t*);
 
 bool send_DELETE_SEGMENT(int, uint32_t);
 bool recv_DELETE_SEGMENT(int, uint32_t*);
@@ -119,7 +119,7 @@ bool send_OK_CODE(int, extra_code );
 bool recv_OK_CODE(int, extra_code*);
 
 bool send_CREAR_ARCHIVO(int, char* ,uint32_t );
-bool recv_CREAR_ARCHIVO(int, char**,uint32_t*);
+bool recv_CREAR_ARCHIVO(int, char*,uint32_t);
 
 
 bool send_FINALIZAR_TRUNCATE(int, uint32_t);
@@ -131,9 +131,11 @@ bool recv_FINALIZAR_READ(int,uint32_t*);
 bool send_FINALIZAR_WRITE(int,uint32_t );
 bool recv_FINALIZAR_WRITE(int,uint32_t* );
 
-bool recv_READ(int fd,uint32_t* parametro1,char** parametro2);
-bool send_READ(int fd,uint32_t parametro1 , char* parametro2);
+bool recv_READ2(int fd,uint32_t* parametro1,char** parametro2);
+bool send_READ2(int fd,uint32_t parametro1 , char* parametro2); //////Dddd
 
+bool recv_READ(int socket_cliente, uint32_t* parametro1,uint32_t* parametro2);
+bool send_READ(int socket_cliente, uint32_t  parametro1,uint32_t  parametro2);
 
 bool recv_WRITE(int fd,uint32_t* parametro1,char** parametro2);
 bool send_WRITE(int fd,uint32_t parametro1 , char* parametro2);
@@ -141,8 +143,11 @@ bool send_WRITE(int fd,uint32_t parametro1 , char* parametro2);
 bool recv_direccion_fisica(int socket_cliente, uint32_t* parametro1);
 bool send_direccion_fisica (int socket_cliente, uint32_t  parametro1);
 
-bool recv_READ2(int socket_cliente, uint32_t* parametro1);
-bool send_READ2(int socket_cliente, uint32_t  parametro1);
+bool recv_tamanio_a_leer(int socket_cliente, uint32_t* parametro1);
+bool send_tamaio_a_leer(int socket_cliente, uint32_t  parametro1);
+
+bool recv_cant_bytes(int socket_cliente, uint32_t* parametro1);
+bool send_cant_bytes(int socket_cliente, uint32_t  parametro1);
 
 bool recv_contenido_leido(int socket_cliente, char** contenido);
 bool send_contenido_leido(int socket_cliente, char* contenido);
