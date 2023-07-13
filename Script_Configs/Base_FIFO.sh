@@ -11,7 +11,7 @@ fi
 touch memoria.config
 
 echo 'PUERTO_ESCUCHA=8002' >memoria.config
-echo 'TAM_MEMORIA=1024' >>memoria.config
+echo 'TAM_MEMORIA=4096' >>memoria.config
 echo 'TAM_SEGMENTO_0=128' >>memoria.config
 echo 'CANT_SEGMENTOS=16' >>memoria.config
 echo 'RETARDO_MEMORIA=1000' >>memoria.config
@@ -39,7 +39,7 @@ echo 'IP_CPU=127.0.0.1' >>kernel.config
 echo 'PUERTO_CPU=8001' >>kernel.config
 echo 'PUERTO_ESCUCHA=8000' >>kernel.config
 echo 'ALGORITMO_PLANIFICACION=FIFO' >>kernel.config
-echo 'ESTIMACION_INICIAL=10000' >>kernel.config
+echo 'ESTIMACION_INICIAL=2000' >>kernel.config
 echo 'HRRN_ALFA=0.5' >>kernel.config
 echo 'GRADO_MAX_MULTIPROGRAMACION=4' >>kernel.config
 echo 'RECURSOS=[DISCO]' >>kernel.config
