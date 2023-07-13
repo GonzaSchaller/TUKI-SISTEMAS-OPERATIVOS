@@ -43,21 +43,21 @@ bool recv_YIELD(int);
 
 
 bool send_F_TRUNCATE(int, char*, uint32_t);
-bool recv_F_TRUNCATE(int, char*, uint32_t);
+bool recv_F_TRUNCATE(int, char**, uint32_t*);
 
 
 bool send_F_SEEK(int, char*, uint32_t);
-bool recv_F_SEEK(int, char*, uint32_t);
+bool recv_F_SEEK(int, char**, uint32_t*);
 
 bool send_CREATE_SEGMENT(int, uint32_t, uint32_t);
 bool recv_CREATE_SEGMENT(int, uint32_t*, uint32_t*);
 
 
 bool send_F_WRITE(int, char*,uint32_t, uint32_t );
-bool recv_F_WRITE(int, char*,uint32_t, uint32_t*);
+bool recv_F_WRITE(int, char**,uint32_t*, uint32_t*);
 
 bool send_F_READ(int, char*,uint32_t, uint32_t);
-bool recv_F_READ(int, char*,uint32_t, uint32_t*);
+bool recv_F_READ(int, char**,uint32_t*, uint32_t*);
 
 bool send_DELETE_SEGMENT(int, uint32_t);
 bool recv_DELETE_SEGMENT(int, uint32_t*);
@@ -119,7 +119,7 @@ bool send_OK_CODE(int, extra_code );
 bool recv_OK_CODE(int, extra_code*);
 
 bool send_CREAR_ARCHIVO(int, char* ,uint32_t );
-bool recv_CREAR_ARCHIVO(int, char*,uint32_t);
+bool recv_CREAR_ARCHIVO(int, char**,uint32_t*);
 
 
 bool send_FINALIZAR_TRUNCATE(int, uint32_t);

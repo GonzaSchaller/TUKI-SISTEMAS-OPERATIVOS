@@ -1784,6 +1784,9 @@ bool send_READ(int socket_cliente, uint32_t  parametro1,uint32_t  parametro2){
         return false;
     }
     free(stream);
-    return true;
+    return true;
 }
+
+
+
 
