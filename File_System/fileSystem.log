@@ -458,3 +458,6 @@
 [INFO] 21:43:14:188 FileSystem/(99303:99303): levante config ok
 [INFO] 21:43:14:201 FileSystem/(99303:99303): levante superbloque ok
 [INFO] 21:43:14:201 FileSystem/(99303:99303): bits 65536
+[INFO] 00:01:50:299 FileSystem/(1889:1889): levante config ok
+[INFO] 00:01:50:301 FileSystem/(1889:1889): levante superbloque ok
+[INFO] 00:01:50:301 FileSystem/(1889:1889): bits 65536

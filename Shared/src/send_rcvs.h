@@ -147,4 +147,7 @@ bool send_READ2(int socket_cliente, uint32_t  parametro1);
 bool recv_contenido_leido(int socket_cliente, char** contenido);
 bool send_contenido_leido(int socket_cliente, char* contenido);
 
+bool recv_EXISTE_ARCHIVO2(int socket_cliente, char** archivo);
+bool send_EXISTE_ARCHIVO2(int socket_cliente, char* archivo);
+
 #endif

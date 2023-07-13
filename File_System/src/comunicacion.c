@@ -15,11 +15,11 @@ void procesar_peticiones(int cliente_socket){
 
 				switch(cop){
 				// TODO: ver como pasar los datos nombre archivo y tamanio porque despues lo usamos en config_set_value que usa punteros
-				case F_OPEN:
+				case EXISTE_ARCHIVO:
 					extra_code estado;
 					char*nombre_archivo;
 					uint32_t tamanio; //ver si cambiarlo a char* o castear
-					if(!recv_F_OPEN(cliente_socket,&nombre_archivo)) log_error(logger, "Fallo recibiendo f_open de kernel");
+					if(!recv_EXISTE_ARCHIVO(cliente_socket,&nombre_archivo)) log_error(logger, "Fallo recibiendo f_open de kernel");
 
 					log_info(logger,"abrir archivo %s",nombre_archivo);
 					bool resultado = existe_y_abrir(nombre_archivo);

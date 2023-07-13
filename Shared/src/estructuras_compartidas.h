@@ -125,6 +125,7 @@ typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	F_CLOSE,//1
 	EXIT,
 	HANDSHAKE,
+	EXISTE_ARCHIVO,
 	INICIAR_ESTRUCTURAS,
 	FINALIZAR_ESTRUCTURAS,
 	READ, //pa q memoria escriba lo que manda cpu y fs
