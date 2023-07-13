@@ -80,9 +80,9 @@ void ejecutar_SET(pcb_cpu* pcb_proceso, uint32_t registro, char* valor){
 
 char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
 	char*valor;
-	if(!send_READ(conexion_memoria,df,size)){log_error("error mandando read a memoria");} // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
-	if(!send_PID(conexion_memoria, pid)){log_error("error mandando PID a memoria");};
-	if(!recv_contenido_leido(conexion_memoria,&valor)){ log_error("error recibiendo contenido leido de memoria");
+	if(!send_READ(conexion_memoria,df,size)){log_error(logger, "error mandando read a memoria");} // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
+	if(!send_PID(conexion_memoria, pid)){log_error(logger, "error mandando PID a memoria");}
+	if(!recv_contenido_leido(conexion_memoria,&valor)){log_error(logger,"error recibiendo contenido leido de memoria");}
 	return valor;
 }
 
@@ -179,7 +179,7 @@ void enviar_a_memoria(char*valor,uint32_t df,uint32_t size,uint32_t pid){
 
 	if(!recv_OK_CODE(conexion_memoria,&estado)){log_error(conexion_memoria,"error reciviendo ok_code de memoria");
 	if(estado == EXITOSO){
-		log_info("memoria escribio correctamente");
+		log_info(logger,"memoria escribio correctamente");
 	}
 }
 //VER SI LE TENGO QUE PASAR EL TAMAÑO DE SEGMENTO.
@@ -308,7 +308,7 @@ void ejecutar_F_CLOSE(pcb_cpu* pcb_proceso, char* archivo){
 	contexto_para_kernel.PC = pcb_proceso -> PC;
 	contexto_para_kernel.registros = pcb_proceso -> registros;
 	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	actualizado porque es el mismo que me mandan en su momenfLOto*/
 
 	//send(socket_cliente_kernel, F_CLOSE, sizeof(op_code), NULL);
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);

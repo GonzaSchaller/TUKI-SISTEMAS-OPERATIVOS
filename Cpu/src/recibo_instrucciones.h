@@ -45,5 +45,4 @@ instruccion* fetch();
 int decode_execute(int, pcb_cpu*, instruccion*, t_log*);
 char* registros_a_string(uint32_t);
 
-
 #endif
