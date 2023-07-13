@@ -193,11 +193,7 @@ static void procesar_conexionn(void* void_args){
 
 				//poner semaforo?
 				contenido = leer_contenido(direccion_fisica,tamanio);
-				if(contenido==NULL){
-					estado = FALLIDO;
-				}else{
-					send_OK_CODE(cliente_socket,estado);
-				}
+				send_contenido_leido(cliente_socket,contenido);
 			}
 
 			break;
@@ -209,20 +205,17 @@ static void procesar_conexionn(void* void_args){
 				extra_code estado;
 				char*contenido;
 
-				recv_PID(cliente_socket, &pid);
+
 				recv_WRITE(cliente_socket,&direccion_fisica,&contenido);
 				recv_cant_bytes(cliente_socket,&tamanio);
+				recv_PID(cliente_socket, &pid);
 
 				log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <%d> - Origen: <s%>",pid,direccion_fisica,tamanio,server_name);
 
 				if(escribir_contenido((void*)contenido,direccion_fisica,tamanio)){
 					estado = EXITOSO;
 					send_OK_CODE(cliente_socket,estado);
-				}else{
-					estado = FALLIDO;
-					send_OK_CODE(cliente_socket,estado);
 				}
-
 
 				break;
 				}}
