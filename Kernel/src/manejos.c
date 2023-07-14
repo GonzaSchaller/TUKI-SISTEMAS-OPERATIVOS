@@ -258,9 +258,9 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 					terminarEjecucion(pcb_siguiente);
 					//sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
 				}
-	else if(cop=ERROR){
-	pcb_siguiente->finalizar_proceso = true;
+	else if(cop==ERROR){
 	pcb_siguiente->motivo_exit = "SEG_FAULT";
+	terminarEjecucion(pcb_siguiente);
 	}
 
 }

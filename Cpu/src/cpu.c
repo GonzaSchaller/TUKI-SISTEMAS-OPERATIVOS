@@ -17,12 +17,12 @@ void establecer_conexion_kernel(){
 }
 
 void establecer_conexion_memoria(){
-	conexion_memoria = crear_conexion(logger,"Memoria", ip, puerto_memoria);
-	uint32_t handshake =1;
-	uint32_t result;
-	send_handshake(conexion_memoria,handshake);
-	recv_handshake(conexion_memoria,&result);
-	if(result == 1) log_info(logger,"todo ok capo");
+    conexion_memoria = crear_conexion(logger,"Memoria", ip, puerto_memoria);
+    uint32_t handshake =1;
+    uint32_t result;
+    send_handshake(conexion_memoria,handshake);
+    recv_PC(conexion_memoria,&result);
+    if(result == 0) log_info(logger,"todo ok capo");
 
 }
 

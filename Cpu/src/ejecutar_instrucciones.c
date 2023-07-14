@@ -82,6 +82,9 @@ char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
 	char*valor;
 	if(!send_READ(conexion_memoria,df,size)){log_error(logger, "error mandando read a memoria");} // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
 	if(!send_PID(conexion_memoria, pid)){log_error(logger, "error mandando PID a memoria");}
+	if(!send_LEER_CONTENIDO_CPU(conexion_memoria)){
+		log_error(logger, "error mandando PID a memoria");
+	}
 	if(!recv_contenido_leido(conexion_memoria,&valor)){log_error(logger,"error recibiendo contenido leido de memoria");}
 	return valor;
 }

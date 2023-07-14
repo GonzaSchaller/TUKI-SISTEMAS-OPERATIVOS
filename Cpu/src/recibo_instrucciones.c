@@ -178,7 +178,7 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				log_error(logger,"Error al recibir F_SEEK");
 				break;
 			}
-			cargar_instruccion3(F_SEEK, "F_SEEK", param1, param2);
+			cargar_instruccion3(F_SEEK, "F_SEEK", param1, param2, 0, lista);
 			break;
 		}
 		case F_READ:{
@@ -397,7 +397,7 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 		case F_READ:{
 			char* archivo = una_instruccion -> parametro1.tipo_string;
 			uint32_t dir_logica = una_instruccion -> parametro2.tipo_int;
-			uint32_t cant_bytes = una_instruccion -> parametro3.tipo_int;
+			uint32_t cant_bytes = una_instruccion -> parametro3;
 			
 			log_info(logger,"PID: <%d> - Ejecutando: <F_READ> - <%s %d %d>" , pcb_proceso->PID, archivo, dir_logica, cant_bytes);
 			corta_ejecucion = ejecutar_F_READ(pcb_proceso, archivo, dir_logica, cant_bytes);
@@ -406,7 +406,7 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 		case F_WRITE:{
 			char* archivo = una_instruccion -> parametro1.tipo_string;
 			uint32_t dir_logica = una_instruccion -> parametro2.tipo_int;
-			uint32_t cant_bytes = una_instruccion -> parametro3.tipo_int;
+			uint32_t cant_bytes = una_instruccion -> parametro3;
 			
 			log_info(logger,"PID: <%d> - Ejecutando: <F_WRITE> - <%s %d %d>" , pcb_proceso->PID, archivo, dir_logica, cant_bytes);
 			corta_ejecucion = ejecutar_F_WRITE(pcb_proceso, archivo, dir_logica, cant_bytes);

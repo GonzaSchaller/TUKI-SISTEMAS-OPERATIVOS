@@ -1093,7 +1093,13 @@ static void deserializar_CONTEXTO_EJECUCION(void* stream, contexto_ejecucion* co
     memcpy(&(contexto->PC), stream + sizeof(uint32_t), sizeof(uint32_t));
     memcpy(&(contexto->registros), stream + sizeof(uint32_t) * 2, sizeof(registros_cpu));
     t_list* tsegmentos = list_create();
-    deserializar_lista(stream + sizeof(uint32_t) * 2 + sizeof(registros_cpu),tsegmentos, num_elementos);
+
+        list_clean(tsegmentos);
+        for (uint32_t i = 0; i < num_elementos; i++) {
+            segmento_t* elemento = malloc(sizeof(segmento_t));
+            memcpy(elemento, stream + sizeof(segmento_t) * i, sizeof(segmento_t));
+            list_add(tsegmentos, elemento);
+        }
     contexto->TSegmento = tsegmentos;
 }
 
@@ -1159,37 +1165,38 @@ bool recv_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion* contexto) {
 //	recv_TABLA_SEGMENTOS(fd,&(contexto->TSegmento));
 //
 //}
-static void* serializar_handshake(uint8_t resultado){
-	void*stream = malloc(sizeof(op_code) + sizeof(uint8_t));
-	op_code cop = HANDSHAKE;
-	memcpy(stream,&cop,sizeof(op_code));
-	memcpy(stream+sizeof(op_code),&resultado,sizeof(uint8_t));
+static void* serializar_handshake(uint32_t parametro1) {
+   void* stream = malloc(sizeof(op_code) + sizeof(uint32_t));
+   op_code cop = HANDSHAKE;
+    memcpy(stream, &cop, sizeof(op_code));
+    memcpy(stream+sizeof(op_code), &parametro1, sizeof(uint32_t));
     return stream;
 }
-static void deserializar_handshake(void*stream,uint8_t*resultado){
-	memcpy(resultado,stream,sizeof(uint8_t));
+static void deserializar_handshake(void* stream, uint32_t* parametro1) {
+    memcpy(parametro1, stream ,sizeof(uint32_t));
 }
-bool send_handshake(int socket,uint8_t resultado){
-	size_t size = sizeof(op_code) + sizeof(uint8_t);
-	void*stream = serializar_handshake(resultado);
-	if(send(socket,stream,size,0) != size){
-		free(stream);
-		return false;
-	}
-	free(stream);
-	return true;
+bool recv_handshake(int socket_cliente, uint32_t* parametro1){
+    size_t size = sizeof(uint32_t);
+    void* stream = malloc(size);
+    if (recv(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    deserializar_handshake(stream, parametro1);
+    free(stream);
+    return true;
 }
-bool recv_handshake(int socket,uint8_t* resultado){
-	size_t size = sizeof(uint8_t);
-	void*stream = malloc(size);
-	if(recv(socket,stream,size,0)!=size){
-		free(stream);
-		return false;
-	}
-	deserializar_handshake(stream,resultado);
-	free(stream);
-	return (true);
+bool send_handshake(int socket_cliente, uint32_t  parametro1){
+    size_t size = sizeof(op_code) + sizeof(uint32_t);
+    void* stream = serializar_handshake(parametro1);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
 }
+
 
 static void* serializar_TABLA_SEGMENTOS(t_list* tabla_segmentos, int* tamanio_serializado) {
     *tamanio_serializado = 0;
@@ -1841,6 +1848,37 @@ bool recv_ERROR(int socket_cliente){
 bool send_ERROR(int socket_cliente){
    size_t size = sizeof(op_code);
     void* stream = serializar_ERROR();
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+
+    free(stream);
+    return true;
+}
+
+static void* serializar_LEER_CONTENIDO_CPU() {
+   void* stream = malloc(sizeof(op_code));
+    op_code cop = LEER_CPU;
+    memcpy(stream, &cop, sizeof(op_code));
+    return stream;
+}
+bool recv_LEER_CONTENIDO_CPU(int socket_cliente){
+        size_t size = sizeof(op_code);
+        void* stream = malloc(size);
+
+        if (recv(socket_cliente, stream, size, 0) != size) {
+            free(stream);
+            return false;
+        }
+        //deserializar_YIELD(stream);
+        free(stream);
+        return true;
+
+}
+bool send_LEER_CONTENIDO_CPU(int socket_cliente){
+   size_t size = sizeof(op_code);
+    void* stream = serializar_LEER_CONTENIDO_CPU();
     if (send(socket_cliente, stream, size, 0) != size) {
         free(stream);
         return false;

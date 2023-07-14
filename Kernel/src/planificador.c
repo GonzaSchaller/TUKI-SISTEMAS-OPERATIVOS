@@ -214,6 +214,8 @@ void terminarEjecucion(pcb_t* pcb){
 	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb->contexto.PID,estado_pcb_a_string(pcb->state_anterior),estado_pcb_a_string(pcb->state));
 	log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <%s>", pcb->contexto.PID,pcb->motivo_exit);
 	send_FINALIZAR_ESTRUCTURAS(conexion_memoria);
+	send_PID(conexion_memoria, pcb->contexto.PID);
+	send_TABLA_SEGMENTOS(conexion_memoria,pcb->contexto.TSegmento);
 	if(!send_EXIT(pcb->socket_consola)){
 		log_info(log_kernel, "Error enviandole a consola exit");
 	};

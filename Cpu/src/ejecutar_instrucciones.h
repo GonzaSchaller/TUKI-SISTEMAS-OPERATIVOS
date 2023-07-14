@@ -40,14 +40,14 @@ typedef struct{
 void pasar_al_registro(char*, char);
 void set_socket_kernel(int);
 void ejecutar_SET(pcb_cpu*, uint32_t, char*);
-void ejecutar_MOV_IN(pcb_cpu*, uint32_t, uint32_t);
-void ejecutar_MOV_OUT(pcb_cpu*, uint32_t, uint32_t);
+int ejecutar_MOV_IN(pcb_cpu*, uint32_t, uint32_t);
+int ejecutar_MOV_OUT(pcb_cpu*, uint32_t, uint32_t);
 void ejecutar_IO(pcb_cpu*, uint32_t);
 void ejecutar_F_OPEN(pcb_cpu*, char*);
 void ejecutar_F_CLOSE(pcb_cpu*, char*);
 void ejecutar_F_SEEK(pcb_cpu*, char*, uint32_t);
-void ejecutar_F_READ(pcb_cpu*, char*, uint32_t, uint32_t);
-void ejecutar_F_WRITE(pcb_cpu*, char*, uint32_t, uint32_t);
+int ejecutar_F_READ(pcb_cpu*, char*, uint32_t, uint32_t);
+int ejecutar_F_WRITE(pcb_cpu*, char*, uint32_t, uint32_t);
 void ejecutar_F_TRUNCATE(pcb_cpu*, char*, uint32_t);
 void ejecutar_WAIT(pcb_cpu*, char*);
 void ejecutar_SIGNAL(pcb_cpu*, char*);

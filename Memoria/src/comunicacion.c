@@ -32,9 +32,9 @@ static void procesar_conexionn(void* void_args){
 			switch(cop){
 			case HANDSHAKE:
 			{
-				uint8_t handshake;
-				uint8_t resultOk = 0;
-				uint8_t resultError = -1;
+				uint32_t handshake;
+				uint32_t resultOk = 0;
+				uint32_t resultError = -1;
 
 				if(!recv_handshake(cliente_socket,&handshake)){
 					log_error(log_memoria,"Fallo recibiendo el handshake");
@@ -42,11 +42,11 @@ static void procesar_conexionn(void* void_args){
 				}
 				if(handshake == 1){
 					log_info(log_memoria,"handshake exitoso");
-					send_handshake(cliente_socket,resultOk);
+					send_PC(cliente_socket,resultOk);
 				}
 				else{
 					log_error(log_memoria,"no t conozcoleer() capo");
-					send_handshake(cliente_socket,resultError);
+					send_PC(cliente_socket,resultError);
 				}
 				break;
 			}
@@ -54,10 +54,10 @@ static void procesar_conexionn(void* void_args){
 			case INICIAR_ESTRUCTURAS:
 			{
 				uint32_t pid;
-				if(!recv_INICIAR_ESTRUCTURA_MEMORIA(cliente_socket)){
-					log_error(log_memoria,"fallo recibiendo iniciar_estructuras");
-					break;
-				}
+//				if(!recv_INICIAR_ESTRUCTURA_MEMORIA(cliente_socket)){
+//					log_error(log_memoria,"fallo recibiendo iniciar_estructuras");
+//					break;
+//				}
 
 				recv_PID(cliente_socket, &pid);
 				log_info(log_memoria,"Creación de Proceso PID: %d",pid);
@@ -185,15 +185,18 @@ static void procesar_conexionn(void* void_args){
 				uint32_t direccion_fisica;//nice
 				uint32_t tamanio;
 				extra_code estado;
-
+                uint32_t cop;
 				recv_READ(cliente_socket,&direccion_fisica,&tamanio); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
 				recv_PID(cliente_socket, &pid);
-
+                if (recv(cliente_socket, &cop, sizeof(op_code), 0) == sizeof(op_code))
+                {
+                    contenido = leer_contenido(direccion_fisica,tamanio);
+				    send_contenido_leido(cliente_socket,contenido);
+                    }
 				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <%d> - Origen: <%s>",pid,direccion_fisica,tamanio,server_name);
 
 				//poner semaforo?
-				contenido = leer_contenido(direccion_fisica,tamanio);
-				send_contenido_leido(cliente_socket,contenido);
+
 			}
 
 			break;
@@ -242,5 +245,3 @@ int cliente_socket = esperar_cliente(log_memoria, server_socket);
 return 0;
 
 }
-
-
