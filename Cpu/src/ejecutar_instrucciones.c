@@ -110,6 +110,7 @@ int ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		//TODO agregar lo que me dijo gonza de mandar un contexto vacio o algo asi
 		send_ERROR(socket_cliente_kernel);
 
 		//“PID: <PID> - Error SEG_FAULT- Segmento: <NUMERO SEGMENTO> - Offset: <OFFSET> - Tamaño: <TAMAÑO>” TODO
@@ -237,6 +238,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		//TODO agregar lo que me dijo gonza de mandar un contexto vacio o algo asi
 		send_ERROR(socket_cliente_kernel);
 
 		//log_info(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%> - Offset: <%d> - Tamaño: <%d>",pcb_proceso->PID,);
@@ -481,7 +483,7 @@ void ejecutar_SIGNAL(pcb_cpu* pcb_proceso , char* recurso){
 	send_SIGNAL(socket_cliente_kernel, recurso);
 }
 
-void ejecutar_CREATE_SEGMENT(pcb_cpu* pcb_proceso){ //TODO agregar parámetros
+void ejecutar_CREATE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id, uint32_t tamanio){
 	contexto_ejecucion contexto_actualizado;
 	pcb_proceso -> PC += 1;
 
@@ -490,9 +492,11 @@ void ejecutar_CREATE_SEGMENT(pcb_cpu* pcb_proceso){ //TODO agregar parámetros
 	contexto_actualizado.registros = pcb_proceso -> registros;
 	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-	//TODO COMPLETAR send_CREATE_SEGMENT(socket_cliente_kernel,,);
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_CREATE_SEGMENT(socket_cliente_kernel, id, tamanio);
 }
-void ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso){ //TODO agregar parámetros
+
+void ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id){
 	contexto_ejecucion contexto_actualizado;
 
 	pcb_proceso -> PC += 1;
@@ -502,7 +506,8 @@ void ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso){ //TODO agregar parámetros
 	contexto_actualizado.registros = pcb_proceso -> registros;
 	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-	//TODO COMPLETAR send_ID_SEGMENTO(socket_cliente_kernel,,);
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_ID_SEGMENTO(socket_cliente_kernel,id);
 }
 
 void ejecutar_YIELD(pcb_cpu* pcb_proceso){
