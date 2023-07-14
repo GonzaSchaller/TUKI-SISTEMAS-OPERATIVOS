@@ -408,7 +408,12 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			break;
 		}
 		case F_SEEK:{
-			//TODO agregar log_info
+			char* archivo = una_instruccion -> parametro1.tipo_string;
+			uint32_t posicion = una_instruccion -> parametro2.tipo_int;
+
+			log_info(logger,"PID: <%d> - Ejecutando: <F_SEEK> - <%s %d>" , pcb_proceso->PID, archivo, posicion);
+			ejecutar_F_SEEK(pcb_proceso, archivo, posicion);
+
 			corta_ejecucion = 0;
 			break;
 		}
