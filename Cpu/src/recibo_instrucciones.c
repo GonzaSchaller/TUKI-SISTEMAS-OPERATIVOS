@@ -49,7 +49,6 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 				cargar_instruccion_a_lista(socket_cliente, code_instruccion, lista_instrucciones, logger);
 		}
 	}
-
 	/////////////////////////////////////////////////////////////////// RECIBIR CONTEXTO DE EJECUCION ////////////////////
 	contexto_ejecucion contexto;
 	contexto.TSegmento = list_create(); //todo hacer los destroy al final
@@ -62,7 +61,7 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 //	log_info(logger, "PID: <%d>",contexto.PID);
 //	log_info(logger, "PC:<%d>", contexto.PC);
 //	log_info(logger, "AX: %s", contexto.registros.AX);
-//    log_info(logger, "BX: %s", contexto.registros.BX);
+//   	log_info(logger, "BX: %s", contexto.registros.BX);
 //	log_info(logger, "CX: %s", contexto.registros.CX);
 //	log_info(logger, "DX: %s", contexto.registros.DX);
 //	log_info(logger, "EA: %s", contexto.registros.EAX);
@@ -75,6 +74,7 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 //	log_info(logger, "RDX: %s", contexto.registros.RDX);
 //	log_info(logger, "Tabla: %d", list_size(contexto.TSegmento));
 //	}
+	
 	// paso el contexto a un pcb y ese a una lista
 	pcb_cpu* pcb_proceso = malloc(sizeof(pcb_cpu));
 	pcb_proceso -> PID = contexto .PID;
@@ -83,41 +83,19 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 	pcb_proceso -> registros = contexto . registros;
 	//pcb_proceso ->TSegmento = list_create();
 	pcb_proceso->TSegmento = contexto .TSegmento;
-	//list_add(lista_pcb, pcb_proceso); // creo que no haria falta porque el kernel te manda el pcb con el pc que envia el cpu anteriormente
 
-	//instruccion* instruccion_en_execute = malloc(sizeof(instruccion));
-
-	// ¿no tendria que primero buscar el proceso en la lista_pcb y despues buscar el la intruccion?
 	while(pcb_proceso -> PC < list_size(pcb_proceso -> instrucciones)){
 		instruccion* instruccion_en_execute = fetch(pcb_proceso);
 		if(decode_execute(socket_cliente, pcb_proceso, instruccion_en_execute, logger))
 			break;
 		free(instruccion_en_execute);
-		//agregar que pasa con los otros procesos cuando dejo de ejecutar uno, paso al siguiente en teoria
 	}
-	/*
-	ver que hacer con lista_pcb.
-	entiendo que deberia:
-		buscar un pcb en la lista_pcb
-		ejecutar hasta que tenga que parar (diferentes motivos que cortan el while)
-		buscar el siguiente pcb en la lista_pcb
-
-	a la par ir cargandose los pcb mientras se va ejecutando alguno,
-	ó ¿mejor esperar a que se carguen todos los pcb?
-	*/
+	
 	list_destroy_and_destroy_elements(lista_instrucciones, free);
 	list_destroy_and_destroy_elements(contexto.TSegmento, free);
 	free(pcb_proceso);
 }
 
-//void recibir_cant_instrucciones(int socket, t_log* logger, uint32_t* cantidad){
-//	if(recv(socket, &cantidad, sizeof(uint32_t), 0) != sizeof(uint32_t)){
-//		log_error(logger, "Error al recibir el valor que indica la cantidad de instrucciones");
-//
-//	}
-//}
-
-//era bool pero me tiraba error
 int verificacion_recibo_code_correctamente(int socket, t_log* logger, op_code* code){
 	if (recv(socket, code, sizeof(op_code), 0) != sizeof(op_code)) {
 		log_error(logger, "Error al recibir el code");
@@ -339,8 +317,7 @@ instruccion* fetch(pcb_cpu* un_pcb ){
 	return proxima_instruccion;
 }
 
-//era bool pero me tiraba error
-// ver si tengo que retornar en vez de ser void (para cortar el while)
+//tipo int para usarlo en el if que corta la ejecucion de las instrucciones
 int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccion, t_log* logger){
 	op_code code_instruccion = una_instruccion -> id;
 	set_socket_kernel(socket); //todo hay mejor manera, no hace falta una funcion pero paja
