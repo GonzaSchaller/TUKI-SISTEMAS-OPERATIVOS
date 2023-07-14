@@ -404,12 +404,21 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			break;
 		}
 		case F_WRITE:{
-			//TODO agregar log_info
-			corta_ejecucion = 0;
+			char* archivo = una_instruccion -> parametro1.tipo_string;
+			uint32_t dir_logica = una_instruccion -> parametro2.tipo_int;
+			uint32_t cant_bytes = una_instruccion -> parametro3.tipo_int;
+			
+			log_info(logger,"PID: <%d> - Ejecutando: <F_WRITE> - <%s %d %d>" , pcb_proceso->PID, archivo, dir_logica, cant_bytes);
+			corta_ejecucion = ejecutar_F_WRITE(pcb_proceso, archivo, dir_logica, cant_bytes);
 			break;
 		}
 		case F_TRUNCATE:{
-			//TODO agregar log_info
+			char* archivo = una_instruccion -> parametro1.tipo_string;
+			uint32_t tamanio = una_instruccion -> parametro2.tipo_int;
+			
+			log_info(logger,"PID: <%d> - Ejecutando: <F_TRUNCATE> - <%s %d>" , pcb_proceso->PID, archivo, tamanio);
+			ejecutar_F_TRUNCATE(pcb_proceso, archivo, tamanio);
+			
 			corta_ejecucion = 0;
 			break;
 		}
