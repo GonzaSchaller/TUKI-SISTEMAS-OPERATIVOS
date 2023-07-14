@@ -34,7 +34,7 @@ void levantar_config(){
 	c->bitmap = strdup(config_get_string_value(config,"PATH_BITMAP"));
 	c->bloques = strdup(config_get_string_value(config,"PATH_BLOQUES"));
 	c->fcb = strdup(config_get_string_value(config,"PATH_FCB"));
-	c->retardo_acceso_bloque = config_get_int_value(c, "RETARDO_ACCESO_BLOQUE");
+	c->retardo_acceso_bloque = config_get_int_value(config, "RETARDO_ACCESO_BLOQUE");
 	log_info(logger,"levante config ok");
 	config_destroy(config);
 
@@ -90,7 +90,6 @@ void cargar_bitmap(){
 
 	fclose(f_bitmap);
 	free(path);
-
 }
 
 void cargar_bloque(){

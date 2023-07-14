@@ -43,7 +43,6 @@ void cargar_instruccion3(int, char* , char*, uint32_t ,uint32_t ,t_list* );
 
 instruccion* fetch();
 int decode_execute(int, pcb_cpu*, instruccion*, t_log*);
-
-
+char* registros_a_string(uint32_t);
 
 #endif

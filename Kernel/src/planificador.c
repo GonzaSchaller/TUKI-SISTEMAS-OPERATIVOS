@@ -181,22 +181,7 @@ void hiloReady_Execute(){
 		pcb_t* pcb_siguiente = obtener_siguiente_ready();
 		contexto_ejecucion contexto;
 		contexto.TSegmento = list_create();
-		//log_info(log_kernel, "Estamos en execute %d", pcb_siguiente->contexto.PID); // log epico
-//		log_info(log_kernel, "Numero de instrucciones: <%d> ",list_size(pcb_siguiente->instrucciones)); //todo a veces llega 0
-		//log_info(log_kernel, "PC: %d", pcb_siguiente->contexto.PC);
-//		log_info(log_kernel, "AX: %s", pcb_siguiente->contexto.registros.AX);
-//		log_info(log_kernel, "BX: %s", pcb_siguiente->contexto.registros.BX);
-//		log_info(log_kernel, "CX: %s", pcb_siguiente->contexto.registros.CX);
-//		log_info(log_kernel, "DX: %s", pcb_siguiente->contexto.registros.DX);
-//		log_info(log_kernel, "EA: %s", pcb_siguiente->contexto.registros.EAX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.EBX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.ECX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.EDX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RAX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RBX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RCX);
-//		log_info(log_kernel, "EBX: %s", pcb_siguiente->contexto.registros.RDX);
-		//log_info(log_kernel, "Tabla: %d", list_size(pcb_siguiente->contexto.TSegmento));
+
 		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
 		pcb_siguiente->state_anterior = pcb_siguiente->state;
 		pcb_siguiente->state = EXEC;
@@ -223,7 +208,6 @@ void liberar_Recursos(pcb_t* pcb) { //para liberar recursos asignados de un proc
 void terminarEjecucion(pcb_t* pcb){
 	pthread_mutex_lock(&mutexExit);
 	liberar_Recursos(pcb);
-	list_add(listaExit, pcb); //todo revisar
 
 	pcb->state_anterior = pcb->state;
 	pcb->state = FINISH;
@@ -231,22 +215,20 @@ void terminarEjecucion(pcb_t* pcb){
 	log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <%s>", pcb->contexto.PID,pcb->motivo_exit);
 	send_FINALIZAR_ESTRUCTURAS(conexion_memoria);
 	if(!send_EXIT(pcb->socket_consola)){
-		log_info(log_kernel, "Error enviandole a consola exit"); //todo ver el de consola, para mi es una especie del hanshake tuneado de utnso.
+		log_info(log_kernel, "Error enviandole a consola exit");
 	};
 
 	list_destroy_and_destroy_elements(pcb->tabla_archivosAbiertos, free);
 	list_destroy_and_destroy_elements(pcb->recursos_asignados, free);
 	list_destroy_and_destroy_elements(pcb->instrucciones, free);
 	list_destroy_and_destroy_elements(pcb->contexto.TSegmento, free);
+
 	free(pcb);
 	sem_post(&multiprogramacion);
 	pthread_mutex_unlock(&mutexExit);
 
 }
 
-
-// TODO recalcular_rafagas_hrrn sacarlo de todos las funciones de manejo, y ponerlo despues del while en el hilo_ready_exe
-// TODO avisarle que para F_READ Y F_WRITE, le pasamos el nombre del archivo y ella tiene que buscarlo para hacer lo que tenga que hacer
 
 //void remover_segmento(t_list* tabla_segmento, uint32_t id_segmento){
 //	    bool encontrarSegmento(void* elemento) {

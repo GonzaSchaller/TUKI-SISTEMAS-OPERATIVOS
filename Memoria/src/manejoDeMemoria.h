@@ -7,20 +7,23 @@
 #include <stdio.h>//
 #include <stdlib.h>//
 #include <stdbool.h>//
+#include <string.h>//
+
 #include <pthread.h>//
 #include <commons/log.h> //
 #include <commons/string.h>//
 #include <commons/config.h>//
 #include <commons/collections/list.h>//
-#include <commons/collections/queue.h>//
-#include <readline/readline.h>
+
+
+
 #include <assert.h>//
 #include <sockets.h>//
-#include<signal.h>//
-#include<unistd.h>//
-#include<sys/socket.h>//
-#include<netdb.h>//
-#include<string.h>//
+#include <signal.h>//
+#include <unistd.h>//
+#include <sys/socket.h>//
+#include <netdb.h>//
+
 
 #include "iniciar.h"
 #include "comunicacion.h"
@@ -41,6 +44,15 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid);
 uint32_t meter_en_memoria(segmento_t* segmento_a_ubicar);
 uint32_t unificar_huecos_tsl();
 uint32_t compactar_memoria();
+
+
+
+
+
+char *leer_contenido(uint32_t direccion, uint32_t tamanio);
+bool escribir_contenido(void*contenido,uint32_t offset,uint32_t size);
+
+
 
 
 #endif

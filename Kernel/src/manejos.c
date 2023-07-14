@@ -20,7 +20,7 @@ void bloquear_procesoPorArchivo(void* argumentos) {
     pcb_t* pcb_siguiente;
     arg_archivo_bloqueado* arg = (arg_archivo_bloqueado*)argumentos;
     pcb_t* pcb_bloqueado = arg->pcb;
-    fcb_t* archivo = arg->archivo;
+    fcb_kernel* archivo = arg->archivo;
 	int nombre_instruccion = arg->nombre_instruccion;
 	free(arg);
     pcb_bloqueado->state_anterior = pcb_bloqueado->state;
@@ -30,56 +30,85 @@ void bloquear_procesoPorArchivo(void* argumentos) {
 
     if(nombre_instruccion == F_TRUNCATE){
 		pthread_mutex_lock(&mutexHiloTruncate);
-		recv_FINALIZAR_TRUNCATE(conexion_fileSystem,&codigo);
+		recv_OK_CODE(conexion_fileSystem,&codigo);// ok code?
 		if(codigo == FINALIZAR){
-			pcb_siguiente =queue_pop(archivo->colaBloqueados);
+			pcb_siguiente =list_remove(archivo->colaBloqueados,list_size(archivo->colaBloqueados)-1);
 		}
 		pthread_mutex_unlock(&mutexHiloTruncate);
 	}
-    else if(nombre_instruccion == F_READ){
+    else if(nombre_instruccion == FINALIZAR){
     	pthread_mutex_lock(&mutexHiloRead);
-    	recv_FINALIZAR_READ(conexion_fileSystem, &codigo);
+    	recv_OK_CODE(conexion_fileSystem, &codigo);
     	if(codigo == FINALIZAR){
-			pcb_siguiente =queue_pop(archivo->colaBloqueados);
+			pcb_bloqueado = list_remove(archivo->colaBloqueados,list_size(archivo->colaBloqueados)-1);
+
 		}
         pthread_mutex_unlock(&mutexHiloRead);
 
     }
     else if(nombre_instruccion == F_WRITE){
     	pthread_mutex_lock(&mutexHiloWrite);
-    	recv_FINALIZAR_WRITE(conexion_fileSystem,&codigo);
+    	recv_OK_CODE(conexion_fileSystem,&codigo);
     	if(codigo == FINALIZAR){
-			pcb_siguiente = queue_pop(archivo->colaBloqueados);
-
+			pcb_bloqueado = list_remove(archivo->colaBloqueados,list_size(archivo->colaBloqueados)-1);
 		}
         pthread_mutex_unlock(&mutexHiloWrite);
     }
 	agregarAReady(pcb_siguiente);
     pthread_exit(NULL);
 }
-void eliminarArchivoDeLista(char* nombreArchivo, t_list* listaArchivos) {
+void eliminarArchivoDeTablaGlobal(char* nombreArchivo, t_list* listaArchivos) {
     // Buscar el archivo en la lista por nombre
 	 bool encontrarArchivo(void* elemento) {
-	        fcb_t* archivo = (fcb_t*)elemento;
+		 fcb_kernel* archivo = (fcb_kernel*)elemento;
 	        return strcmp(archivo->nombreArchivo, nombreArchivo) == 0;
 	    }
 
     void* archivoEncontrado = list_remove_by_condition(listaArchivos, encontrarArchivo);
 
     if (archivoEncontrado != NULL) {
-    	fcb_t* archivo = (fcb_t*)archivoEncontrado;
+    	fcb_kernel* archivo = (fcb_kernel*)archivoEncontrado;
+    	free(archivo->colaBloqueados);
+    	pthread_mutex_destroy(&archivo->mutexArchivo);
+    	free(archivo);
+
+    }
+}
+void eliminarArchivoDeTablaProceso(char* nombreArchivo, t_list* listaArchivos) {
+    // Buscar el archivo en la lista por nombre
+	 bool encontrarArchivo(void* elemento) {
+		 fcb_por_proceso* archivo = (fcb_por_proceso*)elemento;
+	        return strcmp(archivo->nombreArchivo, nombreArchivo) == 0;
+	    }
+
+    void* archivoEncontrado = list_remove_by_condition(listaArchivos, encontrarArchivo);
+
+    if (archivoEncontrado != NULL) {
+    	fcb_por_proceso* archivo = (fcb_por_proceso*)archivoEncontrado;
     	free(archivo);
     }
 }
-fcb_t* encontrar_archivo(t_list* lista_archivos, char* nombre_archivo) {
+fcb_kernel* encontrar_archivoTablaGlobal(t_list* lista_archivos, char* nombre_archivo) {
     // Función de condición para buscar el archivo por nombre
     bool encontrar_archivo(void* elemento) {
-        fcb_t* archivo = (fcb_t*)elemento;
+        fcb_kernel* archivo = (fcb_kernel*)elemento;
         return strcmp(archivo->nombreArchivo, nombre_archivo) == 0;
     }
 
     // Buscar el archivo en la lista
-    fcb_t* archivo_encontrado = (fcb_t*)list_find(lista_archivos, encontrar_archivo);
+    fcb_kernel* archivo_encontrado = (fcb_kernel*)list_find(lista_archivos, encontrar_archivo);
+
+    return archivo_encontrado;
+}
+fcb_por_proceso* encontrar_archivoTablaProceso(t_list* lista_archivos, char* nombre_archivo) {
+    // Función de condición para buscar el archivo por nombre
+    bool encontrar_archivo(void* elemento) {
+    	fcb_por_proceso* archivo = (fcb_por_proceso*)elemento;
+        return strcmp(archivo->nombreArchivo, nombre_archivo) == 0;
+    }
+
+    // Buscar el archivo en la lista
+    fcb_por_proceso* archivo_encontrado = (fcb_por_proceso*)list_find(lista_archivos, encontrar_archivo);
 
     return archivo_encontrado;
 }
@@ -106,6 +135,7 @@ void recibir_actualizar_tablas_segmento(pcb_t* pcb_actual){
 	for(int i = 0; i < t + 1; i++) { //para cada proceso enviamos la tabla que tiene y pedimo que memoria mande la nueva tabla
 		int j = 0;
 	    recv_TABLA_SEGMENTOS(conexion_memoria,&tabla_nueva);
+
 	    segmento = list_get(tabla_nueva, 0); //agarramos el primer segmento
 	    //pid = 2
 	    while(buscandoPID){
@@ -128,7 +158,7 @@ void recibir_actualizar_tablas_segmento(pcb_t* pcb_actual){
 void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 	uint32_t id_segmento,tamanio,base_nuevo_segmento,estado_segmento;
 	segmento_t* segmento= NULL;
-	bool estado_while = true; // sigue adentro del while
+	bool estado_while = true; // sigue adentro del while/
 		if (cop == CREATE_SEGMENT) // id tamanio
 		{
 			if (recv_CREATE_SEGMENT(conexion_cpu, &id_segmento,&tamanio))
@@ -150,24 +180,26 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 								list_add(pcb_siguiente->contexto.TSegmento, segmento);
 								send_BASE_SEGMENTO(conexion_cpu,base_nuevo_segmento);
 								estado_while = false;
+							log_info(log_kernel, "PID: <%d> - Crear Segmento - Id: <%d> - Tamaño: <%d>",pcb_siguiente->contexto.PID,id_segmento,tamanio);
 							}
 							else log_error(log_kernel, "Fallo recibiendo BASE SEGMENTO");
 
 						}
 						else if(estado_segmento == FALLIDO)
 						{
-                            pcb_siguiente->motivo_exit = "OUT OF MEMORY";
+                            pcb_siguiente->motivo_exit = "OUT_OF_MEMORY";
                             pcb_siguiente->finalizar_proceso = true;
 							estado_while = false;
 						}
 						else if(estado_segmento == COMPACTAR)
 						{ // espacio disponible, pero no se encuentra contiguo, por lo que hay que compactar
+							log_info(log_kernel, "Esperando Fin de Operaciones de FS");
 							sem_wait(&semFWrite);
 							sem_wait(&semFRead);
 							send(conexion_memoria, &estado_segmento, sizeof(estado_segmento), 0);// le mandamos COMPACTAR, porque no queriamos ahcer otro send
+							log_info(log_kernel, "Compactación: <Se solicitó compactación>");
 							recibir_actualizar_tablas_segmento(pcb_siguiente); //mandamos, recibimos y actualizamos las tabla de segmento
-								//log_info(log_kernel, "Finaliza el proceso <%d> - Motivo: <SEG_FAULT>", pcb_proceso->contexto_PCB.PID); //todo log este
-
+							log_info(log_kernel, "Compactación: <Se finalizó el proceso de compactación>");
 						}
 						send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
 						sem_post(&semFWrite);
@@ -188,6 +220,7 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 				recv_TABLA_SEGMENTOS(conexion_memoria,&nueva_tabla_segmentos); // cambie esto ahora nomas
 				pcb_siguiente->contexto.TSegmento = nueva_tabla_segmentos;// cambie esto ahora nomas
 				send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
+				log_info(log_kernel, "PID: <%d> - Eliminar Segmento - Id Segmento: <%d>",pcb_siguiente->contexto.PID, id_segmento);
 			}
 			else log_error(log_kernel, "Fallo recibiendo DELETE_SEGMENT");
 		}
@@ -221,15 +254,15 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 
 	 }
 	 else if(cop == EXIT){// caso EXIT
-
 		 	 	 	pcb_siguiente->motivo_exit = "SUCCESS";
 					terminarEjecucion(pcb_siguiente);
 					//sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
 				}
-//	 else{
-//		 terminarEjecucion(pcb_siguiente);
-//		 log_error(log_kernel, "Finaliza por error");
-//	 }
+	else if(cop=ERROR){
+	pcb_siguiente->finalizar_proceso = true;
+	pcb_siguiente->motivo_exit = "SEG_FAULT";
+	}
+
 }
 void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 	if (cop == F_OPEN) // es un wait
@@ -237,19 +270,19 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				    char* nombre_archivo;
 				    if (recv_F_OPEN(conexion_cpu, &nombre_archivo))
 				    {
-				        fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+				    	fcb_por_proceso* archivo_proceso = malloc(sizeof(archivo_proceso));
+				        fcb_kernel* archivo = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal, nombre_archivo);
 				        if (archivo != NULL)
 				        {// se agrega la entrada en la tabla de archivos abietos del proceso con el puntero en 0
+				        	archivo_proceso->nombreArchivo = nombre_archivo;
+				        	archivo_proceso->puntero = 0;
+							list_add(pcb_siguiente->tabla_archivosAbiertos,archivo_proceso); // agrego a la tabla de archivos abiertos del proceso
 
-				        	archivo->puntero_directo = 0;
-							list_add(pcb_siguiente->tabla_archivosAbiertos,archivo->nombreArchivo); // agrego a la tabla de archivos abiertos del proceso
-
-							queue_push(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
+							list_add(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
 							pcb_siguiente->state_anterior = pcb_siguiente->state;
 							pcb_siguiente->state = BLOCK;
 							log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
 							//pthread_mutex_unlock(&(archivo->mutexArchivo));
-
 							recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 				        }
 				        else{
@@ -265,13 +298,20 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 										log_error(log_kernel, "Fallo enviado crear_archivo a FILESYSTEM");
 									}
 								}
-								fcb_t* archivo_creado = NULL;
-								//recv_ARCHIVO_CREADO(conexion_fileSystem, archivo_creado); todo
-								list_add(tabla_ArchivosAbiertosGlobal,archivo_creado);
-								list_add(pcb_siguiente->tabla_archivosAbiertos,archivo_creado->nombreArchivo); // agrego a la tabla de archivos abiertos del proceso
+								fcb_kernel* archivo_nuevo = malloc(sizeof(fcb_kernel));
+								archivo_nuevo->nombreArchivo = nombre_archivo;
+								archivo_nuevo->colaBloqueados = list_create();
+								pthread_mutex_init(&archivo_nuevo->mutexArchivo, NULL);
+								archivo_nuevo->tamanio = 0;
+
+								archivo_proceso->puntero = 0;
+								archivo_proceso->nombreArchivo = nombre_archivo;
+
+								list_add(tabla_ArchivosAbiertosGlobal, archivo_nuevo);
+								list_add(pcb_siguiente->tabla_archivosAbiertos,archivo_proceso); // agrego a la tabla de archivos abiertos del proceso
 								send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);
 							}
-
+				        		log_info(log_kernel,"PID: <%d> - Abrir Archivo: <%s>", pcb_siguiente->contexto.PID, nombre_archivo);
 				    }
 				    else log_error(log_kernel, "Fallo recibiendo FOPEN");
 				}
@@ -281,23 +321,21 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 
 		if (recv_F_CLOSE(conexion_cpu, &nombre_archivo))
 			{
-			    fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+			    fcb_kernel* archivo = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 			    if (archivo != NULL)
 			    {
-			    	uint32_t tamanioLista = queue_size(archivo->colaBloqueados);
+			    	uint32_t tamanioLista = list_size(archivo->colaBloqueados);
 					if(tamanioLista > 0){ // algun proceso quiere ese archivo
-					pcb_t* pcb_bloqueado= queue_pop(archivo->colaBloqueados);
-					eliminarArchivoDeLista(nombre_archivo, pcb_siguiente->tabla_archivosAbiertos);
+					pcb_t* pcb_bloqueado= list_remove(archivo->colaBloqueados,0); //desbloqueo y despues lo mando a ready
 					agregarAReady(pcb_bloqueado);
 					}
 					else{
 						// ningun otro proceso quiere el archivo
-					eliminarArchivoDeLista(nombre_archivo, pcb_siguiente->tabla_archivosAbiertos); //YO no quiero mas tener este archivo abierto
-					eliminarArchivoDeLista(nombre_archivo, tabla_ArchivosAbiertosGlobal);// sacar el archivo de la tabla global tambien			// ya NADIE lo tiene abierto
-					//list_destroy_and_destroy_elements(archivo->colaBloqueados,free);
-					//free(archivo);
+					eliminarArchivoDeTablaGlobal(nombre_archivo, tabla_ArchivosAbiertosGlobal);// sacar el archivo de la tabla global tamanio
 					}
-				}
+					eliminarArchivoDeTablaProceso(nombre_archivo, pcb_siguiente->tabla_archivosAbiertos); //boorro el que lo tenia
+					log_info(log_kernel,"PID: <%d> - Cerrar Archivo: <%s>", pcb_siguiente->contexto.PID, nombre_archivo);
+			    }
 			}
 		else log_error(log_kernel, "Fallo recibiendo FCLOSE");
 	}
@@ -306,9 +344,10 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 		uint32_t posicion;
 		char* nombre_archivo;
 		if(recv_F_SEEK(conexion_cpu,&nombre_archivo,&posicion)){
-			fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
-			archivo->puntero_directo = posicion;
+			fcb_por_proceso* archivo = encontrar_archivoTablaProceso(pcb_siguiente->tabla_archivosAbiertos, nombre_archivo);
+			archivo->puntero = posicion;
 			send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);
+			log_info(log_kernel,"PID: <%d> - Actualizar puntero Archivo: <%s> - Puntero <%d>", pcb_siguiente->contexto.PID, archivo->nombreArchivo, archivo->puntero);
 		}
 
 	}
@@ -317,14 +356,19 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 		char* nombre_archivo;
 		if(recv_F_TRUNCATE(conexion_cpu,&nombre_archivo,&tamanio)){
 			send_F_TRUNCATE(conexion_fileSystem,nombre_archivo,tamanio);
-			fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
-			queue_push(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
+			fcb_kernel* archivo = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+			archivo->tamanio = tamanio;
+			list_add(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
+
 			log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
+
 			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
 			pthread_t hilo_archivo;
 			args->pcb = pcb_siguiente;
 			args->archivo = archivo;
 			args->nombre_instruccion = F_TRUNCATE;
+
+			log_info(log_kernel,"PID: <%d> - Archivo: <%s> - Tamaño: <%d>", pcb_siguiente->contexto.PID, archivo->nombreArchivo,archivo->tamanio);
 			pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
 			pthread_detach(hilo_archivo);
 			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
@@ -334,22 +378,28 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 	else if(cop ==F_READ){
 		sem_wait(&semFRead);
 		char* nombre_archivo;
-		uint32_t direccion_logica;
+		uint32_t direccion_fisica;
 		uint32_t cantidad_bytes;
 
-		if(!recv_F_READ(conexion_cpu, &nombre_archivo, &direccion_logica, &cantidad_bytes)){
+		if(!recv_F_READ(conexion_cpu, &nombre_archivo, &direccion_fisica, &cantidad_bytes)){
 			log_error(log_kernel, "Fallo recibiendo F_READ");
 		}
 		else {
-			if(!send_F_READ(conexion_fileSystem, nombre_archivo, direccion_logica, cantidad_bytes)){
+			fcb_por_proceso* archivo = encontrar_archivoTablaProceso(pcb_siguiente->tabla_archivosAbiertos, nombre_archivo);
+			if(!send_F_READ(conexion_fileSystem, nombre_archivo, direccion_fisica, cantidad_bytes)){
 				log_error(log_kernel, "Fallo enviando F_READ a FS");
 			}
-			fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+			if(!send_PUNTERO_FS(conexion_fileSystem, archivo->puntero)){
+				log_error(log_kernel, "Fallo enviando Puntero a FS");
+			}
+			fcb_kernel* archivo_para_args = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
 			pthread_t hilo_archivo;
 			args->pcb = pcb_siguiente;
-			args->archivo = archivo;
+			args->archivo = archivo_para_args;
 			args->nombre_instruccion = F_READ;
+
+			log_info(log_kernel,"PID: <%d> - Leer Archivo: <%d> - Puntero <%d> - Dirección Memoria <%d> - Tamaño <%d>", pcb_siguiente->contexto.PID, archivo->nombreArchivo,archivo->puntero, direccion_fisica,archivo_para_args->tamanio);
 			pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
 			pthread_detach(hilo_archivo);
 			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
@@ -361,25 +411,30 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 	else if(cop == F_WRITE){
 		sem_wait(&semFWrite);
 		char* nombre_archivo;
-		uint32_t direccion_logica;
+		uint32_t direccion_fisica;
 		uint32_t cantidad_bytes;
 
-		if(!recv_F_WRITE(conexion_cpu, &nombre_archivo, &direccion_logica, &cantidad_bytes)){
+		if(!recv_F_WRITE(conexion_cpu, &nombre_archivo, &direccion_fisica, &cantidad_bytes)){ //todo revisar que me llega la fisica
 			log_error(log_kernel, "Fallo recibiendo F_WRITE");
 		}
 		else{
-			if(!send_F_WRITE(conexion_fileSystem, nombre_archivo, direccion_logica, cantidad_bytes)){
-				log_error(log_kernel, "Fallo enviando F_READ a FS");
-			}
-			fcb_t* archivo = encontrar_archivo(tabla_ArchivosAbiertosGlobal,nombre_archivo);
-			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
-			pthread_t hilo_archivo;
-			args->pcb = pcb_siguiente;
-			args->archivo = archivo;
-			args->nombre_instruccion = F_WRITE;
-			pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
-			pthread_detach(hilo_archivo);
-			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
+				if(!send_F_WRITE(conexion_fileSystem, nombre_archivo, direccion_fisica, cantidad_bytes)){
+					log_error(log_kernel, "Fallo enviando F_WRITE a FS");
+				}
+				fcb_por_proceso* archivo = encontrar_archivoTablaProceso(pcb_siguiente->tabla_archivosAbiertos, nombre_archivo);
+				if(!send_PUNTERO_FS(conexion_fileSystem, archivo->puntero)){
+								log_error(log_kernel, "Fallo enviando Puntero a FS");
+				}
+				fcb_kernel* archivoTabla = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+				arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
+				pthread_t hilo_archivo;
+				args->pcb = pcb_siguiente;
+				args->archivo = archivoTabla;
+				args->nombre_instruccion = F_WRITE;
+				log_info(log_kernel,"PID: <%d> - Escribir Archivo: <%s> - Puntero <%d> - Dirección Memoria <%d> - Tamaño <%d>",pcb_siguiente->contexto.PID, archivo->nombreArchivo,archivo->puntero, direccion_fisica,archivoTabla->tamanio);
+				pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
+				pthread_detach(hilo_archivo);
+				recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 		}
 		sem_post(&semFWrite);
 	}

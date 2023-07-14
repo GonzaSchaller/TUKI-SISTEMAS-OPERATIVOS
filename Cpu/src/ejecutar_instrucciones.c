@@ -1,7 +1,8 @@
 #include "ejecutar_instrucciones.h"
 
 int socket_cliente_kernel;
-int socket_memoria; //hacer
+extern int conexion_memoria;
+extern t_log*logger;
 
 void set_socket_kernel(int socket){
 	socket_cliente_kernel = socket;
@@ -76,6 +77,15 @@ void ejecutar_SET(pcb_cpu* pcb_proceso, uint32_t registro, char* valor){
 //traducir la DL a DF
 //preguntar a memoria que hay en esa DL
 //guardar la info en el registro que me dan
+
+char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
+	char*valor;
+	if(!send_READ(conexion_memoria,df,size)){log_error(logger, "error mandando read a memoria");} // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
+	if(!send_PID(conexion_memoria, pid)){log_error(logger, "error mandando PID a memoria");}
+	if(!recv_contenido_leido(conexion_memoria,&valor)){log_error(logger,"error recibiendo contenido leido de memoria");}
+	return valor;
+}
+
 void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
 	//cosas que tengo que mandar a Memoria: aplica para mov_out
 	//PID
@@ -102,67 +112,79 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	//aca mando a memoria la DF
 	//hago un recv
 
-	// pedir a memoria que me pase y lo guardo en valor
+
 	char* valor;
 
 	//************************************************************* guardo en el registro:
 	switch(registro){
 			case AX:{
+				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.AX, valor);
 				//pcb_proceso -> registros.AX = param2;
 				break;
 			}
 			case BX:{
+				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.BX, valor);
 				//pcb_proceso -> registros.BX = param2;
 				break;
 			}
 			case CX:{
+				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.CX, valor);
 				//pcb_proceso -> registros.CX = param2;
 				break;
 			}
 			case DX:{
+				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.DX, valor);
 				//pcb_proceso -> registros.DX = param2;
 				break;
 			}
 			case EAX:{
+				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.EAX, valor);
 				//pcb_proceso -> registros.EAX = param2;
 				break;
 			}
 			case EBX:{
+				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.EBX, valor);
 				//pcb_proceso -> registros.EBX = param2;
 				break;
 			}
 			case ECX:{
+				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.ECX, valor);
 				//pcb_proceso -> registros.ECX = param2;
 				break;
 			}
 			case EDX:{
+				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.EDX, valor);
 				//pcb_proceso -> registros.EDX = param2;
 				break;
 			}
 			case RAX:{
+				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RAX, valor);
 				//pcb_proceso -> registros.RAX = param2;
 				break;
 			}
 			case RBX:{
+				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RBX, valor);
 				//pcb_proceso -> registros.RBX = param2;
 				break;
 			}
 			case RCX:{
+				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RCX, valor);
 				//pcb_proceso -> registros.RCX = param2;
 				break;
 			}
 			case RDX:{
+				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RDX, valor);
 				//pcb_proceso -> registros.RDX = param2;
 				break;
@@ -172,67 +194,97 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	}
 }
 
+
+void enviar_a_memoria(char*valor,uint32_t df,uint32_t size,uint32_t pid){
+
+	uint32_t estado;
+	if(!send_WRITE(conexion_memoria,df,valor)){log_error(logger,"error mandando write a memoria");}
+	if(!send_cant_bytes(conexion_memoria,size)){log_error(logger,"error mandando la cantidad de bytes a memoria");}
+	if(!send_PID(conexion_memoria,pid)){log_error(logger,"error mandando el pid a memoria");}
+
+	if(!recv_OK_CODE(conexion_memoria,&estado)){log_error(conexion_memoria,"error reciviendo ok_code de memoria");
+	if(estado == EXITOSO){
+		log_info(logger,"memoria escribio correctamente");
+	}
+}
+//VER SI LE TENGO QUE PASAR EL TAMAÑO DE SEGMENTO.
 void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
-	char* valor = NULL;
+	char* valor;
+
+	uint32_t tam_segmento; //ver como conseguir tamanio segmento
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, tam_segmento);
+
 	//obtengo el dato del registro
 	switch(registro){
 		case AX:{
 			strcpy(valor, pcb_proceso -> registros.AX);
+			enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
 			//pcb_proceso -> registros.AX = param2;
 			break;
 		}
 		case BX:{
 			strcpy(valor, pcb_proceso -> registros.BX);
+			enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
 			//pcb_proceso -> registros.BX = param2;
 			break;
 		}
 		case CX:{
 			strcpy(valor, pcb_proceso -> registros.CX);
+			enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
 			//pcb_proceso -> registros.CX = param2;
 			break;
 		}
 		case DX:{
 			strcpy(valor, pcb_proceso -> registros.DX);
+			enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
 			//pcb_proceso -> registros.DX = param2;
 			break;
 		}
 		case EAX:{
 			strcpy(valor, pcb_proceso -> registros.EAX);
+			enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
 			//pcb_proceso -> registros.EAX = param2;
 			break;
 		}
 		case EBX:{
 			strcpy(valor, pcb_proceso -> registros.EBX);
+			enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
 			//pcb_proceso -> registros.EBX = param2;
 			break;
 		}
 		case ECX:{
 			strcpy(valor, pcb_proceso -> registros.ECX);
+			enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
 			//pcb_proceso -> registros.ECX = param2;
 			break;
 		}
 		case EDX:{
 			strcpy(valor, pcb_proceso -> registros.EDX);
+			enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
 			//pcb_proceso -> registros.EDX = param2;
 			break;
 		}
 		case RAX:{
 			strcpy(valor, pcb_proceso -> registros.RAX);
+			enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
 			//pcb_proceso -> registros.RAX = param2;
 			break;
 		}
 		case RBX:{
 			strcpy(valor, pcb_proceso -> registros.RBX);
+			enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
 			//pcb_proceso -> registros.RBX = param2;
 			break;
 		}
 		case RCX:{
 			strcpy(valor, pcb_proceso -> registros.RCX);
+			enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
 			//pcb_proceso -> registros.RCX = param2;
 			break;
 		}
 		case RDX:{
 			strcpy(valor, pcb_proceso -> registros.RDX);
+			enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
 			//pcb_proceso -> registros.RDX = param2;
 			break;
 		}
@@ -293,6 +345,7 @@ void ejecutar_F_CLOSE(pcb_cpu* pcb_proceso, char* archivo){
 	contexto_para_kernel.registros = pcb_proceso -> registros;
 	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
+
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_F_CLOSE(socket_cliente_kernel, archivo);
 }
@@ -324,8 +377,9 @@ void ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_F_READ(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
 
-
+	//escribir en la DF de memoria l odel archivo
 
 }
 

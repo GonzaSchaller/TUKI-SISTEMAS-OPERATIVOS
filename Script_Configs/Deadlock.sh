@@ -68,11 +68,17 @@ cd ..
 
 cd File_System
 
-echo 'IP_MEMORIA=127.0.0.1' >>fileSystem.config
+FILE=/home/utnso/tp-2023-1c-Kernel-Masters/fileSystem.config
+if test -f "$FILE"; then
+    rm fileSystem.config
+fi
+
+touch fileSystem.config
+echo 'IP_MEMORIA=127.0.0.1' >fileSystem.config
 echo 'PUERTO_MEMORIA=8002' >>fileSystem.config
 echo 'PUERTO_ESCUCHA=8003' >>fileSystem.config
 echo 'RETARDO_ACCESO_BLOQUE=15000' >>fileSystem.config
-echo 'PATH_SUPERBLOQUE=~/fs/sbloque.dat' >>fileSystem.config
-echo 'PATH_BITMAP=~/fs/bitmap.dat' >>fileSystem.config
-echo 'PATH_BLOQUES=~/fs/bloques.dat' >>fileSystem.config
-echo 'PATH_FCB=~/fs/fcb' >>fileSystem.config
+echo 'PATH_SUPERBLOQUE=/home/utnso/tp-2023-1c-Kernel-Masters/File_System/superbloque.dat' >>fileSystem.config
+echo 'PATH_BITMAP=/home/utnso/tp-2023-1c-Kernel-Masters/File_System/bitmap.dat' >>fileSystem.config
+echo 'PATH_BLOQUES=/home/utnso/tp-2023-1c-Kernel-Masters/File_System/bloques.dat' >>fileSystem.config
+echo 'PATH_FCB=/home/utnso/tp-2023-1c-Kernel-Masters/File_System/fcb' >>fileSystem.config

@@ -3,9 +3,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+
 #include <pthread.h>
-#include <commons/log.h>
 #include <sockets.h>
+
+#include <commons/log.h>
+#include <commons/collections/list.h>//
+
 #include <send_rcvs.h>
 #include "manejoDeMemoria.h"
 #include "sem.h"

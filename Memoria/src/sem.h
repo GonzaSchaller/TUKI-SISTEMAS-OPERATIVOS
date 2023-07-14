@@ -29,6 +29,8 @@ bool bypid(void* segmento);
 
 //MEMORIA PRINCIPAL
 void memsetear_mp(uint32_t base,uint32_t tamanio,uint32_t contenido);
+void* get_contenido(uint32_t offset, uint32_t tamanio);
+void set_contenido(void*contenido, uint32_t offset,uint32_t size);
 
 //RELLENO
 t_list * create_list_seg_by_pid(uint32_t pid);

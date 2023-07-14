@@ -9,3 +9,4 @@
 (cd Consola/ && make build) 
 (cd Cpu/ && make build) 
 (cd Memoria/ && make build) 
+# (cd File_System/ && make build)

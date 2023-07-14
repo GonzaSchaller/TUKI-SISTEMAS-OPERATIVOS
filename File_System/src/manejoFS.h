@@ -1,7 +1,7 @@
 #ifndef MANEJO_FS_H
 #define MANEJO_FS_H
 
-#include <stdint.h> // pasarlo a todos los archivos
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
