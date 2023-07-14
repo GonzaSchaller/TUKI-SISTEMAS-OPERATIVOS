@@ -418,8 +418,12 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			break;
 		}
 		case F_READ:{
-			//TODO agregar log_info
-			corta_ejecucion = 0;
+			char* archivo = una_instruccion -> parametro1.tipo_string;
+			uint32_t dir_logica = una_instruccion -> parametro2.tipo_int;
+			uint32_t cant_bytes = una_instruccion -> parametro3.tipo_int;
+			
+			log_info(logger,"PID: <%d> - Ejecutando: <F_READ> - <%s %d %d>" , pcb_proceso->PID, archivo, dir_logica, cant_bytes);
+			corta_ejecucion = ejecutar_F_READ(pcb_proceso, archivo, dir_logica, cant_bytes);
 			break;
 		}
 		case F_WRITE:{
