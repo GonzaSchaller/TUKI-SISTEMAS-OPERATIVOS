@@ -107,9 +107,10 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-		//TODO send_MOV_IN
-		//TODO log_error SEGMENTATION
-		//“PID: <PID> - Error SEG_FAULT- Segmento: <NUMERO SEGMENTO> - Offset: <OFFSET> - Tamaño: <TAMAÑO>”
+
+		send_ERROR(socket_cliente_kernel,ERROR);S
+
+		//“PID: <PID> - Error SEG_FAULT- Segmento: <NUMERO SEGMENTO> - Offset: <OFFSET> - Tamaño: <TAMAÑO>” TODO
 	}
 	else{
 	char* valor;
@@ -216,7 +217,7 @@ void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logi
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
 	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
 
-	if(dir_fisica < 0){
+	if(dir_fisica == -1){
 		//COMPLETAR caso de Segmentation Fault
 		/* Lo que dice la consigna:
 		"En caso de que el desplazamiento dentro del segmento (desplazamiento_segmento)
@@ -232,9 +233,9 @@ void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logi
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-		// TODO send_MOV_OUT
-		//TODO log_error SEGMENTATION
-		//“PID: <PID> - Error SEG_FAULT- Segmento: <NUMERO SEGMENTO> - Offset: <OFFSET> - Tamaño: <TAMAÑO>”
+		send_ERROR(socket_cliente_kernel,ERROR);
+
+		//log_info(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%> - Offset: <%d> - Tamaño: <%d>",pcb_proceso->PID,);
 	}
 	else{
 	char* valor;
@@ -378,33 +379,56 @@ void ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
 	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
 	//escribir en la DF de memoria lo del archivo
+	if(dir_fisica == -1){
+		contexto_ejecucion contexto_actualizado;
 
-	contexto_ejecucion contexto_actualizado;
+		contexto_actualizado.PID = pcb_proceso -> PID;
+		contexto_actualizado.PC = pcb_proceso -> PC;
+		contexto_actualizado.registros = pcb_proceso -> registros;
+		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-	pcb_proceso -> PC += 1;
-	contexto_actualizado.PID = pcb_proceso -> PID;
-	contexto_actualizado.PC = pcb_proceso -> PC;
-	contexto_actualizado.registros = pcb_proceso -> registros;
-	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		send_ERROR(socket_cliente_kernel,ERROR);
+	}else {
+		contexto_ejecucion contexto_actualizado;
 
-	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-	send_F_READ(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
+			pcb_proceso -> PC += 1;
+			contexto_actualizado.PID = pcb_proceso -> PID;
+			contexto_actualizado.PC = pcb_proceso -> PC;
+			contexto_actualizado.registros = pcb_proceso -> registros;
+			contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+
+			send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+			send_F_READ(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
+	}
 }
 
 void ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
 	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
-	
-	contexto_ejecucion contexto_actualizado;
-	pcb_proceso -> PC += 1;
+	if(dir_fisica == -1){
+		contexto_ejecucion contexto_actualizado;
 
-	contexto_actualizado.PID = pcb_proceso -> PID;
-	contexto_actualizado.PC = pcb_proceso -> PC;
-	contexto_actualizado.registros = pcb_proceso -> registros;
-	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+		contexto_actualizado.PID = pcb_proceso -> PID;
+		contexto_actualizado.PC = pcb_proceso -> PC;
+		contexto_actualizado.registros = pcb_proceso -> registros;
+		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-	send_F_WRITE(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
+		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		send_ERROR(socket_cliente_kernel,ERROR);
+	}else{
+			contexto_ejecucion contexto_actualizado;
+			pcb_proceso -> PC += 1;
+
+			contexto_actualizado.PID = pcb_proceso -> PID;
+			contexto_actualizado.PC = pcb_proceso -> PC;
+			contexto_actualizado.registros = pcb_proceso -> registros;
+			contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+
+			send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+			send_F_WRITE(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
+	}
+
 }
 
 void ejecutar_F_TRUNCATE(pcb_cpu* pcb_proceso, char* archivo, uint32_t tamanio){
