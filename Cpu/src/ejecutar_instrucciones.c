@@ -391,9 +391,34 @@ void ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 	send_F_READ(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
 }
 
-//void ejecutar_F_WRITE(){}
+void ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
+	t_list* listaSegmentos = pcb_proceso -> TSegmento;
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
+	
+	contexto_ejecucion contexto_actualizado;
+	pcb_proceso -> PC += 1;
 
-//void ejecutar_F_TRUNCATE(){}
+	contexto_actualizado.PID = pcb_proceso -> PID;
+	contexto_actualizado.PC = pcb_proceso -> PC;
+	contexto_actualizado.registros = pcb_proceso -> registros;
+	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_F_WRITE(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
+}
+
+void ejecutar_F_TRUNCATE(pcb_cpu* pcb_proceso, char* archivo, uint32_t tamanio){
+	contexto_ejecucion contexto_actualizado;
+	pcb_proceso -> PC += 1;
+
+	contexto_actualizado.PID = pcb_proceso -> PID;
+	contexto_actualizado.PC = pcb_proceso -> PC;
+	contexto_actualizado.registros = pcb_proceso -> registros;
+	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_F_TRUNCATE(socket_cliente_kernel,archivo,tamanio);
+}
 
 void ejecutar_WAIT(pcb_cpu* pcb_proceso , char* recurso){
 	contexto_ejecucion contexto_actualizado;
@@ -421,19 +446,18 @@ void ejecutar_SIGNAL(pcb_cpu* pcb_proceso , char* recurso){
 	send_SIGNAL(socket_cliente_kernel, recurso);
 }
 
-void ejecutar_CREATE_SEGMENT(pcb_cpu* pcb_proceso){
+void ejecutar_CREATE_SEGMENT(pcb_cpu* pcb_proceso){ //TODO agregar parámetros
 	contexto_ejecucion contexto_actualizado;
 	pcb_proceso -> PC += 1;
 
 	contexto_actualizado.PID = pcb_proceso -> PID;
 	contexto_actualizado.PC = pcb_proceso -> PC;
 	contexto_actualizado.registros = pcb_proceso -> registros;
-	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-	//send_CREATE_SEGMENT(socket_cliente_kernel,,);
+	//TODO COMPLETAR send_CREATE_SEGMENT(socket_cliente_kernel,,);
 }
-void ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso){
+void ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso){ //TODO agregar parámetros
 	contexto_ejecucion contexto_actualizado;
 
 	pcb_proceso -> PC += 1;
@@ -443,7 +467,7 @@ void ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso){
 	contexto_actualizado.registros = pcb_proceso -> registros;
 	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-	//send_DELETE_SEGMENT(socket_cliente_kernel,,);
+	//TODO COMPLETAR send_ID_SEGMENTO(socket_cliente_kernel,,);
 }
 
 void ejecutar_YIELD(pcb_cpu* pcb_proceso){
