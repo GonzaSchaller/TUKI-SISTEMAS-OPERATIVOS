@@ -108,7 +108,7 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 
-		send_ERROR(socket_cliente_kernel,ERROR);S
+		send_ERROR(socket_cliente_kernel);
 
 		//“PID: <PID> - Error SEG_FAULT- Segmento: <NUMERO SEGMENTO> - Offset: <OFFSET> - Tamaño: <TAMAÑO>” TODO
 	}
@@ -233,7 +233,7 @@ void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logi
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-		send_ERROR(socket_cliente_kernel,ERROR);
+		send_ERROR(socket_cliente_kernel);
 
 		//log_info(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%> - Offset: <%d> - Tamaño: <%d>",pcb_proceso->PID,);
 	}
@@ -388,7 +388,7 @@ void ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-		send_ERROR(socket_cliente_kernel,ERROR);
+		send_ERROR(socket_cliente_kernel);
 	}else {
 		contexto_ejecucion contexto_actualizado;
 
@@ -415,7 +415,7 @@ void ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, 
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-		send_ERROR(socket_cliente_kernel,ERROR);
+		send_ERROR(socket_cliente_kernel);
 	}else{
 			contexto_ejecucion contexto_actualizado;
 			pcb_proceso -> PC += 1;
