@@ -87,13 +87,6 @@ char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
 }
 
 void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
-	//cosas que tengo que mandar a Memoria: aplica para mov_out
-	//PID
-	//send_PID(socket_memoria,pcb_proceso->PID); //ijarse del socket de memoria.
-	//mandar a memoria
-	//TAMANIO
-	//QUIEN SOS? OPCIONAL (maniana preguntamos).
-
 	//************************************************************* traduzco la DL
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
 	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
@@ -106,13 +99,17 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 		el Contexto de Ejecución al Kernel para que este lo finalice con motivo de
 		Error: Segmentation Fault (SEG_FAULT)"
 		 */
+		contexto_ejecucion contexto_actualizado;
+
+		contexto_actualizado.PID = pcb_proceso -> PID;
+		contexto_actualizado.PC = pcb_proceso -> PC;
+		contexto_actualizado.registros = pcb_proceso -> registros;
+		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+
+		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		//TODO send_MOV_IN
 	}
 	else{
-
-	//aca mando a memoria la DF
-	//hago un recv
-
-
 	char* valor;
 
 	//************************************************************* guardo en el registro:
@@ -207,12 +204,33 @@ void enviar_a_memoria(char*valor,uint32_t df,uint32_t size,uint32_t pid){
 		log_info(logger,"memoria escribio correctamente");
 	}
 }
-//VER SI LE TENGO QUE PASAR EL TAMAÑO DE SEGMENTO.
+
 void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
 	char* valor;
+	
+	//************************************************************* traduzco la DL
+	t_list* listaSegmentos = pcb_proceso -> TSegmento;
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
 
-	uint32_t tam_segmento; //ver como conseguir tamanio segmento
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, tam_segmento);
+	if(dir_fisica < 0){
+		//COMPLETAR caso de Segmentation Fault
+		/* Lo que dice la consigna:
+		"En caso de que el desplazamiento dentro del segmento (desplazamiento_segmento)
+		sumado al tamaño a leer / escribir, sea mayor al tamaño del segmento, deberá devolverse
+		el Contexto de Ejecución al Kernel para que este lo finalice con motivo de
+		Error: Segmentation Fault (SEG_FAULT)"
+		 */
+		contexto_ejecucion contexto_actualizado;
+
+		contexto_actualizado.PID = pcb_proceso -> PID;
+		contexto_actualizado.PC = pcb_proceso -> PC;
+		contexto_actualizado.registros = pcb_proceso -> registros;
+		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+
+		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		// TODO send_MOV_OUT
+	}
+	else{
 
 	//obtengo el dato del registro
 	switch(registro){
@@ -289,23 +307,6 @@ void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logi
 			break;
 		}
 	}
-	//************************************************************* traduzco la DL
-	t_list* listaSegmentos = pcb_proceso -> TSegmento;
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
-
-	if(dir_fisica < 0){
-		//COMPLETAR caso de Segmentation Fault
-		/* Lo que dice la consigna:
-		"En caso de que el desplazamiento dentro del segmento (desplazamiento_segmento)
-		sumado al tamaño a leer / escribir, sea mayor al tamaño del segmento, deberá devolverse
-		el Contexto de Ejecución al Kernel para que este lo finalice con motivo de
-		Error: Segmentation Fault (SEG_FAULT)"
-		*/
-	}
-
-	else {
-	//se lo mando a memoria para guardarlo en la DF
-	// paso la DF y el valor
 	pcb_proceso -> PC += 1;
 	}
 }
@@ -378,9 +379,6 @@ void ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_F_READ(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
-
-	//escribir en la DF de memoria l odel archivo
-
 }
 
 //void ejecutar_F_WRITE(){}
@@ -394,11 +392,9 @@ void ejecutar_WAIT(pcb_cpu* pcb_proceso , char* recurso){
 	contexto_actualizado.PID = pcb_proceso -> PID;
 	contexto_actualizado.PC = pcb_proceso -> PC;
 	contexto_actualizado.registros = pcb_proceso -> registros;
-	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-	//send(socket_cliente_kernel, WAIT, sizeof(op_code), NULL); //esto no va, el send ya manda el op_code
-	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado); //primero el contexto
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_WAIT(socket_cliente_kernel, recurso);
 }
 
@@ -409,10 +405,8 @@ void ejecutar_SIGNAL(pcb_cpu* pcb_proceso , char* recurso){
 	contexto_actualizado.PID = pcb_proceso -> PID;
 	contexto_actualizado.PC = pcb_proceso -> PC;
 	contexto_actualizado.registros = pcb_proceso -> registros;
-	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-	//send(socket_cliente_kernel, WAIT, sizeof(op_code), NULL);
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_SIGNAL(socket_cliente_kernel, recurso);
 }
@@ -437,10 +431,9 @@ void ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso){
 	contexto_actualizado.PID = pcb_proceso -> PID;
 	contexto_actualizado.PC = pcb_proceso -> PC;
 	contexto_actualizado.registros = pcb_proceso -> registros;
-	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-	//send_CREATE_SEGMENT(socket_cliente_kernel,,);
+	//send_DELETE_SEGMENT(socket_cliente_kernel,,);
 }
 
 void ejecutar_YIELD(pcb_cpu* pcb_proceso){
@@ -450,24 +443,19 @@ void ejecutar_YIELD(pcb_cpu* pcb_proceso){
 	contexto_actualizado.PID = pcb_proceso -> PID;
 	contexto_actualizado.PC = pcb_proceso -> PC;
 	contexto_actualizado.registros = pcb_proceso -> registros;
-	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-	// en teoria el contexto de ejecucion tiene los TSegmento pero el pcb_proceso no, no se de donde sacarlo
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_YIELD(socket_cliente_kernel);
 }
 
-//FALTA, esta funcion hace que no no busque la siguiente isntruccion
 void ejecutar_EXIT(pcb_cpu* pcb_proceso){
 	contexto_ejecucion contexto_actualizado;
 
-	//pcb_proceso -> PC += 1;
 	contexto_actualizado.PID = pcb_proceso -> PID;
 	contexto_actualizado.PC = pcb_proceso -> PC;
 	contexto_actualizado.registros = pcb_proceso -> registros;
-	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_EXIT(socket_cliente_kernel);
