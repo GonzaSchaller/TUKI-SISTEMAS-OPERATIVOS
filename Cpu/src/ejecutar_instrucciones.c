@@ -409,7 +409,7 @@ int ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, ui
 	}
 }
 
-void ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
+int ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
 	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
 	if(dir_fisica == -1){
