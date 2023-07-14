@@ -200,7 +200,7 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				log_error(logger,"Error al recibir F_SEEK");
 				break;
 			}
-			//agregar
+			cargar_instruccion3(F_SEEK, "F_SEEK", param1, param2);
 			break;
 		}
 		case F_READ:{
