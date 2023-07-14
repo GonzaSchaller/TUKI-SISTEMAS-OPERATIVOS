@@ -80,7 +80,6 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	//cosas que tengo que mandar a Memoria: aplica para mov_out
 	//PID
 	//send_PID(socket_memoria,pcb_proceso->PID); //ijarse del socket de memoria.
-	//[DONE] traducir
 	//mandar a memoria
 	//TAMANIO
 	//QUIEN SOS? OPCIONAL (maniana preguntamos).
@@ -88,6 +87,17 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	//************************************************************* traduzco la DL
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
 	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
+
+	if(dir_fisica < 0){
+		//COMPLETAR caso de Segmentation Fault
+		/* Lo que dice la consigna:
+		"En caso de que el desplazamiento dentro del segmento (desplazamiento_segmento)
+		sumado al tamaño a leer / escribir, sea mayor al tamaño del segmento, deberá devolverse
+		el Contexto de Ejecución al Kernel para que este lo finalice con motivo de
+		Error: Segmentation Fault (SEG_FAULT)"
+		 */
+	}
+	else{
 
 	//aca mando a memoria la DF
 	//hago un recv
@@ -159,7 +169,7 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			}
 		}
 	pcb_proceso -> PC += 1;
-
+	}
 }
 
 void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
@@ -231,9 +241,21 @@ void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logi
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
 	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
 
+	if(dir_fisica < 0){
+		//COMPLETAR caso de Segmentation Fault
+		/* Lo que dice la consigna:
+		"En caso de que el desplazamiento dentro del segmento (desplazamiento_segmento)
+		sumado al tamaño a leer / escribir, sea mayor al tamaño del segmento, deberá devolverse
+		el Contexto de Ejecución al Kernel para que este lo finalice con motivo de
+		Error: Segmentation Fault (SEG_FAULT)"
+		*/
+	}
+
+	else {
 	//se lo mando a memoria para guardarlo en la DF
 	// paso la DF y el valor
 	pcb_proceso -> PC += 1;
+	}
 }
 
 void ejecutar_IO(pcb_cpu* pcb_proceso, uint32_t tiempo){
