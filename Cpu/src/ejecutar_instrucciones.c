@@ -108,6 +108,8 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 		//TODO send_MOV_IN
+		//TODO log_error SEGMENTATION
+		//“PID: <PID> - Error SEG_FAULT- Segmento: <NUMERO SEGMENTO> - Offset: <OFFSET> - Tamaño: <TAMAÑO>”
 	}
 	else{
 	char* valor;
@@ -229,6 +231,8 @@ void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logi
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 		// TODO send_MOV_OUT
+		//TODO log_error SEGMENTATION
+		//“PID: <PID> - Error SEG_FAULT- Segmento: <NUMERO SEGMENTO> - Offset: <OFFSET> - Tamaño: <TAMAÑO>”
 	}
 	else{
 
