@@ -114,6 +114,9 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	else{
 	char* valor;
 
+	//TODO logs acceso a memoria
+	//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Segmento: <NUMERO SEGMENTO> - Dirección Física: <DIRECCION FISICA> - Valor: <VALOR LEIDO / ESCRITO>”
+	
 	//************************************************************* guardo en el registro:
 	switch(registro){
 			case AX:{
@@ -208,7 +211,6 @@ void enviar_a_memoria(char*valor,uint32_t df,uint32_t size,uint32_t pid){
 }
 
 void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
-	char* valor;
 	
 	//************************************************************* traduzco la DL
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
@@ -235,7 +237,11 @@ void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logi
 		//“PID: <PID> - Error SEG_FAULT- Segmento: <NUMERO SEGMENTO> - Offset: <OFFSET> - Tamaño: <TAMAÑO>”
 	}
 	else{
-
+	char* valor;
+	
+	//TODO logs acceso a memoria
+	//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Segmento: <NUMERO SEGMENTO> - Dirección Física: <DIRECCION FISICA> - Valor: <VALOR LEIDO / ESCRITO>”
+	
 	//obtengo el dato del registro
 	switch(registro){
 		case AX:{
