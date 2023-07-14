@@ -86,12 +86,12 @@ char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
 	return valor;
 }
 
-void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
+int ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
 	//************************************************************* traduzco la DL
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
 	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
 
-	if(dir_fisica < 0){
+	if(dir_fisica == -1){
 		//COMPLETAR caso de Segmentation Fault
 		/* Lo que dice la consigna:
 		"En caso de que el desplazamiento dentro del segmento (desplazamiento_segmento)
@@ -107,10 +107,10 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-
 		send_ERROR(socket_cliente_kernel);
 
 		//“PID: <PID> - Error SEG_FAULT- Segmento: <NUMERO SEGMENTO> - Offset: <OFFSET> - Tamaño: <TAMAÑO>” TODO
+		return 1; //para que corte la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 	else{
 	char* valor;
@@ -194,6 +194,7 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			}
 		}
 	pcb_proceso -> PC += 1;
+	return 0; //para que no corte la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 }
 
@@ -211,7 +212,7 @@ void enviar_a_memoria(char*valor,uint32_t df,uint32_t size,uint32_t pid){
 	}
 }
 
-void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
+int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
 	
 	//************************************************************* traduzco la DL
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
@@ -236,6 +237,7 @@ void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logi
 		send_ERROR(socket_cliente_kernel);
 
 		//log_info(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%> - Offset: <%d> - Tamaño: <%d>",pcb_proceso->PID,);
+		return 1; //corta ejecucion de ejecucion (se usa en execute_decode en recibo_instrucciones.c)
 	}
 	else{
 	char* valor;
@@ -319,6 +321,7 @@ void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logi
 		}
 	}
 	pcb_proceso -> PC += 1;
+	return 0; //no corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 }
 
@@ -375,7 +378,7 @@ void ejecutar_F_SEEK(pcb_cpu* pcb_proceso, char* archivo, uint32_t posicion){
 	send_F_SEEK(socket_cliente_kernel, archivo, posicion);
 }
 
-void ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
+int ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
 	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
 	//escribir en la DF de memoria lo del archivo
@@ -389,17 +392,20 @@ void ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 		send_ERROR(socket_cliente_kernel);
+
+		return 1; //corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}else {
 		contexto_ejecucion contexto_actualizado;
 
-			pcb_proceso -> PC += 1;
-			contexto_actualizado.PID = pcb_proceso -> PID;
-			contexto_actualizado.PC = pcb_proceso -> PC;
-			contexto_actualizado.registros = pcb_proceso -> registros;
-			contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+		pcb_proceso -> PC += 1;
+		contexto_actualizado.PID = pcb_proceso -> PID;
+		contexto_actualizado.PC = pcb_proceso -> PC;
+		contexto_actualizado.registros = pcb_proceso -> registros;
+		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-			send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-			send_F_READ(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
+		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		send_F_READ(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
+		return 0; //no corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 }
 
@@ -416,17 +422,19 @@ void ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, 
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 		send_ERROR(socket_cliente_kernel);
+		return 1; //corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}else{
-			contexto_ejecucion contexto_actualizado;
-			pcb_proceso -> PC += 1;
+		contexto_ejecucion contexto_actualizado;
+		pcb_proceso -> PC += 1;
 
-			contexto_actualizado.PID = pcb_proceso -> PID;
-			contexto_actualizado.PC = pcb_proceso -> PC;
-			contexto_actualizado.registros = pcb_proceso -> registros;
-			contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+		contexto_actualizado.PID = pcb_proceso -> PID;
+		contexto_actualizado.PC = pcb_proceso -> PC;
+		contexto_actualizado.registros = pcb_proceso -> registros;
+		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-			send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-			send_F_WRITE(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
+		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		send_F_WRITE(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
+		return 0; //no corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 
 }
