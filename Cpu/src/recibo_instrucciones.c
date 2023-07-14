@@ -2,8 +2,39 @@
 
 t_list* lista_pcb;
 
+char* registros_a_string(uint32_t estado_int) {
+    switch (estado_int) {
+        case AX:
+            return "AX";
+        case BX:
+            return "BX";
+        case CX:
+            return "CX";
+        case DX:
+            return "DX";
+        case EAX:
+            return "EAX";
+        case EBX:
+            return "EBX";
+        case ECX:
+            return "ECX";
+        case EDX:
+            return "EDX";
+        case RAX:
+            return "RAX";
+        case RBX:
+            return "RBX";
+        case RCX:
+            return "RCX";
+        case RDX:
+            return "RDX";
+        default:
+            return "Registro desconocido";
+    }
+}
+
 void procesar_instrucciones(int socket_cliente, t_log* logger ){
-	////////////////////////////////////////////////////////////////////// RECIBIR INSTRUCCIONES /////////////////////////
+	/////r////////////////////////////////////////////// RECIBIR INSTRUCCIONES /////////////////////////
 	op_code code_instruccion = -10;
 	//log_info(logger, "cant instruc: <%d> ",cant_instrucciones);
 	t_list* lista_instrucciones = list_create();
@@ -256,7 +287,8 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 			cargar_instruccion1(EXIT,"EXIT", 0, 0, 0, lista);
 			break;
 		}
-
+		default:
+			return log_error(logger,"No se reconoce el cop");
 	}
 
 }

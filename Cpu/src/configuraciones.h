@@ -9,11 +9,11 @@
 #include <commons/collections/list.h>
 
 extern char* ip;
-extern uint32_t* retardo_instruccion;
+extern int retardo_instruccion;
 extern char* ip_memoria;
 extern char* puerto_memoria;
 extern char* puerto_cpu;
-extern char* tam_max_segmento;
+extern int tam_max_segmento;
 
 void levantar_config();
 

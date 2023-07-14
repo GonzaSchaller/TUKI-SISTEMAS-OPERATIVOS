@@ -205,7 +205,7 @@ void enviar_a_memoria(char*valor,uint32_t df,uint32_t size,uint32_t pid){
 	if(!send_cant_bytes(conexion_memoria,size)){log_error(logger,"error mandando la cantidad de bytes a memoria");}
 	if(!send_PID(conexion_memoria,pid)){log_error(logger,"error mandando el pid a memoria");}
 
-	if(!recv_OK_CODE(conexion_memoria,&estado)){log_error(conexion_memoria,"error reciviendo ok_code de memoria");
+	if(!recv_OK_CODE(conexion_memoria,&estado))log_error(conexion_memoria,"error recibiendo ok_code de memoria");
 	if(estado == EXITOSO){
 		log_info(logger,"memoria escribio correctamente");
 	}
@@ -518,4 +518,3 @@ void ejecutar_EXIT(pcb_cpu* pcb_proceso){
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_EXIT(socket_cliente_kernel);
 }
-
