@@ -441,12 +441,21 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			break;
 		}
 		case CREATE_SEGMENT:{
-			//TODO agregar log_info
+			uint32_t id = una_intruccion -> parametro1.tipo_int;
+			uint32_t tamanio = una_intruccion -> parametro2.tipo_int;
+
+			log_info(logger, "PID: <%d> - Ejecutando: <CREATE_SEGMENT> - <%d %d>" , pcb_proceso->PID, id, tamanio);
+			ejecutar_CREATE_SEGMENT(pcb_proceso, id, tamanio);
+
 			corta_ejecucion = 0;
 			break;
 		}
 		case DELETE_SEGMENT:{
-			//TODO agregar log_info
+			uint32_t id = una_intruccion -> parametro1.tipo_int;
+
+			log_info(logger, "PID: <%d> - Ejecutando: <DELETE_SEGMENT> - <%d>" , pcb_proceso->PID, id);
+			ejecutar_DELETE_SEGMENT(pcb_proceso, id);
+
 			corta_ejecucion = 0;
 			break;
 		}
