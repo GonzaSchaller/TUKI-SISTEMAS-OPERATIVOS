@@ -24,10 +24,11 @@
 
 #include "iniciar.h"
 #include <stdbool.h>
+#include <estructuras_compartidas.h>
 
 bool existe_y_abrir(char*nombre_archivo);
 bool crear_archivo(char*nombre,uint32_t tamanio);
-char* buscar_contenido(uint32_t puntero,uint32_t cb);
+char* buscar_contenido(char*nombre,uint32_t puntero,uint32_t cb);
 bool escribir_contenido(char* contenido,uint32_t punterow);
 
 #endif

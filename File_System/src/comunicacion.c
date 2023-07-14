@@ -5,46 +5,52 @@ extern int fd_fs;
 //extern
 
 
-void procesar_peticiones(int cliente_socket){
-	op_code cop;
-	while(cliente_socket!=-1){
-		if(recv(cliente_socket,&cop,sizeof(op_code),0) == 0){
-			log_info(logger,"DISCONECT!");
-				return;  }
+void procesar_peticiones(int cliente_socket,uint32_t codop){
+	op_code cop=EXISTE_ARCHIVO;
+//	while(cliente_socket!=-1){
+		//if(recv(cliente_socket,&cop,sizeof(op_code),0) == 0){
+	//		log_info(logger,"DISCONECT!");
+			//	return;  }
 
 
-				switch(cop){
+				switch(cop)
 				// DEFINIR: ver como pasar los datos nombre archivo y tamanio porque despues lo usamos en config_set_value que sólo usa punteros
 
 				//caso de F_OPEN primero hay que ver si ya existe el archivo
 				case EXISTE_ARCHIVO:{
 					extra_code estado;
-					char*nombre_archivo;
-					uint32_t tamanio; // DEFINIR ver si cambiarlo a char* o castear
-					if(!recv_EXISTE_ARCHIVO(cliente_socket,&nombre_archivo)) log_error(logger, "Fallo recibiendo f_open de kernel");
+					char*nombre_archivo = "hola.txt";
+					uint32_t tamanio = 0; // DEFINIR ver si cambiarlo a char* o castear
+				//	if(!recv_EXISTE_ARCHIVO(cliente_socket,&nombre_archivo)) log_error(logger, "Fallo recibiendo f_open de kernel");
 
 					log_info(logger,"abrir archivo %s",nombre_archivo);
 					bool resultado = existe_y_abrir(nombre_archivo);
+
 					if(!resultado){
 						estado = INCORRECTO;
-						send_OK_CODE(cliente_socket, estado);
+						//send_OK_CODE(cliente_socket, estado);
 						//crear el arcchivo.
-						recv_CREAR_ARCHIVO(cliente_socket, &nombre_archivo, &tamanio); //para mi que no deberia recibir nada
+						//recv_CREAR_ARCHIVO(cliente_socket, &nombre_archivo, &tamanio); //para mi que no deberia recibir nada
 
 						if(crear_archivo(nombre_archivo,tamanio)){
 							estado = CORRECTO;
-							send_OK_CODE(cliente_socket,estado);
-						}
+							log_info(logger,"cree el archivo");
+							existe_y_abrir(nombre_archivo);
+						//	send_OK_CODE(cliente_socket,estado);
+						}else log_error(logger,"i cant del creararcguhjksd");
 					}
 					else{
 						estado = CORRECTO;
-						send_OK_CODE(cliente_socket, estado);
+						//send_OK_CODE(cliente_socket, estado);
+						log_info(logger,"el archivo existe");
 					}
+
+
 				}
-				break;
+		//		break;
 
 
-				case F_WRITE:{
+			/*	case F_WRITE:{
 					char* nombre_archivo;
 				    uint32_t df; // la DF
 					uint32_t cant_bytes; // cant bytes
@@ -62,6 +68,7 @@ void procesar_peticiones(int cliente_socket){
 					send_READ(cliente_socket,df,cant_bytes); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
 					send_PID(cliente_socket,pid);
 
+					//fcb_t* fcb = busacr_fcb(nombre_archivo);
 					//aca recibo el contenido que le pediu a memoria
 					recv_contenido_leido(fd_memoria,&contenido);
 
@@ -83,7 +90,7 @@ void procesar_peticiones(int cliente_socket){
 					recv_F_READ(cliente_socket,&nombre_archivo,&df,&cant_bytes);
 					recv_PUNTERO_FS(cliente_socket,&puntero);
 					log_info(logger,"Leer: Archivo: %s - Puntero: %d  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivo,puntero,df,cant_bytes);
-					char*contenidor = buscar_contenido(puntero,cant_bytes);
+					char*contenidor = buscar_contenido(nombre_archivo,puntero,cant_bytes);
 					//le mando a memoria lo que tiene que escribir
 					if(contenidor != NULL){
 						send_WRITE(fd_memoria,df,contenidor);
@@ -97,8 +104,9 @@ void procesar_peticiones(int cliente_socket){
 
 						break;
 				}
-
-				case F_TRUNCATE:{
+*/
+				//case F_TRUNCATE:{
+					/*
 					char* nombre_archivo; //TODO DUDAS como es una variable deberia ser una general en vez de hacer varias para cada case
 					uint32_t tamanio;
 					recv_F_TRUNCATE(cliente_socket, &nombre_archivo, &tamanio);
@@ -163,12 +171,12 @@ void procesar_peticiones(int cliente_socket){
 						// Si es más grande que el de antes:
 							//TODO Asignar nuevos bloques (ver que significa)
 						break;
-				}
+				}*/
 
-				}
+				//}
 
 }
-}
+	//}}
 
 
 int generar_conexion_con_memoria(){
@@ -185,7 +193,7 @@ int generar_conexion_con_memoria(){
 void conexion_kernel(){
 	int fd_kernel = esperar_cliente(logger, fd_fs);
 		if(fd_kernel!=-1){
-			procesar_peticiones(fd_kernel);
+		//	procesar_peticiones(fd_kernel);
 		}
 }
 

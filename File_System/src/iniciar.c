@@ -93,8 +93,44 @@ void cargar_bitmap(){
 }
 
 void cargar_bloque(){
-	char*path = strdup(c->bitmap);
+	char*path = strdup(c->bloques);
 	f_bloques = fopen(path,"rb+");
+	if(f_bloques!=NULL){
+		log_info(logger,"abierto");}
+	else log_error(logger,"error");
+
+
+
+
+
+
+	uint32_t tam_bloque = 2;
+	uint32_t cant_bytes = 7;
+	uint32_t cant_bloques;
+
+	int cociente = cant_bytes / tam_bloque;
+	    int resto = cant_bytes% tam_bloque;
+
+	    uint32_t resultado;
+
+	    if (resto > 0) {
+	        cant_bloques = cociente + 1;
+	    } else {
+	        cant_bloques = cociente;
+	    }
+
+	    log_info(logger,"res%d",cant_bloques);
+
+
+
+	uint32_t ubicacion = 0 * tam_bloque;
+
+	fseek(f_bloques, sizeof(uint32_t) * ubicacion, SEEK_SET);
+	char* contenido_leido = malloc(tam_bloque * cant_bloques);
+	size_t elementos_leidos = fread(contenido_leido, tam_bloque,cant_bloques, f_bloques);
+
+	log_info(logger, "contenido: %s,cantbloques%d", contenido_leido,elementos_leidos);
+
 }
 
 void terminar_fs(){
