@@ -62,7 +62,7 @@ void procesar_peticiones(int cliente_socket){
 					recv_contenido_leido(fd_memoria,&contenido);
 					//recibo un puntero?
 
-					if(escribir_contenido(contenido,punterow)){ //escribir_contenido INCOMPLETA
+					if(escribir_contenido(contenido,punterow)){
 						estadok = EXITOSO; //escribio bien
 						send_OK_CODE(cliente_socket,estadok);
 					}
@@ -78,17 +78,20 @@ void procesar_peticiones(int cliente_socket){
 					recv_F_READ(cliente_socket,&nombre_archivor,&df,&cb);
 
 					log_info(logger,"Leer: Archivo: %s - Puntero: %d  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivor,puntero,df,cb);
-					char*contenidor = buscar_contenido(puntero,cb); //TODO
+					char*contenidor = buscar_contenido(puntero,cb);
 					//le mando a memoria lo que tiene que escribir
-					send_WRITE(fd_memoria,df,contenidor);
-					recv_OK_CODE(fd_memoria,&estado_memoria);
-					if(estado_memoria == EXITOSO){
-						estado_kernel = EXITOSO;
-						send_OK_CODE(cliente_socket,estado_kernel);
-					}else{
-						estado_kernel = FALLIDO;
-						send_OK_CODE(cliente_socket,estado_kernel);
+					if(contenidor != NULL){
+						send_WRITE(fd_memoria,df,contenidor);
+						recv_OK_CODE(fd_memoria,&estado_memoria);
+						if(estado_memoria == EXITOSO){
+							estado_kernel = EXITOSO;
+							send_OK_CODE(cliente_socket,estado_kernel);
+						}else{
+							estado_kernel = FALLIDO;
+							send_OK_CODE(cliente_socket,estado_kernel);
+						}
 					}
+					log_error(logger, "Error al abrir el archivo por que no se pudo obtener el contenido del mismo");
 
 						break;
 
