@@ -87,12 +87,35 @@ char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
 }
 
 void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
-	uint32_t tam_segmento; //ver como conseguir tamanio segmento
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, tam_segmento);
+	//cosas que tengo que mandar a Memoria: aplica para mov_out
+	//PID
+	//send_PID(socket_memoria,pcb_proceso->PID); //ijarse del socket de memoria.
+	//mandar a memoria
+	//TAMANIO
+	//QUIEN SOS? OPCIONAL (maniana preguntamos).
+
+	//************************************************************* traduzco la DL
+	t_list* listaSegmentos = pcb_proceso -> TSegmento;
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
+
+	if(dir_fisica < 0){
+		//COMPLETAR caso de Segmentation Fault
+		/* Lo que dice la consigna:
+		"En caso de que el desplazamiento dentro del segmento (desplazamiento_segmento)
+		sumado al tamaño a leer / escribir, sea mayor al tamaño del segmento, deberá devolverse
+		el Contexto de Ejecución al Kernel para que este lo finalice con motivo de
+		Error: Segmentation Fault (SEG_FAULT)"
+		 */
+	}
+	else{
+
+	//aca mando a memoria la DF
+	//hago un recv
+
 
 	char* valor;
 
-	//guardo en el registro:
+	//************************************************************* guardo en el registro:
 	switch(registro){
 			case AX:{
 				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
@@ -168,7 +191,9 @@ void ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			}
 		}
 	pcb_proceso -> PC += 1;
+	}
 }
+
 
 void enviar_a_memoria(char*valor,uint32_t df,uint32_t size,uint32_t pid){
 
@@ -264,9 +289,25 @@ void ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logi
 			break;
 		}
 	}
+	//************************************************************* traduzco la DL
+	t_list* listaSegmentos = pcb_proceso -> TSegmento;
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
+
+	if(dir_fisica < 0){
+		//COMPLETAR caso de Segmentation Fault
+		/* Lo que dice la consigna:
+		"En caso de que el desplazamiento dentro del segmento (desplazamiento_segmento)
+		sumado al tamaño a leer / escribir, sea mayor al tamaño del segmento, deberá devolverse
+		el Contexto de Ejecución al Kernel para que este lo finalice con motivo de
+		Error: Segmentation Fault (SEG_FAULT)"
+		*/
+	}
+
+	else {
 	//se lo mando a memoria para guardarlo en la DF
 	// paso la DF y el valor
 	pcb_proceso -> PC += 1;
+	}
 }
 
 void ejecutar_IO(pcb_cpu* pcb_proceso, uint32_t tiempo){
@@ -276,11 +317,8 @@ void ejecutar_IO(pcb_cpu* pcb_proceso, uint32_t tiempo){
 	contexto_para_kernel.PID = pcb_proceso -> PID;
 	contexto_para_kernel.PC = pcb_proceso -> PC;
 	contexto_para_kernel.registros = pcb_proceso -> registros;
-	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
-
-	//send_IO(socket_cliente_kernel, tiempo);
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_IO(socket_cliente_kernel, tiempo);
 }
@@ -292,10 +330,8 @@ void ejecutar_F_OPEN(pcb_cpu* pcb_proceso, char* archivo){
 	contexto_para_kernel.PID = pcb_proceso -> PID;
 	contexto_para_kernel.PC = pcb_proceso -> PC;
 	contexto_para_kernel.registros = pcb_proceso -> registros;
-	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
-	//send(socket_cliente_kernel, F_OPEN, sizeof(op_code), NULL);
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_F_OPEN(socket_cliente_kernel, archivo);
 }
@@ -307,10 +343,9 @@ void ejecutar_F_CLOSE(pcb_cpu* pcb_proceso, char* archivo){
 	contexto_para_kernel.PID = pcb_proceso -> PID;
 	contexto_para_kernel.PC = pcb_proceso -> PC;
 	contexto_para_kernel.registros = pcb_proceso -> registros;
-	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momenfLOto*/
+	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
-	//send(socket_cliente_kernel, F_CLOSE, sizeof(op_code), NULL);
+
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_F_CLOSE(socket_cliente_kernel, archivo);
 }
@@ -322,32 +357,30 @@ void ejecutar_F_SEEK(pcb_cpu* pcb_proceso, char* archivo, uint32_t posicion){
 	contexto_para_kernel.PID = pcb_proceso -> PID;
 	contexto_para_kernel.PC = pcb_proceso -> PC;
 	contexto_para_kernel.registros = pcb_proceso -> registros;
-	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
-	//send(socket_cliente_kernel, F_SEEK, sizeof(op_code), NULL);
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_F_SEEK(socket_cliente_kernel, archivo, posicion);
 }
 
 void ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
+	t_list* listaSegmentos = pcb_proceso -> TSegmento;
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos);
+	//escribir en la DF de memoria lo del archivo
+
 	contexto_ejecucion contexto_actualizado;
 
 	pcb_proceso -> PC += 1;
 	contexto_actualizado.PID = pcb_proceso -> PID;
 	contexto_actualizado.PC = pcb_proceso -> PC;
 	contexto_actualizado.registros = pcb_proceso -> registros;
-	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento; /* no manda nada, en kernel no van a pasar este dato
-	actualizado porque es el mismo que me mandan en su momento*/
+	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-
-	uint32_t tam_segmento;
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, tam_segmento);
-
 	send_F_READ(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
 
 	//escribir en la DF de memoria l odel archivo
+
 }
 
 //void ejecutar_F_WRITE(){}

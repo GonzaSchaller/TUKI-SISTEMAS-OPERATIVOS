@@ -24,6 +24,7 @@
 //#include "cpu.h" //para agregar conexion_memoria
 
 extern int socket_cliente_kernel; //ver como agregar aca el socket kernel
+extern int socket_memoria;
 
 typedef struct{
 	uint32_t PID;
@@ -49,5 +50,6 @@ void ejecutar_WAIT(pcb_cpu*, char*);
 void ejecutar_SIGNAL(pcb_cpu*, char*);
 void ejecutar_YIELD(pcb_cpu*);
 void ejecutar_EXIT(pcb_cpu*);
+uint32_t obtener_dir_fisica(uint32_t, t_list*);
 
 #endif
