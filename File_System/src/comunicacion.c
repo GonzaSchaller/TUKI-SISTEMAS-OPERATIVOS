@@ -45,26 +45,29 @@ void procesar_peticiones(int cliente_socket){
 
 
 				case F_WRITE:{
-					char* nombre_archivow;
+					char* nombre_archivo;
 				    uint32_t df; // la DF
 					uint32_t cant_bytes; // cant bytes
 					char*contenido;
-					uint32_t punterow = 0;
+					uint32_t puntero = 0;
 					uint32_t estadok;
+					uint32_t pid;
 
-					recv_F_WRITE(cliente_socket,&nombre_archivow,&df,&cant_bytes);
+					recv_F_WRITE(cliente_socket,&nombre_archivo,&df,&cant_bytes);
+					recv_PUNTERO_FS(cliente_socket,puntero);
 
-					log_info(logger,"Escribir Archivo: <%s> - Puntero: <%d> - Memoria <%d> - Tamanio: <%d>",nombre_archivow,punterow,df,cant_bytes);
+					log_info(logger,"Escribir Archivo: <%s> - Puntero: <%d> - Memoria <%d> - Tamanio: <%d>",nombre_archivo,puntero,df,cant_bytes);
 
 					//solicito a memoria lo que hay en la direccion logica mandada
-					send_READ2(fd_memoria, df);
+					send_READ(cliente_socket,df,cant_bytes); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
+					send_PID(cliente_socket,pid);
+
 					//aca recibo el contenido que le pediu a memoria
 					recv_contenido_leido(fd_memoria,&contenido);
-					//recibo un puntero?
 
-					if(escribir_contenido(contenido,punterow)){
-						estadok = EXITOSO; //escribio bien
-						send_OK_CODE(cliente_socket,estadok);
+
+					if(escribir_contenido(contenido,puntero)){
+						log_info(logger,"todo ok escribiendo el archivo");
 					}
 				   }
 					   break;
@@ -75,8 +78,10 @@ void procesar_peticiones(int cliente_socket){
 					uint32_t df;
 					uint32_t cant_bytes;
 					uint32_t puntero=0;
-					recv_F_READ(cliente_socket,&nombre_archivo,&df,&cant_bytes);
 
+
+					recv_F_READ(cliente_socket,&nombre_archivo,&df,&cant_bytes);
+					recv_PUNTERO_FS(cliente_socket,&puntero);
 					log_info(logger,"Leer: Archivo: %s - Puntero: %d  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivo,puntero,df,cant_bytes);
 					char*contenidor = buscar_contenido(puntero,cant_bytes);
 					//le mando a memoria lo que tiene que escribir
@@ -85,9 +90,6 @@ void procesar_peticiones(int cliente_socket){
 						recv_OK_CODE(fd_memoria,&estado_memoria);
 						if(estado_memoria == EXITOSO){
 							estado_kernel = EXITOSO;
-							send_OK_CODE(cliente_socket,estado_kernel);
-						}else{
-							estado_kernel = FALLIDO;
 							send_OK_CODE(cliente_socket,estado_kernel);
 						}
 					}
