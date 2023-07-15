@@ -74,9 +74,21 @@ void ejecutar_SET(pcb_cpu* pcb_proceso, uint32_t registro, char* valor){
 	pcb_proceso -> PC += 1;
 }
 
-//traducir la DL a DF
-//preguntar a memoria que hay en esa DL
-//guardar la info en el registro que me dan
+void segmentation_fault(pcb_cpu* pcb_proceso, uint32_t segmento, uint32_t offet, uint32_t tamanio, uint32_t SF_por_tam_valor){
+	contexto_ejecucion contexto_actualizado;
+
+	contexto_actualizado.PID = pcb_proceso -> PID;
+	contexto_actualizado.PC = pcb_proceso -> PC;
+	contexto_actualizado.registros = pcb_proceso -> registros;
+	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+
+	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_ERROR(socket_cliente_kernel);
+
+	log_error(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%d> - Offset: <%d> - Tamanio: <%d>", pcb_proceso -> PID, segmento, offset, tamanio);
+	if(SF_por_tam_valor)
+		log_error(logger, "Lo que se esta intentando guardar en la memoria sobrepasa su tamanio");
+}
 
 char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
 	char*valor = malloc(sizeof(registros_cpu));; ;
