@@ -9,6 +9,7 @@ FILE* f_bloques;
 FILE* f_bitmap;
 t_bitarray* bitarray;
 
+
 void inicializar() {
     c = malloc(sizeof(t_config_fs));
     c->bitmap= NULL;
@@ -84,6 +85,8 @@ void cargar_bitmap(){
 	        fclose(f_bitmap);
 	    }
 	bitarray = bitarray_create(bitmap_de_bloques,size_bitmap);
+	//hay que usar la nueva funcion
+	// bitarray = bitarray_create_with_mode(bitmap_de_bloques,size_bitmap, LSB_FIRST);
 
 	uint32_t cant = bitarray_get_max_bit(bitarray);
 	log_info(logger,"bits %d",cant);
