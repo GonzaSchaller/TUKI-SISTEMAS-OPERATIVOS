@@ -53,6 +53,6 @@ void ejecutar_WAIT(pcb_cpu*, char*);
 void ejecutar_SIGNAL(pcb_cpu*, char*);
 void ejecutar_YIELD(pcb_cpu*);
 void ejecutar_EXIT(pcb_cpu*);
-uint32_t obtener_dir_fisica(uint32_t, t_list*, uint32_t);
+uint32_t obtener_dir_fisica(uint32_t, t_list*, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t);
 
 #endif
