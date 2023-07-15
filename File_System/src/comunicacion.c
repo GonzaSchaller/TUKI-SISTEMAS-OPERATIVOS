@@ -5,7 +5,19 @@ extern int fd_fs;
 //extern
 
 
-void procesar_peticiones(int cliente_socket){
+typedef struct{
+	int fd;
+	char*server_name;
+} t_procesar_conexion_args;
+
+
+static void procesar_conexionn(void* void_args){
+	t_procesar_conexion_args*args = (t_procesar_conexion_args*) void_args;
+	int cliente_socket = args->fd;
+	char*server_name = args->server_name;
+	free(args);
+
+
 	op_code cop;
 
 	while(cliente_socket!=-1){
@@ -122,7 +134,6 @@ void procesar_peticiones(int cliente_socket){
 					fcb->puntero_indirecto = config_get_int_value(archivo, "PUNTERO_INDIRECTO");
 					fcb->tamanio_archivo = config_get_int_value(archivo, "TAMANIO_ARCHIVO");
 
-
 					if(tamanio > fcb->tamanio_archivo){
 
 					uint32_t cantidadBloques =ceil_casero(tamanio,superbloque->block_size);
@@ -178,6 +189,8 @@ void procesar_peticiones(int cliente_socket){
 							//TODO Asignar nuevos bloques (ver que significa)
 						break;
 				}}
+
+	log_warning(logger,"cliente %s desconectado ",server_name);
 }
 
 
@@ -187,7 +200,7 @@ void procesar_peticiones(int cliente_socket){
 
 
 int generar_conexion_con_memoria(){
-	int conexion = crear_conexion(logger,"Memoria",c->ip_memoria, c->puerto_memoria);
+	int conexion = crear_conexion(logger,"File system",c->ip_memoria, c->puerto_memoria);
 	uint8_t handshake =1;
 	uint8_t result;
 	send_handshake(conexion,handshake);
@@ -196,12 +209,19 @@ int generar_conexion_con_memoria(){
 	return conexion;
 }
 
-
-void conexion_kernel(){
+void conexion_kernel(t_log* log_memoria,char* server_name, int server_socket){
 	int fd_kernel = esperar_cliente(logger, fd_fs);
 		if(fd_kernel!=-1){
-		//	procesar_peticiones(fd_kernel);
+			if (fd_kernel != -1) {
+			       pthread_t hilo;
+			       t_procesar_conexion_args* args = malloc(sizeof(t_procesar_conexion_args));
+			       args->fd = fd_kernel;
+			       args->server_name = server_name;
+			       pthread_create(&hilo, NULL, (void*) procesar_conexionn, (void*) args);
+			       pthread_detach(hilo);
+			   }
 		}
+
 }
 
 

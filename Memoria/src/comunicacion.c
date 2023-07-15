@@ -8,13 +8,13 @@ extern t_list*segmentos_ocupados;
 uint32_t cant_procesos = 0;
 t_list* procesos;
 
-//conexiones de kernel, cpu, filesystem
+
 typedef struct{
 	int fd;
 	char*server_name;
 } t_procesar_conexion_args;
 
-//comentario
+
 static void procesar_conexionn(void* void_args){
 	t_procesar_conexion_args*args = (t_procesar_conexion_args*) void_args;
 	int cliente_socket = args->fd;
@@ -233,8 +233,8 @@ static void procesar_conexionn(void* void_args){
 
 int server_escuchar(t_log* log_memoria,char* server_name, int server_socket) {
 
-while(1){
-int cliente_socket = esperar_cliente(log_memoria, server_socket);
+	while(1){
+		int cliente_socket = esperar_cliente(log_memoria, server_socket);
 
    if (cliente_socket != -1) {
        pthread_t hilo;
@@ -243,8 +243,8 @@ int cliente_socket = esperar_cliente(log_memoria, server_socket);
        args->server_name = server_name;
        pthread_create(&hilo, NULL, (void*) procesar_conexionn, (void*) args);
        pthread_detach(hilo);
-   }
-}
-return 0;
+   	   }
+	}
+	return 0;
 
 }
