@@ -113,12 +113,17 @@ void procesar_peticiones(int cliente_socket){
 					recv_F_TRUNCATE(cliente_socket, &nombre_archivo, &tamanio);
 
 					char* path = concat(nombre_archivo); //TODO DUDAS (CONCAT): ver si nombre_archivo va asÃ­ o con el * o &
-					t_config* archivo = config_create(path);
-					int pd = config_get_int_value(archivo, "PUNTERO_DIRECTO");
-					int pi = config_get_int_value(archivo, "PUNTERO_INDIRECTO");
 
-					uint32_t tamanio_archivo = config_get_int_value(archivo, "TAMANIO_ARCHIVO");
-					if(tamanio > tamanio_archivo){
+					fcb_t fcb = malloc(sizeof(fcb));
+
+					t_config* archivo = config_create(path);
+
+					fcb->puntero_directo = config_get_int_value(archivo, "PUNTERO_DIRECTO");
+					fcb->puntero_indirecto = config_get_int_value(archivo, "PUNTERO_INDIRECTO");
+					fcb->tamanio_archivo = config_get_int_value(archivo, "TAMANIO_ARCHIVO");
+
+
+					if(tamanio > fcb->tamanio_archivo){
 
 					uint32_t cantidadBloques =ceil_casero(tamanio,superbloque->block_size);
 					for(int i = 0; i<bitarray_get_max_bit(bitarray); i++){

@@ -198,19 +198,6 @@ bool escribir_contenido(char*name,char* contenido,uint32_t puntero,uint32_t cant
 
 
 
-/*
- * char*path = concat(name); //TODO DUDAS (CONCAT): ver si nombre_archivo va así o con el * o &
-		t_config* archivo = config_create(path);
-
-		fcb_t * fcb;
-		fcb->nombreArchivo = config_get_string_value(config,"NOMBRE_ARCHIVO");
-		fcb->tamanio_archivo = config_get_int_value(config,"TAMANIO_ARCHIVO");
-		fcb->puntero_directo= config_get_int_value(config,"PUNTERO_DIRECTO");
-		fcb->puntero_indirecto = config_get_int_value(config,"PUNTERO_INDIRECTO");
- *
- * */
-
-
 
 
 
