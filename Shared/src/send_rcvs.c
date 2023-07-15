@@ -1075,80 +1075,7 @@ static void deserializar_lista(void* stream, t_list* lista, uint32_t tamanio_ser
 }
 
 // Funciones de serialización y deserialización de contexto_ejecucion
-static void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion* contexto) {
-    uint32_t num_elementos = contexto->TSegmento->elements_count;
-    size_t size = sizeof(uint32_t) * 2 + sizeof(registros_cpu) + sizeof(uint32_t) + sizeof(uint32_t) * num_elementos;
-    void* stream = malloc(size);
-    memcpy(stream, &(contexto->PID), sizeof(uint32_t));
-    memcpy(stream + sizeof(uint32_t), &(contexto->PC), sizeof(uint32_t));
-    memcpy(stream + sizeof(uint32_t) * 2, &(contexto->registros), sizeof(registros_cpu));
-    void* tsegmentos_stream = serializar_lista(contexto->TSegmento);
-    memcpy(stream + sizeof(uint32_t) * 2 + sizeof(registros_cpu), tsegmentos_stream, sizeof(uint32_t) * num_elementos);
-    free(tsegmentos_stream);
-    return stream;
-}
 
-static void deserializar_CONTEXTO_EJECUCION(void* stream, contexto_ejecucion* contexto, uint32_t num_elementos) {
-    memcpy(&(contexto->PID), stream, sizeof(uint32_t));
-    memcpy(&(contexto->PC), stream + sizeof(uint32_t), sizeof(uint32_t));
-    memcpy(&(contexto->registros), stream + sizeof(uint32_t) * 2, sizeof(registros_cpu));
-    t_list* tsegmentos = list_create();
-
-        list_clean(tsegmentos);
-        for (uint32_t i = 0; i < num_elementos; i++) {
-            segmento_t* elemento = malloc(sizeof(segmento_t));
-            memcpy(elemento, stream + sizeof(segmento_t) * i, sizeof(segmento_t));
-            list_add(tsegmentos, elemento);
-        }
-    contexto->TSegmento = tsegmentos;
-}
-
-// Función send_contexto_ejecucion
-bool send_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion contexto) {
-    // Serializar el contexto de ejecución
-    void* stream = serializar_CONTEXTO_EJECUCION(&contexto);
-    uint32_t num_elementos = contexto.TSegmento->elements_count;
-    size_t size = sizeof(uint32_t) * 2 + sizeof(registros_cpu) + sizeof(uint32_t) + sizeof(uint32_t) * num_elementos;
-
-    // Enviar el tamaño del stream serializado
-    if (send(socket_cliente, &size, sizeof(size_t), 0) != sizeof(size_t)) {
-        free(stream);
-        return false;
-    }
-
-    // Enviar el stream serializado
-    if (send(socket_cliente, stream, size, 0) != size) {
-        free(stream);
-        return false;
-    }
-
-    // Liberar la memoria asignada
-    free(stream);
-    return true;
-}
-
-bool recv_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion* contexto) {
-    size_t size;
-    if (recv(socket_cliente, &size, sizeof(size_t), 0) != sizeof(size_t)) {
-        return false;
-    }
-
-    void* stream = malloc(size);
-
-    // Recibir el stream serializado
-    if (recv(socket_cliente, stream, size, 0) != size) {
-        free(stream);
-        return false;
-    }
-
-    // Deserializar el contexto de ejecución
-    uint32_t num_elementos = (size - sizeof(uint32_t) * 2 - sizeof(registros_cpu) - sizeof(uint32_t)) / sizeof(uint32_t);
-    deserializar_CONTEXTO_EJECUCION(stream, contexto, num_elementos);
-
-    // Liberar la memoria asignada
-    free(stream);
-    return true;
-}
 
 //void send_CONTEXTO_EJECUCION(int fd,contexto_ejecucion contexto){
 //	send_PID(fd, contexto.PC);
@@ -1887,3 +1814,182 @@ bool send_LEER_CONTENIDO_CPU(int socket_cliente){
     free(stream);
     return true;
 }
+static void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion* contexto, uint32_t* tamanio_serializado) {
+    uint32_t num_elementos = contexto->TSegmento->elements_count;
+    size_t size_segmentos = sizeof(segmento_t) * num_elementos;
+    *tamanio_serializado = sizeof(uint32_t) * 2 + sizeof(registros_cpu) + size_segmentos;
+    void* stream = malloc(*tamanio_serializado);
+    void* offset = stream;
+
+    memcpy(offset, &(contexto->PID), sizeof(uint32_t));
+    offset += sizeof(uint32_t);
+    memcpy(offset, &(contexto->PC), sizeof(uint32_t));
+    offset += sizeof(uint32_t);
+    memcpy(offset, &(contexto->registros), sizeof(registros_cpu));
+    offset += sizeof(registros_cpu);
+    memcpy(offset, &(contexto->TSegmento->elements_count), size_segmentos);
+
+    return stream;
+}
+
+static void deserializar_CONTEXTO_EJECUCION(void* stream, contexto_ejecucion* contexto) {
+    void* offset = stream;
+
+    memcpy(&(contexto->PID), offset, sizeof(uint32_t));
+    offset += sizeof(uint32_t);
+    memcpy(&(contexto->PC), offset, sizeof(uint32_t));
+    offset += sizeof(uint32_t);
+    memcpy(&(contexto->registros), offset, sizeof(registros_cpu));
+    offset += sizeof(registros_cpu);
+    uint32_t num_elementos = contexto->TSegmento->elements_count;
+    for (int i = 0; i < num_elementos; i++) {
+           segmento_t* segmento = malloc(sizeof(segmento_t));
+           memcpy(segmento, offset, sizeof(segmento_t));
+           list_add(contexto->TSegmento, segmento);
+           offset += sizeof(segmento_t);
+       }
+}
+// Función send_contexto_ejecucion
+bool send_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion contexto) {
+    //uint32_t num_elementos = contexto.TSegmento->elements_count;
+    uint32_t tamanio_serializado;
+    void* stream = serializar_CONTEXTO_EJECUCION(&contexto, &tamanio_serializado);
+
+    // Enviar el tamaño del stream serializado
+    if (send(socket_cliente, &tamanio_serializado, sizeof(uint32_t), 0) != sizeof(uint32_t)) {
+        free(stream);
+        return false;
+    }
+
+    // Enviar el stream serializado
+    if (send(socket_cliente, stream, tamanio_serializado, 0) != tamanio_serializado) {
+        free(stream);
+        return false;
+    }
+
+    // Enviar la tabla de segmentos
+    if (!send_TABLA_SEGMENTOS(socket_cliente, contexto.TSegmento)) {
+        free(stream);
+        return false;
+    }
+
+    // Liberar la memoria asignada
+    free(stream);
+    return true;
+}
+
+bool recv_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion* contexto) {
+    uint32_t tamanio_serializado;
+    if (recv(socket_cliente, &tamanio_serializado, sizeof(uint32_t), 0) != sizeof(uint32_t)) {
+        return false;
+    }
+
+    void* stream = malloc(tamanio_serializado);
+
+    // Recibir el stream serializado
+    if (recv(socket_cliente, stream, tamanio_serializado, 0) != tamanio_serializado) {
+        free(stream);
+        return false;
+    }
+
+    // Recibir la tabla de segmentos
+    if (!recv_TABLA_SEGMENTOS(socket_cliente, &(contexto->TSegmento))) {
+        free(stream);
+        return false;
+    }
+
+    // Deserializar el contexto de ejecución
+    deserializar_CONTEXTO_EJECUCION(stream, contexto);
+
+    // Liberar la memoria asignada
+    free(stream);
+    return true;
+}
+
+//static void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion* contexto) {
+//    uint32_t num_elementos = contexto->TSegmento->elements_count;
+//    size_t size = sizeof(uint32_t) * 2 + sizeof(registros_cpu) + sizeof(uint32_t) + sizeof(uint32_t) * num_elementos;
+//    void* stream = malloc(size);
+//    memcpy(stream, &(contexto->PID), sizeof(uint32_t));
+//    memcpy(stream + sizeof(uint32_t), &(contexto->PC), sizeof(uint32_t));
+//    memcpy(stream + sizeof(uint32_t) * 2, &(contexto->registros), sizeof(registros_cpu));
+//
+//
+//      uint32_t num_elementos_tsegmentos = contexto->TSegmento->elements_count;
+//      size_t size_tsegmentos = sizeof(segmento_t) * num_elementos_tsegmentos;
+//      void* tsegmentos_stream = malloc(size_tsegmentos);
+//      if (list_is_empty(contexto->TSegmento)) {
+//         	tsegmentos_stream = NULL;
+//           }
+//      t_link_element* current = contexto->TSegmento->head;
+//      for (uint32_t i = 0; i < num_elementos; i++) {
+//          memcpy(tsegmentos_stream + sizeof(segmento_t) * i, current->data, sizeof(segmento_t));
+//          current = current->next;
+//      }
+//
+//    memcpy(stream + sizeof(uint32_t) * 2 + sizeof(registros_cpu), tsegmentos_stream, sizeof(uint32_t) * num_elementos);
+//    free(tsegmentos_stream);
+//    return stream;
+//}
+//
+//static void deserializar_CONTEXTO_EJECUCION(void* stream, contexto_ejecucion* contexto, uint32_t num_elementos) {
+//    memcpy(&(contexto->PID), stream, sizeof(uint32_t));
+//    memcpy(&(contexto->PC), stream + sizeof(uint32_t), sizeof(uint32_t));
+//    memcpy(&(contexto->registros), stream + sizeof(uint32_t) * 2, sizeof(registros_cpu));
+//    t_list* tsegmentos = list_create();
+//
+//        list_clean(tsegmentos);
+//        for (uint32_t i = 0; i < num_elementos; i++) {
+//            segmento_t* elemento = malloc(sizeof(segmento_t));
+//            memcpy(elemento, stream + sizeof(segmento_t) * i, sizeof(segmento_t));
+//            list_add(tsegmentos, elemento);
+//        }
+//    contexto->TSegmento = tsegmentos;
+//}
+//
+//// Función send_contexto_ejecucion
+//bool send_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion contexto) {
+//    // Serializar el contexto de ejecución
+//    void* stream = serializar_CONTEXTO_EJECUCION(&contexto);
+//    uint32_t num_elementos = contexto.TSegmento->elements_count;
+//    size_t size = sizeof(uint32_t) * 2 + sizeof(registros_cpu) + sizeof(uint32_t) + sizeof(uint32_t) * num_elementos;
+//
+//    // Enviar el tamaño del stream serializado
+//    if (send(socket_cliente, &size, sizeof(size_t), 0) != sizeof(size_t)) {
+//        free(stream);
+//        return false;
+//    }
+//
+//    // Enviar el stream serializado
+//    if (send(socket_cliente, stream, size, 0) != size) {
+//        free(stream);
+//        return false;
+//    }
+//
+//    // Liberar la memoria asignada
+//    free(stream);
+//    return true;
+//}
+//
+//bool recv_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion* contexto) {
+//    size_t size;
+//    if (recv(socket_cliente, &size, sizeof(size_t), 0) != sizeof(size_t)) {
+//        return false;
+//    }
+//
+//    void* stream = malloc(size);
+//
+//    // Recibir el stream serializado
+//    if (recv(socket_cliente, stream, size, 0) != size) {
+//        free(stream);
+//        return false;
+//    }
+//
+//    // Deserializar el contexto de ejecución
+//    uint32_t num_elementos = (size - sizeof(uint32_t) * 2 - sizeof(registros_cpu) - sizeof(uint32_t)) / sizeof(uint32_t);
+//    deserializar_CONTEXTO_EJECUCION(stream, contexto, num_elementos);
+//
+//    // Liberar la memoria asignada
+//    free(stream);
+//    return true;
+//}

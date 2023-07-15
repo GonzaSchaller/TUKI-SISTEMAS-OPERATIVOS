@@ -181,7 +181,8 @@ void hiloReady_Execute(){
 		pcb_t* pcb_siguiente = obtener_siguiente_ready();
 		contexto_ejecucion contexto;
 		contexto.TSegmento = list_create();
-
+		segmento_t *segmento = list_get(pcb_siguiente->contexto.TSegmento, 0);
+		log_error(log_kernel, "segmento: %d %d %d %d", segmento->direccion_Base, segmento->id, segmento->pid, segmento->tamanio);
 		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
 		pcb_siguiente->state_anterior = pcb_siguiente->state;
 		pcb_siguiente->state = EXEC;
