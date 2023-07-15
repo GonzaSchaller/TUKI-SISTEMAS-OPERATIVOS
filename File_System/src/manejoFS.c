@@ -5,11 +5,6 @@ extern t_superbloque* superbloque;
 extern FILE* f_bloques;
 t_list* lista_indirecta;
 
-
-
-
-
-
 int reverse_compare(void* element1, void* element2) {
 	    // Comparing the elements in reverse order
 	    int value1 = *(int*)element1;
@@ -32,9 +27,9 @@ char* concat(char*nombre_archivo){
 	return path;
 }
 
-bool existe_y_abrir(char*nombre_archivo){ //TODO DUDAS ver de partir esta funciones en varias para reutilizarlas
+bool existe_y_abrir(char*nombre_archivo){
 	//hay quer abrir el archivo
-	char*path = concat(nombre_archivo); //TODO DUDAS (CONCAT): ver si nombre_archivo va así o con el * o &
+	char*path = concat(nombre_archivo);
 
 	t_config* archivo = config_create(path);
 
@@ -55,8 +50,6 @@ bool existe_y_abrir(char*nombre_archivo){ //TODO DUDAS ver de partir esta funcio
 	}
 	return true;
 }
-
-
 
 bool crear_archivo(char*nombre,uint32_t tamanio){
 	log_info(logger,"entre");
@@ -95,7 +88,7 @@ uint32_t ceil_casero(uint32_t nro1,uint32_t nro2){
 
 t_list* bloque_del_archivo (fcb_t* fcb,uint32_t bloque_estoy,uint32_t cant_bloques_a_leer,uint32_t puntero,t_list** bloques_fs){
 	//uint32_t bloque;
-	t_list* bloques;
+	t_list* bloques  = list_create();
 
 	//uint32_t cant_bloques_archivo = ceil_casero(fcb->tamanio_archivo , superbloque->block_size);
 
@@ -128,7 +121,7 @@ t_list* bloque_del_archivo (fcb_t* fcb,uint32_t bloque_estoy,uint32_t cant_bloqu
 	//en el de las config tendria 16 punteros en cada bloque de punteros.
 
 	//4 bytes de puntero en un bloque cuantos punteros tengo?
-	uint32_t cant_puteros_por_bloque = superbloque ->block_size / 4;
+	//uint32_t cant_puteros_por_bloque = superbloque ->block_size / 4;
 
 	return bloques;
 }
@@ -140,9 +133,9 @@ char* buscar_contenido(char*name,uint32_t puntero,uint32_t cant_bytes){
 		    //la ubicacion esta en el puntero.
 
 	//	uint32_t ubicacion = puntero;
-		uint32_t enquebloqueestoy = ceil_casero(puntero,tam_bloque); //donde arranca // ese seria el bloque dentro de todo el fs
+		uint32_t enquebloqueestoy = ceil_casero(puntero,tam_bloque); //donde arranca // ese seria el bloque dentro del fs
 
-		char*path = concat(name); //TODO DUDAS (CONCAT): ver si nombre_archivo va así o con el * o &
+		char*path = concat(name);
 		t_config* archivo = config_create(path);
 
 		fcb_t * fcb = malloc(sizeof(fcb_t));
