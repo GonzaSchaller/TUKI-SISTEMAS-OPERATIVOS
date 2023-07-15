@@ -11,63 +11,51 @@ void ejecutar_SET(pcb_cpu* pcb_proceso, uint32_t registro, char* valor){
 	switch(registro){
 		case AX:{
 			strcpy(pcb_proceso -> registros.AX, valor);
-			//pcb_proceso -> registros.AX = param2;
 			break;
 		}
 		case BX:{
 			strcpy(pcb_proceso -> registros.BX, valor);
-			//pcb_proceso -> registros.BX = param2;
 			break;
 		}
 		case CX:{
 			strcpy(pcb_proceso -> registros.CX, valor);
-			//pcb_proceso -> registros.CX = param2;
 			break;
 		}
 		case DX:{
 			strcpy(pcb_proceso -> registros.DX, valor);
-			//pcb_proceso -> registros.DX = param2;
 			break;
 		}
 		case EAX:{
 			strcpy(pcb_proceso -> registros.EAX, valor);
-			//pcb_proceso -> registros.EAX = param2;
 			break;
 		}
 		case EBX:{
 			strcpy(pcb_proceso -> registros.EBX, valor);
-			//pcb_proceso -> registros.EBX = param2;
 			break;
 		}
 		case ECX:{
 			strcpy(pcb_proceso -> registros.ECX, valor);
-			//pcb_proceso -> registros.ECX = param2;
 			break;
 		}
 		case EDX:{
 			strcpy(pcb_proceso -> registros.EDX, valor);
-			//pcb_proceso -> registros.EDX = param2;
 			break;
 		}
 		case RAX:{
 			strcpy(pcb_proceso -> registros.RAX, valor);
-			//pcb_proceso -> registros.RAX = param2;
 			break;
 		}
 		case RBX:{
 			strcpy(pcb_proceso -> registros.RBX, valor);
-			//pcb_proceso -> registros.RBX = param2;
 			break;
 		}
 		case RCX:{
 			strcpy(pcb_proceso -> registros.RCX, valor);
-			//pcb_proceso -> registros.RCX = param2;
 			break;
 		}
 		case RDX:{
 			size_t max_size = sizeof(pcb_proceso->registros.RDX); // Tamaño máximo del destino
 			strncpy(pcb_proceso->registros.RDX, valor, max_size);
-			//pcb_proceso -> registros.RDX = param2;
 			break;
 		}
 	}
@@ -143,49 +131,41 @@ int ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica
 			case EAX:{
 				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.EAX, valor);
-				//pcb_proceso -> registros.EAX = param2;
 				break;
 			}
 			case EBX:{
 				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.EBX, valor);
-				//pcb_proceso -> registros.EBX = param2;
 				break;
 			}
 			case ECX:{
 				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.ECX, valor);
-				//pcb_proceso -> registros.ECX = param2;
 				break;
 			}
 			case EDX:{
 				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.EDX, valor);
-				//pcb_proceso -> registros.EDX = param2;
 				break;
 			}
 			case RAX:{
 				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RAX, valor);
-				//pcb_proceso -> registros.RAX = param2;
 				break;
 			}
 			case RBX:{
 				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RBX, valor);
-				//pcb_proceso -> registros.RBX = param2;
 				break;
 			}
 			case RCX:{
 				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RCX, valor);
-				//pcb_proceso -> registros.RCX = param2;
 				break;
 			}
 			case RDX:{
 				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RDX, valor);
-				//pcb_proceso -> registros.RDX = param2;
 				break;
 			}
 		}
