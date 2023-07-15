@@ -131,7 +131,8 @@ typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	READ, //pa q memoria escriba lo que manda cpu y fs
 	WRITE,
 	ERROR,
-	LEER_CPU//segmentation fault
+	LEER_CPU,//segmentation fault
+	SEGUI_EJECUTANDO // PARA VOS CPU
 }op_code;
 
 //

@@ -1,5 +1,5 @@
 #include "ejecutar_instrucciones.h"
-
+uint32_t espacio_disponible = 0; //todo no se de donde sale, pero para que no rompa pongo eso
 int socket_cliente_kernel;
 extern int conexion_memoria;
 extern t_log*logger;
@@ -11,51 +11,63 @@ void ejecutar_SET(pcb_cpu* pcb_proceso, uint32_t registro, char* valor){
 	switch(registro){
 		case AX:{
 			strcpy(pcb_proceso -> registros.AX, valor);
+			//pcb_proceso -> registros.AX = param2;
 			break;
 		}
 		case BX:{
 			strcpy(pcb_proceso -> registros.BX, valor);
+			//pcb_proceso -> registros.BX = param2;
 			break;
 		}
 		case CX:{
 			strcpy(pcb_proceso -> registros.CX, valor);
+			//pcb_proceso -> registros.CX = param2;
 			break;
 		}
 		case DX:{
 			strcpy(pcb_proceso -> registros.DX, valor);
+			//pcb_proceso -> registros.DX = param2;
 			break;
 		}
 		case EAX:{
 			strcpy(pcb_proceso -> registros.EAX, valor);
+			//pcb_proceso -> registros.EAX = param2;
 			break;
 		}
 		case EBX:{
 			strcpy(pcb_proceso -> registros.EBX, valor);
+			//pcb_proceso -> registros.EBX = param2;
 			break;
 		}
 		case ECX:{
 			strcpy(pcb_proceso -> registros.ECX, valor);
+			//pcb_proceso -> registros.ECX = param2;
 			break;
 		}
 		case EDX:{
 			strcpy(pcb_proceso -> registros.EDX, valor);
+			//pcb_proceso -> registros.EDX = param2;
 			break;
 		}
 		case RAX:{
 			strcpy(pcb_proceso -> registros.RAX, valor);
+			//pcb_proceso -> registros.RAX = param2;
 			break;
 		}
 		case RBX:{
 			strcpy(pcb_proceso -> registros.RBX, valor);
+			//pcb_proceso -> registros.RBX = param2;
 			break;
 		}
 		case RCX:{
 			strcpy(pcb_proceso -> registros.RCX, valor);
+			//pcb_proceso -> registros.RCX = param2;
 			break;
 		}
 		case RDX:{
 			size_t max_size = sizeof(pcb_proceso->registros.RDX); // Tamaño máximo del destino
 			strncpy(pcb_proceso->registros.RDX, valor, max_size);
+			//pcb_proceso -> registros.RDX = param2;
 			break;
 		}
 	}
@@ -63,20 +75,21 @@ void ejecutar_SET(pcb_cpu* pcb_proceso, uint32_t registro, char* valor){
 }
 
 void segmentation_fault(pcb_cpu* pcb_proceso, uint32_t segmento, uint32_t offset, uint32_t tamanio, uint32_t SF_por_tam_valor){
-	contexto_ejecucion contexto_actualizado;
+    contexto_ejecucion contexto_actualizado;
 
-	contexto_actualizado.PID = pcb_proceso -> PID;
-	contexto_actualizado.PC = pcb_proceso -> PC;
-	contexto_actualizado.registros = pcb_proceso -> registros;
-	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
+    contexto_actualizado.PID = pcb_proceso -> PID;
+    contexto_actualizado.PC = pcb_proceso -> PC;
+    contexto_actualizado.registros = pcb_proceso -> registros;
+    contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
-	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-	send_ERROR(socket_cliente_kernel);
+    send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+    send_ERROR(socket_cliente_kernel);
 
-	log_error(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%d> - Offset: <%d> - Tamanio: <%d>", pcb_proceso -> PID, segmento, offset, tamanio);
-	if(SF_por_tam_valor)
-		log_error(logger, "Lo que se esta intentando guardar en la memoria sobrepasa su tamanio");
+    log_error(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%d> - Offset: <%d> - Tamanio: <%d>", pcb_proceso -> PID, segmento, offset, tamanio);
+    if(SF_por_tam_valor)
+        log_error(logger, "Lo que se esta intentando guardar en la memoria sobrepasa su tamanio");
 }
+
 
 char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
 	char*valor = malloc(sizeof(registros_cpu));; ;
@@ -96,8 +109,8 @@ int ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica
 	uint32_t offset = -1;
 	uint32_t dir_Base = -1;
 	uint32_t tamanio = -1;
-	uint32_t dir_Fisica = -1;
-	obtener_dir_fisica(dir_logica, listaSegmentos, segmento, offset, dir_Base, tamanio, dir_Fisica);
+	uint32_t dir_fisica = -1;
+	obtener_dir_fisica(dir_logica, listaSegmentos, &segmento, &offset, &dir_Base, &tamanio, &dir_fisica);
 
 	if(dir_fisica == -1){
 		segmentation_fault(pcb_proceso, segmento, offset, tamanio, 0);
@@ -106,70 +119,85 @@ int ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica
 	else{
 	char* valor = malloc(sizeof(registros_cpu));
 
+	//TODO logs acceso a memoria
+	//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Segmento: <NUMERO SEGMENTO> - Dirección Física: <DIRECCION FISICA> - Valor: <VALOR LEIDO / ESCRITO>”
+
 	//************************************************************* guardo en el registro:
 	switch(registro){
 			case AX:{
 				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.AX, valor);
+				//pcb_proceso -> registros.AX = param2;
 				break;
 			}
 			case BX:{
 				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.BX, valor);
+				//pcb_proceso -> registros.BX = param2;
 				break;
 			}
 			case CX:{
 				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.CX, valor);
+				//pcb_proceso -> registros.CX = param2;
 				break;
 			}
 			case DX:{
 				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.DX, valor);
+				//pcb_proceso -> registros.DX = param2;
 				break;
 			}
 			case EAX:{
 				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.EAX, valor);
+				//pcb_proceso -> registros.EAX = param2;
 				break;
 			}
 			case EBX:{
 				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.EBX, valor);
+				//pcb_proceso -> registros.EBX = param2;
 				break;
 			}
 			case ECX:{
 				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.ECX, valor);
+				//pcb_proceso -> registros.ECX = param2;
 				break;
 			}
 			case EDX:{
 				valor = recibir_de_memoria(dir_fisica,8,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.EDX, valor);
+				//pcb_proceso -> registros.EDX = param2;
 				break;
 			}
 			case RAX:{
 				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RAX, valor);
+				//pcb_proceso -> registros.RAX = param2;
 				break;
 			}
 			case RBX:{
 				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RBX, valor);
+				//pcb_proceso -> registros.RBX = param2;
 				break;
 			}
 			case RCX:{
 				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RCX, valor);
+				//pcb_proceso -> registros.RCX = param2;
 				break;
 			}
 			case RDX:{
 				valor = recibir_de_memoria(dir_fisica,16,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.RDX, valor);
+				//pcb_proceso -> registros.RDX = param2;
 				break;
 			}
 		}
-	log_info(logger, "PID: <%d> - Acción: <LEER> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+		log_info(logger, "PID: <%d> - Acción: <LEER> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 	pcb_proceso -> PC += 1;
 	return 0; //para que no corte la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
@@ -197,8 +225,8 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	uint32_t offset = -1;
 	uint32_t dir_Base = -1;
 	uint32_t tamanio = -1;
-	uint32_t dir_Fisica = -1;
-	obtener_dir_fisica(dir_logica, listaSegmentos, segmento, offset, dir_Base, tamanio, dir_Fisica);
+	uint32_t dir_fisica = -1;
+	obtener_dir_fisica(dir_logica, listaSegmentos, &segmento, &offset, &dir_Base, &tamanio, &dir_fisica);
 
 	if(dir_fisica == -1){
 		segmentation_fault(pcb_proceso, segmento, offset, tamanio, 0);
@@ -206,7 +234,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	}
 	else{
 	char* valor = malloc(sizeof(registros_cpu));
-	int corta_ejecucion = 0;	
+	int corta_ejecucion = 0;
 	//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Segmento: <NUMERO SEGMENTO> - Dirección Física: <DIRECCION FISICA> - Valor: <VALOR LEIDO / ESCRITO>”
 	
 	//obtengo el dato del registro
@@ -215,7 +243,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.AX);
 
 			if(4 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
 			}
 			else {
@@ -229,7 +257,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.BX);
 
 			if(4 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
 			}
 			else {
@@ -242,7 +270,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.CX);
 
 			if(4 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
 			}
 			else {
@@ -256,7 +284,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.DX);
 
 			if(4 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
 			}
 			else {
@@ -270,7 +298,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.EAX);
 
 			if(8 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
 			}
 			else {
@@ -284,7 +312,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.EBX);
 
 			if(8 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
 			}
 			else {
@@ -298,7 +326,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.ECX);
 
 			if(8 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
 			}
 			else {
@@ -312,7 +340,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.EDX);
 
 			if(8 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
 			}
 			else {
@@ -326,7 +354,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.RAX);
 
 			if(16 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
 			}
 			else {
@@ -340,7 +368,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.RBX);
 
 			if(16 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
 			}
 			else {
@@ -354,7 +382,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.RCX);
 
 			if(16 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
 			}
 			else {
@@ -368,7 +396,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 			strcpy(valor, pcb_proceso -> registros.RDX);
 
 			if(16 <= espacio_disponible){
-				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_fisica, valor);
 				enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
 			}
 			else {
@@ -384,7 +412,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	}
 }
 
-void ejecutar_IO(pcb_cpu* pcb_proceso, uint32_t tiempo){
+int ejecutar_IO(pcb_cpu* pcb_proceso, uint32_t tiempo){
 	contexto_ejecucion contexto_para_kernel;
 
 	pcb_proceso -> PC += 1;
@@ -395,9 +423,15 @@ void ejecutar_IO(pcb_cpu* pcb_proceso, uint32_t tiempo){
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_IO(socket_cliente_kernel, tiempo);
+	op_code cop;
+	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return 1;
 }
 
-void ejecutar_F_OPEN(pcb_cpu* pcb_proceso, char* archivo){
+int ejecutar_F_OPEN(pcb_cpu* pcb_proceso, char* archivo){
 	contexto_ejecucion contexto_para_kernel;
 
 	pcb_proceso -> PC += 1;
@@ -408,9 +442,15 @@ void ejecutar_F_OPEN(pcb_cpu* pcb_proceso, char* archivo){
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_F_OPEN(socket_cliente_kernel, archivo);
+	op_code cop;
+	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return seguir_ejecutando;
 }
 
-void ejecutar_F_CLOSE(pcb_cpu* pcb_proceso, char* archivo){
+int ejecutar_F_CLOSE(pcb_cpu* pcb_proceso, char* archivo){
 	contexto_ejecucion contexto_para_kernel;
 
 	pcb_proceso -> PC += 1;
@@ -422,9 +462,15 @@ void ejecutar_F_CLOSE(pcb_cpu* pcb_proceso, char* archivo){
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_F_CLOSE(socket_cliente_kernel, archivo);
+	op_code cop;
+	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return seguir_ejecutando;
 }
 
-void ejecutar_F_SEEK(pcb_cpu* pcb_proceso, char* archivo, uint32_t posicion){
+int ejecutar_F_SEEK(pcb_cpu* pcb_proceso, char* archivo, uint32_t posicion){
 	contexto_ejecucion contexto_para_kernel;
 
 	pcb_proceso -> PC += 1;
@@ -435,11 +481,22 @@ void ejecutar_F_SEEK(pcb_cpu* pcb_proceso, char* archivo, uint32_t posicion){
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
 	send_F_SEEK(socket_cliente_kernel, archivo, posicion);
+	op_code cop;
+	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return seguir_ejecutando;
 }
 
 int ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso->PID);
+	uint32_t segmento = -1;
+	uint32_t offset = -1;
+	uint32_t dir_Base = -1;
+	uint32_t tamanio = -1;
+	uint32_t dir_fisica = -1;
+	obtener_dir_fisica(dir_logica, listaSegmentos, &segmento, &offset, &dir_Base, &tamanio, &dir_fisica);
 	//escribir en la DF de memoria lo del archivo
 	if(dir_fisica == -1){
 		contexto_ejecucion contexto_actualizado;
@@ -464,13 +521,24 @@ int ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, ui
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 		send_F_READ(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
+		op_code cop;
+		if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+		}
+		seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 		return 0; //no corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 }
 
 int ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso->PID);
+	uint32_t segmento = -1;
+	uint32_t offset = -1;
+	uint32_t dir_Base = -1;
+	uint32_t tamanio = -1;
+	uint32_t dir_fisica = -1;
+	obtener_dir_fisica(dir_logica, listaSegmentos, &segmento, &offset, &dir_Base, &tamanio, &dir_fisica);
+
 	if(dir_fisica == -1){
 		contexto_ejecucion contexto_actualizado;
 
@@ -493,12 +561,18 @@ int ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 		send_F_WRITE(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
+		op_code cop;
+		if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+
 		return 0; //no corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 
 }
 
-void ejecutar_F_TRUNCATE(pcb_cpu* pcb_proceso, char* archivo, uint32_t tamanio){
+int ejecutar_F_TRUNCATE(pcb_cpu* pcb_proceso, char* archivo, uint32_t tamanio){
 	contexto_ejecucion contexto_actualizado;
 	pcb_proceso -> PC += 1;
 
@@ -509,9 +583,15 @@ void ejecutar_F_TRUNCATE(pcb_cpu* pcb_proceso, char* archivo, uint32_t tamanio){
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_F_TRUNCATE(socket_cliente_kernel,archivo,tamanio);
+	op_code cop;
+	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return seguir_ejecutando;
 }
 
-void ejecutar_WAIT(pcb_cpu* pcb_proceso , char* recurso){
+int ejecutar_WAIT(pcb_cpu* pcb_proceso , char* recurso){
 	contexto_ejecucion contexto_actualizado;
 	pcb_proceso -> PC += 1;
 
@@ -522,9 +602,15 @@ void ejecutar_WAIT(pcb_cpu* pcb_proceso , char* recurso){
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_WAIT(socket_cliente_kernel, recurso);
+	op_code cop;
+	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return seguir_ejecutando;
 }
 
-void ejecutar_SIGNAL(pcb_cpu* pcb_proceso , char* recurso){
+int ejecutar_SIGNAL(pcb_cpu* pcb_proceso , char* recurso){
 	contexto_ejecucion contexto_actualizado;
 	pcb_proceso -> PC += 1;
 
@@ -535,9 +621,15 @@ void ejecutar_SIGNAL(pcb_cpu* pcb_proceso , char* recurso){
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_SIGNAL(socket_cliente_kernel, recurso);
+	op_code cop;
+	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return seguir_ejecutando;
 }
 
-void ejecutar_CREATE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id, uint32_t tamanio){
+int ejecutar_CREATE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id, uint32_t tamanio){
 	contexto_ejecucion contexto_actualizado;
 	pcb_proceso -> PC += 1;
 
@@ -548,9 +640,15 @@ void ejecutar_CREATE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id, uint32_t tamanio
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_CREATE_SEGMENT(socket_cliente_kernel, id, tamanio);
+	op_code cop;
+	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return seguir_ejecutando;
 }
 
-void ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id){
+int ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id){
 	contexto_ejecucion contexto_actualizado;
 
 	pcb_proceso -> PC += 1;
@@ -562,11 +660,16 @@ void ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id){
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_ID_SEGMENTO(socket_cliente_kernel,id);
+	op_code cop;
+	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return seguir_ejecutando;
 }
 
-void ejecutar_YIELD(pcb_cpu* pcb_proceso){
+int ejecutar_YIELD(pcb_cpu* pcb_proceso){
 	contexto_ejecucion contexto_actualizado;
-
 	pcb_proceso -> PC += 1;
 	contexto_actualizado.PID = pcb_proceso -> PID;
 	contexto_actualizado.PC = pcb_proceso -> PC;
@@ -575,9 +678,15 @@ void ejecutar_YIELD(pcb_cpu* pcb_proceso){
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_YIELD(socket_cliente_kernel);
+	op_code cop;
+	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return seguir_ejecutando;
 }
 
-void ejecutar_EXIT(pcb_cpu* pcb_proceso){
+int ejecutar_EXIT(pcb_cpu* pcb_proceso){
 	contexto_ejecucion contexto_actualizado;
 
 	contexto_actualizado.PID = pcb_proceso -> PID;
@@ -587,4 +696,10 @@ void ejecutar_EXIT(pcb_cpu* pcb_proceso){
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_EXIT(socket_cliente_kernel);
+	op_code cop;
+	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+		log_error(logger, "Error al recibir el code");
+	}
+	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return seguir_ejecutando;
 }

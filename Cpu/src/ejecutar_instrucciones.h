@@ -28,32 +28,31 @@
 
 extern int socket_cliente_kernel; //ver como agregar aca el socket kernel
 extern int socket_memoria;
-
+extern uint32_t seguir_ejecutando;
 typedef struct{
-	uint32_t PID;
-	uint32_t PC;
-	t_list* instrucciones;
-	registros_cpu registros;
-	t_list* TSegmento;
+    uint32_t PID;
+    uint32_t PC;
+    t_list* instrucciones;
+    registros_cpu registros;
+    t_list* TSegmento;
 }pcb_cpu;
 
-void pasar_al_registro(char*, char);
+void pasar_al_registro(char, char);
 void set_socket_kernel(int);
 void ejecutar_SET(pcb_cpu*, uint32_t, char*);
 int ejecutar_MOV_IN(pcb_cpu*, uint32_t, uint32_t);
 int ejecutar_MOV_OUT(pcb_cpu*, uint32_t, uint32_t);
-void ejecutar_IO(pcb_cpu*, uint32_t);
-void ejecutar_F_OPEN(pcb_cpu*, char*);
-void ejecutar_F_CLOSE(pcb_cpu*, char*);
-void ejecutar_F_SEEK(pcb_cpu*, char*, uint32_t);
+int ejecutar_IO(pcb_cpu*, uint32_t);
+int ejecutar_F_OPEN(pcb_cpu*, char*);
+int ejecutar_F_CLOSE(pcb_cpu*, char*);
+int ejecutar_F_SEEK(pcb_cpu*, char*, uint32_t);
 int ejecutar_F_READ(pcb_cpu*, char*, uint32_t, uint32_t);
 int ejecutar_F_WRITE(pcb_cpu*, char*, uint32_t, uint32_t);
-void ejecutar_F_TRUNCATE(pcb_cpu*, char*, uint32_t);
-void ejecutar_WAIT(pcb_cpu*, char*);
-void ejecutar_SIGNAL(pcb_cpu*, char*);
-void ejecutar_YIELD(pcb_cpu*);
-void ejecutar_EXIT(pcb_cpu*);
-uint32_t obtener_dir_fisica(uint32_t, t_list*, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t);
+int ejecutar_F_TRUNCATE(pcb_cpu*, char*, uint32_t);
+int ejecutar_WAIT(pcb_cpu*, char*);
+int ejecutar_SIGNAL(pcb_cpu*, char*);
+int ejecutar_YIELD(pcb_cpu*);
+int ejecutar_EXIT(pcb_cpu*);
+void obtener_dir_fisica(uint32_t , t_list* , uint32_t*, uint32_t*, uint32_t*, uint32_t*, uint32_t *);
 void segmentation_fault(pcb_cpu*, uint32_t, uint32_t, uint32_t, uint32_t);
-
 #endif

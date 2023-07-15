@@ -1,7 +1,7 @@
 #include "recibo_instrucciones.h"
 
 t_list* lista_pcb;
-
+uint32_t seguir_ejecutando = 1;
 char* registros_a_string(uint32_t estado_int) {
     switch (estado_int) {
         case AX:
@@ -83,14 +83,17 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 	pcb_proceso -> registros = contexto . registros;
 	//pcb_proceso ->TSegmento = list_create();
 	pcb_proceso->TSegmento = contexto .TSegmento;
-
+	segmento_t *segmento = list_get(pcb_proceso->TSegmento, 0);
+	log_error(logger, "segmento: %d %d %d %d", segmento->direccion_Base, segmento->id, segmento->pid, segmento->tamanio);
+	seguir_ejecutando=1;
 	while(pcb_proceso -> PC < list_size(pcb_proceso -> instrucciones)){
 		instruccion* instruccion_en_execute = fetch(pcb_proceso);
+
 		if(decode_execute(socket_cliente, pcb_proceso, instruccion_en_execute, logger))
 			break;
 		free(instruccion_en_execute);
 	}
-	
+	log_info(logger, "PID: <%d> - Ejecutando: <EXIT> " , pcb_proceso->PID);
 	list_destroy_and_destroy_elements(lista_instrucciones, free);
 	list_destroy_and_destroy_elements(contexto.TSegmento, free);
 	free(pcb_proceso);
@@ -335,8 +338,6 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 
 			log_info(logger, "PID: <%d> - Ejecutando: <SET> - <%s %s>" , pcb_proceso->PID, registros_a_string(param1), param2);
 			ejecutar_SET(pcb_proceso, param1, param2);
-
-			corta_ejecucion = 0;
 			break;
 		}
 		case MOV_IN:{
@@ -361,27 +362,24 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			uint32_t tiempo = una_instruccion -> parametro1.tipo_int;
 
 			log_info(logger, "PID: <%d> - Ejecutando: <IO> - <%d>" , pcb_proceso->PID, tiempo);
-			ejecutar_IO(pcb_proceso, tiempo);
+			 corta_ejecucion= ejecutar_IO(pcb_proceso, tiempo);
 
-			corta_ejecucion = 1;
 			break;
 		}
 		case F_OPEN:{
 			char* param1 = una_instruccion -> parametro1.tipo_string;
 
 			log_info(logger,"PID: <%d> - Ejecutando: <F_OPEN> - <%s>" , pcb_proceso->PID, param1);
-			ejecutar_F_OPEN(pcb_proceso, param1);
+			corta_ejecucion= ejecutar_F_OPEN(pcb_proceso, param1);
 
-			corta_ejecucion = 0;
 			break;
 		}
 		case F_CLOSE:{
 			char* param1 = una_instruccion -> parametro1.tipo_string;
 
 			log_info(logger,"PID: <%d> - Ejecutando: <F_CLOSE> - <%s>" , pcb_proceso->PID, param1);
-			ejecutar_F_CLOSE(pcb_proceso, param1);
+			corta_ejecucion=ejecutar_F_CLOSE(pcb_proceso, param1);
 
-			corta_ejecucion = 0;
 			break;
 		}
 		case F_SEEK:{
@@ -389,9 +387,9 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			uint32_t posicion = una_instruccion -> parametro2.tipo_int;
 
 			log_info(logger,"PID: <%d> - Ejecutando: <F_SEEK> - <%s %d>" , pcb_proceso->PID, archivo, posicion);
-			ejecutar_F_SEEK(pcb_proceso, archivo, posicion);
+			corta_ejecucion=ejecutar_F_SEEK(pcb_proceso, archivo, posicion);
 
-			corta_ejecucion = 0;
+
 			break;
 		}
 		case F_READ:{
@@ -417,65 +415,58 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			uint32_t tamanio = una_instruccion -> parametro2.tipo_int;
 			
 			log_info(logger,"PID: <%d> - Ejecutando: <F_TRUNCATE> - <%s %d>" , pcb_proceso->PID, archivo, tamanio);
-			ejecutar_F_TRUNCATE(pcb_proceso, archivo, tamanio);
+			corta_ejecucion=ejecutar_F_TRUNCATE(pcb_proceso, archivo, tamanio);
 			
-			corta_ejecucion = 0;
 			break;
 		}
 		case WAIT:{
 			char* param1 = una_instruccion -> parametro1.tipo_string;
 			
 			log_info(logger, "PID: <%d> - Ejecutando: <WAIT> - <%s>", pcb_proceso->PID, param1);
-			ejecutar_WAIT(pcb_proceso, param1);
-
-			corta_ejecucion = 0;
+			corta_ejecucion=ejecutar_WAIT(pcb_proceso, param1);
 			break;
 		}
 		case SIGNAL:{
 			char* param1 = una_instruccion -> parametro1.tipo_string;
 			
 			log_info(logger, "PID: <%d> - Ejecutando: <SIGNAL> - <%s>" , pcb_proceso->PID, param1);
-			ejecutar_SIGNAL(pcb_proceso, param1);
+			corta_ejecucion=ejecutar_SIGNAL(pcb_proceso, param1);
 
-			corta_ejecucion = 0;
 			break;
 		}
 		case CREATE_SEGMENT:{
-			uint32_t id = una_intruccion -> parametro1.tipo_int;
-			uint32_t tamanio = una_intruccion -> parametro2.tipo_int;
+			uint32_t id = una_instruccion -> parametro1.tipo_int;
+			uint32_t tamanio = una_instruccion -> parametro2.tipo_int;
 
 			log_info(logger, "PID: <%d> - Ejecutando: <CREATE_SEGMENT> - <%d %d>" , pcb_proceso->PID, id, tamanio);
-			ejecutar_CREATE_SEGMENT(pcb_proceso, id, tamanio);
+			corta_ejecucion=ejecutar_CREATE_SEGMENT(pcb_proceso, id, tamanio);
 
-			corta_ejecucion = 0;
 			break;
 		}
 		case DELETE_SEGMENT:{
-			uint32_t id = una_intruccion -> parametro1.tipo_int;
+			uint32_t id =  una_instruccion -> parametro1.tipo_int;
 
 			log_info(logger, "PID: <%d> - Ejecutando: <DELETE_SEGMENT> - <%d>" , pcb_proceso->PID, id);
-			ejecutar_DELETE_SEGMENT(pcb_proceso, id);
+			corta_ejecucion=ejecutar_DELETE_SEGMENT(pcb_proceso, id);
 
-			corta_ejecucion = 0;
 			break;
 		}
 		case YIELD:{
 			log_info(logger, "PID: <%d> - Ejecutando: <YIELD>" , pcb_proceso->PID);
 
-			ejecutar_YIELD(pcb_proceso);
+			corta_ejecucion=ejecutar_YIELD(pcb_proceso);
 
-			corta_ejecucion = 1;
 			break;
 		}
 		case EXIT:{
-			log_info(logger, "PID: <%d> - Ejecutando: <EXIT> " , pcb_proceso->PID);
+			//log_info(logger, "PID: <%d> - Ejecutando: <EXIT> " , pcb_proceso->PID);
 
-			ejecutar_EXIT(pcb_proceso);
+			corta_ejecucion=ejecutar_EXIT(pcb_proceso);
 
-			corta_ejecucion = 1;
 			break;
 		}
 	}
+
 
 	return corta_ejecucion;
 }

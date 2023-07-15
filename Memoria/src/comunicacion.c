@@ -102,8 +102,6 @@ static void procesar_conexionn(void* void_args){
 							//agarrar mi tabal de segmentos ocupados.
 							//y filtrar por pid.
 
-
-
 							for(int i = 0;i<cant_procesos;i++){
 								t_list*list_proceso_i = list_filter(segmentos_ocupados,&bypid);
 								send_TABLA_SEGMENTOS(cliente_socket,list_proceso_i);

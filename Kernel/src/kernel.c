@@ -104,8 +104,8 @@ void destruir_semaforos_listas(){
 
 	for(int i;i<list_size(tabla_ArchivosAbiertosGlobal);i++){
 		fcb_kernel* archivo = list_remove(tabla_ArchivosAbiertosGlobal,i);
-		free(&archivo->colaBloqueados);
-		free(&archivo);
+		free(archivo->colaBloqueados);
+		free(archivo);
 	}
     free(tabla_ArchivosAbiertosGlobal);
 

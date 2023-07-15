@@ -32,7 +32,7 @@ typedef struct{
 
 extern t_list* lista_pcb;
 
-
+extern uint32_t seguir_ejecutando;
 void cargar_instruccion_a_lista(int, op_code, t_list*, t_log*);
 int verificacion_recibo_code_correctamente(int, t_log*, op_code*);
 

@@ -1904,6 +1904,38 @@ bool recv_CONTEXTO_EJECUCION(int socket_cliente, contexto_ejecucion* contexto) {
     return true;
 }
 
+static void* serializar_seguir_ejecutando(uint32_t parametro1) {
+   void* stream = malloc(sizeof(op_code) + sizeof(uint32_t));
+   op_code cop = SEGUI_EJECUTANDO;
+    memcpy(stream, &cop, sizeof(op_code));
+    memcpy(stream+sizeof(op_code), &parametro1, sizeof(uint32_t));
+    return stream;
+}
+static void deserializar_seguir_ejecutando(void* stream, uint32_t* parametro1) {
+    memcpy(parametro1, stream ,sizeof(uint32_t));
+}
+uint32_t recv_seguir_ejecutando(int socket_cliente){
+    uint32_t parametro1;
+    size_t size = sizeof(uint32_t);
+    void* stream = malloc(size);
+    if (recv(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+
+    }
+    deserializar_seguir_ejecutando(stream, &parametro1);
+    free(stream);
+	return parametro1;
+}
+bool send_seguir_ejecutando(int socket_cliente, uint32_t  parametro1){
+    size_t size = sizeof(op_code) + sizeof(uint32_t);
+    void* stream = serializar_seguir_ejecutando(parametro1);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
 //static void* serializar_CONTEXTO_EJECUCION(contexto_ejecucion* contexto) {
 //    uint32_t num_elementos = contexto->TSegmento->elements_count;
 //    size_t size = sizeof(uint32_t) * 2 + sizeof(registros_cpu) + sizeof(uint32_t) + sizeof(uint32_t) * num_elementos;

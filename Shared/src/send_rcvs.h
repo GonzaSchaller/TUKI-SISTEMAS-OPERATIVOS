@@ -164,4 +164,7 @@ bool send_ERROR(int );
 bool recv_LEER_CONTENIDO_CPU(int);
 bool send_LEER_CONTENIDO_CPU(int);
 
+uint32_t recv_seguir_ejecutando(int);
+bool send_seguir_ejecutando(int , uint32_t  );
+
 #endif

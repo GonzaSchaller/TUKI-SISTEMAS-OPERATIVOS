@@ -155,9 +155,10 @@ void recibir_actualizar_tablas_segmento(pcb_t* pcb_actual){
 	 	 pthread_mutex_unlock(&mutexReady);
 }
 
-void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
+void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop,uint32_t* seguir_ejecutando){
 	uint32_t id_segmento,tamanio,base_nuevo_segmento,estado_segmento;
-	segmento_t* segmento= NULL;
+	segmento_t* segmento= malloc(sizeof(segmento_t));
+	bool se_compacto=false;
 	bool estado_while = true; // sigue adentro del while/
 		if (cop == CREATE_SEGMENT) // id tamanio
 		{
@@ -166,7 +167,7 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 				while(estado_while) //while porque si hay que compactar tenemos que volver a mandarle create segment
 				{
 					send_CREATE_SEGMENT(conexion_memoria,id_segmento,tamanio);
-
+					send_PID(conexion_memoria, pcb_siguiente->contexto.PID);
 					if(recv(conexion_memoria, &estado_segmento, sizeof(estado_segmento), 0) == sizeof(estado_segmento))
 					{
 						if(estado_segmento == EXITOSO)
@@ -178,9 +179,16 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 								segmento->id = id_segmento;
 								segmento->tamanio = tamanio;
 								list_add(pcb_siguiente->contexto.TSegmento, segmento);
-								send_BASE_SEGMENTO(conexion_cpu,base_nuevo_segmento);
 								estado_while = false;
-							log_info(log_kernel, "PID: <%d> - Crear Segmento - Id: <%d> - Tamaño: <%d>",pcb_siguiente->contexto.PID,id_segmento,tamanio);
+								send_seguir_ejecutando(conexion_cpu,0);
+								//send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);
+								if(se_compacto){
+								log_info(log_kernel, "Compactación: <Se finalizó el proceso de compactación>");
+								sem_post(&semFWrite);
+								sem_post(&semFRead);
+								}
+								log_info(log_kernel, "PID: <%d> - Crear Segmento - Id: <%d> - Tamaño: <%d>",pcb_siguiente->contexto.PID,id_segmento,tamanio);
+
 							}
 							else log_error(log_kernel, "Fallo recibiendo BASE SEGMENTO");
 
@@ -188,6 +196,7 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 						else if(estado_segmento == FALLIDO)
 						{
                             pcb_siguiente->motivo_exit = "OUT_OF_MEMORY";
+							send_seguir_ejecutando(conexion_cpu,1);
                             pcb_siguiente->finalizar_proceso = true;
 							estado_while = false;
 						}
@@ -199,14 +208,11 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 							send(conexion_memoria, &estado_segmento, sizeof(estado_segmento), 0);// le mandamos COMPACTAR, porque no queriamos ahcer otro send
 							log_info(log_kernel, "Compactación: <Se solicitó compactación>");
 							recibir_actualizar_tablas_segmento(pcb_siguiente); //mandamos, recibimos y actualizamos las tabla de segmento
-							log_info(log_kernel, "Compactación: <Se finalizó el proceso de compactación>");
+							se_compacto=true;
 						}
-						send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
-						sem_post(&semFWrite);
-						sem_post(&semFRead);
+						// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
 					}
 					else log_error(log_kernel, "Fallo recibiendo CREATE_SEGMENT");// recibimos el espacio segmento
-
 				}// si recibimos de cpu lo que quiere que creemos while
 			}
 
@@ -219,7 +225,8 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 				send_TABLA_SEGMENTOS(conexion_memoria, pcb_siguiente->contexto.TSegmento);//mandamos para que memoria la actualice
 				recv_TABLA_SEGMENTOS(conexion_memoria,&nueva_tabla_segmentos); // cambie esto ahora nomas
 				pcb_siguiente->contexto.TSegmento = nueva_tabla_segmentos;// cambie esto ahora nomas
-				send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
+				send_seguir_ejecutando(conexion_cpu,0);
+				//send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
 				log_info(log_kernel, "PID: <%d> - Eliminar Segmento - Id Segmento: <%d>",pcb_siguiente->contexto.PID, id_segmento);
 			}
 			else log_error(log_kernel, "Fallo recibiendo DELETE_SEGMENT");
@@ -227,7 +234,7 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop){
 
 
 }
-void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempoDeFin){
+void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempoDeFin,uint32_t* seguir_ejecutando){
 	uint32_t tiempo_bloqueo_kernel;
 	 if (cop == IO)
 			{
@@ -246,16 +253,19 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 					pthread_create(&hilo_Block, NULL, (void*)bloquear_procesoPorIO,(void*)pcb_siguiente);
 					pthread_detach(hilo_Block);
 					noSalePorIO = false;
+					send_seguir_ejecutando(conexion_cpu,1);
 					}
 			}
 	 else if(cop == YIELD){
 		recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 		agregarAReady(pcb_siguiente);
+		send_seguir_ejecutando(conexion_cpu,1);
 
 	 }
 	 else if(cop == EXIT){// caso EXIT
 		 	 	 	pcb_siguiente->motivo_exit = "SUCCESS";
 					terminarEjecucion(pcb_siguiente);
+					send_seguir_ejecutando(conexion_cpu,1);
 					//sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
 				}
 	else if(cop==ERROR){
@@ -264,7 +274,7 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 	}
 
 }
-void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
+void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint32_t* seguir_ejecutando){
 	if (cop == F_OPEN) // es un wait
 				{
 				    char* nombre_archivo;
@@ -282,6 +292,7 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 							pcb_siguiente->state_anterior = pcb_siguiente->state;
 							pcb_siguiente->state = BLOCK;
 							log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
+							send_seguir_ejecutando(conexion_cpu,1);
 							//pthread_mutex_unlock(&(archivo->mutexArchivo));
 							recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 				        }
@@ -309,7 +320,8 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 
 								list_add(tabla_ArchivosAbiertosGlobal, archivo_nuevo);
 								list_add(pcb_siguiente->tabla_archivosAbiertos,archivo_proceso); // agrego a la tabla de archivos abiertos del proceso
-								send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);
+								send_seguir_ejecutando(conexion_cpu,0);
+								//send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);
 							}
 				        		log_info(log_kernel,"PID: <%d> - Abrir Archivo: <%s>", pcb_siguiente->contexto.PID, nombre_archivo);
 				    }
@@ -331,11 +343,13 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 					}
 					else{
 						// ningun otro proceso quiere el archivo
+
 					eliminarArchivoDeTablaGlobal(nombre_archivo, tabla_ArchivosAbiertosGlobal);// sacar el archivo de la tabla global tamanio
 					}
 					eliminarArchivoDeTablaProceso(nombre_archivo, pcb_siguiente->tabla_archivosAbiertos); //boorro el que lo tenia
 					log_info(log_kernel,"PID: <%d> - Cerrar Archivo: <%s>", pcb_siguiente->contexto.PID, nombre_archivo);
 			    }
+			    send_seguir_ejecutando(conexion_cpu,0);
 			}
 		else log_error(log_kernel, "Fallo recibiendo FCLOSE");
 	}
@@ -346,7 +360,8 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 		if(recv_F_SEEK(conexion_cpu,&nombre_archivo,&posicion)){
 			fcb_por_proceso* archivo = encontrar_archivoTablaProceso(pcb_siguiente->tabla_archivosAbiertos, nombre_archivo);
 			archivo->puntero = posicion;
-			send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);
+			send_seguir_ejecutando(conexion_cpu,0);
+			//send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);
 			log_info(log_kernel,"PID: <%d> - Actualizar puntero Archivo: <%s> - Puntero <%d>", pcb_siguiente->contexto.PID, archivo->nombreArchivo, archivo->puntero);
 		}
 
@@ -363,15 +378,16 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 			log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
 
 			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
-			pthread_t hilo_archivo;
 			args->pcb = pcb_siguiente;
 			args->archivo = archivo;
 			args->nombre_instruccion = F_TRUNCATE;
 
 			log_info(log_kernel,"PID: <%d> - Archivo: <%s> - Tamaño: <%d>", pcb_siguiente->contexto.PID, archivo->nombreArchivo,archivo->tamanio);
-			pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
-			pthread_detach(hilo_archivo);
+			bloquear_procesoPorArchivo(args);
+
+			send_seguir_ejecutando(conexion_cpu,0);
 			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
+
 
 		}
 	}
@@ -397,14 +413,13 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 			}
 			fcb_kernel* archivo_para_args = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
-			pthread_t hilo_archivo;
 			args->pcb = pcb_siguiente;
 			args->archivo = archivo_para_args;
 			args->nombre_instruccion = F_READ;
 
-			log_info(log_kernel,"PID: <%d> - Leer Archivo: <%d> - Puntero <%d> - Dirección Memoria <%d> - Tamaño <%d>", pcb_siguiente->contexto.PID, archivo->nombreArchivo,archivo->puntero, direccion_fisica,archivo_para_args->tamanio);
-			pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
-			pthread_detach(hilo_archivo);
+			log_info(log_kernel,"PID: <%d> - Leer Archivo: <%s> - Puntero <%d> - Dirección Memoria <%d> - Tamaño <%d>", pcb_siguiente->contexto.PID, archivo->nombreArchivo,archivo->puntero, direccion_fisica,archivo_para_args->tamanio);
+			bloquear_procesoPorArchivo(args);
+			send_seguir_ejecutando(conexion_cpu,0);
 			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 		}
 		sem_post(&semFRead);
@@ -433,19 +448,18 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				}
 				fcb_kernel* archivoTabla = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 				arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
-				pthread_t hilo_archivo;
 				args->pcb = pcb_siguiente;
 				args->archivo = archivoTabla;
 				args->nombre_instruccion = F_WRITE;
 				log_info(log_kernel,"PID: <%d> - Escribir Archivo: <%s> - Puntero <%d> - Dirección Memoria <%d> - Tamaño <%d>",pcb_siguiente->contexto.PID, archivo->nombreArchivo,archivo->puntero, direccion_fisica,archivoTabla->tamanio);
-				pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
-				pthread_detach(hilo_archivo);
+				bloquear_procesoPorArchivo(args);
+				send_seguir_ejecutando(conexion_cpu,0);
 				recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 		}
 		sem_post(&semFWrite);
 	}
 }
-void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
+void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint32_t* seguir_ejecutando){
 	if (cop == WAIT)
 				{
 				    char* nombre_recurso;
@@ -475,9 +489,11 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				                pthread_mutex_unlock(&(recurso->mutexRecurso)); // Desbloquear el acceso a la cola de bloqueados
 				            }
 				            log_info(log_kernel,"PID: <%d> - Wait: < %s > - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
-				        }
+				            send_seguir_ejecutando(conexion_cpu,0);
+						}
 				        else { // si no existe el recurso
 				        	pcb_siguiente->motivo_exit ="INVALID_RESOURCE";
+							send_seguir_ejecutando(conexion_cpu,1);
 				        	pcb_siguiente->finalizar_proceso = true;
 				        	//terminarEjecucion(pcb_siguiente);
 				        	//sem_post(&multiprogramacion);
@@ -503,9 +519,11 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				                pthread_mutex_unlock(&(recurso->mutexRecurso));
 				               	agregarAReady(pcb_bloqueado);
 				            }
-				            log_info(log_kernel,"PID: <%d> - Signal: <%s> - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
-				        } else{
+							log_info(log_kernel,"PID: <%d> - Signal: <%s> - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
+							send_seguir_ejecutando(conexion_cpu,0);
+						} else{
 							pcb_siguiente->motivo_exit ="INVALID_RESOURCE";
+							send_seguir_ejecutando(conexion_cpu,1);
 							pcb_siguiente->finalizar_proceso = true;
 							//terminarEjecucion(pcb_siguiente);
 							//sem_post(&multiprogramacion);
@@ -523,16 +541,17 @@ void manejar_contextosDeEjecucion(pcb_t* pcb_siguiente, contexto_ejecucion conte
 				pcb_siguiente->contexto= contexto;
 				time_t fin_exe = time(NULL);
 				float tiempoDeFin = ((float) fin_exe) * 1000;
+				uint32_t seguir_ejecutando=1;
 				if (pcb_siguiente->finalizar_proceso == false)
 				{
-				manejar_recursos(pcb_siguiente, cop, tiempoDeFin);
-				manejar_memoria(pcb_siguiente, cop);
-				manejar_fileSystem(pcb_siguiente, cop, tiempoDeFin);
-				manejar_otras_instrucciones(pcb_siguiente, cop, tiempoDeFin);
-				}
-				else if (cop == EXIT){ // caso del error
+				manejar_recursos(pcb_siguiente, cop, tiempoDeFin,&seguir_ejecutando);
+				manejar_memoria(pcb_siguiente, cop,&seguir_ejecutando);
+				manejar_fileSystem(pcb_siguiente, cop, tiempoDeFin,&seguir_ejecutando);
+				manejar_otras_instrucciones(pcb_siguiente, cop, tiempoDeFin,&seguir_ejecutando);
+				if(pcb_siguiente->finalizar_proceso == true){
 				terminarEjecucion(pcb_siguiente);
 				sem_post(&multiprogramacion);
+					}
 				}
 			}
 
