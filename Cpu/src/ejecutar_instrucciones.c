@@ -514,6 +514,7 @@ int ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, ui
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 		send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 		send_ERROR(socket_cliente_kernel);
+		log_error(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%d> - Offset: <%d> - Tamanio: <%d>", pcb_proceso -> PID, segmento, offset, tamanio);
 
 		return 1; //corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}else {
@@ -557,6 +558,8 @@ int ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 		send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 		send_ERROR(socket_cliente_kernel);
+		log_error(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%d> - Offset: <%d> - Tamanio: <%d>", pcb_proceso -> PID, segmento, offset, tamanio);
+
 		return 1; //corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}else{
 		contexto_ejecucion contexto_actualizado;
