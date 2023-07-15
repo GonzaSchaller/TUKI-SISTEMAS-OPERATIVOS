@@ -64,6 +64,7 @@ void cargar_superbloque(){
 
 
 
+
 	free(cnf_fs);
 
 }
