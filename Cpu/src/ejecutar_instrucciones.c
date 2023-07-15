@@ -92,7 +92,7 @@ char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
 int ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
 	//************************************************************* traduzco la DL
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso.PID);
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso->PID);
 
 	if(dir_fisica == -1){
 		//COMPLETAR caso de Segmentation Fault
@@ -220,7 +220,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	
 	//************************************************************* traduzco la DL
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso.PID);
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso->PID);
 
 	if(dir_fisica == -1){
 		//COMPLETAR caso de Segmentation Fault
@@ -385,7 +385,7 @@ void ejecutar_F_SEEK(pcb_cpu* pcb_proceso, char* archivo, uint32_t posicion){
 
 int ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso.PID);
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso->PID);
 	//escribir en la DF de memoria lo del archivo
 	if(dir_fisica == -1){
 		contexto_ejecucion contexto_actualizado;
@@ -416,7 +416,7 @@ int ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, ui
 
 int ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, uint32_t cant_bytes){
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso.PID);
+	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso->PID);
 	if(dir_fisica == -1){
 		contexto_ejecucion contexto_actualizado;
 
