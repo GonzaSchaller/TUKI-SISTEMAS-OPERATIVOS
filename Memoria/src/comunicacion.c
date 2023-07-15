@@ -137,8 +137,8 @@ static void procesar_conexionn(void* void_args){
 		t_list* ts_kernel = malloc(sizeof(t_list));
 		uint32_t pid;
 
-		recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
 		recv_ID_SEGMENTO(cliente_socket, &id);
+		recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
 		recv_PID(cliente_socket,&pid);
 
 		// me devuelve la tabla de ese segmento.

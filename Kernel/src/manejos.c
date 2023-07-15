@@ -221,9 +221,11 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop,uint32_t* seguir_ejecuta
 		{
 			t_list* nueva_tabla_segmentos;
 			if(recv_ID_SEGMENTO(conexion_cpu,&id_segmento)){
-				send_ID_SEGMENTO(conexion_memoria, id_segmento);
+				send_DELETE_SEGMENT(conexion_memoria, id_segmento);
 				send_TABLA_SEGMENTOS(conexion_memoria, pcb_siguiente->contexto.TSegmento);//mandamos para que memoria la actualice
+				send_PID(conexion_memoria,pcb_siguiente->contexto.PID);
 				recv_TABLA_SEGMENTOS(conexion_memoria,&nueva_tabla_segmentos); // cambie esto ahora nomas
+
 				pcb_siguiente->contexto.TSegmento = nueva_tabla_segmentos;// cambie esto ahora nomas
 				send_seguir_ejecutando(conexion_cpu,0);
 				//send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
@@ -264,9 +266,9 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 	 }
 	 else if(cop == EXIT){// caso EXIT
 		 	 	 	pcb_siguiente->motivo_exit = "SUCCESS";
-
+					//send_seguir_ejecutando(conexion_cpu,1);
 					terminarEjecucion(pcb_siguiente);
-					send_seguir_ejecutando(conexion_cpu,1);
+
 					//sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
 				}
 	else if(cop==ERROR){
@@ -475,7 +477,8 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint
 				                asignar_recurso(nombre_recurso , pcb_siguiente->recursos_asignados);
 				                else
 				                aumentar_instancias_recurso(nombre_recurso , pcb_siguiente->recursos_asignados); // si ya tiene el recurso asignado, le sumo una instancia
-				            }
+				            send_seguir_ejecutando(conexion_cpu,0);
+							}
 				            else
 				            {
 								recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
@@ -487,9 +490,10 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint
 				                log_info(log_kernel,"PID: <%d> - Bloqueado por: <%s>",pcb_siguiente->contexto.PID,recurso->nombre);
 				                log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
 				                pthread_mutex_unlock(&(recurso->mutexRecurso)); // Desbloquear el acceso a la cola de bloqueados
-				            }
+				             send_seguir_ejecutando(conexion_cpu,1);
+							}
 				            log_info(log_kernel,"PID: <%d> - Wait: < %s > - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
-				            send_seguir_ejecutando(conexion_cpu,0);
+
 						}
 				        else { // si no existe el recurso
 				        	pcb_siguiente->motivo_exit ="INVALID_RESOURCE";

@@ -40,7 +40,7 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 	t_list* lista_instrucciones = list_create();
 	uint32_t cant_instrucciones;
 		if(!recv_CANT_INSTRUCCIONES(socket_cliente, &cant_instrucciones)){
-			//log_error(logger, "Error al recibir el valor que indica la cantidad de instrucciones");
+			log_error(logger, "Error al recibir el valor que indica la cantidad de instrucciones");
 		}
 	if(cant_instrucciones > 0){
 		int i;
@@ -55,10 +55,10 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 
 	//revisar que con este recv ya obtengo el contexto completo
 	if(!recv_CONTEXTO_EJECUCION(socket_cliente, &contexto)){
-		//log_error(logger, "Error al recibir el contexto de ejecucion");
+		log_error(logger, "Error al recibir el contexto de ejecucion");
 	}
 	if(!recv_TABLA_SEGMENTOS(socket_cliente, &contexto.TSegmento)){
-		//log_error(logger, "Error al recibir la tabla de segmentos");
+		log_error(logger, "Error al recibir la tabla de segmentos");
 	}
 //	else{
 //	log_info(logger, "PID: <%d>",contexto.PID);
@@ -95,8 +95,8 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 			break;
 		free(instruccion_en_execute);
 	}
-	list_destroy_and_destroy_elements(lista_instrucciones, free);
-	list_destroy_and_destroy_elements(contexto.TSegmento, free);
+	if(lista_instrucciones != NULL) list_destroy(lista_instrucciones);
+	if(contexto.TSegmento != NULL)list_destroy_and_destroy_elements(contexto.TSegmento, free);
 	free(pcb_proceso);
 
 }

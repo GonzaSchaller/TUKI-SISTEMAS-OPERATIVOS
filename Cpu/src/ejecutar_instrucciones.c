@@ -673,13 +673,13 @@ int ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id){
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
-	send_ID_SEGMENTO(socket_cliente_kernel,id);
+	send_DELETE_SEGMENT(socket_cliente_kernel,id);
 	op_code cop;
 	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
 		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
-	return seguir_ejecutando;
+	return 0;
 }
 
 int ejecutar_YIELD(pcb_cpu* pcb_proceso){
@@ -720,10 +720,10 @@ int ejecutar_EXIT(pcb_cpu* pcb_proceso){
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
 	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 	send_EXIT(socket_cliente_kernel);
-	op_code cop;
-	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+	//op_code cop;
+	//if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
 		//log_error(logger, "Error al recibir el code");
-	}
-	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	//}
+	//seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 	return 1;
 }
