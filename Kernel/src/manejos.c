@@ -259,11 +259,12 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 	 else if(cop == YIELD){
 		recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 		agregarAReady(pcb_siguiente);
-		send_seguir_ejecutando(conexion_cpu,1);
+		//send_seguir_ejecutando(conexion_cpu,1);
 
 	 }
 	 else if(cop == EXIT){// caso EXIT
 		 	 	 	pcb_siguiente->motivo_exit = "SUCCESS";
+
 					terminarEjecucion(pcb_siguiente);
 					send_seguir_ejecutando(conexion_cpu,1);
 					//sem_post(&multiprogramacion); //le digo al new que ya puede mandar otro proceso mientras el grado de multiprog sea > 0
@@ -474,7 +475,6 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint
 				                asignar_recurso(nombre_recurso , pcb_siguiente->recursos_asignados);
 				                else
 				                aumentar_instancias_recurso(nombre_recurso , pcb_siguiente->recursos_asignados); // si ya tiene el recurso asignado, le sumo una instancia
-
 				            }
 				            else
 				            {
@@ -520,10 +520,10 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint
 				               	agregarAReady(pcb_bloqueado);
 				            }
 							log_info(log_kernel,"PID: <%d> - Signal: <%s> - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
-							send_seguir_ejecutando(conexion_cpu,0);
+						send_seguir_ejecutando(conexion_cpu,0);
 						} else{
 							pcb_siguiente->motivo_exit ="INVALID_RESOURCE";
-							send_seguir_ejecutando(conexion_cpu,1);
+						send_seguir_ejecutando(conexion_cpu,1);
 							pcb_siguiente->finalizar_proceso = true;
 							//terminarEjecucion(pcb_siguiente);
 							//sem_post(&multiprogramacion);
@@ -532,13 +532,15 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint
 				}
 
 }
-void manejar_contextosDeEjecucion(pcb_t* pcb_siguiente, contexto_ejecucion contexto){ // maneja lo que  nos manda cpu
+void manejar_contextosDeEjecucion(pcb_t* pcb_siguiente, contexto_ejecucion contexto, t_list* ts){ // maneja lo que  nos manda cpu
 	uint32_t cop;
 
 	if(recv_CONTEXTO_EJECUCION(conexion_cpu, &contexto)) // Las que recibimos que SI son instruccion
 			{
-			if(recv(conexion_cpu, &cop, sizeof(op_code), 0) == sizeof(op_code)){
+				recv_TABLA_SEGMENTOS(conexion_cpu, &ts);
+				if(recv(conexion_cpu, &cop, sizeof(op_code), 0) == sizeof(op_code)){
 				pcb_siguiente->contexto= contexto;
+				pcb_siguiente->contexto.TSegmento = ts;
 				time_t fin_exe = time(NULL);
 				float tiempoDeFin = ((float) fin_exe) * 1000;
 				uint32_t seguir_ejecutando=1;

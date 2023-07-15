@@ -103,7 +103,7 @@ void enviar_pcb_cpu(int fd_cpu, pcb_t* pcb_proceso){
 	send_CANT_INSTRUCCIONES(fd_cpu, list_size(pcb_proceso->instrucciones));
 	send_instrucciones_kernel_a_cpu(fd_cpu,pcb_proceso);
 	send_CONTEXTO_EJECUCION(fd_cpu,pcb_proceso->contexto);
-
+	send_TABLA_SEGMENTOS(fd_cpu, pcb_proceso->contexto.TSegmento);
 }
 
 void send_instrucciones_kernel_a_cpu(int fd_cpu,pcb_t* pcb_proceso){

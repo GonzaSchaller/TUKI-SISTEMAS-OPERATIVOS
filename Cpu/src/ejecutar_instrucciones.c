@@ -1,5 +1,4 @@
 #include "ejecutar_instrucciones.h"
-uint32_t espacio_disponible = 0; //todo no se de donde sale, pero para que no rompa pongo eso
 int socket_cliente_kernel;
 extern int conexion_memoria;
 extern t_log*logger;
@@ -83,6 +82,7 @@ void segmentation_fault(pcb_cpu* pcb_proceso, uint32_t segmento, uint32_t offset
     contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
     send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
     send_ERROR(socket_cliente_kernel);
 
     log_error(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%d> - Offset: <%d> - Tamanio: <%d>", pcb_proceso -> PID, segmento, offset, tamanio);
@@ -211,7 +211,7 @@ void enviar_a_memoria(char*valor,uint32_t df,uint32_t size,uint32_t pid){
 	if(!send_cant_bytes(conexion_memoria,size)){log_error(logger,"error mandando la cantidad de bytes a memoria");}
 	if(!send_PID(conexion_memoria,pid)){log_error(logger,"error mandando el pid a memoria");}
 
-	if(!recv_OK_CODE(conexion_memoria,&estado))log_error(conexion_memoria,"error recibiendo ok_code de memoria");
+	if(!recv_OK_CODE(conexion_memoria,&estado))log_error(logger,"error recibiendo ok_code de memoria");
 	if(estado == EXITOSO){
 		log_info(logger,"memoria escribio correctamente");
 	}
@@ -226,8 +226,9 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	uint32_t dir_Base = -1;
 	uint32_t tamanio = -1;
 	uint32_t dir_fisica = -1;
-	obtener_dir_fisica(dir_logica, listaSegmentos, &segmento, &offset, &dir_Base, &tamanio, &dir_fisica);
 
+	obtener_dir_fisica(dir_logica, listaSegmentos, &segmento, &offset, &dir_Base, &tamanio, &dir_fisica);
+	uint32_t espacio_disponible = tamanio - offset -1;
 	if(dir_fisica == -1){
 		segmentation_fault(pcb_proceso, segmento, offset, tamanio, 0);
 		return 1; //corta ejecucion de ejecucion (se usa en execute_decode en recibo_instrucciones.c)
@@ -422,10 +423,11 @@ int ejecutar_IO(pcb_cpu* pcb_proceso, uint32_t tiempo){
 	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_para_kernel.TSegmento);
 	send_IO(socket_cliente_kernel, tiempo);
 	op_code cop;
 	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 	return 1;
@@ -441,10 +443,11 @@ int ejecutar_F_OPEN(pcb_cpu* pcb_proceso, char* archivo){
 	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_para_kernel.TSegmento);
 	send_F_OPEN(socket_cliente_kernel, archivo);
 	op_code cop;
 	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 	return seguir_ejecutando;
@@ -461,10 +464,11 @@ int ejecutar_F_CLOSE(pcb_cpu* pcb_proceso, char* archivo){
 
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_para_kernel.TSegmento);
 	send_F_CLOSE(socket_cliente_kernel, archivo);
 	op_code cop;
 	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 	return seguir_ejecutando;
@@ -480,10 +484,11 @@ int ejecutar_F_SEEK(pcb_cpu* pcb_proceso, char* archivo, uint32_t posicion){
 	contexto_para_kernel.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_para_kernel);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_para_kernel.TSegmento);
 	send_F_SEEK(socket_cliente_kernel, archivo, posicion);
 	op_code cop;
 	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 	return seguir_ejecutando;
@@ -507,6 +512,7 @@ int ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, ui
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 		send_ERROR(socket_cliente_kernel);
 
 		return 1; //corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
@@ -520,10 +526,11 @@ int ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, ui
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 		send_F_READ(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
 		op_code cop;
 		if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 		}
 		seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 		return 0; //no corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
@@ -548,6 +555,7 @@ int ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 		send_ERROR(socket_cliente_kernel);
 		return 1; //corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}else{
@@ -560,10 +568,11 @@ int ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+		send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 		send_F_WRITE(socket_cliente_kernel,archivo,dir_fisica,cant_bytes);
 		op_code cop;
 		if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 
@@ -582,10 +591,11 @@ int ejecutar_F_TRUNCATE(pcb_cpu* pcb_proceso, char* archivo, uint32_t tamanio){
 	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 	send_F_TRUNCATE(socket_cliente_kernel,archivo,tamanio);
 	op_code cop;
 	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 	return seguir_ejecutando;
@@ -601,10 +611,11 @@ int ejecutar_WAIT(pcb_cpu* pcb_proceso , char* recurso){
 	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 	send_WAIT(socket_cliente_kernel, recurso);
 	op_code cop;
 	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 	return seguir_ejecutando;
@@ -620,10 +631,11 @@ int ejecutar_SIGNAL(pcb_cpu* pcb_proceso , char* recurso){
 	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 	send_SIGNAL(socket_cliente_kernel, recurso);
 	op_code cop;
 	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 	return seguir_ejecutando;
@@ -639,10 +651,11 @@ int ejecutar_CREATE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id, uint32_t tamanio)
 	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 	send_CREATE_SEGMENT(socket_cliente_kernel, id, tamanio);
 	op_code cop;
 	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 	return seguir_ejecutando;
@@ -659,10 +672,11 @@ int ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id){
 	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 	send_ID_SEGMENTO(socket_cliente_kernel,id);
 	op_code cop;
 	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 	return seguir_ejecutando;
@@ -677,13 +691,22 @@ int ejecutar_YIELD(pcb_cpu* pcb_proceso){
 	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 	send_YIELD(socket_cliente_kernel);
-	op_code cop;
-	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
-	}
-	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
-	return seguir_ejecutando;
+
+	//char buffer[4096];
+	//while (recv(socket_cliente_kernel, buffer, sizeof(buffer), 0) > 0) {
+    // Continuar recibiendo y descartando los datos del socket
+    //memset(buffer, 0, sizeof(buffer));  // Limpiar el buffer para la siguiente iteración
+	//}// prueba oscura
+
+
+	//op_code cop;
+	//if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
+	//	log_error(logger, "Error al recibir el code");
+	//}
+	//seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
+	return 1;
 }
 
 int ejecutar_EXIT(pcb_cpu* pcb_proceso){
@@ -695,11 +718,12 @@ int ejecutar_EXIT(pcb_cpu* pcb_proceso){
 	contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
 
 	send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
+	send_TABLA_SEGMENTOS(socket_cliente_kernel, contexto_actualizado.TSegmento);
 	send_EXIT(socket_cliente_kernel);
 	op_code cop;
 	if (recv(socket_cliente_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)) {
-		log_error(logger, "Error al recibir el code");
+		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
-	return seguir_ejecutando;
+	return 1;
 }

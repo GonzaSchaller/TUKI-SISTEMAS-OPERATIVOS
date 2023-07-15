@@ -40,7 +40,7 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 	t_list* lista_instrucciones = list_create();
 	uint32_t cant_instrucciones;
 		if(!recv_CANT_INSTRUCCIONES(socket_cliente, &cant_instrucciones)){
-			log_error(logger, "Error al recibir el valor que indica la cantidad de instrucciones");
+			//log_error(logger, "Error al recibir el valor que indica la cantidad de instrucciones");
 		}
 	if(cant_instrucciones > 0){
 		int i;
@@ -55,7 +55,10 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 
 	//revisar que con este recv ya obtengo el contexto completo
 	if(!recv_CONTEXTO_EJECUCION(socket_cliente, &contexto)){
-		log_error(logger, "Error al recibir el contexto de ejecucion");
+		//log_error(logger, "Error al recibir el contexto de ejecucion");
+	}
+	if(!recv_TABLA_SEGMENTOS(socket_cliente, &contexto.TSegmento)){
+		//log_error(logger, "Error al recibir la tabla de segmentos");
 	}
 //	else{
 //	log_info(logger, "PID: <%d>",contexto.PID);
@@ -83,20 +86,19 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 	pcb_proceso -> registros = contexto . registros;
 	//pcb_proceso ->TSegmento = list_create();
 	pcb_proceso->TSegmento = contexto .TSegmento;
-	segmento_t *segmento = list_get(pcb_proceso->TSegmento, 0);
-	log_error(logger, "segmento: %d %d %d %d", segmento->direccion_Base, segmento->id, segmento->pid, segmento->tamanio);
+	//segmento_t *segmento = list_get(pcb_proceso->TSegmento, 0);
+	//log_error(logger, "segmento: %d %d %d %d", segmento->direccion_Base, segmento->id, segmento->pid, segmento->tamanio);
 	seguir_ejecutando=1;
 	while(pcb_proceso -> PC < list_size(pcb_proceso -> instrucciones)){
 		instruccion* instruccion_en_execute = fetch(pcb_proceso);
-
 		if(decode_execute(socket_cliente, pcb_proceso, instruccion_en_execute, logger))
 			break;
 		free(instruccion_en_execute);
 	}
-	log_info(logger, "PID: <%d> - Ejecutando: <EXIT> " , pcb_proceso->PID);
 	list_destroy_and_destroy_elements(lista_instrucciones, free);
 	list_destroy_and_destroy_elements(contexto.TSegmento, free);
 	free(pcb_proceso);
+
 }
 
 int verificacion_recibo_code_correctamente(int socket, t_log* logger, op_code* code){
@@ -269,7 +271,7 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 			break;
 		}
 		default:
-			return log_error(logger,"No se reconoce el cop");
+			//return log_error(logger,"No se reconoce el cop");
 	}
 
 }
@@ -460,7 +462,7 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 		}
 		case EXIT:{
 			//log_info(logger, "PID: <%d> - Ejecutando: <EXIT> " , pcb_proceso->PID);
-
+			log_info(logger, "PID: <%d> - Ejecutando: <EXIT> " , pcb_proceso->PID);
 			corta_ejecucion=ejecutar_EXIT(pcb_proceso);
 
 			break;

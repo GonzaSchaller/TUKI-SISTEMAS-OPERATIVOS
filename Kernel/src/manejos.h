@@ -8,7 +8,7 @@
 #include "kernel.h"
 
 void manejar_memoria(pcb_t*, uint32_t , uint32_t* );
-void manejar_contextosDeEjecucion(pcb_t*, contexto_ejecucion contexto);
+void manejar_contextosDeEjecucion(pcb_t*, contexto_ejecucion contexto, t_list*);
 void manejar_recursos(pcb_t*, uint32_t ,float , uint32_t*);
 void manejar_otras_instrucciones(pcb_t*,uint32_t, float, uint32_t*);
 void manejar_fileSystem(pcb_t* ,uint32_t, float, uint32_t*);
