@@ -3,7 +3,7 @@ extern t_config_fs *c;
 extern t_log* logger;
 extern t_superbloque* superbloque;
 extern FILE* f_bloques;
-//t_list* configs_creadas;
+t_list* lista_indirecta;
 
 char* concat(char*nombre_archivo){
 	//char*path = strdup(c->fcb);
@@ -64,32 +64,86 @@ bool crear_archivo(char*nombre,uint32_t tamanio){
 	return true;
 }
 
-char* buscar_contenido(char*nombre,uint32_t puntero,uint32_t cant_bytes){
+
+//cantidad de bytes,,, tamanio de bloque
+uint32_t ceil_casero(uint32_t nro1,uint32_t nro2){
+
+	uint32_t cociente = nro1 / nro2;
+	uint32_t resto = nro1% nro2;
+
+	return (resto > 0) ? (cociente + 1) : cociente;
 
 
-	//leo de a bloques, lo probe y anda.
-	uint32_t tam_bloque = superbloque->block_size;
-	uint32_t cant_bloques ;
+}
 
+t_list* bloque_del_archivo (fcb_t* fcb,uint32_t bloque_estoy,uint32_t cant_bloques_a_leer,uint32_t puntero){
+	uint32_t bloque;
+	t_list* bloques;
+	uint32_t cant_bloques_archivo = ceil_casero(fcb->tamanio_archivo / superbloque->block_size);
 
-	uint32_t cociente = cant_bytes / tam_bloque;
-	uint32_t resto = cant_bytes% tam_bloque;
+	for(int i=0;i<cant_bloques_a_leer;i++){
+		if(bloque_estoy == fcb->puntero_directo){
+			list_add(bloques,0);
+			cant_bloques_a_leer --;
+			i++;
+			}
+		else{
+			//entro en el bloque indirecto
+			uint32_t nro_bloque_leido;
+			fseek(f_bloques,fcb->puntero_indirecto * superbloque->block_size, SEEK_SET);
+			size_t cant_leida = fread(&nro_bloque_leido,sizeof(uint32_t),1,bloques);
+			if(nro_bloque_leido == bloque_estoy){
+				list_add(bloques,cant_leida);
+				if(cant_bloques_a_leer > 0){
+					for(int u=0;u<cant_bloques_a_leer;u++){
+						list_add(bloques,cant_leida+u);
+					}
+					return bloques;
+				}
+			}
+		}
+	}
+	//en el de las config tendria 16 punteros en cada bloque de punteros.
 
+	//4 bytes de puntero en un bloque cuantos punteros tengo?
+	uint32_t cant_puteros_por_bloque = superbloque ->block_size / 4;
 
-		    if (resto > 0) {
-		        cant_bloques = cociente + 1;
-		    } else {
-		        cant_bloques = cociente;
-		    }
+	return bloques;
+}
+char* buscar_contenido(char*name,uint32_t puntero,uint32_t cant_bytes){
+		uint32_t tam_bloque = superbloque->block_size;
+		uint32_t cant_bloques; //cant de bloques a leer
 
-		uint32_t ubicacion = puntero * tam_bloque;
+		cant_bloques = ceil_casero(cant_bytes,tam_bloque);
+		    //la ubicacion esta en el puntero.
 
+		uint32_t ubicacion = puntero;
+		uint32_t enquebloqueestoy = ceil_casero(puntero,tam_bloque); //donde arranca // ese seria el bloque dentro de todo el fs
+
+		char*path = concat(name); //TODO DUDAS (CONCAT): ver si nombre_archivo va así o con el * o &
+		t_config* archivo = config_create(path);
+
+		fcb_t * fcb;
+		fcb->nombreArchivo = config_get_string_value(config,"NOMBRE_ARCHIVO");
+		fcb->tamanio_archivo = config_get_int_value(config,"TAMANIO_ARCHIVO");
+		fcb->puntero_directo= config_get_int_value(config,"PUNTERO_DIRECTO");
+		fcb->puntero_indirecto = config_get_int_value(config,"PUNTERO_INDIRECTO");
+
+		t_list* lista_de_bloques = bloque_del_archivo (fcb,enquebloqueestoy,cant_bloques,puntero);
+
+		uint32_t tamanio = list_size(lista_de_bloques);
+
+			for(int i=0;i<tamanio;i++){
+				uint32_t nro_bloque = list_get(lista_de_bloques,i);
+				log_info(logger,"Acceso a Bloque: Acceso Bloque - Archivo: <%s> - Bloque Archivo: <%d> - Bloque File System <>",name,nro_bloque,enquebloqueestoy);
+			}
 		//supongo que es unu for por cada bloque.
-		log_info(logger,"Acceso a Bloque: Acceso Bloque - Archivo: <%s> - Bloque Archivo: <%d> - Bloque File System <>",nombre,puntero);
 
-		fseek(f_bloques, sizeof(uint32_t) * ubicacion, SEEK_SET);
-		char* contenido_leido = malloc(tam_bloque * cant_bloques);
-		size_t elementos_leidos = fread(contenido_leido, tam_bloque,cant_bloques, f_bloques);
+		fseek(f_bloques, cant_bytes, SEEK_SET);
+		char* contenido_leido = malloc(cant_bytes);
+		size_t elementos_leidos = fread(contenido_leido, 1,cant_bytes, f_bloques);
+
+
 
 		log_info(logger, "contenido: %s,cantbloques%d", contenido_leido,elementos_leidos);
 

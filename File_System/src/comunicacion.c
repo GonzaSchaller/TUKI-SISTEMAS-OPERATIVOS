@@ -61,7 +61,7 @@ void procesar_peticiones(int cliente_socket,uint32_t codop){
 
 					recv_F_WRITE(cliente_socket,&nombre_archivo,&df,&cant_bytes);
 					recv_PUNTERO_FS(cliente_socket,puntero);
-
+					recv_PID(cliente_socket,&pid);
 					log_info(logger,"Escribir Archivo: <%s> - Puntero: <%d> - Memoria <%d> - Tamanio: <%d>",nombre_archivo,puntero,df,cant_bytes);
 
 					//solicito a memoria lo que hay en la direccion logica mandada
