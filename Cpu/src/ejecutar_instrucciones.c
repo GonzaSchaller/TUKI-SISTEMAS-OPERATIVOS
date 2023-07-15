@@ -116,35 +116,28 @@ int ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica
 		return 1; //para que corte la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 	else{
-	char* valor;
+	char* valor = malloc(sizeof(registros_cpu));
 
-	//TODO logs acceso a memoria
-	//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Segmento: <NUMERO SEGMENTO> - Dirección Física: <DIRECCION FISICA> - Valor: <VALOR LEIDO / ESCRITO>”
-	
 	//************************************************************* guardo en el registro:
 	switch(registro){
 			case AX:{
 				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.AX, valor);
-				//pcb_proceso -> registros.AX = param2;
 				break;
 			}
 			case BX:{
 				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.BX, valor);
-				//pcb_proceso -> registros.BX = param2;
 				break;
 			}
 			case CX:{
 				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.CX, valor);
-				//pcb_proceso -> registros.CX = param2;
 				break;
 			}
 			case DX:{
 				valor = recibir_de_memoria(dir_fisica,4,pcb_proceso->PID);
 				strcpy(pcb_proceso -> registros.DX, valor);
-				//pcb_proceso -> registros.DX = param2;
 				break;
 			}
 			case EAX:{
@@ -196,6 +189,7 @@ int ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica
 				break;
 			}
 		}
+	log_info(logger, "PID: <%d> - Acción: <LEER> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
 	pcb_proceso -> PC += 1;
 	return 0; //para que no corte la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
