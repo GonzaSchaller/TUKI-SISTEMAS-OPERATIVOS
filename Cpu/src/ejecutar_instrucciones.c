@@ -74,7 +74,7 @@ void ejecutar_SET(pcb_cpu* pcb_proceso, uint32_t registro, char* valor){
 	pcb_proceso -> PC += 1;
 }
 
-void segmentation_fault(pcb_cpu* pcb_proceso, uint32_t segmento, uint32_t offet, uint32_t tamanio, uint32_t SF_por_tam_valor){
+void segmentation_fault(pcb_cpu* pcb_proceso, uint32_t segmento, uint32_t offset, uint32_t tamanio, uint32_t SF_por_tam_valor){
 	contexto_ejecucion contexto_actualizado;
 
 	contexto_actualizado.PID = pcb_proceso -> PID;
@@ -104,28 +104,15 @@ char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
 int ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica){
 	//************************************************************* traduzco la DL
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso->PID);
+	uint32_t segmento = -1;
+	uint32_t offset = -1;
+	uint32_t dir_Base = -1;
+	uint32_t tamanio = -1;
+	uint32_t dir_Fisica = -1;
+	obtener_dir_fisica(dir_logica, listaSegmentos, segmento, offset, dir_Base, tamanio, dir_Fisica);
 
 	if(dir_fisica == -1){
-		//COMPLETAR caso de Segmentation Fault
-		/* Lo que dice la consigna:
-		"En caso de que el desplazamiento dentro del segmento (desplazamiento_segmento)
-		sumado al tamaño a leer / escribir, sea mayor al tamaño del segmento, deberá devolverse
-		el Contexto de Ejecución al Kernel para que este lo finalice con motivo de
-		Error: Segmentation Fault (SEG_FAULT)"
-		 */
-		contexto_ejecucion contexto_actualizado;
-
-		contexto_actualizado.PID = pcb_proceso -> PID;
-		contexto_actualizado.PC = pcb_proceso -> PC;
-		contexto_actualizado.registros = pcb_proceso -> registros;
-		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
-
-		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-		//TODO agregar lo que me dijo gonza de mandar un contexto vacio o algo asi
-		send_ERROR(socket_cliente_kernel);
-
-		//“PID: <PID> - Error SEG_FAULT- Segmento: <NUMERO SEGMENTO> - Offset: <OFFSET> - Tamaño: <TAMAÑO>” TODO
+		segmentation_fault(pcb_proceso, segmento, offset, tamanio, 0);
 		return 1; //para que corte la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 	else{
@@ -232,113 +219,194 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 	
 	//************************************************************* traduzco la DL
 	t_list* listaSegmentos = pcb_proceso -> TSegmento;
-	uint32_t dir_fisica = obtener_dir_fisica(dir_logica, listaSegmentos, pcb_proceso->PID);
+	uint32_t segmento = -1;
+	uint32_t offset = -1;
+	uint32_t dir_Base = -1;
+	uint32_t tamanio = -1;
+	uint32_t dir_Fisica = -1;
+	obtener_dir_fisica(dir_logica, listaSegmentos, segmento, offset, dir_Base, tamanio, dir_Fisica);
 
 	if(dir_fisica == -1){
-		//COMPLETAR caso de Segmentation Fault
-		/* Lo que dice la consigna:
-		"En caso de que el desplazamiento dentro del segmento (desplazamiento_segmento)
-		sumado al tamaño a leer / escribir, sea mayor al tamaño del segmento, deberá devolverse
-		el Contexto de Ejecución al Kernel para que este lo finalice con motivo de
-		Error: Segmentation Fault (SEG_FAULT)"
-		 */
-		contexto_ejecucion contexto_actualizado;
-
-		contexto_actualizado.PID = pcb_proceso -> PID;
-		contexto_actualizado.PC = pcb_proceso -> PC;
-		contexto_actualizado.registros = pcb_proceso -> registros;
-		contexto_actualizado.TSegmento = pcb_proceso ->TSegmento;
-
-		send_CONTEXTO_EJECUCION(socket_cliente_kernel, contexto_actualizado);
-		//TODO agregar lo que me dijo gonza de mandar un contexto vacio o algo asi
-		send_ERROR(socket_cliente_kernel);
-
-		//log_info(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%> - Offset: <%d> - Tamaño: <%d>",pcb_proceso->PID,);
+		segmentation_fault(pcb_proceso, segmento, offset, tamanio, 0);
 		return 1; //corta ejecucion de ejecucion (se usa en execute_decode en recibo_instrucciones.c)
 	}
 	else{
 	char* valor = malloc(sizeof(registros_cpu));
-	
-	//TODO logs acceso a memoria
+	int corta_ejecucion = 0;	
 	//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Segmento: <NUMERO SEGMENTO> - Dirección Física: <DIRECCION FISICA> - Valor: <VALOR LEIDO / ESCRITO>”
 	
 	//obtengo el dato del registro
 	switch(registro){
 		case AX:{
 			strcpy(valor, pcb_proceso -> registros.AX);
-			enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
-			//pcb_proceso -> registros.AX = param2;
+
+			if(4 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
+
 			break;
 		}
 		case BX:{
 			strcpy(valor, pcb_proceso -> registros.BX);
-			enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
-			//pcb_proceso -> registros.BX = param2;
+
+			if(4 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
 			break;
 		}
 		case CX:{
 			strcpy(valor, pcb_proceso -> registros.CX);
-			enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
-			//pcb_proceso -> registros.CX = param2;
+
+			if(4 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
+
 			break;
 		}
 		case DX:{
 			strcpy(valor, pcb_proceso -> registros.DX);
-			enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
-			//pcb_proceso -> registros.DX = param2;
+
+			if(4 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,4,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
+
 			break;
 		}
 		case EAX:{
 			strcpy(valor, pcb_proceso -> registros.EAX);
-			enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
-			//pcb_proceso -> registros.EAX = param2;
+
+			if(8 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
+
 			break;
 		}
 		case EBX:{
 			strcpy(valor, pcb_proceso -> registros.EBX);
-			enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
-			//pcb_proceso -> registros.EBX = param2;
+
+			if(8 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
+
 			break;
 		}
 		case ECX:{
 			strcpy(valor, pcb_proceso -> registros.ECX);
-			enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
-			//pcb_proceso -> registros.ECX = param2;
+
+			if(8 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
+
 			break;
 		}
 		case EDX:{
 			strcpy(valor, pcb_proceso -> registros.EDX);
-			enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
-			//pcb_proceso -> registros.EDX = param2;
+
+			if(8 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,8,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
+
 			break;
 		}
 		case RAX:{
 			strcpy(valor, pcb_proceso -> registros.RAX);
-			enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
-			//pcb_proceso -> registros.RAX = param2;
+
+			if(16 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
+
 			break;
 		}
 		case RBX:{
 			strcpy(valor, pcb_proceso -> registros.RBX);
-			enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
-			//pcb_proceso -> registros.RBX = param2;
+
+			if(16 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
+
 			break;
 		}
 		case RCX:{
 			strcpy(valor, pcb_proceso -> registros.RCX);
-			enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
-			//pcb_proceso -> registros.RCX = param2;
+
+			if(16 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
+
 			break;
 		}
 		case RDX:{
 			strcpy(valor, pcb_proceso -> registros.RDX);
-			enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
-			//pcb_proceso -> registros.RDX = param2;
+
+			if(16 <= espacio_disponible){
+				log_info(logger, "PID: <%d> - Acción: <ESCRIBIR> - Segmento: <%d> - Dirección Física: <%d> - Valor: <%s>", pcb_proceso -> PID, segmento, dir_Fisica, valor);
+				enviar_a_memoria(valor,dir_fisica,16,pcb_proceso->PID);
+			}
+			else {
+				segmentation_fault(pcb_proceso, segmento, offset, tamanio, 1);
+				corta_ejecucion = 1;
+			}
+
 			break;
 		}
 	}
 	pcb_proceso -> PC += 1;
-	return 0; //no corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
+	return corta_ejecucion; //puede cortar la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 }
 
