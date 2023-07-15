@@ -49,58 +49,67 @@ static bool por_base_menor(void* s1, void* s2) {
     return seg1->direccion_Base < seg2->direccion_Base;
 }
 
+static bool por_ID_menor(void* s1, void* s2) {
+    segmento_t* seg1 = (segmento_t*) s1;
+    segmento_t* seg2 = (segmento_t*) s2;
+    return seg1->id < seg2->id;
+}
+//ordenar por id
+void sort_lista_por_ids(t_list*lista){
+	list_sort(lista, &por_ID_menor);
+}
 
 //insertar unsegmento en tabla de segmentos usados
 void insertar_segmento_entso(segmento_t * segmento){
-pthread_mutex_lock(&mutex_segmentos_ocupados);
-list_add_sorted(segmentos_ocupados, (void*) segmento, &por_base_menor);
-pthread_mutex_unlock(&mutex_segmentos_ocupados);
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
+	list_add_sorted(segmentos_ocupados, (void*) segmento, &por_base_menor);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 }
 
 //ordenada de menor a mayor.
 void insertar_segmento_entsl(segmento_t* segmento){
-pthread_mutex_lock(&mutex_segmentos_libres);
-list_add_sorted(segmentos_libres, (void*) segmento, &por_base_menor);
-pthread_mutex_unlock(&mutex_segmentos_libres);
+	pthread_mutex_lock(&mutex_segmentos_libres);
+	list_add_sorted(segmentos_libres, (void*) segmento, &por_base_menor);
+	pthread_mutex_unlock(&mutex_segmentos_libres);
 }
 
 //pone en 0 algun lugar de la memoria pricipal despues de que fue borrado un segmento
 void memsetear_mp(uint32_t base,uint32_t tamanio,uint32_t contenido){
-pthread_mutex_lock(&mutex_memoria_ocupada);
-memset(memoria_principal+base,contenido,tamanio);
-pthread_mutex_unlock(&mutex_memoria_ocupada);
+	pthread_mutex_lock(&mutex_memoria_ocupada);
+	memset(memoria_principal+base,contenido,tamanio);
+	pthread_mutex_unlock(&mutex_memoria_ocupada);
 }
 
 
 bool seg_con_id_igual(void* segmento){
-segmento_t* seg = (segmento_t*) segmento;
-return seg->id == magic;
+	segmento_t* seg = (segmento_t*) segmento;
+	return seg->id == magic;
 }
 
 bool seg_con_base_igual(void* segmento){
-segmento_t* seg = (segmento_t*) segmento;
-return seg->id == magic;
+	segmento_t* seg = (segmento_t*) segmento;
+	return seg->id == magic;
 }
 
 segmento_t* encontrar_base_tso(uint32_t base){
 magic = base;
 pthread_mutex_lock(&mutex_segmentos_ocupados);
-segmento_t* seg = (segmento_t*) list_find(segmentos_ocupados,&seg_con_base_igual);
-pthread_mutex_unlock(&mutex_segmentos_ocupados);
-return seg;
+	segmento_t* seg = (segmento_t*) list_find(segmentos_ocupados,&seg_con_base_igual);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
+	return seg;
 }
 
 void remover_segmento_entso(uint32_t id){
-magic = id;
-pthread_mutex_lock(&mutex_segmentos_ocupados);
-list_remove_by_condition(segmentos_ocupados,(void*) &seg_con_base_igual);
-pthread_mutex_unlock(&mutex_segmentos_ocupados);
+	magic = id;
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
+	list_remove_by_condition(segmentos_ocupados,(void*) &seg_con_base_igual);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 }
 
 //just para el kernel.
 t_list* remover_xID(t_list* tabla){
-list_remove_by_condition(tabla,(void*) &seg_con_id_igual);
-return tabla;
+	list_remove_by_condition(tabla,(void*) &seg_con_id_igual);
+	return tabla;
 }
 
 void remove_segmento_tsl(uint32_t base){
