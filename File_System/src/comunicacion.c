@@ -5,15 +5,16 @@ extern int fd_fs;
 //extern
 
 
-void procesar_peticiones(int cliente_socket,uint32_t codop){
-	op_code cop=EXISTE_ARCHIVO;
-//	while(cliente_socket!=-1){
-		//if(recv(cliente_socket,&cop,sizeof(op_code),0) == 0){
-	//		log_info(logger,"DISCONECT!");
-			//	return;  }
+void procesar_peticiones(int cliente_socket){
+	op_code cop;
+
+	while(cliente_socket!=-1){
+		if(recv(cliente_socket,&cop,sizeof(op_code),0) == 0){
+			log_info(logger,"DISCONECT!");
+				return;  }
 
 
-				switch(cop)
+				switch(cop){
 				// DEFINIR: ver como pasar los datos nombre archivo y tamanio porque despues lo usamos en config_set_value que sólo usa punteros
 
 				//caso de F_OPEN primero hay que ver si ya existe el archivo
@@ -21,36 +22,36 @@ void procesar_peticiones(int cliente_socket,uint32_t codop){
 					extra_code estado;
 					char*nombre_archivo = "hola.txt";
 					uint32_t tamanio = 0; // DEFINIR ver si cambiarlo a char* o castear
-				//	if(!recv_EXISTE_ARCHIVO(cliente_socket,&nombre_archivo)) log_error(logger, "Fallo recibiendo f_open de kernel");
+					if(!recv_EXISTE_ARCHIVO(cliente_socket,&nombre_archivo)) log_error(logger, "Fallo recibiendo f_open de kernel");
 
 					log_info(logger,"abrir archivo %s",nombre_archivo);
 					bool resultado = existe_y_abrir(nombre_archivo);
 
 					if(!resultado){
 						estado = INCORRECTO;
-						//send_OK_CODE(cliente_socket, estado);
+						send_OK_CODE(cliente_socket, estado);
 						//crear el arcchivo.
-						//recv_CREAR_ARCHIVO(cliente_socket, &nombre_archivo, &tamanio); //para mi que no deberia recibir nada
+						recv_CREAR_ARCHIVO(cliente_socket, &nombre_archivo, &tamanio); //para mi que no deberia recibir nada
 
 						if(crear_archivo(nombre_archivo,tamanio)){
 							estado = CORRECTO;
 							log_info(logger,"cree el archivo");
 							existe_y_abrir(nombre_archivo);
-						//	send_OK_CODE(cliente_socket,estado);
+							send_OK_CODE(cliente_socket,estado);
 						}else log_error(logger,"i cant del creararcguhjksd");
 					}
 					else{
 						estado = CORRECTO;
-						//send_OK_CODE(cliente_socket, estado);
+						send_OK_CODE(cliente_socket, estado);
 						log_info(logger,"el archivo existe");
 					}
 
 
 				}
-		//		break;
+				break;
 
 
-			/*	case F_WRITE:{
+				case F_WRITE:{
 					char* nombre_archivo;
 				    uint32_t df; // la DF
 					uint32_t cant_bytes; // cant bytes
@@ -73,7 +74,7 @@ void procesar_peticiones(int cliente_socket,uint32_t codop){
 					recv_contenido_leido(fd_memoria,&contenido);
 
 
-					if(escribir_contenido(contenido,puntero)){
+					if(escribir_contenido(nombre_archivo,contenido,puntero,cant_bytes)){
 						log_info(logger,"todo ok escribiendo el archivo");
 					}
 				   }
@@ -104,9 +105,9 @@ void procesar_peticiones(int cliente_socket,uint32_t codop){
 
 						break;
 				}
-*/
-				//case F_TRUNCATE:{
-					/*
+
+				case F_TRUNCATE:{
+
 					char* nombre_archivo; //TODO DUDAS como es una variable deberia ser una general en vez de hacer varias para cada case
 					uint32_t tamanio;
 					recv_F_TRUNCATE(cliente_socket, &nombre_archivo, &tamanio);
@@ -119,7 +120,7 @@ void procesar_peticiones(int cliente_socket,uint32_t codop){
 					uint32_t tamanio_archivo = config_get_int_value(archivo, "TAMANIO_ARCHIVO");
 					if(tamanio > tamanio_archivo){
 
-					uint32_t cantidadBloques = (uint32_t)ceil((double)tamanio / superbloque->block_size); //bloques a agregar
+					uint32_t cantidadBloques =ceil_casero(tamanio,superbloque->block_size);
 					for(int i = 0; i<bitarray_get_max_bit(bitarray); i++){
 						uint32_t bloques_asignados = 0;
 						if(!bitarray_test_bit(bitarray, i) && bloques_asignados != cantidadBloques){ // si el bit es 0 y todavia me faltan bloques por asignar
@@ -142,7 +143,7 @@ void procesar_peticiones(int cliente_socket,uint32_t codop){
 						}
 							else{ //es mas chico
 								int tamanioASacar = tamanio_archivo - tamanio;
-								int bloquesASacar = (uint32_t)ceil((double)tamanioASacar / superbloque->block_size); //bloques a agregar
+								int bloquesASacar = ceil_casero(tamanioASacar,superbloque->block_size);
 
 								for(int i = 0; i<bitarray_get_max_bit(bitarray); i++){
 											uint32_t bloques_sacados = 0;
@@ -171,12 +172,13 @@ void procesar_peticiones(int cliente_socket,uint32_t codop){
 						// Si es más grande que el de antes:
 							//TODO Asignar nuevos bloques (ver que significa)
 						break;
-				}*/
-
-				//}
-
+				}}
 }
-	//}}
+
+
+
+//}
+//	}}
 
 
 int generar_conexion_con_memoria(){

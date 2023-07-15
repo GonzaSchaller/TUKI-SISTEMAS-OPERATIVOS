@@ -20,6 +20,7 @@
 #include "comunicacion.h"
 #include <commons/bitarray.h>
 #include "comunicacion.h"
+#include "manejoFS.h"
 
 extern int fd_fs;
 extern int fd_memoria;

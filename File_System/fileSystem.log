@@ -1096,3 +1096,9 @@
 [INFO] 22:07:36:368 FileSystem/(15102:15102): contenido: holacomo,cantbloques4
 [INFO] 22:07:36:368 FileSystem/(15102:15102): abrir archivo hola.txt
 [INFO] 22:07:36:368 FileSystem/(15102:15102): el archivo existe
+[INFO] 05:47:16:114 FileSystem/(23027:23027): levante config ok
+[INFO] 05:47:16:117 FileSystem/(23027:23027): levante superbloque ok
+[INFO] 05:47:16:117 FileSystem/(23027:23027): bits 1024
+[INFO] 05:47:16:117 FileSystem/(23027:23027): abierto
+[INFO] 05:47:16:117 FileSystem/(23027:23027): res4
+[INFO] 05:47:16:117 FileSystem/(23027:23027): contenido: holacomo,cantbloques4

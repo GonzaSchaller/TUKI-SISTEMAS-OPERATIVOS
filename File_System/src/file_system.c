@@ -21,7 +21,7 @@ int main (){
 	cargar_bitmap();
 	cargar_bloque();
 
-	procesar_peticiones(1,EXISTE_ARCHIVO);
+
 	//terminar_fs();
 
 	return EXIT_SUCCESS;

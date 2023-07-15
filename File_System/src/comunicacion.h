@@ -25,5 +25,5 @@
 
 int generar_conexion_con_memoria();
 void conexion_kernel();
-void procesar_peticiones(int cliente_socket,uint32_t codop);
+void procesar_peticiones(int cliente_socket);
 #endif
