@@ -392,6 +392,9 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 			if(!send_PUNTERO_FS(conexion_fileSystem, archivo->puntero)){
 				log_error(log_kernel, "Fallo enviando Puntero a FS");
 			}
+			if(!send_PID(conexion_fileSystem, pcb_siguiente->contexto.PID)){
+				log_error(log_kernel, "Fallo enviando PID a FS");
+			}
 			fcb_kernel* archivo_para_args = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
 			pthread_t hilo_archivo;
@@ -423,7 +426,10 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin){
 				}
 				fcb_por_proceso* archivo = encontrar_archivoTablaProceso(pcb_siguiente->tabla_archivosAbiertos, nombre_archivo);
 				if(!send_PUNTERO_FS(conexion_fileSystem, archivo->puntero)){
-								log_error(log_kernel, "Fallo enviando Puntero a FS");
+					log_error(log_kernel, "Fallo enviando Puntero a FS");
+				}
+				if(!send_PID(conexion_fileSystem, pcb_siguiente->contexto.PID)){
+					log_error(log_kernel, "Fallo enviando PID a FS");
 				}
 				fcb_kernel* archivoTabla = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 				arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));

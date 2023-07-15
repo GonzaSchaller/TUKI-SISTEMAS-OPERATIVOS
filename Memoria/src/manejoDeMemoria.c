@@ -219,6 +219,7 @@ uint32_t compactar_memoria(){
 //delegacion innecesaria? quizas
 char *leer_contenido(uint32_t direccion, uint32_t tamanio){
 	char*contenido = (char*)get_contenido(direccion,tamanio);
+	contenido[tamanio] = '\0';  // Agregar un carácter nulo al final
 	return contenido;
 }
 

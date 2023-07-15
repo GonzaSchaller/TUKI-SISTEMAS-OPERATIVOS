@@ -79,7 +79,7 @@ void ejecutar_SET(pcb_cpu* pcb_proceso, uint32_t registro, char* valor){
 //guardar la info en el registro que me dan
 
 char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
-	char*valor;
+	char*valor = malloc(sizeof(registros_cpu));; ;
 	if(!send_READ(conexion_memoria,df,size)){log_error(logger, "error mandando read a memoria");} // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
 	if(!send_PID(conexion_memoria, pid)){log_error(logger, "error mandando PID a memoria");}
 	if(!send_LEER_CONTENIDO_CPU(conexion_memoria)){
@@ -245,7 +245,7 @@ int ejecutar_MOV_OUT(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logic
 		return 1; //corta ejecucion de ejecucion (se usa en execute_decode en recibo_instrucciones.c)
 	}
 	else{
-	char* valor;
+	char* valor = malloc(sizeof(registros_cpu));
 	
 	//TODO logs acceso a memoria
 	//“PID: <PID> - Acción: <LEER / ESCRIBIR> - Segmento: <NUMERO SEGMENTO> - Dirección Física: <DIRECCION FISICA> - Valor: <VALOR LEIDO / ESCRITO>”

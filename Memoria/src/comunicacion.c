@@ -218,7 +218,7 @@ static void procesar_conexionn(void* void_args){
 				recv_cant_bytes(cliente_socket,&tamanio);
 				recv_PID(cliente_socket, &pid);
 
-				log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <%d> - Origen: <s%>",pid,direccion_fisica,tamanio,server_name);
+				log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <%d> - Origen: <%s>",pid,direccion_fisica,tamanio,server_name);
 
 				if(escribir_contenido((void*)contenido,direccion_fisica,tamanio)){
 					estado = EXITOSO;
