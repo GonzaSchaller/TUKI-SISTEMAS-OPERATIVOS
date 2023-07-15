@@ -40,5 +40,6 @@ uint32_t size_tso();
 segmento_t* find_en_tsl_rango(uint32_t numero);
 segmento_t* get_en_lso(uint32_t pos);
 void actualizar_memoria_principal(uint32_t inicio,uint32_t destino, uint32_t tamanio);
+void sort_lista_por_ids(t_list*lista);
 
 #endif

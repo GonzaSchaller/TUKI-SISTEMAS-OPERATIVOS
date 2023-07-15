@@ -101,9 +101,13 @@ static void procesar_conexionn(void* void_args){
 
 							//agarrar mi tabal de segmentos ocupados.
 							//y filtrar por pid.
+
+
+
 							for(int i = 0;i<cant_procesos;i++){
 								t_list*list_proceso_i = list_filter(segmentos_ocupados,&bypid);
 								send_TABLA_SEGMENTOS(cliente_socket,list_proceso_i);
+								sort_lista_por_ids(list_proceso_i);
 								uint32_t cant = list_size(list_proceso_i);
 								for(int u=0;u<cant;u++){
 									log_info(log_memoria,"Segmento : %d\n",u);
@@ -124,6 +128,7 @@ static void procesar_conexionn(void* void_args){
 						log_error(log_memoria,"algo salio mal creando el segmento ");
 					}
 					uint32_t base = segmento->direccion_Base;
+
 					send_BASE_SEGMENTO(cliente_socket,base);
 				}
 				break;
