@@ -5,6 +5,23 @@ extern t_superbloque* superbloque;
 extern FILE* f_bloques;
 t_list* lista_indirecta;
 
+
+
+
+
+
+int reverse_compare(void* element1, void* element2) {
+	    // Comparing the elements in reverse order
+	    int value1 = *(int*)element1;
+	    int value2 = *(int*)element2;
+
+	    if (value1 < value2) {
+	        return 1;
+	    } else if (value1 > value2) {
+	        return -1;
+	    } else { return 0;}
+}
+
 char* concat(char*nombre_archivo){
 	//char*path = strdup(c->fcb);
 	char* path = malloc(sizeof(char) * (strlen("fcb/") + strlen(nombre_archivo) + 1));
@@ -194,7 +211,7 @@ bool escribir_contenido(char*name,char* contenido,uint32_t puntero,uint32_t cant
 		return true;
 }
 
-
+//cmentadifjlidf
 
 
 

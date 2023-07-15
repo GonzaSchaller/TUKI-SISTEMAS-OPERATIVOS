@@ -145,7 +145,7 @@ static void procesar_conexionn(void* void_args){
 							cantidad_bloques_a_agregar ++;
 						}
 
-						t_list*list_nro_de_bloques;
+						t_list*list_nro_de_bloques = list_create();
 						uint32_t bloques_totales_fs = bitarray_get_max_bit(bitarray);
 
 							for(int i = 0; i<bloques_totales_fs; i++){ //recorro el bitarray en busca de bloques libres, necesito solo cant_bloques_Agregar
@@ -171,14 +171,14 @@ static void procesar_conexionn(void* void_args){
 						char tamanio_str[20];
 						sprintf(tamanio_str, "%d", tamanio_a_truncar);
 
-						config_set_value(config,"TAMANIO_ARCHIVO",tamanio_str);
+						config_set_value(archivo,"TAMANIO_ARCHIVO",tamanio_str);
 
 						for(int i=0;i<cantidad_bloques_a_agregar;i++){
 							if(fcb->puntero_directo == -1){ //ese archivo era nuevo y no tenia bloques asignados
 								fcb->puntero_directo = (uint32_t)list_get(list_nro_de_bloques,i);
 								char puntero_str[20];
 								sprintf(puntero_str, "%d", fcb->puntero_directo);
-								config_set_value(config,"PUNTERO_DIRECTO",puntero_str);
+								config_set_value(archivo,"PUNTERO_DIRECTO",puntero_str);
 								cantidad_bloques_a_agregar--;
 
 							}else if (fcb->puntero_indirecto == -1) {
@@ -188,7 +188,7 @@ static void procesar_conexionn(void* void_args){
 									fcb->puntero_indirecto = bloque;
 									char puntero_str[20];
 									sprintf(puntero_str, "%d",fcb->puntero_indirecto);
-									config_set_value(config,"PUNTERO_INDIRECTO",puntero_str); //seteo el puntero indirecto
+									config_set_value(archivo,"PUNTERO_INDIRECTO",puntero_str); //seteo el puntero indirecto
 									cantidad_bloques_a_agregar--;
 									fseek(f_bloques, fcb->puntero_indirecto*superbloque->block_size, SEEK_SET); // me muevo al principio del puntero indirecto
 
@@ -208,20 +208,88 @@ static void procesar_conexionn(void* void_args){
 
 
 						}else{ //es mas chico
+
+
 							uint32_t cantidad_bloques_con_nuevo_tamanio = ceil_casero(tamanio_a_truncar,superbloque->block_size); //cantidad de bloques necesarios para direccionar el nuevo tamanio del archivo.
-							uint32_t cantidad_bloques_a_agregar =  cuantos_bloques_venia_usando - cantidad_bloques_con_nuevo_tamanio ;
+							uint32_t cantidad_bloques_a_deletear_neto =  cuantos_bloques_venia_usando - cantidad_bloques_con_nuevo_tamanio ; //ESTOS SON LOS NETOS SIN PUNTERO INDIRECTOS
+							uint32_t cantidad_bloques_a_deletear_mas_pi =  cuantos_bloques_venia_usando - cantidad_bloques_con_nuevo_tamanio ;
 
+							uint32_t cuantos_bloques_venia_usando_sin_pi;
 
+							// tengo que recorrer mis punteros y agregar mis bloques en una listaosea como la operacion al reves de lo que hice arriba.
 
+							uint32_t puntero_indirecto = fcb->puntero_indirecto;
+							if(puntero_indirecto != - 1){
+								cuantos_bloques_venia_usando++; //contiene al indirecto
+							}
 
+							//tengo que parsear el archivo de bloques para agarrar los bloques.
+							fseek(f_bloques, sizeof(uint32_t)*superbloque->block_size, SEEK_SET); // me paro en el bloquie indirecto para empezar a parsear
 
-										break;
+							t_list*list_nro_de_bloques = list_create();
+
+							uint32_t cant_bloques_en_bloque_indirecto = 0;
+							list_add(list_nro_de_bloques,fcb->puntero_directo); //aniadi el punero directo a la lista, es el primer bloque
+							if(puntero_indirecto !=-1){
+								list_add(list_nro_de_bloques,puntero_indirecto); // aniado al punero indirecto a la lista
+
+								for(int i=0;i<cuantos_bloques_venia_usando-2;i++){ // le resto el directo y el indirecto y agrego los bloques que apunta el puntero indirecto osea la lista quedaria BLOQUE DIRECTO (puntero directo) + BLOQUE INDIRECTO (puntero al bloque indirecto) + BLOQUES DIRECTOS(punteros a los bloques directos que apunta el puntero directo)
+									uint32_t contenido_leido = malloc(sizeof(uint32_t));
+									fread(contenido_leido, sizeof(uint32_t),1, f_bloques);
+									list_add(list_nro_de_bloques,contenido_leido);
+									cant_bloques_en_bloque_indirecto++;
+								}
+							}
+							//SALE DE ACA CON UNA LISTA DE TODOS LOS BLOQUES QUE TIENE
+
+							//AHORA TENGO QUE FIJARME EL BITARRAY
+							list_sort(list_nro_de_bloques,reverse_compare); //doy vuelta la lista
+
+							for(int i=0;i<cant_bloques_en_bloque_indirecto;i++){
+								if(fcb->puntero_indirecto!=-1){
+
+									if(cantidad_bloques_a_deletear_neto >= cant_bloques_en_bloque_indirecto){ //si la cantidad de bloques a eliminar es mayor a la cantidad de bloques que tengo en mis bloques indirectos, significa que tegno que eliminar todo el bloque indirecto + la cantidad de bloques indirectos usados.
+										//borro la canridad de bloques del indirecto+1que es el bloque indirecto y seteo al bloque indirecto con -1
+										for(int i=0;i<cantidad_bloques_a_deletear_neto+1;i++){
+											// recorro el bitarray desde la posicion que hay en la lista
+											uint32_t bloque = list_get(list_nro_de_bloques,i);
+											bit_clean(bitarray,bloque);
+											cantidad_bloques_a_deletear_neto -= cant_bloques_en_bloque_indirecto;
+											cant_bloques_en_bloque_indirecto = 0;
+										//	list_remove()
+
+											int defecto = -1;
+											char puntero_str[20];
+											sprintf(puntero_str, "%d",defecto);
+											config_set_value(archivo,"PUNTERO_INDIRECTO",puntero_str); //seteo el puntero indirecto
+											}
+									}else if(cantidad_bloques_a_deletear_neto<cant_bloques_en_bloque_indirecto){ //si lo que engo que borrar esta en el bloque indirecto y es menor a los que hay, entonces borro los que hay, no hay que borrar el puntero indirecto
+										for(int i=0;i<cantidad_bloques_a_deletear_neto;i++){
+										// recorro el bitarray desde la posicion que hay en la lista
+										uint32_t bloque = list_get(list_nro_de_bloques,i);
+										bit_clean(bitarray,bloque);
+										cantidad_bloques_a_deletear_neto-=cant_bloques_en_bloque_indirecto;
+									}
 
 								}
+									else{// solo tengo un puntero directo, entonces lo que va a borrar es el puntero directo.
+										uint32_t bloque = list_get(list_nro_de_bloques,0); // si se borro todo bien solo quedaria en la posicion 0 el punetero directo
+										bit_clean(bitarray,bloque);
+										//setear en -1
+										int defecto = -1;
+										char puntero_str[20];
+										sprintf(puntero_str, "%d",defecto);
+										config_set_value(archivo,"PUNTERO_DIRECTO",puntero_str); //seteo el puntero indirecto
+									}
+								}
+								}//for de borrar
 
-						break;
-				}
-				}
+
+
+
+				}//else de mas chico
+					break;
+				}//ftruncate
 
 	log_warning(logger,"cliente %s desconectado ",server_name);
 }
