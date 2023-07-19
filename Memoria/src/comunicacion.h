@@ -16,8 +16,10 @@
 #include "manejoDeMemoria.h"
 #include "sem.h"
 
+
+
 int server_escuchar(t_log *,char*, int);
-int server_escuchar3(t_log *,char*, int);
-void tirar_threads(int socket_cliente,char*server_name,int server_socket);
-//void procesar_conexionn(void* void_args);
+void procesar_conexionn(void* void_args);
+
+
 #endif

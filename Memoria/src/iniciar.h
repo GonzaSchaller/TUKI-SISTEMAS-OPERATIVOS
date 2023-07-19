@@ -5,23 +5,31 @@
 #include <stdio.h>//
 #include <stdlib.h>//
 #include <stdbool.h>//
-#include <pthread.h>//
+#include <string.h>//
+
+
 #include <commons/log.h> //
 #include <commons/string.h>//
 #include <commons/config.h>//
 #include <commons/collections/list.h>//
-#include <commons/collections/queue.h>//
-#include <readline/readline.h>
-#include <assert.h>//
+
+#include <pthread.h>//
 #include <sockets.h>//
-#include<signal.h>//
-#include<unistd.h>//
-#include<sys/socket.h>//
-#include<netdb.h>//
-#include<string.h>//
+#include <sys/socket.h>//
+
+
+
 #include <estructuras_compartidas.h>
 #include "manejoDeMemoria.h"
 #include "sem.h"
+
+extern t_list* lista_de_pids;
+extern t_list* segmentos_libres;
+extern t_list* segmentos_ocupados;
+extern segmento_t* segmento_0;
+extern void* memoria_principal;
+extern int tam_hueco_mas_grande;
+extern int memoria_disponible;
 
 
 typedef struct {
@@ -37,11 +45,8 @@ typedef struct {
 } t_config_memoria;
 
 
-
-
-uint8_t init();
-uint8_t cargar_configuracion(char*path);
-uint8_t cargar_memoria();
+void cargar_configuracion(char*path);
+void cargar_memoria();
 void terminar_memoria();
 
 #endif

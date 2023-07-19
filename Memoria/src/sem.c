@@ -1,5 +1,8 @@
 // mutex y semaforos
 #include "sem.h"
+
+
+extern t_log*log_memoria;
 pthread_mutex_t mutex_segmentos_libres;
 pthread_mutex_t mutex_segmentos_ocupados;
 pthread_mutex_t mutex_memoria_ocupada;
@@ -7,14 +10,17 @@ pthread_mutex_t mutex_compactacion;
 pthread_mutex_t mutex_segm_0;
 pthread_mutex_t mutex_compactar;
 pthread_mutex_t mutex_read_write;
+pthread_mutex_t mutex_pid;
 
 //ESTRUCTURAS
+extern t_list* lista_de_pids;
 extern t_list* segmentos_libres;
 extern t_list* segmentos_ocupados;
-static uint32_t magic = 0;
-static uint32_t id_s = 0;
-static uint32_t pid_s=0;
+static uint32_t base_a_buscar = 0;
+static uint32_t id_a_buscar = 0;
+static uint32_t pid_a_buscar=0;// para buscar por pid.
 static uint32_t rango = 0;
+//static uint32_t tamanio_a_buscar=0;
 
 extern void* memoria_principal;
 
@@ -27,6 +33,7 @@ void iniciar_mutex() {
     pthread_mutex_init(&mutex_segm_0, NULL);
     pthread_mutex_init(&mutex_compactar, NULL);
     pthread_mutex_init(&mutex_read_write, NULL);
+    pthread_mutex_init(&mutex_pid,NULL);
  //   sem_init(&sem_cant_segmentos, 0, 0);
 
 }
@@ -40,7 +47,20 @@ void finalizar_mutex() {
     pthread_mutex_destroy(&mutex_segm_0);
     pthread_mutex_destroy(&mutex_compactar);
     pthread_mutex_destroy(&mutex_read_write);
+    pthread_mutex_destroy(&mutex_pid);
+}
 
+
+uint32_t encontrarTamanioDelSegmentoConMayorTamanio() {
+	uint32_t tamanio_a_buscar=0;
+    uint32_t tamanio_lista = list_size(segmentos_libres);
+    for(int i=0;i<tamanio_lista;i++){
+    	segmento_t *segmento=(segmento_t*)list_get(segmentos_libres,i);
+    	if(segmento->tamanio > tamanio_a_buscar){
+    		tamanio_a_buscar = segmento->tamanio;
+    	}
+    }
+    return tamanio_a_buscar;
 }
 
 static bool por_base_menor(void* s1, void* s2) {
@@ -55,7 +75,7 @@ static bool por_ID_menor(void* s1, void* s2) {
     return seg1->id < seg2->id;
 }
 //ordenar por id
-void sort_lista_por_ids(t_list*lista){
+void ordenat_lista_por_ids(t_list*lista){
 	list_sort(lista, &por_ID_menor);
 }
 
@@ -63,6 +83,7 @@ void sort_lista_por_ids(t_list*lista){
 void insertar_segmento_entso(segmento_t * segmento){
 	pthread_mutex_lock(&mutex_segmentos_ocupados);
 	list_add_sorted(segmentos_ocupados, (void*) segmento, &por_base_menor);
+
 	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 }
 
@@ -70,10 +91,11 @@ void insertar_segmento_entso(segmento_t * segmento){
 void insertar_segmento_entsl(segmento_t* segmento){
 	pthread_mutex_lock(&mutex_segmentos_libres);
 	list_add_sorted(segmentos_libres, (void*) segmento, &por_base_menor);
+
 	pthread_mutex_unlock(&mutex_segmentos_libres);
 }
 
-//pone en 0 algun lugar de la memoria pricipal despues de que fue borrado un segmento
+//pone en 0 algun lugar de la memoria pricipal despues de que fue borrado un segmento y  tambien al iniciarse memoria.
 void memsetear_mp(uint32_t base,uint32_t tamanio,uint32_t contenido){
 	pthread_mutex_lock(&mutex_memoria_ocupada);
 	memset(memoria_principal+base,contenido,tamanio);
@@ -83,24 +105,25 @@ void memsetear_mp(uint32_t base,uint32_t tamanio,uint32_t contenido){
 
 bool seg_con_id_igual(void* segmento){
 	segmento_t* seg = (segmento_t*) segmento;
-	return seg->id == magic;
+	return seg->id == id_a_buscar;
 }
 
 bool seg_con_base_igual(void* segmento){
 	segmento_t* seg = (segmento_t*) segmento;
-	return seg->id == magic;
+	return seg->direccion_Base == base_a_buscar;
 }
 
 segmento_t* encontrar_base_tso(uint32_t base){
-magic = base;
-pthread_mutex_lock(&mutex_segmentos_ocupados);
+	base_a_buscar = base;
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
 	segmento_t* seg = (segmento_t*) list_find(segmentos_ocupados,&seg_con_base_igual);
+	log_info(log_memoria,"segmento encontrado : base %d , id %d , tamanio %d ", seg->direccion_Base,seg->id,seg->tamanio);
 	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 	return seg;
 }
 
 void remover_segmento_entso(uint32_t id){
-	magic = id;
+	base_a_buscar = id;
 	pthread_mutex_lock(&mutex_segmentos_ocupados);
 	list_remove_by_condition(segmentos_ocupados,(void*) &seg_con_base_igual);
 	pthread_mutex_unlock(&mutex_segmentos_ocupados);
@@ -113,67 +136,78 @@ t_list* remover_xID(t_list* tabla){
 }
 
 void remove_segmento_tsl(uint32_t base){
-magic = base;
-pthread_mutex_lock(&mutex_segmentos_libres);
-list_remove_by_condition(segmentos_libres,(void*) &seg_con_base_igual);
-pthread_mutex_unlock(&mutex_segmentos_libres);
+	base_a_buscar = base;
+	pthread_mutex_lock(&mutex_segmentos_libres);
+	list_remove_by_condition(segmentos_libres,(void*) &seg_con_base_igual);
+	pthread_mutex_unlock(&mutex_segmentos_libres);
 }
 
-bool bypid(void* segmento) {
+
+
+bool por_pid_igual(void* segmento) {
     segmento_t* seg = (segmento_t*) segmento;
-    return seg->pid == pid_s;
+    return seg->pid == pid_a_buscar;
+}
+
+t_list* filtrar_lista_por_pid(uint32_t pid){
+	pid_a_buscar = pid;
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
+	t_list* lista = list_filter(segmentos_ocupados,&por_pid_igual);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
+	return lista;
 }
 
 
 t_list * create_list_seg_by_pid(uint32_t pid){
-pid_s = pid;
-pthread_mutex_lock(&mutex_segmentos_ocupados);
-t_list* lista = list_filter(segmentos_ocupados, &bypid);
-pthread_mutex_unlock(&mutex_segmentos_ocupados);
-return lista;
+	pid_a_buscar = pid;
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
+	t_list* lista = list_filter(segmentos_ocupados, &por_pid_igual);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
+	return lista;
 }
 
-uint32_t find_id(t_list* tsegmentos_pid,uint32_t id){
-id_s = id;
-uint32_t id_b = list_find(tsegmentos_pid, &seg_con_id_igual);
-return id_b;
+uint32_t buscar_en_lista_por_id_devolver_base(t_list* tsegmentos_pid,uint32_t id){
+	id_a_buscar = id;
+	segmento_t*segmento = list_find(tsegmentos_pid, &seg_con_id_igual);
+	return segmento->direccion_Base;
 }
 
 uint32_t size_tso(){
-pthread_mutex_lock(&mutex_segmentos_ocupados);
-uint32_t size = list_size(segmentos_ocupados);
-pthread_mutex_unlock(&mutex_segmentos_ocupados);
-return size;
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
+	uint32_t size = list_size(segmentos_ocupados);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
+	return size;
 }
 
 segmento_t* get_en_lso(uint32_t pos){
-pthread_mutex_lock(&mutex_segmentos_ocupados);
-segmento_t* segmento = list_get(segmentos_ocupados,pos);
-pthread_mutex_unlock(&mutex_segmentos_ocupados);
+	pthread_mutex_lock(&mutex_segmentos_ocupados);
+	segmento_t* segmento = list_get(segmentos_ocupados,pos);
+	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 return segmento;
 }
 
 bool esta_en_rango(void* segmento){
-segmento_t* seg = (segmento_t*) segmento;
-return (seg->direccion_Base<=rango) && (rango < (seg->direccion_Base+seg->tamanio)); //    base <= rango < base+tamanio(limite)
+	segmento_t* seg = (segmento_t*) segmento;
+	return (rango >= seg->direccion_Base ) && (rango < (seg->direccion_Base + seg->tamanio)); //    base <= rango < base+tamanio(limite)
 }
 
-segmento_t* find_en_tsl_rango(uint32_t numero){
-rango = numero;
-pthread_mutex_lock(&mutex_segmentos_libres);
-segmento_t*hueco = list_find(segmentos_libres, &esta_en_rango);
-pthread_mutex_unlock(&mutex_segmentos_libres);
-return hueco;
+segmento_t* encontrar_en_tsl_hueco_con_rango(uint32_t numero){
+	rango = numero;
+	pthread_mutex_lock(&mutex_segmentos_libres);
+	segmento_t*hueco = (segmento_t*)list_find(segmentos_libres, &esta_en_rango);
+	//if(hueco == NULL) log_error(log_memoria,"i cant");
+	pthread_mutex_unlock(&mutex_segmentos_libres);
+	return hueco;
 }
 
 void actualizar_memoria_principal(uint32_t inicio,uint32_t destino, uint32_t tamanio){
     void* data = malloc(tamanio);
-pthread_mutex_lock(&mutex_memoria_ocupada);
-memcpy(data, memoria_principal+inicio, tamanio);
-memset(memoria_principal+inicio, 0, tamanio);
-memcpy(memoria_principal+destino, data, tamanio);
-pthread_mutex_unlock(&mutex_memoria_ocupada);
-free(data);
+    pthread_mutex_lock(&mutex_memoria_ocupada);
+    memcpy(data, memoria_principal+inicio, tamanio);
+    memset(memoria_principal+inicio, 0, tamanio);
+    memcpy(memoria_principal+destino, data, tamanio);
+    pthread_mutex_unlock(&mutex_memoria_ocupada);
+    free(data);
 }
 
 void* get_contenido(uint32_t offset, uint32_t size) {
@@ -192,8 +226,41 @@ void set_contenido(void* contenido,uint32_t offset, uint32_t size) {
 }
 
 
+void ordenar_listalsl_por_base(){
+	pthread_mutex_lock(&mutex_segmentos_libres);
+	list_sort(segmentos_libres,&por_base_menor);
+	pthread_mutex_unlock(&mutex_segmentos_libres);
+}
+
+bool por_pid_menor_a_mayor(void* pid1,void*pid2) {
+	uint32_t p1 = *(uint32_t*) pid1;
+	uint32_t p2 = *(uint32_t*)pid2;
+
+    return p1 < p2;
+}
 
 
+
+void ordenar_lista_pid_por_pid(){
+	pthread_mutex_lock(&mutex_pid);
+	list_sort(lista_de_pids,&por_pid_menor_a_mayor);
+	pthread_mutex_unlock(&mutex_pid);
+}
+
+
+
+bool pid_igual(void*pid){
+	uint32_t p = *(uint32_t*) pid;
+	return p == pid_a_buscar;
+}
+
+
+void eliminar_pid_lista_pids(uint32_t pid){
+	pthread_mutex_lock(&mutex_pid);
+	pid_a_buscar = pid;
+	list_remove_by_condition(lista_de_pids,&pid_igual);
+	pthread_mutex_unlock(&mutex_pid);
+}
 
 
 

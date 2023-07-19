@@ -21,9 +21,9 @@
 #include "comunicacion.h"
 #include <semaphore.h>
 #include "manejoDeMemoria.h"
+#include "sem.h"
 
-
-
+#include "comunicacion.h" //solo pa prueba
 
 
 #endif

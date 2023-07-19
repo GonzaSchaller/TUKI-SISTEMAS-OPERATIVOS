@@ -25,7 +25,7 @@ void remover_segmento_entso(uint32_t id);
 //TABLA DE SEGMENTOS LIBRES
 void insertar_segmento_entsl(segmento_t* segmento);
 void remove_segmento_tsl(uint32_t id);
-bool bypid(void* segmento);
+bool por_pid_igual(void* segmento);
 
 //MEMORIA PRINCIPAL
 void memsetear_mp(uint32_t base,uint32_t tamanio,uint32_t contenido);
@@ -35,11 +35,18 @@ void set_contenido(void*contenido, uint32_t offset,uint32_t size);
 //RELLENO
 t_list * create_list_seg_by_pid(uint32_t pid);
 t_list* remover_xID(t_list* tabla);
-uint32_t find_id(t_list* tsegmentos_pid,uint32_t id);
+uint32_t buscar_en_lista_por_id_devolver_base(t_list* tsegmentos_pid,uint32_t id);
 uint32_t size_tso();
-segmento_t* find_en_tsl_rango(uint32_t numero);
+segmento_t* encontrar_en_tsl_hueco_con_rango(uint32_t numero);
 segmento_t* get_en_lso(uint32_t pos);
 void actualizar_memoria_principal(uint32_t inicio,uint32_t destino, uint32_t tamanio);
-void sort_lista_por_ids(t_list*lista);
+void ordenat_lista_por_ids(t_list*lista);
+uint32_t encontrarTamanioDelSegmentoConMayorTamanio();
+void ordenar_listalsl_por_base();
+t_list* filtrar_lista_por_pid(uint32_t pid);
+void ordenar_lista_pid_por_pid();
+
+void eliminar_pid_lista_pids(uint32_t pid);
+
 
 #endif
