@@ -51,6 +51,8 @@ int ejecutar_F_WRITE(pcb_cpu*, char*, uint32_t, uint32_t);
 int ejecutar_F_TRUNCATE(pcb_cpu*, char*, uint32_t);
 int ejecutar_WAIT(pcb_cpu*, char*);
 int ejecutar_SIGNAL(pcb_cpu*, char*);
+int ejecutar_CREATE_SEGMENT(pcb_cpu*, uint32_t, uint32_t);
+int ejecutar_DELETE_SEGMENT(pcb_cpu*, uint32_t);
 int ejecutar_YIELD(pcb_cpu*);
 int ejecutar_EXIT(pcb_cpu*);
 void obtener_dir_fisica(uint32_t , t_list* , uint32_t*, uint32_t*, uint32_t*, uint32_t*, uint32_t *);

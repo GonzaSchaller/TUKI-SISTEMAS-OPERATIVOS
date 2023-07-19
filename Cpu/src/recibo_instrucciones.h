@@ -44,5 +44,23 @@ void cargar_instruccion3(int, char* , char*, uint32_t ,uint32_t ,t_list* );
 instruccion* fetch();
 int decode_execute(int, pcb_cpu*, instruccion*, t_log*);
 char* registros_a_string(uint32_t);
+void set_socket_kernel(int);
+
+void ejecutar_SET(pcb_cpu*, uint32_t, char*);
+int ejecutar_MOV_IN(pcb_cpu*, uint32_t, uint32_t);
+int ejecutar_MOV_OUT(pcb_cpu*, uint32_t, uint32_t);
+int ejecutar_IO(pcb_cpu*, uint32_t);
+int ejecutar_F_OPEN(pcb_cpu*, char*);
+int ejecutar_F_CLOSE(pcb_cpu*, char*);
+int ejecutar_F_SEEK(pcb_cpu*, char*, uint32_t);
+int ejecutar_F_READ(pcb_cpu*, char*, uint32_t, uint32_t);
+int ejecutar_F_WRITE(pcb_cpu*, char*, uint32_t, uint32_t);
+int ejecutar_F_TRUNCATE(pcb_cpu*, char*, uint32_t);
+int ejecutar_WAIT(pcb_cpu*, char*);
+int ejecutar_SIGNAL(pcb_cpu*, char*);
+int ejecutar_CREATE_SEGMENT(pcb_cpu*, uint32_t, uint32_t);
+int ejecutar_DELETE_SEGMENT(pcb_cpu*, uint32_t);
+int ejecutar_YIELD(pcb_cpu*);
+int ejecutar_EXIT(pcb_cpu*);
 
 #endif
