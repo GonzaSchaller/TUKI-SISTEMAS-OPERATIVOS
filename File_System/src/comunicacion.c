@@ -253,7 +253,9 @@ static void procesar_conexionn(void* void_args){
 										for(int i=0;i<cantidad_bloques_a_deletear_neto+1;i++){
 											// recorro el bitarray desde la posicion que hay en la lista
 											uint32_t bloque = list_get(list_nro_de_bloques,i);
-											bit_clean(bitarray,bloque);
+											//bit_clean(bitarray,bloque);
+											bitarray_clean_bit(bitarray,bloque); //puede ser?
+
 											cantidad_bloques_a_deletear_neto -= cant_bloques_en_bloque_indirecto;
 											cant_bloques_en_bloque_indirecto = 0;
 										//	list_remove()
@@ -267,14 +269,16 @@ static void procesar_conexionn(void* void_args){
 										for(int i=0;i<cantidad_bloques_a_deletear_neto;i++){
 										// recorro el bitarray desde la posicion que hay en la lista
 										uint32_t bloque = list_get(list_nro_de_bloques,i);
-										bit_clean(bitarray,bloque);
+										//bit_clean(bitarray,bloque);
+										bitarray_clean_bit(bitarray, bloque); //CONFIRMAR QUE ES ESTA FUNCION Y NO LA DE ARRIBA
 										cantidad_bloques_a_deletear_neto-=cant_bloques_en_bloque_indirecto;
 									}
 
 								}
 									else{// solo tengo un puntero directo, entonces lo que va a borrar es el puntero directo.
 										uint32_t bloque = list_get(list_nro_de_bloques,0); // si se borro todo bien solo quedaria en la posicion 0 el punetero directo
-										bit_clean(bitarray,bloque);
+										//bit_clean(bitarray,bloque);
+										bitarray_clean_bit(bitarray, bloque); //CONFIRMAR QUE ES LA FUNCION CORRECTA
 										//setear en -1
 										int defecto = -1;
 										char puntero_str[20];
@@ -292,12 +296,10 @@ static void procesar_conexionn(void* void_args){
 				}//ftruncate
 
 	log_warning(logger,"cliente %s desconectado ",server_name);
+				}
+
+	}
 }
-
-
-
-//}
-//	}}
 
 
 int generar_conexion_con_memoria(){
