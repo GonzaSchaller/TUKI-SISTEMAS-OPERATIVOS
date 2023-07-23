@@ -130,20 +130,20 @@ void recibir_actualizar_tablas_segmento(pcb_t* pcb_actual){
 	bool buscandoPID = true;
 	pthread_mutex_lock(&mutexReady);
 	int t = list_size(listaReady);
-
+	uint32_t pid = 0;
 	//t+1 porque hay uno ejecutando
 	for(int i = 0; i < t + 1; i++) { //para cada proceso enviamos la tabla que tiene y pedimo que memoria mande la nueva tabla
 		int j = 0;
-	    recv_TABLA_SEGMENTOS(conexion_memoria,&tabla_nueva);
+		recv_PID(conexion_memoria, &pid);
+		recv_TABLA_SEGMENTOS(conexion_memoria,&tabla_nueva);
 
 	    segmento = list_get(tabla_nueva, 0); //agarramos el primer segmento
 	    //pid = 2
 	    while(buscandoPID){
 	    	proceso_planificado = list_get(listaReady, j);
-	    	if(proceso_planificado->contexto.PID == segmento->pid){ //Todo descomentar cuando este el pid de segmento
+	    	if(proceso_planificado->contexto.PID == pid){ //Todo descomentar cuando este el pid de segmento
 	    		proceso_planificado->contexto.TSegmento = tabla_nueva;
 	    		buscandoPID = false;
-
 	    	}
 	    	else if(pcb_actual->contexto.PID == segmento->pid){
 	    		pcb_actual->contexto.TSegmento = tabla_nueva;
@@ -180,7 +180,8 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop,uint32_t* seguir_ejecuta
 								segmento->tamanio = tamanio;
 								list_add(pcb_siguiente->contexto.TSegmento, segmento);
 								estado_while = false;
-								send_seguir_ejecutando(conexion_cpu,0);
+								send_seguir_ejecutando(conexion_cpu,1); // todo lo cambio a 1 (revisar)
+								enviar_pcb_cpu(conexion_cpu, pcb_siguiente);
 								//send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);
 								if(se_compacto){
 								log_info(log_kernel, "Compactación: <Se finalizó el proceso de compactación>");
@@ -227,7 +228,8 @@ void manejar_memoria(pcb_t* pcb_siguiente, uint32_t cop,uint32_t* seguir_ejecuta
 				recv_TABLA_SEGMENTOS(conexion_memoria,&nueva_tabla_segmentos); // cambie esto ahora nomas
 
 				pcb_siguiente->contexto.TSegmento = nueva_tabla_segmentos;// cambie esto ahora nomas
-				send_seguir_ejecutando(conexion_cpu,0);
+				send_seguir_ejecutando(conexion_cpu,1); //todo cambie esto
+			    enviar_pcb_cpu(conexion_cpu, pcb_siguiente);;
 				//send_CONTEXTO_EJECUCION(conexion_cpu, pcb_siguiente->contexto);// devolver contexto de ejecucion a cpu para que continue con la ejecucion del proceso
 				log_info(log_kernel, "PID: <%d> - Eliminar Segmento - Id Segmento: <%d>",pcb_siguiente->contexto.PID, id_segmento);
 			}

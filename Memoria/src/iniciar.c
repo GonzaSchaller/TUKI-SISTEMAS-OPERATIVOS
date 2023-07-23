@@ -38,7 +38,7 @@ void cargar_configuracion(char*path){
 	    	proximo_hueco = &proximo_hueco_best_fit;
 	    }else if(strcmp(cfg->ALGORITMO_ASIGNACION,"FIRST")==0){
 	    	proximo_hueco = &proximo_hueco_first_fit;
-	    } else { proximo_hueco = &proximo_hueco_worst_fit;}
+	    } else { proximo_hueco = &proximo_hueco_worst_fit; log_info(log_memoria,"WORST");}
 
 
 	    config_destroy(config_memoria);

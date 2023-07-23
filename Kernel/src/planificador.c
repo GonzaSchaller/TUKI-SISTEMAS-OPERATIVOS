@@ -197,18 +197,17 @@ void hiloReady_Execute(){
 
   }
 
-void liberar_Recursos(pcb_t* pcb) { //para liberar recursos asignados de un proceso
-    for (int i = 0; i < list_size(pcb->recursos_asignados); i++) {
-        recurso_sistema* recurso_del_pcb = list_get(pcb->recursos_asignados, i);
-        recurso_sistema* recurso = encontrar_recurso(lista_recursos, recurso_del_pcb->nombre);
-        recurso->instancia += recurso_del_pcb->instancia;
-        queue_destroy_and_destroy_elements(recurso->colaBloqueados,free);
-	}
-
-}
+//void liberar_Recursos(pcb_t* pcb) { //para liberar recursos asignados de un proceso //todo revisar como se libera recursos en pruebaMemoria, habria que liberar cuando ya no va a ejecutar mas el kernel, no por cada pcb
+//    for (int i = 0; i < list_size(pcb->recursos_asignados); i++) {
+//        recurso_sistema* recurso_del_pcb = list_get(pcb->recursos_asignados, i);
+//        recurso_sistema* recurso = encontrar_recurso(lista_recursos, recurso_del_pcb->nombre);
+//        recurso->instancia += recurso_del_pcb->instancia;
+//        queue_destroy_and_destroy_elements(recurso->colaBloqueados,free);
+//	}
+//}
 void terminarEjecucion(pcb_t* pcb){
 	pthread_mutex_lock(&mutexExit);
-	liberar_Recursos(pcb);
+	//liberar_Recursos(pcb); //todo comentado
 
 	pcb->state_anterior = pcb->state;
 	pcb->state = FINISH;

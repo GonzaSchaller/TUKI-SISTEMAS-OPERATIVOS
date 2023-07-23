@@ -16,13 +16,11 @@ int main(){
 
 //elimina y unifica bien
 
+	if(server_escuchar(log_memoria,"MEMORIA",server_fd)==1){
+		log_info(log_memoria,"Conexiones establecidas");
+	}
 
-
-	//if(server_escuchar(log_memoria,"MEMORIA",server_fd)==1){
-	//	log_info(log_memoria,"Conexiones establecidas");
-	//}
-
-	//terminar_memoria();
+	terminar_memoria();
 
 	return EXIT_SUCCESS;
 }

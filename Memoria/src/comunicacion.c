@@ -55,10 +55,6 @@ void procesar_conexionn(void* void_args){
 
 			case INICIAR_ESTRUCTURAS:{
 				uint32_t pid;
-				if(!recv_INICIAR_ESTRUCTURA_MEMORIA(cliente_socket)){
-					log_error(log_memoria,"fallo recibiendo iniciar_estructuras");
-					break;
-				}
 
 				list_add(lista_de_pids,&pid);
 
@@ -71,7 +67,6 @@ void procesar_conexionn(void* void_args){
 				list_add(tabla_de_segmentos,(void*)segmento_0);
 
 				send_TABLA_SEGMENTOS(cliente_socket,tabla_de_segmentos);
-				cant_procesos++;
 
 				break;
 			}
@@ -79,7 +74,7 @@ void procesar_conexionn(void* void_args){
 			case CREATE_SEGMENT:{
 				uint32_t id;
 				uint32_t size;
-				estados_segmentos estado;
+				estados_segmentos estado = EXITOSO ;
 				uint32_t pid;
 
 				if(!recv_CREATE_SEGMENT(cliente_socket, & id, &size)) {
@@ -110,6 +105,7 @@ void procesar_conexionn(void* void_args){
 								t_list*list_proceso_i = filtrar_lista_por_pid(*pid_s);
 
 								//deberia enviarle el pid primero
+								send_PID(cliente_socket, pid_s);
 								send_TABLA_SEGMENTOS(cliente_socket,list_proceso_i);
 
 								list_add(list_proceso_i,segmento_0);
@@ -134,7 +130,6 @@ void procesar_conexionn(void* void_args){
 							log_error(log_memoria,"algo salio mal creando el segmento ");
 						}
 						uint32_t base = segmento->direccion_Base;
-						log_info(log_memoria,"algo salio mal creando el segmento ");
 						send_BASE_SEGMENTO(cliente_socket,base);
 
 						}
@@ -146,8 +141,8 @@ void procesar_conexionn(void* void_args){
 				t_list* ts_kernel = list_create();
 				uint32_t pid;
 
-				recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
 				recv_ID_SEGMENTO(cliente_socket, &id);
+				recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
 				recv_PID(cliente_socket,&pid);
 
 				// me devuelve la tabla de ese segmento.
@@ -156,7 +151,7 @@ void procesar_conexionn(void* void_args){
 				uint32_t base = buscar_en_lista_por_id_devolver_base(tsegmentos_pid,id); //busco la base del id a eliminar.
 				//elimino por base
 				if(borrar_segmento(base,pid)) {
-					log_info(log_memoria,"eliminacion ok");
+					log_info(log_memoria,"Eliminación de Proceso PID: <PID>", &pid);
 				}
 
 				list_remove_by_condition(ts_kernel,&seg_con_id_igual);
@@ -178,7 +173,7 @@ void procesar_conexionn(void* void_args){
 				log_info(log_memoria,"Eliminación de Proceso PID: %d",pid);
 
 				uint32_t lenght = list_size(ts);
-				for(int i=0;i<lenght;i++){
+				for(int i=1;i<lenght;i++){
 					segmento_t* seg = list_get(ts, i);
 					borrar_segmento(seg->direccion_Base,pid);
 				}
@@ -196,7 +191,7 @@ void procesar_conexionn(void* void_args){
 				uint32_t tamanio;
 				extra_code estado;
                 uint32_t cop;
-
+                pthread_mutex_lock(&mutex_read_write);
                 recv_READ(cliente_socket,&direccion_fisica,&tamanio); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
 				recv_PID(cliente_socket, &pid);
 
@@ -206,9 +201,7 @@ void procesar_conexionn(void* void_args){
 				    send_contenido_leido(cliente_socket,contenido);
                     //}
 				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <%d> - Origen: <%s>",pid,direccion_fisica,tamanio,server_name);
-
-				//poner semaforo?
-
+				pthread_mutex_unlock(&mutex_read_write);
 			}
 
 			break;
@@ -220,7 +213,7 @@ void procesar_conexionn(void* void_args){
 				extra_code estado;
 				char*contenido;
 
-
+				pthread_mutex_lock(&mutex_read_write);
 				recv_WRITE(cliente_socket,&direccion_fisica,&contenido);
 				recv_cant_bytes(cliente_socket,&tamanio);
 				recv_PID(cliente_socket, &pid);
@@ -231,7 +224,7 @@ void procesar_conexionn(void* void_args){
 					estado = EXITOSO;
 					send_OK_CODE(cliente_socket,estado);
 				}
-
+				pthread_mutex_unlock(&mutex_read_write);
 				break;
 				}}
 				}//while

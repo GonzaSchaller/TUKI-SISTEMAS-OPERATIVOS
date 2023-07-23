@@ -41,7 +41,6 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 		if(!recv_CANT_INSTRUCCIONES(socket_cliente, &cant_instrucciones)){
 			log_error(logger, "Error al recibir el valor que indica la cantidad de instrucciones");
 		}
-	log_debug(logger, "cant instruc: <%d> ",cant_instrucciones);
 	if(cant_instrucciones > 0){
 		int i;
 		for(i = 0; i < cant_instrucciones; i++){
@@ -57,12 +56,10 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 		log_error(logger, "Error al recibir el contexto de ejecucion");
 	}
 	log_debug(logger, "Recibo el CONTEXTO DE EJECUCION del PROCESO <%d>", contexto.PID);
-
 	if(!recv_TABLA_SEGMENTOS(socket_cliente, &contexto.TSegmento)){
 		log_error(logger, "Error al recibir la tabla de segmentos");
 	}
 	log_debug(logger, "Recibo la TABLA DE SEGMENTOS del PROCESO <%d>", contexto.PID);
-
 //	else{
 //	log_info(logger, "PID: <%d>",contexto.PID);
 //	log_info(logger, "PC:<%d>", contexto.PC);
@@ -92,16 +89,14 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 	//segmento_t *segmento = list_get(pcb_proceso->TSegmento, 0);
 	//log_error(logger, "segmento: %d %d %d %d", segmento->direccion_Base, segmento->id, segmento->pid, segmento->tamanio);
 	log_debug(logger, "Se paso el contexto de ejecucion al PCB del proceso <%d>", contexto.PID);
-
-	seguir_ejecutando = 1;
 	while(pcb_proceso -> PC < list_size(pcb_proceso -> instrucciones)){
 		instruccion* instruccion_en_execute = fetch(pcb_proceso);
 		if(decode_execute(socket_cliente, pcb_proceso, instruccion_en_execute, logger))
 			break;
-		free(instruccion_en_execute);
+		//free(instruccion_en_execute);
 	}
-	if(lista_instrucciones != NULL) list_destroy(lista_instrucciones);
-	if(contexto.TSegmento != NULL) list_destroy_and_destroy_elements(contexto.TSegmento, free);
+	if(lista_instrucciones != NULL) list_destroy_and_destroy_elements(lista_instrucciones, free);
+	if(contexto.TSegmento != NULL)list_destroy(contexto.TSegmento);
 	free(pcb_proceso);
 
 }
@@ -126,31 +121,28 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion2(SET, "SET", param1, param2, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion SET y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case MOV_IN:{
-			uint32_t param1; //registro
-			uint32_t param2; //DL
+			uint32_t param1;
+			uint32_t param2;
 
 			if(!recv_MOV_IN(socket_cliente, &param1, &param2)){
 				log_error(logger, "Error al recibir MOV_IN");
 				break;
 			}
 			cargar_instruccion1(MOV_IN, "MOV_IN", param1, param2, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion MOV_IN y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case MOV_OUT:{
-			uint32_t param1; //DL
-			uint32_t param2; //registro
+			uint32_t param1;
+			uint32_t param2;
 
 			if(!recv_MOV_OUT(socket_cliente, &param1, &param2)){
 				log_error(logger,"Error al recibir MOV_OUT");
 				break;
 			}
 			cargar_instruccion1(MOV_OUT, "MOV_OUT", param1, param2 , 0 , lista);
-			//log_debug(logger, "Se cargo la instruccion MOV_OUT y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case IO:{
@@ -161,7 +153,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion1(IO,"IO", param1, 0, 0,lista);
-			//log_debug(logger, "Se cargo la instruccion IO y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case F_OPEN:{
@@ -172,7 +163,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion3(F_OPEN, "F_OPEN", param1, 0, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion F_OPEN y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case F_CLOSE:{
@@ -183,7 +173,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion3(F_CLOSE, "F_CLOSE", param1, 0, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion F_CLOSE y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case F_SEEK:{
@@ -195,7 +184,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion3(F_SEEK, "F_SEEK", param1, param2, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion F_SEEK y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case F_READ:{
@@ -208,7 +196,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion3( F_READ, "F_READ", param1, param2, param3, lista);
-			//log_debug(logger, "Se cargo la instruccion F_READ y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case F_WRITE:{
@@ -221,7 +208,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion3( F_WRITE, "F_WRITE", param1, param2, param3, lista);
-			//log_debug(logger, "Se cargo la instruccion F_WRITE y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case F_TRUNCATE:{
@@ -233,7 +219,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion3( F_TRUNCATE, "F_TRUNCATE", param1, param2, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion F_TRUNCATE y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case WAIT:{
@@ -244,7 +229,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion3(WAIT, "WAIT", param1, 0, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion WAIT y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case SIGNAL:{
@@ -255,7 +239,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion3(SIGNAL, "SIGNAL", param1, 0, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion SIGNAL y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case CREATE_SEGMENT:{
@@ -267,7 +250,6 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 				break;
 			}
 			cargar_instruccion1(CREATE_SEGMENT, "CREATE_SEGMENT", param1, param2, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion CREATE_SEGMENT y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case DELETE_SEGMENT:{
@@ -275,21 +257,17 @@ void cargar_instruccion_a_lista(int socket_cliente, op_code code, t_list* lista,
 
 			if(!recv_DELETE_SEGMENT(socket_cliente, &param1)){
 				log_error(logger,"Error al recibir DELETE_SEGMENT");
-
 				break;
 			}
 			cargar_instruccion1(DELETE_SEGMENT, "DELETE_SEGMENT", param1, 0, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion DELETE_SEGMENT y sus parametros a la lista de instrucciones");
 			break;
 		}
 		case YIELD:{
 			cargar_instruccion1(YIELD, "YIELD", 0, 0, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion YIELD a la lista de instrucciones");
 			break;
 		}
 		case EXIT:{
 			cargar_instruccion1(EXIT,"EXIT", 0, 0, 0, lista);
-			//log_debug(logger, "Se cargo la instruccion EXIT y sus parametros a la lista de instrucciones");
 			break;
 		}
 		default:
@@ -338,7 +316,7 @@ void cargar_instruccion3(int id, char* nombre, char* parametro1, uint32_t parame
 }
 
 instruccion* fetch(pcb_cpu* un_pcb ){
-	instruccion* proxima_instruccion = malloc(sizeof(instruccion));
+	instruccion* proxima_instruccion;
 
 	proxima_instruccion = list_get(un_pcb -> instrucciones, un_pcb -> PC);
 	return proxima_instruccion;
@@ -365,20 +343,20 @@ int decode_execute(int socket, pcb_cpu* pcb_proceso, instruccion* una_instruccio
 			break;
 		}
 		case MOV_IN:{
-			uint32_t param1 = una_instruccion -> parametro1.tipo_int; //registro
-			uint32_t param2 = una_instruccion -> parametro2.tipo_int; //DL
+			uint32_t param1 = una_instruccion -> parametro1.tipo_int;
+			uint32_t param2 = una_instruccion -> parametro2.tipo_int;
 
-			log_info(logger, "PID: <%d> - Ejecutando: <MOV_IN> - <%d, %d>", pcb_proceso->PID, param1, param2);
+			log_info(logger, "PID: <%d> - Ejecutando: <MOV_IN> - <%s, %d>", pcb_proceso->PID, registros_a_string(param1) , param2);
 			corta_ejecucion = ejecutar_MOV_IN(pcb_proceso, param1, param2); //TODO REVISAR que los parametros se manden en el orden correcto
 			//corta_ejecucion = 0;
 			break;
 		}
 		case MOV_OUT:{
-			uint32_t param1 = una_instruccion -> parametro1.tipo_int; //DL
+			uint32_t param1 = una_instruccion -> parametro1.tipo_int;
 			uint32_t param2 = una_instruccion -> parametro2.tipo_int; //registro
 
-			log_info(logger, "PID: <%d> - Ejecutando: <MOV_OUT> - <%d, %d>", pcb_proceso->PID, param1, param2);
-			corta_ejecucion = ejecutar_MOV_OUT(pcb_proceso, param1, param2); //TODO REVISAR que los parametros se manden en el orden correcto
+			log_info(logger, "PID: <%d> - Ejecutando: <MOV_OUT> - <%d, %s>", pcb_proceso->PID, param1, registros_a_string(param2));
+			corta_ejecucion = ejecutar_MOV_OUT(pcb_proceso, param1, param2); //TODO REVISAR que los parametros se manden en el orden
 			//corta_ejecucion = 0;
 			break;
 		}

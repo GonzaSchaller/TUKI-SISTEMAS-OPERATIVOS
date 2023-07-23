@@ -83,7 +83,6 @@ void ordenat_lista_por_ids(t_list*lista){
 void insertar_segmento_entso(segmento_t * segmento){
 	pthread_mutex_lock(&mutex_segmentos_ocupados);
 	list_add_sorted(segmentos_ocupados, (void*) segmento, &por_base_menor);
-
 	pthread_mutex_unlock(&mutex_segmentos_ocupados);
 }
 

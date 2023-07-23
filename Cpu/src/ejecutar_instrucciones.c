@@ -669,7 +669,7 @@ int ejecutar_DELETE_SEGMENT(pcb_cpu* pcb_proceso, uint32_t id){
 		//log_error(logger, "Error al recibir el code");
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
-	return 0;
+	return seguir_ejecutando;
 }
 
 int ejecutar_YIELD(pcb_cpu* pcb_proceso){

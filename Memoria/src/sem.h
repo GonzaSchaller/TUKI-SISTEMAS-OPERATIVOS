@@ -16,7 +16,7 @@
 void iniciar_mutex();
 void finalizar_mutex();
 bool seg_con_id_igual(void* segmento);
-
+extern pthread_mutex_t mutex_read_write;
 //TABAL DE SEGMENTOS OCUPADOS
 void insertar_segmento_entso(segmento_t * );
 segmento_t* encontrar_base_tso(uint32_t id);
