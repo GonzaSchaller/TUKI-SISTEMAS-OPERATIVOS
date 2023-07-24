@@ -38,7 +38,7 @@ static void procesar_conexionn(void* void_args){
 			if(!recv_EXISTE_ARCHIVO(cliente_socket,&nombre_archivo))
 				log_error(logger, "Fallo recibiendo f_open de kernel");
 
-			log_info(logger,"abrir archivo %s",nombre_archivo);
+			log_info(logger,"Abrir archivo: <%s>",nombre_archivo);
 			bool resultado = existe_y_abrir(nombre_archivo);
 
 			if(!resultado){
@@ -48,20 +48,20 @@ static void procesar_conexionn(void* void_args){
 				//crear el archivo.
 				recv_CREAR_ARCHIVO(cliente_socket, &nombre_archivo, &tamanio); //para mi que no deberia recibir nada
 
+				log_info(logger,"Crear Archivo: <%s>", nombre_archivo);
 				if(crear_archivo(nombre_archivo,tamanio)){
 					estado = CORRECTO;
-					log_info(logger,"cree el archivo");
 					existe_y_abrir(nombre_archivo);
 					send_OK_CODE(cliente_socket,estado);
 				}
 
-				else log_error(logger,"i cant del creararcguhjksd");
+				else log_error(logger,"Error al crear el Archivo <%s>", nombre_archivo);
 			}
 
 			else {
 				estado = CORRECTO;
 				send_OK_CODE(cliente_socket, estado);
-				log_info(logger,"el archivo existe");
+				log_info(logger,"El archivo <%s> existe", nombre_archivo);
 			}
 			break;
 		}
@@ -91,6 +91,8 @@ static void procesar_conexionn(void* void_args){
 			if(escribir_contenido(nombre_archivo,contenido,puntero,cant_bytes))
 				log_info(logger,"todo ok escribiendo el archivo");
 
+			else
+				log_error(logger, "No se pudo escribir en el archivo");
 			break;
 		}
 
@@ -104,7 +106,8 @@ static void procesar_conexionn(void* void_args){
 
 			recv_F_READ(cliente_socket,&nombre_archivo,&df,&cant_bytes);
 			recv_PUNTERO_FS(cliente_socket,&puntero);
-			log_info(logger,"Leer: Archivo: %s - Puntero: %d  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivo,puntero,df,cant_bytes);
+
+			log_info(logger,"Leer: Archivo: <%s> - Puntero: <%d>  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivo,puntero,df,cant_bytes);
 			char*contenidor = buscar_contenido(nombre_archivo,puntero,cant_bytes);
 
 			//le mando a memoria lo que tiene que escribir
@@ -126,6 +129,8 @@ static void procesar_conexionn(void* void_args){
 			uint32_t tamanio_a_truncar;
 
 			if(!recv_F_TRUNCATE(cliente_socket, &nombre_archivo, &tamanio_a_truncar)) log_error(logger,"error al recibir F_TRUNCATE de kernel");
+
+			log_info(logger,"Truncar Archivo: <%s> - Tamanio: <%d>", nombre_archivo, tamanio_a_truncar);
 
 			char* path = concat(nombre_archivo);
 			fcb_t* fcb = malloc(sizeof(fcb));
@@ -212,7 +217,7 @@ static void procesar_conexionn(void* void_args){
 */
 			}
 
-			else{ //es mas chico
+			else{ //tengo que quitar bloques al archivo
 				reducir_tamanio_archivo(tamanio_a_truncar, cuantos_bloques_venia_usando, fcb, archivo);
 				/*
 				uint32_t cantidad_bloques_con_nuevo_tamanio = ceil_casero(tamanio_a_truncar,superbloque->block_size); //cantidad de bloques necesarios para direccionar el nuevo tamanio del archivo.
@@ -313,72 +318,78 @@ static void procesar_conexionn(void* void_args){
 }
 
 void aumentar_tamanio_archivo(uint32_t tamanio_a_truncar, uint32_t cuantos_bloques_venia_usando, fcb_t* fcb, t_config* archivo){
-	uint32_t cantidad_bloques_con_nuevo_tamanio = ceil_casero(tamanio_a_truncar,superbloque->block_size); //cantidad de bloques necesarios para direccionar el nuevo tamanio del archivo.
-					uint32_t cantidad_bloques_a_agregar = cantidad_bloques_con_nuevo_tamanio - cuantos_bloques_venia_usando;
 
-					if(fcb->puntero_directo != -1){ //necesito un bloque mas que sera el indirecto
-						cantidad_bloques_a_agregar ++;
-					}
+	//cantidad de bloques necesarios para direccionar el nuevo tamanio del archivo.
+	uint32_t cantidad_bloques_con_nuevo_tamanio = ceil_casero(tamanio_a_truncar,superbloque->block_size);
+	uint32_t cantidad_bloques_a_agregar = cantidad_bloques_con_nuevo_tamanio - cuantos_bloques_venia_usando;
 
-					t_list*list_nro_de_bloques = list_create();
-					uint32_t bloques_totales_fs = bitarray_get_max_bit(bitarray);
+	if(fcb->puntero_indirecto != -1){ //necesito un bloque mas que sera el indirecto
+		cantidad_bloques_a_agregar ++;
+	}
 
-					for(int i = 0; i < bloques_totales_fs; i++){ //recorro el bitarray en busca de bloques libres, necesito solo cant_bloques_Agregar
-						uint32_t tamanio= list_size(list_nro_de_bloques);
+	t_list*list_nro_de_bloques = list_create();
+	uint32_t bloques_totales_fs = bitarray_get_max_bit(bitarray);
 
-						if(tamanio == cantidad_bloques_a_agregar)
-							return;
+	for(int i = 0; i < bloques_totales_fs; i++){ //recorro el bitarray en busca de bloques libres, necesito solo cant_bloques_Agregar
+		uint32_t tamanio= list_size(list_nro_de_bloques);
+		int* a = &i; //para arreglar el warning: cast to pointer from integer of different size
 
-						else {
-							bool valor = bitarray_test_bit(bitarray,i);
-							if(valor)
-								list_add(list_nro_de_bloques,(void*)i);
-						}
+		if(tamanio == cantidad_bloques_a_agregar)
+			return;
 
-						if((i == (bloques_totales_fs - 1)) && tamanio!= cantidad_bloques_a_agregar)
-							log_error(logger,"NO HAY MAS BLOQUES DISPONIBLES PARA AGRANDAR EL TAMANIO DEL ARCHIVO");
-					}
+		else {
+			bool valor = bitarray_test_bit(bitarray,i);
+			if(valor)
+				list_add(list_nro_de_bloques, a);
+		}
 
-					//SALGO DEL FOR CON LA LISTA DE LOS BLOQUES A AGREGAR, si termine antes es que no habia bloques :(
+		if((i == (bloques_totales_fs - 1)) && tamanio!= cantidad_bloques_a_agregar)
+			log_error(logger,"NO HAY MAS BLOQUES DISPONIBLES PARA AGRANDAR EL TAMANIO DEL ARCHIVO");
+	}
 
-					//seteo el tamanio
-					char tamanio_str[20];
-					sprintf(tamanio_str, "%d", tamanio_a_truncar);
+	//SALGO DEL FOR CON LA LISTA DE LOS BLOQUES A AGREGAR, si termine antes es que no habia bloques :(
 
-					config_set_value(archivo,"TAMANIO_ARCHIVO",tamanio_str);
+	//seteo el tamanio
+	char tamanio_str[20];
+	sprintf(tamanio_str, "%d", tamanio_a_truncar);
 
-					for(int i=0;i < cantidad_bloques_a_agregar;i++){
-						if(fcb->puntero_directo == -1){ //ese archivo era nuevo y no tenia bloques asignados
-							fcb->puntero_directo = (uint32_t)list_get(list_nro_de_bloques,i);
-							char puntero_str[20];
-							sprintf(puntero_str, "%d", fcb->puntero_directo);
-							config_set_value(archivo,"PUNTERO_DIRECTO",puntero_str);
-							cantidad_bloques_a_agregar--;
-						}
+	config_set_value(archivo,"TAMANIO_ARCHIVO",tamanio_str);
 
-						else if (fcb->puntero_indirecto == -1) {
-							// antes no tenia punteros indirectos.
+	for(int i = 0; i < cantidad_bloques_a_agregar; i++){
+		if(fcb->puntero_directo == -1){ //ese archivo era nuevo y no tenia bloques asignados
 
-							uint32_t bloque = (uint32_t)list_get(list_nro_de_bloques,i);
-							fcb->puntero_indirecto = bloque;
-							char puntero_str[20];
-							sprintf(puntero_str, "%d",fcb->puntero_indirecto);
-							config_set_value(archivo,"PUNTERO_INDIRECTO",puntero_str); //seteo el puntero indirecto
-							cantidad_bloques_a_agregar--;
-							fseek(f_bloques, fcb->puntero_indirecto*superbloque->block_size, SEEK_SET); // me muevo al principio del puntero indirecto
-						}
+			uint32_t* bloque_al_que_apunta = list_get(list_nro_de_bloques, i);
+			fcb->puntero_directo = *bloque_al_que_apunta;
+			//fcb->puntero_directo = (uint32_t)list_get(list_nro_de_bloques, i);
+			char puntero_str[20];
+			sprintf(puntero_str, "%d", fcb->puntero_directo);
+			config_set_value(archivo,"PUNTERO_DIRECTO",puntero_str);
+			cantidad_bloques_a_agregar--;
+		}
 
-						// si entro aca es que ya tiene asignado el bloque directo y el indirecto,
-					 	// entonces solo queda escribir en el archivo de bloques los bloques que quedan
-						else {
-							uint32_t bloque = (uint32_t)list_get(list_nro_de_bloques,i);
-							fseek(f_bloques, fcb->puntero_indirecto*superbloque->block_size + (i*sizeof(uint32_t)), SEEK_SET); // la cuenta es asi porque cada vez que se mueve lo hace con un offset
-							fwrite(bloque, 1,sizeof(uint32_t), f_bloques);
+		else if (fcb->puntero_indirecto == -1) {
+			// antes no tenia punteros indirectos.
 
-							//logs: // AGREGAR LOGS
+			uint32_t* bloque_al_que_apunta = list_get(list_nro_de_bloques,i);
+			fcb->puntero_indirecto = *bloque_al_que_apunta;
+			char puntero_str[20];
+			sprintf(puntero_str, "%d",fcb->puntero_indirecto);
+			config_set_value(archivo,"PUNTERO_INDIRECTO",puntero_str); //seteo el puntero indirecto
+			cantidad_bloques_a_agregar--;
+			fseek(f_bloques, fcb->puntero_indirecto*superbloque->block_size, SEEK_SET); // me muevo al principio del puntero indirecto
+		}
 
-						}
-					} //llave del for
+		// si entro aca es que ya tiene asignado el bloque directo y el indirecto,
+		// entonces solo queda escribir en el archivo de bloques los bloques que quedan
+		else {
+			uint32_t* bloque = list_get(list_nro_de_bloques,i);
+			fseek(f_bloques, fcb->puntero_indirecto*superbloque->block_size + (i*sizeof(uint32_t)), SEEK_SET); // la cuenta es asi porque cada vez que se mueve lo hace con un offset
+			fwrite(bloque, 1,sizeof(uint32_t), f_bloques); //REVISAR que bloque al ser ahora puntero funcione igual el fwrite
+
+			//logs: // AGREGAR LOGS
+
+		}
+	} //llave del for
 }
 
 

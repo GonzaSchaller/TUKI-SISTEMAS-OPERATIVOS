@@ -8,7 +8,7 @@ int fd_memoria;
 int main (){
 
 	// Issue 2967 es donde está la info de por qué definí las variables del .h en el .c también
-	logger = log_create("fileSystem.log","FileSystem",1, LOG_LEVEL_INFO);
+	logger = log_create("fileSystem.log","FileSystem",1, LOG_LEVEL_DEBUG);
 
 	levantar_config();
 

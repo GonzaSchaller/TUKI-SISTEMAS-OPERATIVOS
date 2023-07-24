@@ -28,35 +28,34 @@ char* concat(char*nombre_archivo){
 }
 
 bool existe_y_abrir(char*nombre_archivo){
-	//hay quer abrir el archivo
+	//*** verifica si existe el archivo ***
 	char*path = concat(nombre_archivo);
 
 	t_config* archivo = config_create(path);
 
 	if(archivo == NULL) {
-
-		log_error(logger,"el archivo NO existe");
+		log_info(logger,"El archivo <%s> NO existe", nombre_archivo);
 		return false;
 	}
 
 	char*nombre = config_get_string_value(archivo,"NOMBRE_ARCHIVO");
 
-
-
-//	list_add(configs_creadas,(void*)archivo);
+	//*** abre el archivo ***
+	//list_add(configs_creadas,(void*)archivo);
 	if(strcmp(nombre,nombre_archivo)!=0) {
 		log_error(logger,"Abri un archivo pero no coincide con su id, es esto posible? ");
 		return false;
 	}
+	log_info(logger,"El archivo <%s> se abrio correctamente", nombre_archivo);
 	return true;
 }
 
 bool crear_archivo(char*nombre,uint32_t tamanio){
-	log_info(logger,"entre");
+	log_debug(logger,"Se empieza a crear el archivo");
 	t_config* config = malloc(sizeof(t_config));
 	config->path = concat(nombre);
 	config->properties = dictionary_create();
-	log_info(logger,"entre2");
+	log_debug(logger,"Se termino de crear el config");
 
 	 char tamanio_str[20];
 	    sprintf(tamanio_str, "%d", tamanio);
@@ -65,9 +64,15 @@ bool crear_archivo(char*nombre,uint32_t tamanio){
 	config_set_value(config,"TAMANIO_ARCHIVO",tamanio_str);
 	config_set_value(config,"PUNTERO_DIRECTO","-1"); //la verdad que no dice nada de esto asi q -1 para no asociarle bloques.
 	config_set_value(config,"PUNTERO_INDIRECTO","-1");
-	log_info(logger,"entre3");
+	log_debug(logger,"Termino de setear el config, (nombre, tamanio y punteros)");
+
 	int guardar = config_save(config);
-	guardar != -1 ? log_info(logger,"archivo creado/seteado exitosamente") : log_error(logger,"algo malio sal");
+	if (guardar != -1)
+		log_info(logger,"Archivo creado y seteado exitosamente");
+	else {
+		//log_error(logger,"Error al crear/setear el archivo");
+		return false;
+	}
 
 	//list_add(configs_creadas,(void*)config);
 	//config_destroy(config);
@@ -138,6 +143,11 @@ char* buscar_contenido(char*name,uint32_t puntero,uint32_t cant_bytes){
 		char*path = concat(name);
 		t_config* archivo = config_create(path);
 
+		if(archivo == NULL){
+			log_error(logger, "Se esta intentando leer un archivo que NO existe, no se abrio previamente");
+			return NULL;
+		}
+
 		fcb_t * fcb = malloc(sizeof(fcb_t));
 		fcb->nombreArchivo = config_get_string_value(archivo,"NOMBRE_ARCHIVO");
 		fcb->tamanio_archivo = config_get_int_value(archivo,"TAMANIO_ARCHIVO");
@@ -171,6 +181,11 @@ bool escribir_contenido(char*name,char* contenido,uint32_t puntero,uint32_t cant
 
 		char*path = concat(name);
 		t_config* archivo = config_create(path);
+
+		if(archivo == NULL){
+			log_error(logger, "Se esta intentando escribir en un archivo que NO existe, no se abrio previamente");
+			return false;
+		}
 
 		fcb_t * fcb = malloc(sizeof(fcb_t));
 		fcb->nombreArchivo = config_get_string_value(archivo,"NOMBRE_ARCHIVO");
