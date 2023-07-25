@@ -193,10 +193,10 @@ void procesar_conexionn(void* void_args){
 				log_info(log_memoria,"Eliminación de Proceso PID: %d",pid);
 
 				uint32_t lenght = list_size(ts);
-
+				log_info(log_memoria,"afuera de lenght, size %d",lenght);
 				if(lenght > 1){
 					for(int i=1;i<lenght;i++){
-
+					log_info(log_memoria,"entre a lenght");
 					segmento_t* seg = list_get(ts, i);
 					borrar_segmento(seg->direccion_Base,pid);
 				}

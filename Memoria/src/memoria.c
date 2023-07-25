@@ -3,7 +3,14 @@ extern t_log* log_memoria;
 extern t_config_memoria *cfg;
 
 
+void sighandler(int s){
+	terminar_memoria();
+	exit(0);
+}
+
 int main(){
+	signal(SIGINT,sighandler);
+
 
 	cargar_configuracion("memoria.config");
 	cargar_memoria();

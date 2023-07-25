@@ -13,7 +13,7 @@
 #include "instrucciones.h"
 #include "configuraciones.h"
 #include "manejos.h"
-
+#include <signal.h>
 extern int conexion_cpu;
 extern int conexion_fileSystem;
 extern int conexion_memoria;

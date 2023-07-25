@@ -4607,3 +4607,1209 @@
 
 [INFO] 04:57:22:697 MEMORIA/(44388:44548): memoria disponible 576
 [INFO] 04:57:22:873 MEMORIA/(44388:44548): Eliminación de Proceso PID: 2
+[INFO] 05:12:33:393 MEMORIA/(44839:44839): cargue memoria principal
+[INFO] 05:14:50:581 MEMORIA/(44992:44992): cargue memoria principal
+[INFO] 05:14:50:606 MEMORIA/(44993:44993): cargue memoria principal
+[INFO] 05:14:59:292 MEMORIA/(44992:44992): Se conecto un cliente
+[INFO] 05:14:59:294 MEMORIA/(44992:45011): conexion creada con MEMORIA
+[INFO] 05:15:00:105 MEMORIA/(44992:44992): Se conecto un cliente
+[INFO] 05:15:03:103 MEMORIA/(44992:45013): proceso 1 
+[INFO] 05:15:03:103 MEMORIA/(44992:45013): Creación de Proceso PID: 1
+[INFO] 05:15:03:145 MEMORIA/(44992:45013): proceso 1 
+[INFO] 05:15:03:146 MEMORIA/(44992:45013): proceso 2 
+[INFO] 05:15:03:146 MEMORIA/(44992:45013): Creación de Proceso PID: 2
+[INFO] 05:15:03:233 MEMORIA/(44992:45013): proceso 1 
+[INFO] 05:15:03:234 MEMORIA/(44992:45013): proceso 2 
+[INFO] 05:15:03:234 MEMORIA/(44992:45013): proceso 3 
+[INFO] 05:15:03:234 MEMORIA/(44992:45013): Creación de Proceso PID: 3
+[INFO] 05:15:04:278 MEMORIA/(44992:45011): PID: 2 - Acción: Escribir - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 05:15:05:365 MEMORIA/(44992:45013): hay espacio disponible... creando segmento. 
+
+[INFO] 05:15:05:366 MEMORIA/(44992:45013): “PID: 2 - Crear Segmento: 1 - TAMAÑO: 128
+[INFO] 05:15:05:366 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:15:05:366 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:15:05:366 MEMORIA/(44992:45013): BASE : 256, SIZE: 768 
+
+[INFO] 05:15:05:366 MEMORIA/(44992:45013): cant memoria disponible 768 
+
+[INFO] 05:15:06:542 MEMORIA/(44992:45011): PID: 1 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 05:15:06:629 MEMORIA/(44992:45013): hay espacio disponible... creando segmento. 
+
+[INFO] 05:15:06:630 MEMORIA/(44992:45013): “PID: 1 - Crear Segmento: 1 - TAMAÑO: 64
+[INFO] 05:15:06:630 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:15:06:630 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:15:06:630 MEMORIA/(44992:45013): BASE : 320, SIZE: 704 
+
+[INFO] 05:15:06:630 MEMORIA/(44992:45013): cant memoria disponible 704 
+
+[INFO] 05:15:06:673 MEMORIA/(44992:45013): hay espacio disponible... creando segmento. 
+
+[INFO] 05:15:06:674 MEMORIA/(44992:45013): “PID: 1 - Crear Segmento: 2 - TAMAÑO: 64
+[INFO] 05:15:06:674 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:15:06:674 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:15:06:674 MEMORIA/(44992:45013): BASE : 384, SIZE: 640 
+
+[INFO] 05:15:06:674 MEMORIA/(44992:45013): cant memoria disponible 640 
+
+[INFO] 05:15:06:805 MEMORIA/(44992:45013): hay espacio disponible... creando segmento. 
+
+[INFO] 05:15:06:806 MEMORIA/(44992:45013): “PID: 1 - Crear Segmento: 3 - TAMAÑO: 64
+[INFO] 05:15:06:806 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:15:06:806 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:15:06:806 MEMORIA/(44992:45013): BASE : 448, SIZE: 576 
+
+[INFO] 05:15:06:806 MEMORIA/(44992:45013): cant memoria disponible 576 
+
+[INFO] 05:15:06:894 MEMORIA/(44992:45013): hay espacio disponible... creando segmento. 
+
+[INFO] 05:15:06:895 MEMORIA/(44992:45013): “PID: 1 - Crear Segmento: 4 - TAMAÑO: 64
+[INFO] 05:15:06:895 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:15:06:895 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:15:06:895 MEMORIA/(44992:45013): BASE : 512, SIZE: 512 
+
+[INFO] 05:15:06:895 MEMORIA/(44992:45013): cant memoria disponible 512 
+
+[INFO] 05:15:06:981 MEMORIA/(44992:45013): hay espacio disponible... creando segmento. 
+
+[INFO] 05:15:06:982 MEMORIA/(44992:45013): “PID: 1 - Crear Segmento: 5 - TAMAÑO: 64
+[INFO] 05:15:06:982 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:15:06:982 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:15:06:982 MEMORIA/(44992:45013): BASE : 576, SIZE: 448 
+
+[INFO] 05:15:06:982 MEMORIA/(44992:45013): cant memoria disponible 448 
+
+[INFO] 05:15:07:069 MEMORIA/(44992:45013): hay espacio disponible... creando segmento. 
+
+[INFO] 05:15:07:070 MEMORIA/(44992:45013): “PID: 1 - Crear Segmento: 6 - TAMAÑO: 64
+[INFO] 05:15:07:070 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:15:07:070 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:15:07:070 MEMORIA/(44992:45013): BASE : 640, SIZE: 384 
+
+[INFO] 05:15:07:070 MEMORIA/(44992:45013): cant memoria disponible 384 
+
+[INFO] 05:15:07:157 MEMORIA/(44992:45013): hay espacio disponible... creando segmento. 
+
+[INFO] 05:15:07:158 MEMORIA/(44992:45013): “PID: 1 - Crear Segmento: 7 - TAMAÑO: 64
+[INFO] 05:15:07:158 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:15:07:159 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:15:07:159 MEMORIA/(44992:45013): BASE : 704, SIZE: 320 
+
+[INFO] 05:15:07:159 MEMORIA/(44992:45013): cant memoria disponible 320 
+
+[INFO] 05:15:07:245 MEMORIA/(44992:45013): hay espacio disponible... creando segmento. 
+
+[INFO] 05:15:07:245 MEMORIA/(44992:45013): “PID: 1 - Crear Segmento: 8 - TAMAÑO: 64
+[INFO] 05:15:07:246 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:15:07:246 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:15:07:246 MEMORIA/(44992:45013): BASE : 768, SIZE: 256 
+
+[INFO] 05:15:07:246 MEMORIA/(44992:45013): cant memoria disponible 256 
+
+[INFO] 05:15:08:290 MEMORIA/(44992:45011): PID: 1 - Acción: Escribir - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 05:15:09:421 MEMORIA/(44992:45013): hay espacio disponible... creando segmento. 
+
+[INFO] 05:15:09:422 MEMORIA/(44992:45013): “PID: 1 - Crear Segmento: 9 - TAMAÑO: 64
+[INFO] 05:15:09:422 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:15:09:422 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:15:09:422 MEMORIA/(44992:45013): BASE : 832, SIZE: 192 
+
+[INFO] 05:15:09:422 MEMORIA/(44992:45013): cant memoria disponible 192 
+
+[INFO] 05:15:10:466 MEMORIA/(44992:45011): PID: 1 - Acción: Escribir - Dirección física: 256 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 05:15:12:467 MEMORIA/(44992:45011): PID: 1 - Acción: Escribir - Dirección física: 704 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 05:15:13:642 MEMORIA/(44992:45013): entraste a delete segment, pid 2
+[INFO] 05:15:13:642 MEMORIA/(44992:45013): segmento encontrado : base 128 , id 1 , tamanio 128 
+[INFO] 05:15:13:642 MEMORIA/(44992:45013): PID: 2 - Eliminar Segmento: 1  - Base: 128 - Tamanio 128 
+
+[INFO] 05:15:13:642 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:15:13:642 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:15:13:642 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 128 
+
+[INFO] 05:15:13:642 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:15:13:642 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 0  BASE : 832, SIZE: 192 
+
+[INFO] 05:15:13:642 MEMORIA/(44992:45013): memoria disponible 320
+[INFO] 05:15:14:686 MEMORIA/(44992:45011): PID: 2 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 05:15:14:818 MEMORIA/(44992:45013): Eliminación de Proceso PID: 2
+[INFO] 05:15:14:818 MEMORIA/(44992:45013): size lista pids 2
+[INFO] 05:15:14:818 MEMORIA/(44992:45013): pid 1
+[INFO] 05:15:14:818 MEMORIA/(44992:45013): pid 3
+[INFO] 05:15:14:861 MEMORIA/(44992:45013): Inicio de compactacion
+[INFO] 05:16:14:862 MEMORIA/(44992:45013): hay una cantidad de 2 procesos
+[INFO] 05:16:14:862 MEMORIA/(44992:45013): Proceso NUMERO 1 
+[INFO] 05:16:14:862 MEMORIA/(44992:45013): PID <1> - Segmento <0> - Base <0> - Tamanio <128> 
+[INFO] 05:16:14:862 MEMORIA/(44992:45013): 
+
+[INFO] 05:16:14:862 MEMORIA/(44992:45013): PID <1> - Segmento <1> - Base <128> - Tamanio <64> 
+[INFO] 05:16:14:862 MEMORIA/(44992:45013): 
+
+[INFO] 05:16:14:862 MEMORIA/(44992:45013): PID <1> - Segmento <2> - Base <192> - Tamanio <64> 
+[INFO] 05:16:14:862 MEMORIA/(44992:45013): 
+
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): PID <1> - Segmento <3> - Base <256> - Tamanio <64> 
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): 
+
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): PID <1> - Segmento <4> - Base <320> - Tamanio <64> 
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): 
+
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): PID <1> - Segmento <5> - Base <384> - Tamanio <64> 
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): 
+
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): PID <1> - Segmento <6> - Base <448> - Tamanio <64> 
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): 
+
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): PID <1> - Segmento <7> - Base <512> - Tamanio <64> 
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): 
+
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): PID <1> - Segmento <8> - Base <576> - Tamanio <64> 
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): 
+
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): PID <1> - Segmento <9> - Base <640> - Tamanio <64> 
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): 
+
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): Proceso NUMERO 3 
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): PID <3> - Segmento <0> - Base <0> - Tamanio <128> 
+[INFO] 05:16:14:863 MEMORIA/(44992:45013): 
+
+[INFO] 05:16:14:905 MEMORIA/(44992:45013): hay espacio disponible... creando segmento. 
+
+[INFO] 05:16:14:906 MEMORIA/(44992:45013): “PID: 3 - Crear Segmento: 1 - TAMAÑO: 256
+[INFO] 05:16:14:906 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:16:14:906 MEMORIA/(44992:45013): segmento 0   
+[INFO] 05:16:14:906 MEMORIA/(44992:45013): BASE : 960, SIZE: 64 
+
+[INFO] 05:16:14:906 MEMORIA/(44992:45013): cant memoria disponible 64 
+
+[INFO] 05:16:15:994 MEMORIA/(44992:45011): PID: 3 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[ERROR] 05:16:16:126 MEMORIA/(44992:45013): no entra en mp
+[INFO] 05:16:16:169 MEMORIA/(44992:45013): Eliminación de Proceso PID: 3
+[INFO] 05:16:16:170 MEMORIA/(44992:45013): segmento encontrado : base 704 , id 1 , tamanio 256 
+[INFO] 05:16:16:170 MEMORIA/(44992:45013): PID: 3 - Eliminar Segmento: 1  - Base: 704 - Tamanio 256 
+
+[INFO] 05:16:16:170 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:16:16:170 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:16:170 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 05:16:16:170 MEMORIA/(44992:45013): memoria disponible 320
+[INFO] 05:16:16:170 MEMORIA/(44992:45013): size lista pids 1
+[INFO] 05:16:16:170 MEMORIA/(44992:45013): pid 1
+[INFO] 05:16:17:170 MEMORIA/(44992:45011): PID: 1 - Acción: Leer - Dirección física: 128 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 05:16:17:171 MEMORIA/(44992:45013): entraste a delete segment, pid 1
+[INFO] 05:16:17:171 MEMORIA/(44992:45013): segmento encontrado : base 128 , id 1 , tamanio 64 
+[INFO] 05:16:17:171 MEMORIA/(44992:45013): PID: 1 - Eliminar Segmento: 1  - Base: 128 - Tamanio 64 
+
+[INFO] 05:16:17:171 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:16:17:171 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:17:171 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 64 
+
+[INFO] 05:16:17:171 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:17:171 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 05:16:17:171 MEMORIA/(44992:45013): memoria disponible 384
+[INFO] 05:16:18:214 MEMORIA/(44992:45011): PID: 1 - Acción: Leer - Dirección física: 640 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 05:16:18:258 MEMORIA/(44992:45013): entraste a delete segment, pid 1
+[INFO] 05:16:18:258 MEMORIA/(44992:45013): segmento encontrado : base 192 , id 2 , tamanio 64 
+[INFO] 05:16:18:258 MEMORIA/(44992:45013): PID: 1 - Eliminar Segmento: 2  - Base: 192 - Tamanio 64 
+
+[INFO] 05:16:18:258 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:16:18:258 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:258 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 128 
+
+[INFO] 05:16:18:258 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:258 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 05:16:18:258 MEMORIA/(44992:45013): memoria disponible 448
+[INFO] 05:16:18:301 MEMORIA/(44992:45013): entraste a delete segment, pid 1
+[INFO] 05:16:18:302 MEMORIA/(44992:45013): segmento encontrado : base 320 , id 4 , tamanio 64 
+[INFO] 05:16:18:302 MEMORIA/(44992:45013): PID: 1 - Eliminar Segmento: 4  - Base: 320 - Tamanio 64 
+
+[INFO] 05:16:18:302 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:16:18:302 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:302 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 128 
+
+[INFO] 05:16:18:302 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:302 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 320, SIZE: 64 
+
+[INFO] 05:16:18:302 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:302 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 05:16:18:302 MEMORIA/(44992:45013): memoria disponible 512
+[INFO] 05:16:18:434 MEMORIA/(44992:45013): entraste a delete segment, pid 1
+[INFO] 05:16:18:434 MEMORIA/(44992:45013): segmento encontrado : base 384 , id 5 , tamanio 64 
+[INFO] 05:16:18:434 MEMORIA/(44992:45013): PID: 1 - Eliminar Segmento: 5  - Base: 384 - Tamanio 64 
+
+[INFO] 05:16:18:434 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:16:18:434 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:434 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 128 
+
+[INFO] 05:16:18:434 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:434 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 320, SIZE: 128 
+
+[INFO] 05:16:18:434 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:434 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 05:16:18:434 MEMORIA/(44992:45013): memoria disponible 576
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): Eliminación de Proceso PID: 1
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): segmento encontrado : base 256 , id 3 , tamanio 64 
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): PID: 1 - Eliminar Segmento: 3  - Base: 256 - Tamanio 64 
+
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 320 
+
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): memoria disponible 640
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): segmento encontrado : base 448 , id 6 , tamanio 64 
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): PID: 1 - Eliminar Segmento: 6  - Base: 448 - Tamanio 64 
+
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 384 
+
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 05:16:18:610 MEMORIA/(44992:45013): memoria disponible 704
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): segmento encontrado : base 512 , id 7 , tamanio 64 
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): PID: 1 - Eliminar Segmento: 7  - Base: 512 - Tamanio 64 
+
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 448 
+
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): memoria disponible 768
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): segmento encontrado : base 576 , id 8 , tamanio 64 
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): PID: 1 - Eliminar Segmento: 8  - Base: 576 - Tamanio 64 
+
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 512 
+
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): memoria disponible 832
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): segmento encontrado : base 640 , id 9 , tamanio 64 
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): PID: 1 - Eliminar Segmento: 9  - Base: 640 - Tamanio 64 
+
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): lista de segmenos libres actualizada: 
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): segmento 9999   
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 896 
+
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): memoria disponible 896
+[INFO] 05:16:18:611 MEMORIA/(44992:45013): size lista pids 0
+[INFO] 05:20:16:776 MEMORIA/(45197:45197): cargue memoria principal
+[INFO] 05:20:53:739 MEMORIA/(45286:45286): cargue memoria principal
+[INFO] 05:20:56:577 MEMORIA/(45298:45298): cargue memoria principal
+[INFO] 05:22:45:275 MEMORIA/(45298:45298): Se conecto un cliente
+[INFO] 05:22:45:276 MEMORIA/(45298:45445): conexion creada con MEMORIA
+[INFO] 05:22:47:007 MEMORIA/(45298:45298): Se conecto un cliente
+[INFO] 05:22:49:437 MEMORIA/(45298:45448): proceso 1 
+[INFO] 05:22:49:438 MEMORIA/(45298:45448): Creación de Proceso PID: 1
+[INFO] 05:22:49:481 MEMORIA/(45298:45448): proceso 1 
+[INFO] 05:22:49:481 MEMORIA/(45298:45448): proceso 2 
+[INFO] 05:22:49:481 MEMORIA/(45298:45448): Creación de Proceso PID: 2
+[INFO] 05:22:49:569 MEMORIA/(45298:45448): proceso 1 
+[INFO] 05:22:49:569 MEMORIA/(45298:45448): proceso 2 
+[INFO] 05:22:49:569 MEMORIA/(45298:45448): proceso 3 
+[INFO] 05:22:49:569 MEMORIA/(45298:45448): Creación de Proceso PID: 3
+[INFO] 05:22:50:482 MEMORIA/(45298:45445): PID: 1 - Acción: Escribir - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 05:22:51:569 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:22:51:570 MEMORIA/(45298:45448): “PID: 1 - Crear Segmento: 1 - TAMAÑO: 128
+[INFO] 05:22:51:570 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:22:51:570 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:22:51:570 MEMORIA/(45298:45448): BASE : 256, SIZE: 768 
+
+[INFO] 05:22:51:570 MEMORIA/(45298:45448): cant memoria disponible 768 
+
+[INFO] 05:22:52:702 MEMORIA/(45298:45445): PID: 2 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 05:22:52:789 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:22:52:790 MEMORIA/(45298:45448): “PID: 2 - Crear Segmento: 1 - TAMAÑO: 64
+[INFO] 05:22:52:790 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:22:52:790 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:22:52:790 MEMORIA/(45298:45448): BASE : 320, SIZE: 704 
+
+[INFO] 05:22:52:790 MEMORIA/(45298:45448): cant memoria disponible 704 
+
+[INFO] 05:22:52:834 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:22:52:835 MEMORIA/(45298:45448): “PID: 2 - Crear Segmento: 2 - TAMAÑO: 64
+[INFO] 05:22:52:835 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:22:52:835 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:22:52:835 MEMORIA/(45298:45448): BASE : 384, SIZE: 640 
+
+[INFO] 05:22:52:835 MEMORIA/(45298:45448): cant memoria disponible 640 
+
+[INFO] 05:22:52:965 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:22:52:965 MEMORIA/(45298:45448): “PID: 2 - Crear Segmento: 3 - TAMAÑO: 64
+[INFO] 05:22:52:965 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:22:52:965 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:22:52:965 MEMORIA/(45298:45448): BASE : 448, SIZE: 576 
+
+[INFO] 05:22:52:965 MEMORIA/(45298:45448): cant memoria disponible 576 
+
+[INFO] 05:22:53:053 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:22:53:053 MEMORIA/(45298:45448): “PID: 2 - Crear Segmento: 4 - TAMAÑO: 64
+[INFO] 05:22:53:053 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:22:53:053 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:22:53:053 MEMORIA/(45298:45448): BASE : 512, SIZE: 512 
+
+[INFO] 05:22:53:053 MEMORIA/(45298:45448): cant memoria disponible 512 
+
+[INFO] 05:22:53:141 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:22:53:142 MEMORIA/(45298:45448): “PID: 2 - Crear Segmento: 5 - TAMAÑO: 64
+[INFO] 05:22:53:142 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:22:53:142 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:22:53:142 MEMORIA/(45298:45448): BASE : 576, SIZE: 448 
+
+[INFO] 05:22:53:142 MEMORIA/(45298:45448): cant memoria disponible 448 
+
+[INFO] 05:22:53:229 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:22:53:229 MEMORIA/(45298:45448): “PID: 2 - Crear Segmento: 6 - TAMAÑO: 64
+[INFO] 05:22:53:229 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:22:53:229 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:22:53:229 MEMORIA/(45298:45448): BASE : 640, SIZE: 384 
+
+[INFO] 05:22:53:229 MEMORIA/(45298:45448): cant memoria disponible 384 
+
+[INFO] 05:22:53:317 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:22:53:317 MEMORIA/(45298:45448): “PID: 2 - Crear Segmento: 7 - TAMAÑO: 64
+[INFO] 05:22:53:317 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:22:53:317 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:22:53:317 MEMORIA/(45298:45448): BASE : 704, SIZE: 320 
+
+[INFO] 05:22:53:317 MEMORIA/(45298:45448): cant memoria disponible 320 
+
+[INFO] 05:22:53:405 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:22:53:405 MEMORIA/(45298:45448): “PID: 2 - Crear Segmento: 8 - TAMAÑO: 64
+[INFO] 05:22:53:405 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:22:53:405 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:22:53:405 MEMORIA/(45298:45448): BASE : 768, SIZE: 256 
+
+[INFO] 05:22:53:405 MEMORIA/(45298:45448): cant memoria disponible 256 
+
+[INFO] 05:22:54:450 MEMORIA/(45298:45445): PID: 2 - Acción: Escribir - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 05:22:55:713 MEMORIA/(45298:45448): entraste a delete segment, pid 1
+[INFO] 05:22:55:714 MEMORIA/(45298:45448): segmento encontrado : base 128 , id 1 , tamanio 128 
+[INFO] 05:22:55:714 MEMORIA/(45298:45448): PID: 1 - Eliminar Segmento: 1  - Base: 128 - Tamanio 128 
+
+[INFO] 05:22:55:714 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:22:55:714 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:22:55:714 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 128 
+
+[INFO] 05:22:55:714 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:22:55:714 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 0  BASE : 768, SIZE: 256 
+
+[INFO] 05:22:55:714 MEMORIA/(45298:45448): memoria disponible 384
+[INFO] 05:22:56:758 MEMORIA/(45298:45445): PID: 1 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 05:22:56:890 MEMORIA/(45298:45448): Eliminación de Proceso PID: 1
+[INFO] 05:22:56:890 MEMORIA/(45298:45448): afuera de lenght, size 1
+[INFO] 05:22:56:890 MEMORIA/(45298:45448): size lista pids 2
+[INFO] 05:22:56:890 MEMORIA/(45298:45448): pid 2
+[INFO] 05:22:56:890 MEMORIA/(45298:45448): pid 3
+[INFO] 05:22:56:933 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:22:56:934 MEMORIA/(45298:45448): “PID: 2 - Crear Segmento: 9 - TAMAÑO: 64
+[INFO] 05:22:56:934 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:22:56:934 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:22:56:934 MEMORIA/(45298:45448): BASE : 192, SIZE: 64 
+
+[INFO] 05:22:56:934 MEMORIA/(45298:45448): segmento 1   
+[INFO] 05:22:56:934 MEMORIA/(45298:45448): BASE : 768, SIZE: 256 
+
+[INFO] 05:22:56:934 MEMORIA/(45298:45448): cant memoria disponible 320 
+
+[INFO] 05:22:57:978 MEMORIA/(45298:45445): PID: 2 - Acción: Escribir - Dirección física: 256 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 05:22:59:979 MEMORIA/(45298:45445): PID: 2 - Acción: Escribir - Dirección física: 704 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 05:23:02:070 MEMORIA/(45298:45445): PID: 2 - Acción: Leer - Dirección física: 256 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 05:23:02:158 MEMORIA/(45298:45448): entraste a delete segment, pid 2
+[INFO] 05:23:02:158 MEMORIA/(45298:45448): segmento encontrado : base 256 , id 1 , tamanio 64 
+[INFO] 05:23:02:158 MEMORIA/(45298:45448): PID: 2 - Eliminar Segmento: 1  - Base: 256 - Tamanio 64 
+
+[INFO] 05:23:02:158 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:02:158 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:02:158 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 128 
+
+[INFO] 05:23:02:158 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:23:02:158 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 0  BASE : 768, SIZE: 256 
+
+[INFO] 05:23:02:158 MEMORIA/(45298:45448): memoria disponible 384
+[INFO] 05:23:03:159 MEMORIA/(45298:45445): PID: 2 - Acción: Leer - Dirección física: 128 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 05:23:03:202 MEMORIA/(45298:45448): entraste a delete segment, pid 2
+[INFO] 05:23:03:202 MEMORIA/(45298:45448): segmento encontrado : base 320 , id 2 , tamanio 64 
+[INFO] 05:23:03:202 MEMORIA/(45298:45448): PID: 2 - Eliminar Segmento: 2  - Base: 320 - Tamanio 64 
+
+[INFO] 05:23:03:202 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:03:202 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:03:202 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 192 
+
+[INFO] 05:23:03:202 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:23:03:202 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 0  BASE : 768, SIZE: 256 
+
+[INFO] 05:23:03:202 MEMORIA/(45298:45448): memoria disponible 448
+[INFO] 05:23:03:245 MEMORIA/(45298:45448): entraste a delete segment, pid 2
+[INFO] 05:23:03:246 MEMORIA/(45298:45448): segmento encontrado : base 448 , id 4 , tamanio 64 
+[INFO] 05:23:03:246 MEMORIA/(45298:45448): PID: 2 - Eliminar Segmento: 4  - Base: 448 - Tamanio 64 
+
+[INFO] 05:23:03:246 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:03:246 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:03:246 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 192 
+
+[INFO] 05:23:03:246 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:03:246 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 448, SIZE: 64 
+
+[INFO] 05:23:03:246 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:23:03:246 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 0  BASE : 768, SIZE: 256 
+
+[INFO] 05:23:03:246 MEMORIA/(45298:45448): memoria disponible 512
+[INFO] 05:23:03:377 MEMORIA/(45298:45448): entraste a delete segment, pid 2
+[INFO] 05:23:03:378 MEMORIA/(45298:45448): segmento encontrado : base 512 , id 5 , tamanio 64 
+[INFO] 05:23:03:378 MEMORIA/(45298:45448): PID: 2 - Eliminar Segmento: 5  - Base: 512 - Tamanio 64 
+
+[INFO] 05:23:03:378 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:03:378 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:03:378 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 192 
+
+[INFO] 05:23:03:378 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:03:378 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 448, SIZE: 128 
+
+[INFO] 05:23:03:378 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:23:03:378 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 0  BASE : 768, SIZE: 256 
+
+[INFO] 05:23:03:378 MEMORIA/(45298:45448): memoria disponible 576
+[INFO] 05:23:03:597 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:23:03:598 MEMORIA/(45298:45448): “PID: 3 - Crear Segmento: 1 - TAMAÑO: 256
+[INFO] 05:23:03:598 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:03:598 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:23:03:598 MEMORIA/(45298:45448): BASE : 192, SIZE: 192 
+
+[INFO] 05:23:03:598 MEMORIA/(45298:45448): segmento 1   
+[INFO] 05:23:03:598 MEMORIA/(45298:45448): BASE : 448, SIZE: 128 
+
+[INFO] 05:23:03:598 MEMORIA/(45298:45448): cant memoria disponible 320 
+
+[INFO] 05:23:04:642 MEMORIA/(45298:45445): PID: 3 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 05:23:04:773 MEMORIA/(45298:45448): hay espacio disponible... creando segmento. 
+
+[INFO] 05:23:04:774 MEMORIA/(45298:45448): “PID: 3 - Crear Segmento: 2 - TAMAÑO: 128
+[INFO] 05:23:04:774 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:04:774 MEMORIA/(45298:45448): segmento 0   
+[INFO] 05:23:04:774 MEMORIA/(45298:45448): BASE : 320, SIZE: 64 
+
+[INFO] 05:23:04:774 MEMORIA/(45298:45448): segmento 1   
+[INFO] 05:23:04:774 MEMORIA/(45298:45448): BASE : 448, SIZE: 128 
+
+[INFO] 05:23:04:774 MEMORIA/(45298:45448): cant memoria disponible 192 
+
+[INFO] 05:23:04:949 MEMORIA/(45298:45448): Eliminación de Proceso PID: 3
+[INFO] 05:23:04:950 MEMORIA/(45298:45448): afuera de lenght, size 3
+[INFO] 05:23:04:950 MEMORIA/(45298:45448): entre a lenght
+[INFO] 05:23:04:950 MEMORIA/(45298:45448): segmento encontrado : base 768 , id 1 , tamanio 256 
+[INFO] 05:23:04:950 MEMORIA/(45298:45448): PID: 3 - Eliminar Segmento: 1  - Base: 768 - Tamanio 256 
+
+[INFO] 05:23:04:950 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:04:950 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 320, SIZE: 64 
+
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 448, SIZE: 128 
+
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 768, SIZE: 256 
+
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): memoria disponible 448
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): entre a lenght
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): segmento encontrado : base 192 , id 2 , tamanio 128 
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): PID: 3 - Eliminar Segmento: 2  - Base: 192 - Tamanio 128 
+
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 192 
+
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:951 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 448, SIZE: 128 
+
+[INFO] 05:23:04:952 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:952 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 768, SIZE: 256 
+
+[INFO] 05:23:04:952 MEMORIA/(45298:45448): memoria disponible 576
+[INFO] 05:23:04:952 MEMORIA/(45298:45448): size lista pids 1
+[INFO] 05:23:04:952 MEMORIA/(45298:45448): pid 2
+[INFO] 05:23:04:994 MEMORIA/(45298:45448): Eliminación de Proceso PID: 2
+[INFO] 05:23:04:994 MEMORIA/(45298:45448): afuera de lenght, size 6
+[INFO] 05:23:04:994 MEMORIA/(45298:45448): entre a lenght
+[INFO] 05:23:04:994 MEMORIA/(45298:45448): segmento encontrado : base 384 , id 3 , tamanio 64 
+[INFO] 05:23:04:994 MEMORIA/(45298:45448): PID: 2 - Eliminar Segmento: 3  - Base: 384 - Tamanio 64 
+
+[INFO] 05:23:04:995 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:04:995 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:995 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 384 
+
+[INFO] 05:23:04:995 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:995 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 768, SIZE: 256 
+
+[INFO] 05:23:04:995 MEMORIA/(45298:45448): memoria disponible 640
+[INFO] 05:23:04:995 MEMORIA/(45298:45448): entre a lenght
+[INFO] 05:23:04:995 MEMORIA/(45298:45448): segmento encontrado : base 576 , id 6 , tamanio 64 
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): PID: 2 - Eliminar Segmento: 6  - Base: 576 - Tamanio 64 
+
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 448 
+
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 768, SIZE: 256 
+
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): memoria disponible 704
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): entre a lenght
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): segmento encontrado : base 640 , id 7 , tamanio 64 
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): PID: 2 - Eliminar Segmento: 7  - Base: 640 - Tamanio 64 
+
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 512 
+
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 768, SIZE: 256 
+
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): memoria disponible 768
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): entre a lenght
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): segmento encontrado : base 704 , id 8 , tamanio 64 
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): PID: 2 - Eliminar Segmento: 8  - Base: 704 - Tamanio 64 
+
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 832 
+
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): memoria disponible 832
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): entre a lenght
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): segmento encontrado : base 128 , id 9 , tamanio 64 
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): PID: 2 - Eliminar Segmento: 9  - Base: 128 - Tamanio 64 
+
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): lista de segmenos libres actualizada: 
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): segmento 9999   
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 896 
+
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): memoria disponible 896
+[INFO] 05:23:04:996 MEMORIA/(45298:45448): size lista pids 0
+[INFO] 14:59:30:616 MEMORIA/(45298:45448): DISCONECT!
+[INFO] 14:59:30:910 MEMORIA/(45298:45445): DISCONECT!
+[INFO] 15:14:33:951 MEMORIA/(47295:47295): cargue memoria principal
+[INFO] 15:15:14:991 MEMORIA/(47295:47295): Se conecto un cliente
+[INFO] 15:15:14:992 MEMORIA/(47295:47310): conexion creada con MEMORIA
+[INFO] 15:15:16:138 MEMORIA/(47295:47295): Se conecto un cliente
+[INFO] 15:15:17:696 MEMORIA/(47295:47312): proceso 1 
+[INFO] 15:15:17:696 MEMORIA/(47295:47312): Creación de Proceso PID: 1
+[INFO] 15:15:17:738 MEMORIA/(47295:47312): proceso 1 
+[INFO] 15:15:17:738 MEMORIA/(47295:47312): proceso 2 
+[INFO] 15:15:17:738 MEMORIA/(47295:47312): Creación de Proceso PID: 2
+[INFO] 15:15:17:826 MEMORIA/(47295:47312): proceso 1 
+[INFO] 15:15:17:826 MEMORIA/(47295:47312): proceso 2 
+[INFO] 15:15:17:826 MEMORIA/(47295:47312): proceso 3 
+[INFO] 15:15:17:826 MEMORIA/(47295:47312): Creación de Proceso PID: 3
+[INFO] 15:15:18:738 MEMORIA/(47295:47310): PID: 1 - Acción: Escribir - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 15:15:19:826 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:19:826 MEMORIA/(47295:47312): “PID: 1 - Crear Segmento: 1 - TAMAÑO: 128
+[INFO] 15:15:19:826 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:19:826 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:19:826 MEMORIA/(47295:47312): BASE : 256, SIZE: 768 
+
+[INFO] 15:15:19:826 MEMORIA/(47295:47312): cant memoria disponible 768 
+
+[INFO] 15:15:21:047 MEMORIA/(47295:47310): PID: 3 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 15:15:21:134 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:21:134 MEMORIA/(47295:47312): “PID: 3 - Crear Segmento: 1 - TAMAÑO: 64
+[INFO] 15:15:21:134 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:21:134 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:21:135 MEMORIA/(47295:47312): BASE : 320, SIZE: 704 
+
+[INFO] 15:15:21:135 MEMORIA/(47295:47312): cant memoria disponible 704 
+
+[INFO] 15:15:21:178 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:21:179 MEMORIA/(47295:47312): “PID: 3 - Crear Segmento: 2 - TAMAÑO: 64
+[INFO] 15:15:21:179 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:21:179 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:21:179 MEMORIA/(47295:47312): BASE : 384, SIZE: 640 
+
+[INFO] 15:15:21:179 MEMORIA/(47295:47312): cant memoria disponible 640 
+
+[INFO] 15:15:21:310 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:21:310 MEMORIA/(47295:47312): “PID: 3 - Crear Segmento: 3 - TAMAÑO: 64
+[INFO] 15:15:21:310 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:21:310 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:21:310 MEMORIA/(47295:47312): BASE : 448, SIZE: 576 
+
+[INFO] 15:15:21:310 MEMORIA/(47295:47312): cant memoria disponible 576 
+
+[INFO] 15:15:21:398 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:21:398 MEMORIA/(47295:47312): “PID: 3 - Crear Segmento: 4 - TAMAÑO: 64
+[INFO] 15:15:21:398 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:21:398 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:21:398 MEMORIA/(47295:47312): BASE : 512, SIZE: 512 
+
+[INFO] 15:15:21:398 MEMORIA/(47295:47312): cant memoria disponible 512 
+
+[INFO] 15:15:21:486 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:21:486 MEMORIA/(47295:47312): “PID: 3 - Crear Segmento: 5 - TAMAÑO: 64
+[INFO] 15:15:21:486 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:21:486 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:21:486 MEMORIA/(47295:47312): BASE : 576, SIZE: 448 
+
+[INFO] 15:15:21:486 MEMORIA/(47295:47312): cant memoria disponible 448 
+
+[INFO] 15:15:21:574 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:21:574 MEMORIA/(47295:47312): “PID: 3 - Crear Segmento: 6 - TAMAÑO: 64
+[INFO] 15:15:21:574 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:21:574 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:21:574 MEMORIA/(47295:47312): BASE : 640, SIZE: 384 
+
+[INFO] 15:15:21:575 MEMORIA/(47295:47312): cant memoria disponible 384 
+
+[INFO] 15:15:21:662 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:21:662 MEMORIA/(47295:47312): “PID: 3 - Crear Segmento: 7 - TAMAÑO: 64
+[INFO] 15:15:21:662 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:21:662 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:21:662 MEMORIA/(47295:47312): BASE : 704, SIZE: 320 
+
+[INFO] 15:15:21:662 MEMORIA/(47295:47312): cant memoria disponible 320 
+
+[INFO] 15:15:21:750 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:21:750 MEMORIA/(47295:47312): “PID: 3 - Crear Segmento: 8 - TAMAÑO: 64
+[INFO] 15:15:21:750 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:21:750 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:21:751 MEMORIA/(47295:47312): BASE : 768, SIZE: 256 
+
+[INFO] 15:15:21:751 MEMORIA/(47295:47312): cant memoria disponible 256 
+
+[INFO] 15:15:22:795 MEMORIA/(47295:47310): PID: 3 - Acción: Escribir - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 15:15:23:970 MEMORIA/(47295:47312): entraste a delete segment, pid 1
+[INFO] 15:15:23:970 MEMORIA/(47295:47312): segmento encontrado : base 128 , id 1 , tamanio 128 
+[INFO] 15:15:23:970 MEMORIA/(47295:47312): PID: 1 - Eliminar Segmento: 1  - Base: 128 - Tamanio 128 
+
+[INFO] 15:15:23:970 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:23:970 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:23:970 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 128 
+
+[INFO] 15:15:23:970 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:23:970 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 0  BASE : 768, SIZE: 256 
+
+[INFO] 15:15:23:970 MEMORIA/(47295:47312): memoria disponible 384
+[INFO] 15:15:25:015 MEMORIA/(47295:47310): PID: 1 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 15:15:25:146 MEMORIA/(47295:47312): Eliminación de Proceso PID: 1
+[INFO] 15:15:25:146 MEMORIA/(47295:47312): afuera de lenght, size 1
+[INFO] 15:15:25:146 MEMORIA/(47295:47312): size lista pids 2
+[INFO] 15:15:25:146 MEMORIA/(47295:47312): pid 2
+[INFO] 15:15:25:147 MEMORIA/(47295:47312): pid 3
+[INFO] 15:15:25:190 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:25:190 MEMORIA/(47295:47312): “PID: 3 - Crear Segmento: 9 - TAMAÑO: 64
+[INFO] 15:15:25:191 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:25:191 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:25:191 MEMORIA/(47295:47312): BASE : 192, SIZE: 64 
+
+[INFO] 15:15:25:191 MEMORIA/(47295:47312): segmento 1   
+[INFO] 15:15:25:191 MEMORIA/(47295:47312): BASE : 768, SIZE: 256 
+
+[INFO] 15:15:25:191 MEMORIA/(47295:47312): cant memoria disponible 320 
+
+[INFO] 15:15:26:235 MEMORIA/(47295:47310): PID: 3 - Acción: Escribir - Dirección física: 256 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 15:15:28:236 MEMORIA/(47295:47310): PID: 3 - Acción: Escribir - Dirección física: 704 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 15:15:30:323 MEMORIA/(47295:47310): PID: 3 - Acción: Leer - Dirección física: 256 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 15:15:30:410 MEMORIA/(47295:47312): entraste a delete segment, pid 3
+[INFO] 15:15:30:411 MEMORIA/(47295:47312): segmento encontrado : base 256 , id 1 , tamanio 64 
+[INFO] 15:15:30:411 MEMORIA/(47295:47312): PID: 3 - Eliminar Segmento: 1  - Base: 256 - Tamanio 64 
+
+[INFO] 15:15:30:411 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:30:411 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:30:411 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 128 
+
+[INFO] 15:15:30:411 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:30:411 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 0  BASE : 768, SIZE: 256 
+
+[INFO] 15:15:30:411 MEMORIA/(47295:47312): memoria disponible 384
+[INFO] 15:15:31:411 MEMORIA/(47295:47310): PID: 3 - Acción: Leer - Dirección física: 128 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 15:15:31:454 MEMORIA/(47295:47312): entraste a delete segment, pid 3
+[INFO] 15:15:31:455 MEMORIA/(47295:47312): segmento encontrado : base 320 , id 2 , tamanio 64 
+[INFO] 15:15:31:455 MEMORIA/(47295:47312): PID: 3 - Eliminar Segmento: 2  - Base: 320 - Tamanio 64 
+
+[INFO] 15:15:31:455 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:31:455 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:31:455 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 192 
+
+[INFO] 15:15:31:455 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:31:455 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 0  BASE : 768, SIZE: 256 
+
+[INFO] 15:15:31:455 MEMORIA/(47295:47312): memoria disponible 448
+[INFO] 15:15:31:498 MEMORIA/(47295:47312): entraste a delete segment, pid 3
+[INFO] 15:15:31:499 MEMORIA/(47295:47312): segmento encontrado : base 448 , id 4 , tamanio 64 
+[INFO] 15:15:31:499 MEMORIA/(47295:47312): PID: 3 - Eliminar Segmento: 4  - Base: 448 - Tamanio 64 
+
+[INFO] 15:15:31:499 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:31:500 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:31:500 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 192 
+
+[INFO] 15:15:31:500 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:31:500 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 448, SIZE: 64 
+
+[INFO] 15:15:31:500 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:31:500 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 0  BASE : 768, SIZE: 256 
+
+[INFO] 15:15:31:500 MEMORIA/(47295:47312): memoria disponible 512
+[INFO] 15:15:31:630 MEMORIA/(47295:47312): entraste a delete segment, pid 3
+[INFO] 15:15:31:631 MEMORIA/(47295:47312): segmento encontrado : base 512 , id 5 , tamanio 64 
+[INFO] 15:15:31:631 MEMORIA/(47295:47312): PID: 3 - Eliminar Segmento: 5  - Base: 512 - Tamanio 64 
+
+[INFO] 15:15:31:631 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:31:631 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:31:631 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 192 
+
+[INFO] 15:15:31:631 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:31:631 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 448, SIZE: 128 
+
+[INFO] 15:15:31:631 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:31:631 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 0  BASE : 768, SIZE: 256 
+
+[INFO] 15:15:31:631 MEMORIA/(47295:47312): memoria disponible 576
+[INFO] 15:15:31:850 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:31:850 MEMORIA/(47295:47312): “PID: 2 - Crear Segmento: 1 - TAMAÑO: 256
+[INFO] 15:15:31:850 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:31:850 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:31:850 MEMORIA/(47295:47312): BASE : 192, SIZE: 192 
+
+[INFO] 15:15:31:850 MEMORIA/(47295:47312): segmento 1   
+[INFO] 15:15:31:851 MEMORIA/(47295:47312): BASE : 448, SIZE: 128 
+
+[INFO] 15:15:31:851 MEMORIA/(47295:47312): cant memoria disponible 320 
+
+[INFO] 15:15:32:895 MEMORIA/(47295:47310): PID: 2 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 15:15:33:026 MEMORIA/(47295:47312): hay espacio disponible... creando segmento. 
+
+[INFO] 15:15:33:027 MEMORIA/(47295:47312): “PID: 2 - Crear Segmento: 2 - TAMAÑO: 128
+[INFO] 15:15:33:027 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:33:027 MEMORIA/(47295:47312): segmento 0   
+[INFO] 15:15:33:027 MEMORIA/(47295:47312): BASE : 320, SIZE: 64 
+
+[INFO] 15:15:33:027 MEMORIA/(47295:47312): segmento 1   
+[INFO] 15:15:33:027 MEMORIA/(47295:47312): BASE : 448, SIZE: 128 
+
+[INFO] 15:15:33:027 MEMORIA/(47295:47312): cant memoria disponible 192 
+
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): Eliminación de Proceso PID: 2
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): afuera de lenght, size 3
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): entre a lenght
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): segmento encontrado : base 768 , id 1 , tamanio 256 
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): PID: 2 - Eliminar Segmento: 1  - Base: 768 - Tamanio 256 
+
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 320, SIZE: 64 
+
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 448, SIZE: 128 
+
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 768, SIZE: 256 
+
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): memoria disponible 448
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): entre a lenght
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): segmento encontrado : base 192 , id 2 , tamanio 128 
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): PID: 2 - Eliminar Segmento: 2  - Base: 192 - Tamanio 128 
+
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 192 
+
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 448, SIZE: 128 
+
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 768, SIZE: 256 
+
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): memoria disponible 576
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): size lista pids 1
+[INFO] 15:15:33:202 MEMORIA/(47295:47312): pid 3
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): Eliminación de Proceso PID: 3
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): afuera de lenght, size 6
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): entre a lenght
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): segmento encontrado : base 384 , id 3 , tamanio 64 
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): PID: 3 - Eliminar Segmento: 3  - Base: 384 - Tamanio 64 
+
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 384 
+
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 768, SIZE: 256 
+
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): memoria disponible 640
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): entre a lenght
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): segmento encontrado : base 576 , id 6 , tamanio 64 
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): PID: 3 - Eliminar Segmento: 6  - Base: 576 - Tamanio 64 
+
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 448 
+
+[INFO] 15:15:33:246 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 768, SIZE: 256 
+
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): memoria disponible 704
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): entre a lenght
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): segmento encontrado : base 640 , id 7 , tamanio 64 
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): PID: 3 - Eliminar Segmento: 7  - Base: 640 - Tamanio 64 
+
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 512 
+
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 768, SIZE: 256 
+
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): memoria disponible 768
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): entre a lenght
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): segmento encontrado : base 704 , id 8 , tamanio 64 
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): PID: 3 - Eliminar Segmento: 8  - Base: 704 - Tamanio 64 
+
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 192, SIZE: 832 
+
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): memoria disponible 832
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): entre a lenght
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): segmento encontrado : base 128 , id 9 , tamanio 64 
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): PID: 3 - Eliminar Segmento: 9  - Base: 128 - Tamanio 64 
+
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): lista de segmenos libres actualizada: 
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): segmento 9999   
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 896 
+
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): memoria disponible 896
+[INFO] 15:15:33:247 MEMORIA/(47295:47312): size lista pids 0
+[INFO] 15:15:49:843 MEMORIA/(47295:47312): DISCONECT!
+[INFO] 15:15:51:906 MEMORIA/(47295:47310): DISCONECT!
+[INFO] 15:17:24:228 MEMORIA/(47295:47295): Se conecto un cliente
+[INFO] 15:17:24:229 MEMORIA/(47295:47361): conexion creada con MEMORIA
+[INFO] 15:17:25:469 MEMORIA/(47295:47295): Se conecto un cliente
+[INFO] 15:17:29:386 MEMORIA/(47295:47363): proceso 1 
+[INFO] 15:17:29:386 MEMORIA/(47295:47363): Creación de Proceso PID: 1
+[INFO] 15:17:29:430 MEMORIA/(47295:47363): proceso 1 
+[INFO] 15:17:29:430 MEMORIA/(47295:47363): proceso 2 
+[INFO] 15:17:29:430 MEMORIA/(47295:47363): Creación de Proceso PID: 2
+[INFO] 15:17:29:518 MEMORIA/(47295:47363): proceso 1 
+[INFO] 15:17:29:519 MEMORIA/(47295:47363): proceso 2 
+[INFO] 15:17:29:519 MEMORIA/(47295:47363): proceso 3 
+[INFO] 15:17:29:519 MEMORIA/(47295:47363): Creación de Proceso PID: 3
+[INFO] 15:17:30:650 MEMORIA/(47295:47361): PID: 3 - Acción: Escribir - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 15:17:31:738 MEMORIA/(47295:47363): hay espacio disponible... creando segmento. 
+
+[INFO] 15:17:31:739 MEMORIA/(47295:47363): “PID: 3 - Crear Segmento: 1 - TAMAÑO: 128
+[INFO] 15:17:31:739 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:17:31:739 MEMORIA/(47295:47363): segmento 0   
+[INFO] 15:17:31:739 MEMORIA/(47295:47363): BASE : 256, SIZE: 768 
+
+[INFO] 15:17:31:739 MEMORIA/(47295:47363): cant memoria disponible 768 
+
+[INFO] 15:17:32:827 MEMORIA/(47295:47361): PID: 1 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 15:17:32:914 MEMORIA/(47295:47363): hay espacio disponible... creando segmento. 
+
+[INFO] 15:17:32:915 MEMORIA/(47295:47363): “PID: 1 - Crear Segmento: 1 - TAMAÑO: 64
+[INFO] 15:17:32:915 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:17:32:915 MEMORIA/(47295:47363): segmento 0   
+[INFO] 15:17:32:915 MEMORIA/(47295:47363): BASE : 320, SIZE: 704 
+
+[INFO] 15:17:32:915 MEMORIA/(47295:47363): cant memoria disponible 704 
+
+[INFO] 15:17:32:958 MEMORIA/(47295:47363): hay espacio disponible... creando segmento. 
+
+[INFO] 15:17:32:960 MEMORIA/(47295:47363): “PID: 1 - Crear Segmento: 2 - TAMAÑO: 64
+[INFO] 15:17:32:960 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:17:32:960 MEMORIA/(47295:47363): segmento 0   
+[INFO] 15:17:32:960 MEMORIA/(47295:47363): BASE : 384, SIZE: 640 
+
+[INFO] 15:17:32:960 MEMORIA/(47295:47363): cant memoria disponible 640 
+
+[INFO] 15:17:33:090 MEMORIA/(47295:47363): hay espacio disponible... creando segmento. 
+
+[INFO] 15:17:33:092 MEMORIA/(47295:47363): “PID: 1 - Crear Segmento: 3 - TAMAÑO: 64
+[INFO] 15:17:33:092 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:17:33:092 MEMORIA/(47295:47363): segmento 0   
+[INFO] 15:17:33:092 MEMORIA/(47295:47363): BASE : 448, SIZE: 576 
+
+[INFO] 15:17:33:092 MEMORIA/(47295:47363): cant memoria disponible 576 
+
+[INFO] 15:17:33:178 MEMORIA/(47295:47363): hay espacio disponible... creando segmento. 
+
+[INFO] 15:17:33:179 MEMORIA/(47295:47363): “PID: 1 - Crear Segmento: 4 - TAMAÑO: 64
+[INFO] 15:17:33:179 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:17:33:179 MEMORIA/(47295:47363): segmento 0   
+[INFO] 15:17:33:179 MEMORIA/(47295:47363): BASE : 512, SIZE: 512 
+
+[INFO] 15:17:33:179 MEMORIA/(47295:47363): cant memoria disponible 512 
+
+[INFO] 15:17:33:266 MEMORIA/(47295:47363): hay espacio disponible... creando segmento. 
+
+[INFO] 15:17:33:266 MEMORIA/(47295:47363): “PID: 1 - Crear Segmento: 5 - TAMAÑO: 64
+[INFO] 15:17:33:266 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:17:33:266 MEMORIA/(47295:47363): segmento 0   
+[INFO] 15:17:33:266 MEMORIA/(47295:47363): BASE : 576, SIZE: 448 
+
+[INFO] 15:17:33:266 MEMORIA/(47295:47363): cant memoria disponible 448 
+
+[INFO] 15:17:33:354 MEMORIA/(47295:47363): hay espacio disponible... creando segmento. 
+
+[INFO] 15:17:33:355 MEMORIA/(47295:47363): “PID: 1 - Crear Segmento: 6 - TAMAÑO: 64
+[INFO] 15:17:33:355 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:17:33:355 MEMORIA/(47295:47363): segmento 0   
+[INFO] 15:17:33:355 MEMORIA/(47295:47363): BASE : 640, SIZE: 384 
+
+[INFO] 15:17:33:355 MEMORIA/(47295:47363): cant memoria disponible 384 
+
+[INFO] 15:17:33:442 MEMORIA/(47295:47363): hay espacio disponible... creando segmento. 
+
+[INFO] 15:17:33:443 MEMORIA/(47295:47363): “PID: 1 - Crear Segmento: 7 - TAMAÑO: 64
+[INFO] 15:17:33:443 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:17:33:443 MEMORIA/(47295:47363): segmento 0   
+[INFO] 15:17:33:443 MEMORIA/(47295:47363): BASE : 704, SIZE: 320 
+
+[INFO] 15:17:33:443 MEMORIA/(47295:47363): cant memoria disponible 320 
+
+[INFO] 15:17:33:530 MEMORIA/(47295:47363): hay espacio disponible... creando segmento. 
+
+[INFO] 15:17:33:531 MEMORIA/(47295:47363): “PID: 1 - Crear Segmento: 8 - TAMAÑO: 64
+[INFO] 15:17:33:531 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:17:33:531 MEMORIA/(47295:47363): segmento 0   
+[INFO] 15:17:33:531 MEMORIA/(47295:47363): BASE : 768, SIZE: 256 
+
+[INFO] 15:17:33:531 MEMORIA/(47295:47363): cant memoria disponible 256 
+
+[INFO] 15:17:34:575 MEMORIA/(47295:47361): PID: 1 - Acción: Escribir - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 15:17:35:706 MEMORIA/(47295:47363): hay espacio disponible... creando segmento. 
+
+[INFO] 15:17:35:707 MEMORIA/(47295:47363): “PID: 1 - Crear Segmento: 9 - TAMAÑO: 64
+[INFO] 15:17:35:707 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:17:35:707 MEMORIA/(47295:47363): segmento 0   
+[INFO] 15:17:35:707 MEMORIA/(47295:47363): BASE : 832, SIZE: 192 
+
+[INFO] 15:17:35:707 MEMORIA/(47295:47363): cant memoria disponible 192 
+
+[INFO] 15:17:36:751 MEMORIA/(47295:47361): PID: 1 - Acción: Escribir - Dirección física: 256 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 15:17:38:752 MEMORIA/(47295:47361): PID: 1 - Acción: Escribir - Dirección física: 704 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 15:17:39:926 MEMORIA/(47295:47363): entraste a delete segment, pid 3
+[INFO] 15:17:39:926 MEMORIA/(47295:47363): segmento encontrado : base 128 , id 1 , tamanio 128 
+[INFO] 15:17:39:926 MEMORIA/(47295:47363): PID: 3 - Eliminar Segmento: 1  - Base: 128 - Tamanio 128 
+
+[INFO] 15:17:39:926 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:17:39:926 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:17:39:926 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 128 
+
+[INFO] 15:17:39:926 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:17:39:926 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 832, SIZE: 192 
+
+[INFO] 15:17:39:927 MEMORIA/(47295:47363): memoria disponible 320
+[INFO] 15:17:40:971 MEMORIA/(47295:47361): PID: 3 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[INFO] 15:17:41:102 MEMORIA/(47295:47363): Eliminación de Proceso PID: 3
+[INFO] 15:17:41:102 MEMORIA/(47295:47363): afuera de lenght, size 1
+[INFO] 15:17:41:103 MEMORIA/(47295:47363): size lista pids 2
+[INFO] 15:17:41:103 MEMORIA/(47295:47363): pid 1
+[INFO] 15:17:41:103 MEMORIA/(47295:47363): pid 2
+[INFO] 15:17:41:146 MEMORIA/(47295:47363): Inicio de compactacion
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): hay una cantidad de 2 procesos
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): Proceso NUMERO 1 
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): PID <1> - Segmento <0> - Base <0> - Tamanio <128> 
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): 
+
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): PID <1> - Segmento <1> - Base <128> - Tamanio <64> 
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): 
+
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): PID <1> - Segmento <2> - Base <192> - Tamanio <64> 
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): 
+
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): PID <1> - Segmento <3> - Base <256> - Tamanio <64> 
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): 
+
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): PID <1> - Segmento <4> - Base <320> - Tamanio <64> 
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): 
+
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): PID <1> - Segmento <5> - Base <384> - Tamanio <64> 
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): 
+
+[INFO] 15:18:41:147 MEMORIA/(47295:47363): PID <1> - Segmento <6> - Base <448> - Tamanio <64> 
+[INFO] 15:18:41:148 MEMORIA/(47295:47363): 
+
+[INFO] 15:18:41:148 MEMORIA/(47295:47363): PID <1> - Segmento <7> - Base <512> - Tamanio <64> 
+[INFO] 15:18:41:148 MEMORIA/(47295:47363): 
+
+[INFO] 15:18:41:148 MEMORIA/(47295:47363): PID <1> - Segmento <8> - Base <576> - Tamanio <64> 
+[INFO] 15:18:41:148 MEMORIA/(47295:47363): 
+
+[INFO] 15:18:41:148 MEMORIA/(47295:47363): PID <1> - Segmento <9> - Base <640> - Tamanio <64> 
+[INFO] 15:18:41:148 MEMORIA/(47295:47363): 
+
+[INFO] 15:18:41:148 MEMORIA/(47295:47363): Proceso NUMERO 2 
+[INFO] 15:18:41:148 MEMORIA/(47295:47363): PID <2> - Segmento <0> - Base <0> - Tamanio <128> 
+[INFO] 15:18:41:148 MEMORIA/(47295:47363): 
+
+[INFO] 15:18:41:190 MEMORIA/(47295:47363): hay espacio disponible... creando segmento. 
+
+[INFO] 15:18:41:190 MEMORIA/(47295:47363): “PID: 2 - Crear Segmento: 1 - TAMAÑO: 256
+[INFO] 15:18:41:190 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:18:41:190 MEMORIA/(47295:47363): segmento 0   
+[INFO] 15:18:41:190 MEMORIA/(47295:47363): BASE : 960, SIZE: 64 
+
+[INFO] 15:18:41:190 MEMORIA/(47295:47363): cant memoria disponible 64 
+
+[INFO] 15:18:42:279 MEMORIA/(47295:47361): PID: 2 - Acción: Leer - Dirección física: 12 - Tamaño: <4> - Origen: <MEMORIA>
+[ERROR] 15:18:42:410 MEMORIA/(47295:47363): no entra en mp
+[INFO] 15:18:42:454 MEMORIA/(47295:47363): Eliminación de Proceso PID: 2
+[INFO] 15:18:42:454 MEMORIA/(47295:47363): afuera de lenght, size 2
+[INFO] 15:18:42:454 MEMORIA/(47295:47363): entre a lenght
+[INFO] 15:18:42:454 MEMORIA/(47295:47363): segmento encontrado : base 704 , id 1 , tamanio 256 
+[INFO] 15:18:42:454 MEMORIA/(47295:47363): PID: 2 - Eliminar Segmento: 1  - Base: 704 - Tamanio 256 
+
+[INFO] 15:18:42:454 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:18:42:454 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:42:454 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 15:18:42:454 MEMORIA/(47295:47363): memoria disponible 320
+[INFO] 15:18:42:454 MEMORIA/(47295:47363): size lista pids 1
+[INFO] 15:18:42:454 MEMORIA/(47295:47363): pid 1
+[INFO] 15:18:43:455 MEMORIA/(47295:47361): PID: 1 - Acción: Leer - Dirección física: 128 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 15:18:43:455 MEMORIA/(47295:47363): entraste a delete segment, pid 1
+[INFO] 15:18:43:455 MEMORIA/(47295:47363): segmento encontrado : base 128 , id 1 , tamanio 64 
+[INFO] 15:18:43:455 MEMORIA/(47295:47363): PID: 1 - Eliminar Segmento: 1  - Base: 128 - Tamanio 64 
+
+[INFO] 15:18:43:456 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:18:43:456 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:43:456 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 64 
+
+[INFO] 15:18:43:456 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:43:456 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 15:18:43:456 MEMORIA/(47295:47363): memoria disponible 384
+[INFO] 15:18:44:499 MEMORIA/(47295:47361): PID: 1 - Acción: Leer - Dirección física: 640 - Tamaño: <8> - Origen: <MEMORIA>
+[INFO] 15:18:44:542 MEMORIA/(47295:47363): entraste a delete segment, pid 1
+[INFO] 15:18:44:542 MEMORIA/(47295:47363): segmento encontrado : base 192 , id 2 , tamanio 64 
+[INFO] 15:18:44:542 MEMORIA/(47295:47363): PID: 1 - Eliminar Segmento: 2  - Base: 192 - Tamanio 64 
+
+[INFO] 15:18:44:542 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:18:44:542 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:543 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 128 
+
+[INFO] 15:18:44:543 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:543 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 15:18:44:543 MEMORIA/(47295:47363): memoria disponible 448
+[INFO] 15:18:44:586 MEMORIA/(47295:47363): entraste a delete segment, pid 1
+[INFO] 15:18:44:586 MEMORIA/(47295:47363): segmento encontrado : base 320 , id 4 , tamanio 64 
+[INFO] 15:18:44:586 MEMORIA/(47295:47363): PID: 1 - Eliminar Segmento: 4  - Base: 320 - Tamanio 64 
+
+[INFO] 15:18:44:586 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:18:44:587 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:587 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 128 
+
+[INFO] 15:18:44:587 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:587 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 320, SIZE: 64 
+
+[INFO] 15:18:44:587 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:587 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 15:18:44:587 MEMORIA/(47295:47363): memoria disponible 512
+[INFO] 15:18:44:718 MEMORIA/(47295:47363): entraste a delete segment, pid 1
+[INFO] 15:18:44:718 MEMORIA/(47295:47363): segmento encontrado : base 384 , id 5 , tamanio 64 
+[INFO] 15:18:44:718 MEMORIA/(47295:47363): PID: 1 - Eliminar Segmento: 5  - Base: 384 - Tamanio 64 
+
+[INFO] 15:18:44:718 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:18:44:718 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:718 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 128 
+
+[INFO] 15:18:44:718 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:718 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 320, SIZE: 128 
+
+[INFO] 15:18:44:718 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:718 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 15:18:44:718 MEMORIA/(47295:47363): memoria disponible 576
+[INFO] 15:18:44:894 MEMORIA/(47295:47363): Eliminación de Proceso PID: 1
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): afuera de lenght, size 6
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): entre a lenght
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): segmento encontrado : base 256 , id 3 , tamanio 64 
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): PID: 1 - Eliminar Segmento: 3  - Base: 256 - Tamanio 64 
+
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 320 
+
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): memoria disponible 640
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): entre a lenght
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): segmento encontrado : base 448 , id 6 , tamanio 64 
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): PID: 1 - Eliminar Segmento: 6  - Base: 448 - Tamanio 64 
+
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:895 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 384 
+
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): memoria disponible 704
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): entre a lenght
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): segmento encontrado : base 512 , id 7 , tamanio 64 
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): PID: 1 - Eliminar Segmento: 7  - Base: 512 - Tamanio 64 
+
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 448 
+
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): memoria disponible 768
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): entre a lenght
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): segmento encontrado : base 576 , id 8 , tamanio 64 
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): PID: 1 - Eliminar Segmento: 8  - Base: 576 - Tamanio 64 
+
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 512 
+
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:896 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 704, SIZE: 320 
+
+[INFO] 15:18:44:897 MEMORIA/(47295:47363): memoria disponible 832
+[INFO] 15:18:44:897 MEMORIA/(47295:47363): entre a lenght
+[INFO] 15:18:44:897 MEMORIA/(47295:47363): segmento encontrado : base 640 , id 9 , tamanio 64 
+[INFO] 15:18:44:897 MEMORIA/(47295:47363): PID: 1 - Eliminar Segmento: 9  - Base: 640 - Tamanio 64 
+
+[INFO] 15:18:44:897 MEMORIA/(47295:47363): lista de segmenos libres actualizada: 
+[INFO] 15:18:44:897 MEMORIA/(47295:47363): segmento 9999   
+[INFO] 15:18:44:899 MEMORIA/(47295:47363): PROCESO (PID) 9999 -  id: 9999  BASE : 128, SIZE: 896 
+
+[INFO] 15:18:44:899 MEMORIA/(47295:47363): memoria disponible 896
+[INFO] 15:18:44:899 MEMORIA/(47295:47363): size lista pids 0

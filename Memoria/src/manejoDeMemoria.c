@@ -38,15 +38,13 @@ static bool segmento_entra(void* segmento){
 static void* hueco_menor(void* h1, void* h2) {
 	segmento_t* hueco1 = (segmento_t*) h1;
 	segmento_t* hueco2 = (segmento_t*) h2;
-	if(hueco1->tamanio < hueco2->tamanio) return hueco1;
-	else return hueco2;
+	return hueco1->tamanio < hueco2->tamanio ? h1 : h2;
 }
 //devuelve la direccion del hueco que es mayor
 static void* hueco_mayor(void * h1,void*h2){
 	segmento_t* hueco1 = (segmento_t*) hueco1;
 	segmento_t* hueco2 = (segmento_t*) hueco2;
-	if(hueco1->tamanio > hueco2->tamanio) return hueco1;
-	else return hueco2;
+	return hueco1->tamanio > hueco2->tamanio ? h1 : h2;
 }
 
 segmento_t* new_segmento(uint32_t id, uint32_t direccion_base,uint32_t tamanio,uint32_t pid){

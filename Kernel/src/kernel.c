@@ -5,6 +5,11 @@ int conexion_cpu;
 int conexion_fileSystem;
 int conexion_memoria;
 
+void sighandler(int s){
+
+	exit(0);
+}
+
 char* estado_pcb_a_string(uint32_t estado_int){// CAMBIE
 	  switch (estado_int) {
 	        case NEW:
@@ -173,7 +178,7 @@ int server_escuchar(int server_kernel){
 //}
 
 int main (){
-		//signal(SIGINT, sighandler);
+		signal(SIGINT,sighandler);
 	 	log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
 		t_config* config_kernel = config_create("kernel.config");
 		iniciar_config(config_kernel);

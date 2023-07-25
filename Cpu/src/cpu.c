@@ -2,6 +2,11 @@
 
 int conexion_memoria;
 
+void sighandler(int s){
+	terminar_programa(conexion_memoria, logger, config);
+	exit(0);
+}
+
 void establecer_conexion_kernel(){
 	// genera el servidor de cpu
 	int server_fd = iniciar_servidor(logger, "Cpu", ip, puerto_cpu);
@@ -42,6 +47,7 @@ void establecer_conexiones(){
 }
 
 int main (){
+	signal(SIGINT,sighandler);
 	logger = log_create("cpu.log","Cpu",1,LOG_LEVEL_DEBUG);
 	config = config_create("cpu.config");
 	levantar_config();
