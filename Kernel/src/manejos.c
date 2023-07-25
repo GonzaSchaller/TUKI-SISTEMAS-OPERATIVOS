@@ -8,7 +8,7 @@ void bloquear_procesoPorIO(void* arg) {
     pcb_bloqueado->state_anterior = pcb_bloqueado->state;
     pcb_bloqueado->state = BLOCK;
     log_info(log_kernel,"PID: <%d> - Bloqueado por: <IO>",pcb_bloqueado->contexto.PID);
-    usleep(pcb_bloqueado->tiempo_bloqueo * 1000); //en microsegundos
+    usleep(pcb_bloqueado->tiempo_bloqueo * 1000000); //en microsegundos
     agregarAReady(pcb_bloqueado);
     //pcb_bloqueado->state = READY;
 
@@ -251,7 +251,7 @@ void manejar_otras_instrucciones(pcb_t* pcb_siguiente,uint32_t cop, float tiempo
 					pcb_siguiente->tiempo_bloqueo = tiempo_bloqueo_kernel;
 					pthread_t hilo_Block;
 					recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
-					log_info(log_kernel, "PID: <%d> - Ejecuta IO: <%f>", pcb_siguiente->contexto.PID, pcb_siguiente->tiempo_bloqueo);
+					log_info(log_kernel, "PID: <%d> - Ejecuta IO: <%d>", pcb_siguiente->contexto.PID, pcb_siguiente->tiempo_bloqueo);
 					//hilo porque quiero I/O en paralelo
 
 					pthread_create(&hilo_Block, NULL, (void*)bloquear_procesoPorIO,(void*)pcb_siguiente);

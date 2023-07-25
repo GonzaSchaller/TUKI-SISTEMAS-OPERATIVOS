@@ -4,11 +4,9 @@ t_log* log_kernel;
 int conexion_cpu;
 int conexion_fileSystem;
 int conexion_memoria;
+t_config* config_kernel;
+int server_kernel;
 
-void sighandler(int s){
-
-	exit(0);
-}
 
 char* estado_pcb_a_string(uint32_t estado_int){// CAMBIE
 	  switch (estado_int) {
@@ -105,15 +103,20 @@ void destruir_semaforos_listas(){
     //list_destroy_and_destroy_elements(lista_pcb_en_memoria,free);
     queue_destroy_and_destroy_elements(colaNew,free);
 
-    list_destroy_and_destroy_elements(lista_recursos, free);
+
 
 	for(int i;i<list_size(tabla_ArchivosAbiertosGlobal);i++){
 		fcb_kernel* archivo = list_remove(tabla_ArchivosAbiertosGlobal,i);
 		free(archivo->colaBloqueados);
 		free(archivo);
 	}
-    free(tabla_ArchivosAbiertosGlobal);
-
+    list_destroy(tabla_ArchivosAbiertosGlobal);
+	for(int i;i<list_size(lista_recursos);i++){
+		recurso_sistema* recurso = list_remove(lista_recursos,i);
+		free(recurso->colaBloqueados);
+		free(recurso);
+	}
+	list_destroy(lista_recursos);
     pthread_mutex_destroy(&mutexNew);
     pthread_mutex_destroy(&mutexReady);
     pthread_mutex_destroy(&mutexExit);
@@ -147,6 +150,15 @@ void terminar_kernel(t_config* config, int server_kernel){
 		close(server_kernel);
 
 }
+
+void sighandler(int s){
+	terminar_kernel(config_kernel, server_kernel);
+	liberarConexiones(conexion_fileSystem, conexion_fileSystem, conexion_memoria);
+	destruir_semaforos_listas();
+
+	exit(0);
+}
+
 //Pasar esta funcion para mi a conexiones_kernel
 //se conecta a cpu, memoria, fileSystem y crea los hilos para procesar las conexiones
 void generar_conexiones(){
@@ -180,10 +192,10 @@ int server_escuchar(int server_kernel){
 int main (){
 		signal(SIGINT,sighandler);
 	 	log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
-		t_config* config_kernel = config_create("kernel.config");
+	 	config_kernel = config_create("kernel.config");
 		iniciar_config(config_kernel);
 
-		int server_kernel = iniciar_servidor(log_kernel, "Kernel", ip, puerto_escucha);
+		server_kernel = iniciar_servidor(log_kernel, "Kernel", ip, puerto_escucha);
 		log_info(log_kernel , "Servidor listo para recibir cliente");
 
 

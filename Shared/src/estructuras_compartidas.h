@@ -47,7 +47,7 @@ typedef struct{
 	float hrrn;
 	t_list* recursos_asignados;
 	int socket_consola;
-	float tiempo_bloqueo;
+	int tiempo_bloqueo;
 	bool finalizar_proceso;
 	char* motivo_exit;
 }pcb_t;

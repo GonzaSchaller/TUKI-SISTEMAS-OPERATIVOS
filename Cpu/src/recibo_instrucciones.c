@@ -55,28 +55,11 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 	if(!recv_CONTEXTO_EJECUCION(socket_cliente, &contexto)){
 		log_error(logger, "Error al recibir el contexto de ejecucion");
 	}
-	log_debug(logger, "Recibo el CONTEXTO DE EJECUCION del PROCESO <%d>", contexto.PID);
+	//log_debug(logger, "Recibo el CONTEXTO DE EJECUCION del PROCESO <%d>", contexto.PID);
 	if(!recv_TABLA_SEGMENTOS(socket_cliente, &contexto.TSegmento)){
 		log_error(logger, "Error al recibir la tabla de segmentos");
 	}
-	log_debug(logger, "Recibo la TABLA DE SEGMENTOS del PROCESO <%d>", contexto.PID);
-//	else{
-//	log_info(logger, "PID: <%d>",contexto.PID);
-//	log_info(logger, "PC:<%d>", contexto.PC);
-//	log_info(logger, "AX: %s", contexto.registros.AX);
-//   	log_info(logger, "BX: %s", contexto.registros.BX);
-//	log_info(logger, "CX: %s", contexto.registros.CX);
-//	log_info(logger, "DX: %s", contexto.registros.DX);
-//	log_info(logger, "EA: %s", contexto.registros.EAX);
-//	log_info(logger, "EBX: %s", contexto.registros.EBX);
-//	log_info(logger, "ECX: %s", contexto.registros.ECX);
-//	log_info(logger, "EDX: %s", contexto.registros.EDX);
-//	log_info(logger, "RAX: %s", contexto.registros.RAX);
-//	log_info(logger, "RBX: %s", contexto.registros.RBX);
-//	log_info(logger, "RCX: %s", contexto.registros.RCX);
-//	log_info(logger, "RDX: %s", contexto.registros.RDX);
-//	log_info(logger, "Tabla: %d", list_size(contexto.TSegmento));
-//	}
+	//log_debug(logger, "Recibo la TABLA DE SEGMENTOS del PROCESO <%d>", contexto.PID);
 	
 	// paso el contexto a un pcb y ese a una lista
 	pcb_cpu* pcb_proceso = malloc(sizeof(pcb_cpu));
