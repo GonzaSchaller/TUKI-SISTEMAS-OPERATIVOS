@@ -35,12 +35,12 @@ int main (int argc, char* argv[]){
 
 	send_instrucciones_a_kernel();
 	//int conexion2 = crear_conexion(log_consola,"Kernel", ip, puerto );
-	int cop;
-	if(recv(conexion_kernel, &cop, sizeof(op_code), 0) != sizeof(op_code)){
+	uint32_t pid;
+	if(!recv_PID(conexion_kernel, &pid)){
 		log_info(log_consola, "Error recibiendo exit");
 		return EXIT_FAILURE;
 	}
-	log_info(log_consola, "Finaliza Consola");
+	log_info(log_consola, "Finaliza Consola PID: <%d>", pid);
 	terminar_programa(conexion_kernel, log_consola, config_consola);
 	return EXIT_SUCCESS;
 

@@ -55,7 +55,7 @@ void agregarNewAReady(pcb_t* pcb){
 	send_PID(conexion_memoria,pcb->contexto.PID); //mandamos a memoria pid para que lo asigne a cada segmento
 	if(recv_TABLA_SEGMENTOS(conexion_memoria, &pcb->contexto.TSegmento)){ //recibimos la direccion de la tabla de segmento
 		segmento_t* s=list_get(pcb->contexto.TSegmento,0);
-		log_info(log_kernel, "Segmento : %d, %d, %d, %d", s->direccion_Base, s->id, s->pid, s->tamanio);
+		//log_info(log_kernel, "Segmento : %d, %d, %d, %d", s->direccion_Base, s->id, s->pid, s->tamanio);
 	}
 	else{
 		log_error(log_kernel, "No se recibio tabla de segmentos para el proceso de PID: %d", pcb->contexto.PID);
@@ -217,7 +217,7 @@ void terminarEjecucion(pcb_t* pcb){
 	send_FINALIZAR_ESTRUCTURAS(conexion_memoria);
 	send_PID(conexion_memoria, pcb->contexto.PID);
 	send_TABLA_SEGMENTOS(conexion_memoria,pcb->contexto.TSegmento);
-	if(!send_EXIT(pcb->socket_consola)){
+	if(!send_PID(pcb->socket_consola, pcb->contexto.PID)){
 		log_info(log_kernel, "Error enviandole a consola exit");
 	};
 
