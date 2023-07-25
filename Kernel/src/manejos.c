@@ -285,7 +285,7 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,ui
 				    char* nombre_archivo;
 				    if (recv_F_OPEN(conexion_cpu, &nombre_archivo))
 				    {
-				    	fcb_por_proceso* archivo_proceso = malloc(sizeof(archivo_proceso));
+				    	fcb_por_proceso* archivo_proceso = malloc(sizeof(fcb_por_proceso));
 				        fcb_kernel* archivo = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal, nombre_archivo);
 				        if (archivo != NULL)
 				        {// se agrega la entrada en la tabla de archivos abietos del proceso con el puntero en 0

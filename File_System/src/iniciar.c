@@ -100,13 +100,8 @@ void cargar_bloque(){
 	char*path = strdup(c->bloques);
 	f_bloques = fopen(path,"rb+");
 	if(f_bloques!=NULL){
-		log_info(logger,"abierto");}
+		log_info(logger,"Bloques.dat abierto");}
 	else log_error(logger,"error");
-
-
-
-
-
 
 	uint32_t tam_bloque = 2;
 	uint32_t cant_bytes = 7;
@@ -123,7 +118,7 @@ void cargar_bloque(){
 	        cant_bloques = cociente;
 	    }
 
-	    log_info(logger,"res%d",cant_bloques);
+	    log_info(logger,"Cantidad de bloques %d",cant_bloques);
 
 
 
@@ -133,7 +128,7 @@ void cargar_bloque(){
 	char* contenido_leido = malloc(tam_bloque * cant_bloques);
 	size_t elementos_leidos = fread(contenido_leido, tam_bloque,cant_bloques, f_bloques);
 
-	log_info(logger, "contenido: %s,cantbloques%d", contenido_leido,elementos_leidos);
+	log_info(logger, "Contenido: %s, cantidad de bloques %d", contenido_leido,elementos_leidos);
 
 }
 

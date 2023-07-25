@@ -502,7 +502,7 @@ void conexion_kernel(t_log* log_memoria,char* server_name, int server_socket){
 			       args->fd = fd_kernel;
 			       args->server_name = server_name;
 			       pthread_create(&hilo, NULL, (void*) procesar_conexionn, (void*) args);
-			       pthread_detach(hilo);
+			       pthread_join(hilo, NULL);
 			   }
 		}
 

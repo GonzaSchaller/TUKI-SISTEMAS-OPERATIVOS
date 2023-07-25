@@ -14,14 +14,12 @@ int main (){
 
 	fd_fs = iniciar_servidor(logger, "fileSystem", "127.0.0.1", c->puerto_escucha);
 	fd_memoria = generar_conexion_con_memoria();
-	conexion_kernel(logger,"filesystem",fd_fs);
 	
-
 	cargar_superbloque();
 	cargar_bitmap();
 	cargar_bloque();
 
-
+	conexion_kernel(logger,"filesystem",fd_fs);
 	//terminar_fs();
 
 	return EXIT_SUCCESS;

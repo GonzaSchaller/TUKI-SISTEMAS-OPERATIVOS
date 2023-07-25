@@ -254,78 +254,30 @@ bool send_MOV_IN(int socket_cliente, uint32_t  parametro1,uint32_t  parametro2){
     free(stream);
     return true;
 }
-static void* serializar_EXISTE_ARCHIVO(size_t* size,char* archivo){
-     size_t size_archivo = strlen(archivo)+1; // No sabemos si agregar +1 PREGUNTAR
-     *size =sizeof(op_code) + 2*sizeof(size_t)+ size_archivo;
-     size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
-     void* stream = malloc(*size);
-     op_code cop = EXISTE_ARCHIVO;
-     memcpy(stream, &cop, sizeof(op_code));
-     memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
-     memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_archivo, sizeof(size_t));
-     memcpy(stream+sizeof(op_code)+sizeof(size_t)+size_archivo, archivo, size_archivo);
-		   return stream;
-}
-
-static void deserializar_EXISTE_ARCHIVO(void* stream,char** archivo){
-	size_t size_archivo;
-	memcpy(&size_archivo, stream, sizeof(size_t));
-	char* p2 = malloc(size_archivo);
-	*archivo = p2;
-	memcpy(p2,stream+sizeof(size_t) ,size_archivo);
-}
-bool recv_EXISTE_ARCHIVO(int socket_cliente, char** archivo){
-	    size_t size_payload ;
-
-	   	    if (recv(socket_cliente,&size_payload,sizeof(size_t), 0) != sizeof(size_t)) {
-	   	        return false;
-	   	    }
-	   	    void* stream = malloc(size_payload);
-
-	   	    if (recv(socket_cliente,stream ,size_payload, 0) != size_payload) {
-	   	        free(stream);
-	   	        return false;
-	   	    }
-	   	    deserializar_EXISTE_ARCHIVO(stream, archivo);
-	   	    free(stream);
-	   	    return true;
-}
-bool send_EXISTE_ARCHIVO(int socket_cliente, char* archivo){
-	 size_t size;
-	    void* stream = serializar_EXISTE_ARCHIVO(&size ,archivo);
-	    if (send(socket_cliente, stream, size, 0) != size) {
-	        free(stream);
-	        return false;
-	    }
-	    free(stream);
-	    return true;
-}
-
-
-static void* serializar_F_OPEN(size_t* size,char* archivo){
-		size_t size_archivo = strlen(archivo)+1; // No sabemos si agregar +1 PREGUNTAR
-		*size =sizeof(op_code) + 2*sizeof(size_t)+ size_archivo;
+static void* serializar_EXISTE_ARCHIVO(size_t* size,char* recurso){
+		size_t size_recurso = strlen(recurso)+1;
+		*size =sizeof(op_code) + 2*sizeof(size_t)+ size_recurso;
 		size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
 		void* stream = malloc(*size);
-		op_code cop = F_OPEN;
-		memcpy(stream, &cop, sizeof(op_code));
-		memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
-		memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_archivo, sizeof(size_t));
-		memcpy(stream+sizeof(op_code)+sizeof(size_t)+size_archivo, archivo, size_archivo);
+		op_code cop = EXISTE_ARCHIVO;
+		    memcpy(stream, &cop, sizeof(op_code));
+		    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
+		    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_recurso, sizeof(size_t));
+		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), recurso, size_recurso);
 	// copio al stream en orden cop,payload,sizep2,p2
 		    return stream;
+
 }
-static void deserializar_F_OPEN(void* stream,char** archivo){
+static void deserializar_EXISTE_ARCHIVO(void* stream,char** recurso){
 	size_t size_archivo;
 	memcpy(&size_archivo, stream, sizeof(size_t));
 	char* p2 = malloc(size_archivo);
-	*archivo = p2;
+	*recurso = p2;
 	memcpy(p2,stream+sizeof(size_t) ,size_archivo);
 // OPCODE,PAYLOAD, SIZE P2, P2
 }
-bool recv_F_OPEN(int socket_cliente, char** archivo){
+bool recv_EXISTE_ARCHIVO(int socket_cliente, char** recurso){
 	 size_t size_payload ;
-
 	    if (recv(socket_cliente,&size_payload,sizeof(size_t), 0) != sizeof(size_t)) {
 	        return false;
 	    }
@@ -335,13 +287,61 @@ bool recv_F_OPEN(int socket_cliente, char** archivo){
 	        free(stream);
 	        return false;
 	    }
-	    deserializar_F_OPEN(stream, archivo);
+	    deserializar_EXISTE_ARCHIVO(stream, recurso);
 	    free(stream);
 	    return true;
 }
-bool send_F_OPEN(int socket_cliente, char* archivo){
+bool send_EXISTE_ARCHIVO(int socket_cliente, char* recurso){
     size_t size;
-    void* stream = serializar_F_OPEN(&size ,archivo);
+    void* stream = serializar_EXISTE_ARCHIVO(&size ,recurso);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
+}
+
+static void* serializar_F_OPEN(size_t* size,char* recurso){
+		size_t size_recurso = strlen(recurso)+1;
+		*size =sizeof(op_code) + 2*sizeof(size_t)+ size_recurso;
+		size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
+		void* stream = malloc(*size);
+		op_code cop = F_OPEN;
+		    memcpy(stream, &cop, sizeof(op_code));
+		    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
+		    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_recurso, sizeof(size_t));
+		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), recurso, size_recurso);
+	// copio al stream en orden cop,payload,sizep2,p2
+		    return stream;
+
+}
+static void deserializar_F_OPEN(void* stream,char** recurso){
+	size_t size_archivo;
+	memcpy(&size_archivo, stream, sizeof(size_t));
+	char* p2 = malloc(size_archivo);
+	*recurso = p2;
+	memcpy(p2,stream+sizeof(size_t) ,size_archivo);
+// OPCODE,PAYLOAD, SIZE P2, P2
+}
+bool recv_F_OPEN(int socket_cliente, char** recurso){
+	 size_t size_payload ;
+	    if (recv(socket_cliente,&size_payload,sizeof(size_t), 0) != sizeof(size_t)) {
+	        return false;
+	    }
+	    void* stream = malloc(size_payload);
+
+	    if (recv(socket_cliente,stream ,size_payload, 0) != size_payload) {
+	        free(stream);
+	        return false;
+	    }
+	    deserializar_F_OPEN(stream, recurso);
+	    free(stream);
+	    return true;
+}
+bool send_F_OPEN(int socket_cliente, char* recurso){
+    size_t size;
+    void* stream = serializar_F_OPEN(&size ,recurso);
     if (send(socket_cliente, stream, size, 0) != size) {
         free(stream);
         return false;
@@ -431,7 +431,7 @@ bool send_F_TRUNCATE(int socket_cliente, char*  parametro1,uint32_t  parametro2)
     return true;
 }
 
-static void* serializar_F_SEEK(size_t* size, char* parametro1, uint32_t  parametro2 ){
+static void* serializar_F_SEEK(size_t* size, char* parametro1 ,uint32_t  parametro2 ){
 	size_t size_parametro1 = strlen(parametro1) +1; // No sabemos si agregar +1 PREGUNTAR
 	*size =sizeof(op_code) + 2*sizeof(size_t) + sizeof(uint32_t)+ size_parametro1;
 	size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
@@ -445,14 +445,14 @@ static void* serializar_F_SEEK(size_t* size, char* parametro1, uint32_t  paramet
 // copio al stream en orden cop,payload,sizep1,p1,p2
 	    return stream;
 }
-static void deserializar_F_SEEK(void* stream,char** parametro1 ,uint32_t* parametro2){
+static void deserializar_F_SEEK(void* stream,char** parametro1 , uint32_t* parametro2){
 	size_t size_parametro1;
-		memcpy(&size_parametro1, stream, sizeof(size_t));
-		char* p1 = malloc(size_parametro1);
-		memcpy(p1,stream+sizeof(size_t) ,size_parametro1);
-		*parametro1 = p1;
-		memcpy(&parametro2,stream+sizeof(size_t)+size_parametro1,sizeof(uint32_t));
-		free(p1);
+	memcpy(&size_parametro1, stream, sizeof(size_t));
+	char* p1 = malloc(size_parametro1);
+	memcpy(p1,stream+sizeof(size_t) ,size_parametro1);
+	*parametro1 = p1;
+	memcpy(parametro2,stream+sizeof(size_t)+size_parametro1,sizeof(uint32_t));
+// OPCODE,PAYLOAD, SIZE P2, P2,ENTERO P1,
 }
 bool recv_F_SEEK(int socket_cliente, char** parametro1,uint32_t* parametro2){
     size_t size_payload ;
@@ -460,6 +460,7 @@ bool recv_F_SEEK(int socket_cliente, char** parametro1,uint32_t* parametro2){
         return false;
     }
     void* stream = malloc(size_payload);
+
     if (recv(socket_cliente,stream ,size_payload, 0) != size_payload) {
         free(stream);
         return false;
@@ -469,14 +470,14 @@ bool recv_F_SEEK(int socket_cliente, char** parametro1,uint32_t* parametro2){
     return true;
 }
 bool send_F_SEEK(int socket_cliente, char*  parametro1,uint32_t  parametro2){
-	  size_t size;
-	   void* stream = serializar_F_SEEK(&size ,parametro1, parametro2);
-	   if (send(socket_cliente, stream, size, 0) != size) {
-	       free(stream);
-	       return false;
-	   }
-	   free(stream);
-	   return true;
+    size_t size;
+    void* stream = serializar_F_SEEK(&size ,parametro1, parametro2);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
 }
 
 static void* serializar_CREATE_SEGMENT(uint32_t parametro1, uint32_t parametro2) {
@@ -513,20 +514,19 @@ bool send_CREATE_SEGMENT(int socket_cliente, uint32_t  parametro1,uint32_t  para
     return true;
 }
 
-static void* serializar_F_WRITE(size_t* size, char* parametro1 ,uint32_t  parametro2 ,uint32_t parametro3){
-	size_t size_parametro1 = strlen(parametro1) +1; // No sabemos si agregar +1 PREGUNTAR
-	*size =sizeof(op_code) + 2*sizeof(size_t) + sizeof(uint32_t)+ size_parametro1;
-	size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
-	void* stream = malloc(*size);
-	op_code cop = F_WRITE;
-	    memcpy(stream, &cop, sizeof(op_code));
-	    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_parametro1,sizeof(size_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), parametro1, size_parametro1);
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t) + size_parametro1, &parametro2, sizeof(uint32_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t) + size_parametro1+sizeof(uint32_t), &parametro3, sizeof(uint32_t));
-// copio al stream en orden cop,payload,sizep1,p1,p2,p3
-	    return stream;
+static void* serializar_F_WRITE(size_t* size, char* parametro1, uint32_t parametro2, uint32_t parametro3) {
+    size_t size_parametro1 = strlen(parametro1) + 1;
+    *size = sizeof(op_code) + 2 * sizeof(size_t) + size_parametro1 + sizeof(uint32_t) + sizeof(uint32_t);
+    size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
+    void* stream = malloc(*size);
+    op_code cop = F_WRITE;
+    memcpy(stream, &cop, sizeof(op_code));
+    memcpy(stream + sizeof(op_code), &size_payload, sizeof(size_t));
+    memcpy(stream + sizeof(op_code) + sizeof(size_t), &size_parametro1, sizeof(size_t));
+    memcpy(stream + sizeof(op_code) + 2 * sizeof(size_t), parametro1, size_parametro1);
+    memcpy(stream + sizeof(op_code) + 2 * sizeof(size_t) + size_parametro1, &parametro2, sizeof(uint32_t));
+    memcpy(stream + sizeof(op_code) + 2 * sizeof(size_t) + size_parametro1 + sizeof(uint32_t), &parametro3, sizeof(uint32_t));
+    return stream;
 }
 static void deserializar_F_WRITE(void* stream,char** parametro1 , uint32_t* parametro2,uint32_t* parametro3){
 	size_t size_parametro1;
@@ -564,20 +564,19 @@ bool send_F_WRITE(int socket_cliente, char*  parametro1,uint32_t  parametro2, ui
 	    return true;
 }
 
-static void* serializar_F_READ(size_t* size, char* parametro1 ,uint32_t  parametro2 ,uint32_t parametro3){
-	size_t size_parametro1 = strlen(parametro1) +1; // No sabemos si agregar +1 PREGUNTAR
-	*size =sizeof(op_code) + 2*sizeof(size_t) + sizeof(uint32_t)+ size_parametro1;
-	size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
-	void* stream = malloc(*size);
-	op_code cop = F_READ;
-	    memcpy(stream, &cop, sizeof(op_code));
-	    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_parametro1,sizeof(size_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), parametro1, size_parametro1);
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t) + size_parametro1, &parametro2, sizeof(uint32_t));
-	    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t) + size_parametro1+sizeof(uint32_t), &parametro3, sizeof(uint32_t));
-// copio al stream en orden cop,payload,sizep1,p1,p2
-	    return stream;
+static void* serializar_F_READ(size_t* size, char* parametro1, uint32_t parametro2, uint32_t parametro3) {
+    size_t size_parametro1 = strlen(parametro1) + 1;
+    *size = sizeof(op_code) + 2 * sizeof(size_t) + size_parametro1 + sizeof(uint32_t) + sizeof(uint32_t);
+    size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
+    void* stream = malloc(*size);
+    op_code cop = F_READ;
+    memcpy(stream, &cop, sizeof(op_code));
+    memcpy(stream + sizeof(op_code), &size_payload, sizeof(size_t));
+    memcpy(stream + sizeof(op_code) + sizeof(size_t), &size_parametro1, sizeof(size_t));
+    memcpy(stream + sizeof(op_code) + 2 * sizeof(size_t), parametro1, size_parametro1);
+    memcpy(stream + sizeof(op_code) + 2 * sizeof(size_t) + size_parametro1, &parametro2, sizeof(uint32_t));
+    memcpy(stream + sizeof(op_code) + 2 * sizeof(size_t) + size_parametro1 + sizeof(uint32_t), &parametro3, sizeof(uint32_t));
+    return stream;
 }
 static void deserializar_F_READ(void* stream,char** parametro1 , uint32_t* parametro2,uint32_t* parametro3){
 	size_t size_parametro1;
@@ -646,42 +645,46 @@ bool send_DELETE_SEGMENT(int socket_cliente, uint32_t  parametro1){
     return true;
 }
 
-static void* serializar_F_CLOSE(size_t* size,char* archivo){
-		size_t size_archivo = strlen(archivo)+1; // No sabemos si agregar +1 PREGUNTAR
-		*size =sizeof(op_code) + 2*sizeof(size_t)+ size_archivo;
+static void* serializar_F_CLOSE(size_t* size,char* recurso){
+		size_t size_recurso = strlen(recurso)+1;
+		*size =sizeof(op_code) + 2*sizeof(size_t)+ size_recurso;
 		size_t size_payload = *size - sizeof(op_code) - sizeof(size_t);
 		void* stream = malloc(*size);
 		op_code cop = F_CLOSE;
 		    memcpy(stream, &cop, sizeof(op_code));
 		    memcpy(stream+sizeof(op_code), &size_payload, sizeof(size_t));
-		    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_archivo, sizeof(size_t));
-		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+size_archivo, archivo, size_archivo);
+		    memcpy(stream+sizeof(op_code)+sizeof(size_t), &size_recurso, sizeof(size_t));
+		    memcpy(stream+sizeof(op_code)+sizeof(size_t)+sizeof(size_t), recurso, size_recurso);
+	// copio al stream en orden cop,payload,sizep2,p2
 		    return stream;
+
 }
-static void deserializar_F_CLOSE(void* stream,char** archivo){
+static void deserializar_F_CLOSE(void* stream,char** recurso){
 	size_t size_archivo;
 	memcpy(&size_archivo, stream, sizeof(size_t));
 	char* p2 = malloc(size_archivo);
-	*archivo = p2;
+	*recurso = p2;
 	memcpy(p2,stream+sizeof(size_t) ,size_archivo);
+// OPCODE,PAYLOAD, SIZE P2, P2
 }
-bool recv_F_CLOSE(int socket_cliente, char** archivo){
+bool recv_F_CLOSE(int socket_cliente, char** recurso){
 	 size_t size_payload ;
 	    if (recv(socket_cliente,&size_payload,sizeof(size_t), 0) != sizeof(size_t)) {
 	        return false;
 	    }
 	    void* stream = malloc(size_payload);
+
 	    if (recv(socket_cliente,stream ,size_payload, 0) != size_payload) {
 	        free(stream);
 	        return false;
 	    }
-	    deserializar_F_CLOSE(stream, archivo);
+	    deserializar_F_CLOSE(stream, recurso);
 	    free(stream);
 	    return true;
 }
-bool send_F_CLOSE(int socket_cliente, char* archivo){
+bool send_F_CLOSE(int socket_cliente, char* recurso){
     size_t size;
-    void* stream = serializar_F_CLOSE(&size ,archivo);
+    void* stream = serializar_F_CLOSE(&size ,recurso);
     if (send(socket_cliente, stream, size, 0) != size) {
         free(stream);
         return false;
