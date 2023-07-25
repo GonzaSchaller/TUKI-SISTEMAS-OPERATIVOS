@@ -130,18 +130,18 @@ void recibir_actualizar_tablas_segmento(pcb_t* pcb_actual){
 	bool buscandoPID = true;
 	pthread_mutex_lock(&mutexReady);
 	int t = list_size(listaReady);
-	uint32_t pid = 0;
+	//uint32_t pid = 0;
 	//t+1 porque hay uno ejecutando
 	for(int i = 0; i < t + 1; i++) { //para cada proceso enviamos la tabla que tiene y pedimo que memoria mande la nueva tabla
 		int j = 0;
-		recv_PID(conexion_memoria, &pid);
+	//	recv_PID(conexion_memoria, &pid);
 		recv_TABLA_SEGMENTOS(conexion_memoria,&tabla_nueva);
 
 	    segmento = list_get(tabla_nueva, 0); //agarramos el primer segmento
 	    //pid = 2
 	    while(buscandoPID){
 	    	proceso_planificado = list_get(listaReady, j);
-	    	if(proceso_planificado->contexto.PID == pid){ //Todo descomentar cuando este el pid de segmento
+	    	if(proceso_planificado->contexto.PID == segmento->pid){ //Todo descomentar cuando este el pid de segmento
 	    		proceso_planificado->contexto.TSegmento = tabla_nueva;
 	    		buscandoPID = false;
 	    	}

@@ -40,7 +40,7 @@ uint32_t size_tso();
 segmento_t* encontrar_en_tsl_hueco_con_rango(uint32_t numero);
 segmento_t* get_en_lso(uint32_t pos);
 void actualizar_memoria_principal(uint32_t inicio,uint32_t destino, uint32_t tamanio);
-void ordenat_lista_por_ids(t_list*lista);
+void ordenar_lista_por_ids(t_list*lista);
 uint32_t encontrarTamanioDelSegmentoConMayorTamanio();
 void ordenar_listalsl_por_base();
 t_list* filtrar_lista_por_pid(uint32_t pid);

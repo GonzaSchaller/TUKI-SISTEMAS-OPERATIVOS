@@ -75,8 +75,9 @@ static bool por_ID_menor(void* s1, void* s2) {
     return seg1->id < seg2->id;
 }
 //ordenar por id
-void ordenat_lista_por_ids(t_list*lista){
+void ordenar_lista_por_ids(t_list*lista){
 	list_sort(lista, &por_ID_menor);
+
 }
 
 //insertar unsegmento en tabla de segmentos usados
@@ -257,7 +258,13 @@ bool pid_igual(void*pid){
 void eliminar_pid_lista_pids(uint32_t pid){
 	pthread_mutex_lock(&mutex_pid);
 	pid_a_buscar = pid;
-	list_remove_by_condition(lista_de_pids,&pid_igual);
+	list_remove_and_destroy_by_condition(lista_de_pids,&pid_igual,free);
+	uint32_t size = list_size(lista_de_pids);
+	log_info(log_memoria,"size lista pids %d",size);
+	for(int i =0;i<size;i++){
+		uint32_t *pid = list_get(lista_de_pids,i);
+		log_info(log_memoria,"pid %u",*pid);
+	}
 	pthread_mutex_unlock(&mutex_pid);
 }
 

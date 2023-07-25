@@ -53,9 +53,20 @@ void procesar_conexionn(void* void_args){
 			case INICIAR_ESTRUCTURAS:{
 				uint32_t pid;
 
-				list_add(lista_de_pids,&pid);
+
 
 				recv_PID(cliente_socket, &pid);
+				uint32_t *pid_copy = malloc(sizeof(uint32_t));
+								 *pid_copy = pid;
+
+				list_add(lista_de_pids,pid_copy);
+
+				uint32_t size = list_size(lista_de_pids);
+				for(int i=0;i<size;i++){
+					uint32_t *p= list_get(lista_de_pids,i);
+					log_info(log_memoria,"proceso %u ",*p);
+				}
+
 				log_info(log_memoria,"Creación de Proceso PID: %d",pid);
 
 				t_list* tabla_de_segmentos = list_create();
@@ -71,7 +82,7 @@ void procesar_conexionn(void* void_args){
 			case CREATE_SEGMENT:{
 				uint32_t id;
 				uint32_t size;
-				estados_segmentos estado = EXITOSO ;
+				uint32_t estado;
 				uint32_t pid;
 
 				if(!recv_CREATE_SEGMENT(cliente_socket, & id, &size)) {
@@ -82,13 +93,14 @@ void procesar_conexionn(void* void_args){
 				if(!entra_en_memoria(size)){  //no entra ni en mp
 					log_error(log_memoria,"no entra en mp");
 					estado = FALLIDO;
-					send(cliente_socket,&estado,sizeof(estado),0);
+					send(cliente_socket,&estado,sizeof(uint32_t),0);
 				}
 				else if(!entra_en_hueco_mas_grande(size)){ //si entra en el hueco mas grande no hay que compactar :)
 					estado = COMPACTAR;
 					uint32_t confirmacion;
 
-					send(cliente_socket,&estado,sizeof(estado),0);
+					send(cliente_socket,&estado,sizeof(uint32_t),0);
+
 					recv(cliente_socket, &confirmacion, sizeof(confirmacion), 0);
 
 					if(confirmacion == COMPACTAR){
@@ -97,30 +109,37 @@ void procesar_conexionn(void* void_args){
 							usleep(cfg->RETARDO_COMPACTACION * 1000); /////////EL RETARDO
 							ordenar_lista_pid_por_pid();
 							uint32_t tamanio_list_pid = list_size(lista_de_pids);
-
+							log_info(log_memoria,"hay una cantidad de %d procesos",tamanio_list_pid);
 							for(int i = 0;i<tamanio_list_pid;i++){
 								uint32_t* pid_s = list_get(lista_de_pids,i);
+								log_info(log_memoria,"Proceso NUMERO %u ",*pid_s);
 								t_list*list_proceso_i = filtrar_lista_por_pid(*pid_s);
 
-								//deberia enviarle el pid primero
-								send_PID(cliente_socket, *pid_s);
-								send_TABLA_SEGMENTOS(cliente_socket,list_proceso_i);
+
+								segmento_0->pid = *pid_s;
 
 								list_add(list_proceso_i,segmento_0);
-								ordenat_lista_por_ids(list_proceso_i);
-								uint32_t cant_segmentos_por_proceso = list_size(list_proceso_i);
+								ordenar_lista_por_ids(list_proceso_i);
 
+								//send_PID(cliente_socket, *pid_s);
+								uint32_t cant_segmentos_por_proceso = list_size(list_proceso_i);
 								for(int u=0;u<cant_segmentos_por_proceso;u++){
 									segmento_t* segmento = list_get(list_proceso_i,u);
 									log_info(log_memoria,"PID <%d> - Segmento <%d> - Base <%d> - Tamanio <%d> ",segmento->pid,segmento->id,segmento->direccion_Base,segmento->tamanio);
 									log_info(log_memoria,"\n");
-								}
-								log_info(log_memoria,"\n");
+																}
+
+
+								send_TABLA_SEGMENTOS(cliente_socket,list_proceso_i);
+
+
 							}//for
 						}
-					}} else{ //hay espacio entonces se crea.
+					}
+					} else{ //hay espacio entonces se crea.
+						estado = EXITOSO;
 						log_info(log_memoria,"hay espacio disponible... creando segmento. \n");
-						send(cliente_socket,&estado,sizeof(estado),0);
+						send(cliente_socket,&estado,sizeof(uint32_t),0);
 
 						segmento_t* segmento = crear_segmento(id,size,pid);
 
@@ -135,35 +154,38 @@ void procesar_conexionn(void* void_args){
 			}
 
 			case DELETE_SEGMENT: {
+
 				uint32_t id;
 				t_list* ts_kernel = list_create();
 				uint32_t pid;
+
 
 				recv_ID_SEGMENTO(cliente_socket, &id);
 				recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
 				recv_PID(cliente_socket,&pid);
 
+				log_info(log_memoria,"entraste a delete segment, pid %d",pid);
 				// me devuelve la tabla de ese segmento.
 				t_list * tsegmentos_pid = list_create();
 				tsegmentos_pid = filtrar_lista_por_pid(pid);
 				uint32_t base = buscar_en_lista_por_id_devolver_base(tsegmentos_pid,id); //busco la base del id a eliminar.
 				//elimino por base
-				if(borrar_segmento(base,pid)) {
-					log_info(log_memoria,"Eliminación de Proceso PID: <%d>", pid);
-				}
+				borrar_segmento(base,pid);
 
-				list_remove_by_condition(ts_kernel,&seg_con_id_igual);
+
+
+				list_remove_and_destroy_by_condition(ts_kernel,&seg_con_id_igual,free);
 
 				send_TABLA_SEGMENTOS(cliente_socket,ts_kernel);
 				list_destroy_and_destroy_elements(ts_kernel, (void*) free);
-				//deletear la lista. TODO
+
 
 				break;
 			}
 
 			case FINALIZAR_ESTRUCTURAS:{
 				uint32_t pid;
-				t_list* ts ;
+				t_list* ts;
 
 				recv_PID(cliente_socket, &pid);
 				recv_TABLA_SEGMENTOS(cliente_socket,&ts);
@@ -171,10 +193,15 @@ void procesar_conexionn(void* void_args){
 				log_info(log_memoria,"Eliminación de Proceso PID: %d",pid);
 
 				uint32_t lenght = list_size(ts);
-				for(int i=1;i<lenght;i++){
+
+				if(lenght > 1){
+					for(int i=1;i<lenght;i++){
+
 					segmento_t* seg = list_get(ts, i);
 					borrar_segmento(seg->direccion_Base,pid);
 				}
+				}
+
 
 				eliminar_pid_lista_pids(pid);
 
