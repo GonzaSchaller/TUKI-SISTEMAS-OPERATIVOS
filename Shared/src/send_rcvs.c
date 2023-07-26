@@ -1293,26 +1293,27 @@ bool send_OK_CODE(int socket_cliente, extra_code  parametro1){
     return true;
 }
 
-static void* serializar_CREAR_ARCHIVO(size_t* size, char* parametro1, uint32_t  parametro2 ){
-	size_t size_parametro1 = strlen(parametro1) +1; // No sabemos si agregar +1 PREGUNTAR
-	*size =2*sizeof(size_t) + sizeof(uint32_t)+ size_parametro1;
-	size_t size_payload = *size - sizeof(size_t);
-	void* stream = malloc(*size);
-	    memcpy(stream, &size_payload, sizeof(size_t));
-	    memcpy(stream+sizeof(size_t), &size_parametro1,sizeof(size_t));
-	    memcpy(stream+sizeof(size_t)+sizeof(size_t), parametro1, size_parametro1);
-	    memcpy(stream+sizeof(size_t)+sizeof(size_t) + size_parametro1, &parametro2, sizeof(uint32_t));
-// copio al stream en orden cop,payload,sizep1,p1,p2
-	    return stream;
+static void* serializar_CREAR_ARCHIVO(size_t* size, char* parametro1, uint32_t parametro2) {
+    size_t size_parametro1 = strlen(parametro1) + 1;
+    *size = 2 * sizeof(size_t) + sizeof(uint32_t) + size_parametro1;
+    size_t size_payload = *size - sizeof(size_t);
+    void* stream = malloc(*size);
+    memcpy(stream, &size_payload, sizeof(size_t));
+    memcpy(stream + sizeof(size_t), &size_parametro1, sizeof(size_t));
+    memcpy(stream + 2 * sizeof(size_t), parametro1, size_parametro1);
+    memcpy(stream + 2 * sizeof(size_t) + size_parametro1, &parametro2, sizeof(uint32_t));
+    // copio al stream en orden payload, size_parametro1, parametro1, parametro2
+    return stream;
 }
-static void deserializar_CREAR_ARCHIVO(void* stream,char** parametro1 ,uint32_t* parametro2){
-	size_t size_parametro1;
-		memcpy(&size_parametro1, stream, sizeof(size_t));
-		char* p1 = malloc(size_parametro1);
-		memcpy(p1,stream+sizeof(size_t) ,size_parametro1);
-		*parametro1 = p1;
-		memcpy(&parametro2,stream+sizeof(size_t)+size_parametro1,sizeof(uint32_t));
-		free(p1);
+
+static void deserializar_CREAR_ARCHIVO(void* stream, char** parametro1, uint32_t* parametro2) {
+    size_t size_parametro1;
+    memcpy(&size_parametro1, stream, sizeof(size_t));
+    char* p1 = malloc(size_parametro1);
+    memcpy(p1, stream + sizeof(size_t), size_parametro1);
+    *parametro1 = p1;
+    memcpy(parametro2, stream + sizeof(size_t) + size_parametro1, sizeof(uint32_t));
+    // PAYLOAD, SIZE P2, P2, ENTERO P1
 }
 bool recv_CREAR_ARCHIVO(int socket_cliente, char** parametro1,uint32_t* parametro2){
     size_t size_payload ;
@@ -1320,6 +1321,7 @@ bool recv_CREAR_ARCHIVO(int socket_cliente, char** parametro1,uint32_t* parametr
         return false;
     }
     void* stream = malloc(size_payload);
+
     if (recv(socket_cliente,stream ,size_payload, 0) != size_payload) {
         free(stream);
         return false;
@@ -1329,14 +1331,14 @@ bool recv_CREAR_ARCHIVO(int socket_cliente, char** parametro1,uint32_t* parametr
     return true;
 }
 bool send_CREAR_ARCHIVO(int socket_cliente, char*  parametro1,uint32_t  parametro2){
-	  size_t size;
-	   void* stream = serializar_CREAR_ARCHIVO(&size ,parametro1, parametro2);
-	   if (send(socket_cliente, stream, size, 0) != size) {
-	       free(stream);
-	       return false;
-	   }
-	   free(stream);
-	   return true;
+    size_t size;
+    void* stream = serializar_CREAR_ARCHIVO(&size ,parametro1, parametro2);
+    if (send(socket_cliente, stream, size, 0) != size) {
+        free(stream);
+        return false;
+    }
+    free(stream);
+    return true;
 }
 
 static void* serializar_FINALIZAR_TRUNCATE() {

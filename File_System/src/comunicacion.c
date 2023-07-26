@@ -52,7 +52,7 @@ static void procesar_conexionn(void* void_args){
 				if(crear_archivo(nombre_archivo,tamanio)){
 					estado = CORRECTO;
 					existe_y_abrir(nombre_archivo);
-					send_OK_CODE(cliente_socket,estado);
+					//send_OK_CODE(cliente_socket,estado);
 				}
 
 				else log_error(logger,"Error al crear el Archivo <%s>", nombre_archivo);
