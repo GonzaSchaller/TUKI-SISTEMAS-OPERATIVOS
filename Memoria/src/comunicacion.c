@@ -165,7 +165,7 @@ void procesar_conexionn(void* void_args){
 				recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
 				recv_PID(cliente_socket,&pid);
 
-				log_info(log_memoria,"entraste a delete segment, pid %d",pid);
+				log_info(log_memoria,"Entraste a delete segment, pid %d",pid);
 				// me devuelve la tabla de ese segmento.
 				t_list * tsegmentos_pid = list_create();
 				tsegmentos_pid = filtrar_lista_por_pid(pid);
@@ -197,15 +197,15 @@ void procesar_conexionn(void* void_args){
 				log_info(log_memoria,"Eliminación de Proceso PID: %d",pid);
 
 				uint32_t lenght = list_size(ts);
-				log_info(log_memoria,"afuera de lenght, size %d",lenght);
+				log_info(log_memoria,"Afuera de lenght, size %d",lenght);
 				if(lenght > 1){
 					for(int i=1;i<lenght;i++){
-					log_info(log_memoria,"entre a lenght");
+					log_info(log_memoria,"Entre a lenght");
 					segmento_t* seg = list_get(ts, i);
 					borrar_segmento(seg->direccion_Base,pid);
 				}
 				}
-				log_info(log_memoria,"memoria disponible despues de finalizar estructuras: %d",memoria_disponible);
+				log_info(log_memoria,"Memoria disponible despues de finalizar estructuras: %d",memoria_disponible);
 
 
 				eliminar_pid_lista_pids(pid);

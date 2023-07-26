@@ -52,7 +52,7 @@ static void procesar_conexionn(void* void_args){
 				if(crear_archivo(nombre_archivo,tamanio)){
 					estado = CORRECTO;
 					existe_y_abrir(nombre_archivo);
-					//send_OK_CODE(cliente_socket,estado);
+					send_OK_CODE(cliente_socket,estado);
 				}
 
 				else log_error(logger,"Error al crear el Archivo <%s>", nombre_archivo);
@@ -133,13 +133,13 @@ static void procesar_conexionn(void* void_args){
 			log_info(logger,"Truncar Archivo: <%s> - Tamanio: <%d>", nombre_archivo, tamanio_a_truncar);
 
 			char* path = concat(nombre_archivo);
-			fcb_t* fcb = malloc(sizeof(fcb));
+			fcb_t* fcb = malloc(sizeof(fcb_t));
 			t_config* archivo = config_create(path);
 
 			fcb->puntero_directo = config_get_int_value(archivo, "PUNTERO_DIRECTO");
 			fcb->puntero_indirecto = config_get_int_value(archivo, "PUNTERO_INDIRECTO");
 			fcb->tamanio_archivo = config_get_int_value(archivo, "TAMANIO_ARCHIVO");
-			fcb->nombreArchivo = config_get_string_value(archivo, "TAMANIO_ARCHIVO");
+			fcb->nombreArchivo =  strdup(config_get_string_value(archivo, "NOMBRE_ARCHIVO"));
 
 			uint32_t cuantos_bloques_venia_usando = ceil_casero(fcb->tamanio_archivo,superbloque->block_size);
 
@@ -332,7 +332,7 @@ void aumentar_tamanio_archivo(uint32_t tamanio_a_truncar, uint32_t cuantos_bloqu
 
 	for(int i = 0; i < bloques_totales_fs; i++){ //recorro el bitarray en busca de bloques libres, necesito solo cant_bloques_Agregar
 		uint32_t tamanio= list_size(list_nro_de_bloques);
-		int* a = &i; //para arreglar el warning: cast to pointer from integer of different size
+		//int* a = &i; //para arreglar el warning: cast to pointer from integer of different size
 
 		if(tamanio == cantidad_bloques_a_agregar)
 			return;
@@ -340,7 +340,7 @@ void aumentar_tamanio_archivo(uint32_t tamanio_a_truncar, uint32_t cuantos_bloqu
 		else {
 			bool valor = bitarray_test_bit(bitarray,i);
 			if(valor)
-				list_add(list_nro_de_bloques, a);
+			list_add(list_nro_de_bloques, &i);
 		}
 
 		if((i == (bloques_totales_fs - 1)) && tamanio!= cantidad_bloques_a_agregar)

@@ -313,6 +313,7 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,ui
 									if(!send_CREAR_ARCHIVO(conexion_fileSystem, nombre_archivo, 0)){
 										log_error(log_kernel, "Fallo enviado crear_archivo a FILESYSTEM");
 									}
+									if(recv_OK_CODE(conexion_fileSystem,&estado))log_info(log_kernel, "FileSystem creo correctamente el archivo");
 								}
 								fcb_kernel* archivo_nuevo = malloc(sizeof(fcb_kernel));
 								archivo_nuevo->nombreArchivo = nombre_archivo;
@@ -474,6 +475,7 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint
 				        if (recurso != NULL)
 				        {
 				            if (recurso->instancia > 0){
+				            	 log_info(log_kernel,"PID: <%d> - Wait: < %s > - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
 				                recurso->instancia--;
 				                if(!encontrar_recurso(pcb_siguiente->recursos_asignados, nombre_recurso)) //si no encontro el recurso, agrega el recurso a la lista del proceso
 				                asignar_recurso(nombre_recurso , pcb_siguiente->recursos_asignados);
@@ -483,6 +485,7 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint
 							}
 				            else
 				            {
+				            	 log_info(log_kernel,"PID: <%d> - Wait: < %s > - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia); //todo ver si va aca el log tmb
 								recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 				                // Bloquear el proceso actual en la cola de bloqueados del recurso
 				                pthread_mutex_lock(&(recurso->mutexRecurso)); // creo que no es necesario el mutex, se comparte con otro hilo?
@@ -494,7 +497,7 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint
 				                pthread_mutex_unlock(&(recurso->mutexRecurso)); // Desbloquear el acceso a la cola de bloqueados
 				             send_seguir_ejecutando(conexion_cpu,1);
 							}
-				            log_info(log_kernel,"PID: <%d> - Wait: < %s > - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
+				           // log_info(log_kernel,"PID: <%d> - Wait: < %s > - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
 
 						}
 				        else { // si no existe el recurso
@@ -518,14 +521,20 @@ void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint
 				        if (recurso != NULL)
 				        {
 				            recurso->instancia++;
+				            log_info(log_kernel,"PID: <%d> - Signal: <%s> - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
 				            if (queue_size(recurso->colaBloqueados) > 0)
 				            {
 				                pthread_mutex_lock(&(recurso->mutexRecurso));
 				                pcb_t* pcb_bloqueado = queue_pop(recurso->colaBloqueados);
+				                recurso->instancia--;
 				                pthread_mutex_unlock(&(recurso->mutexRecurso));
+				                if(!encontrar_recurso(pcb_bloqueado->recursos_asignados, nombre_recurso)) //si no encontro el recurso, agrega el recurso a la lista del proceso
+				                asignar_recurso(nombre_recurso , pcb_bloqueado->recursos_asignados);
+				                 else
+				                aumentar_instancias_recurso(nombre_recurso , pcb_bloqueado->recursos_asignados); // si ya tiene el recurso asignado, le sumo una instancia
 				               	agregarAReady(pcb_bloqueado);
 				            }
-							log_info(log_kernel,"PID: <%d> - Signal: <%s> - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
+							//log_info(log_kernel,"PID: <%d> - Signal: <%s> - Instancias: <%d>",pcb_siguiente->contexto.PID, recurso->nombre, recurso->instancia);
 						send_seguir_ejecutando(conexion_cpu,0);
 						} else{
 							pcb_siguiente->motivo_exit ="INVALID_RESOURCE";

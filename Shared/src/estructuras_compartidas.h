@@ -81,9 +81,9 @@ typedef enum{
 
 typedef struct{ //A implmentar por FileSystem //todo fijarse que sea asi
 	char* nombreArchivo;
-	uint32_t puntero_directo;
-	uint32_t puntero_indirecto;
-	uint32_t tamanio_archivo;
+	int puntero_directo;
+	int puntero_indirecto;
+	int tamanio_archivo;
 	//... algo mas
 	//t_queue* colaBloqueados; Lo pasamos a otra struct de kernel
 	//pthread_mutex_t mutexArchivo; //para garantizar mutua exclusion
