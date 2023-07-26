@@ -13,7 +13,7 @@ extern int memoria_disponible;
 extern segmento_t* (*proximo_hueco)(uint32_t);
 
 //static
-static uint32_t tamanioStc = 0;
+static uint32_t tamanio_alg_asignacion = 0;
 #define POZO 9999
 
 //semaforos
@@ -28,12 +28,10 @@ bool entra_en_hueco_mas_grande(uint32_t size){
 	uint32_t tamanio = encontrarTamanioDelSegmentoConMayorTamanio();
 	return tamanio>=size;
 }
-
 static bool segmento_entra(void* segmento){
 	segmento_t* seg = (segmento_t*) segmento;
-	return seg->tamanio >= tamanioStc;
+	return seg->tamanio >= tamanio_alg_asignacion;
 }
-
 
 static void* hueco_menor(void* h1, void* h2) {
 	segmento_t* hueco1 = (segmento_t*) h1;
@@ -47,6 +45,36 @@ static void* hueco_mayor(void * h1,void*h2){
 	return hueco1->tamanio > hueco2->tamanio ? h1 : h2;
 }
 
+segmento_t* proximo_hueco_best_fit(uint32_t tamanio){
+	tamanio_alg_asignacion = tamanio;
+	t_list* huecos_disponibles = list_filter(segmentos_libres,&segmento_entra);
+	mostrar_tsl_actualizado(huecos_disponibles,6);
+	segmento_t *seg = (segmento_t*)list_get_minimum(huecos_disponibles,(void*)&hueco_menor);
+	log_info(log_memoria,"segmetno agarrado con best: BASE %d SIZE %d",seg->direccion_Base,seg->tamanio);
+	list_destroy(huecos_disponibles);
+	return seg;
+}
+
+segmento_t* proximo_hueco_worst_fit(uint32_t tamanio){
+	tamanio_alg_asignacion = tamanio;
+	//pthread_mutex_lock(&mutex_segmentos_libres);
+	t_list* huecos_disponibles = list_filter(segmentos_libres,&segmento_entra);
+	mostrar_tsl_actualizado(huecos_disponibles,6);
+	//pthread_mutex_unlock(&mutex_segmentos_libres);
+	segmento_t *seg = (segmento_t*)list_get_maximum(huecos_disponibles,(void*)&hueco_mayor);
+	log_info(log_memoria,"segmetno agarrado con worst: BASE %d SIZE %d",seg->direccion_Base,seg->tamanio);
+	return seg;
+}
+
+segmento_t* proximo_hueco_first_fit(uint32_t tamanio){
+	tamanio_alg_asignacion = tamanio;
+
+	//pthread_mutex_lock(&mutex_segmentos_libres);
+	segmento_t *seg = (segmento_t*) list_find(segmentos_libres,&segmento_entra); // se castea porque me devuelve un void *
+	log_info(log_memoria,"segmetno agarrado con first: BASE %d SIZE %d",seg->direccion_Base,seg->tamanio);
+	//pthread_mutex_unlock(&mutex_segmentos_libres);
+	return seg;
+}
 segmento_t* new_segmento(uint32_t id, uint32_t direccion_base,uint32_t tamanio,uint32_t pid){
 	segmento_t* seg = malloc(sizeof(segmento_t));
 	seg->direccion_Base = direccion_base;
@@ -56,21 +84,16 @@ segmento_t* new_segmento(uint32_t id, uint32_t direccion_base,uint32_t tamanio,u
 	return seg;
 }
 
-///// no relleno
-
-
 bool actualizar_segmentos_libres (segmento_t* seg, uint32_t size){
 	if(seg->tamanio > size){
 		seg->tamanio-= size;
 		seg->direccion_Base +=size;
-	} else { //eliminar por base?
+	} else {
 		remove_segmento_tsl(seg->direccion_Base);
-		}
+	}
 
 	return 0;
 }
-
-
 segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 
 	segmento_t * seg_a_segmentar = (*proximo_hueco)(size);
@@ -90,20 +113,12 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 		log_info(log_memoria,"si se pudo actualizar");
 	}
 
-	uint32_t size2 = list_size(segmentos_libres);
-		log_info(log_memoria,"lista de segmenos libres actualizada: ");
-		for(int i=0;i<size2;i++){
-			segmento_t *segmento_b=(segmento_t*)list_get(segmentos_libres,i);
-			log_info(log_memoria,"segmento %d   ",i);
-			log_info(log_memoria,"BASE : %d, SIZE: %d \n",segmento_b->direccion_Base,segmento_b->tamanio);
-		}
 
 	memoria_disponible -= size;
 	log_info(log_memoria,"cant memoria disponible %d \n",memoria_disponible);
 
 	return nuevo_segmento_ocupado;
 }
-
 
 bool borrar_segmento(uint32_t base,uint32_t pid){
 	segmento_t* seg = encontrar_base_tso(base);
@@ -120,28 +135,18 @@ bool borrar_segmento(uint32_t base,uint32_t pid){
 	remover_segmento_entso(seg->direccion_Base);
 
 
-	pthread_mutex_lock(&mutex_segmentos_libres);
+	//pthread_mutex_lock(&mutex_segmentos_libres);
 	unificar_huecos_tsl();
-	pthread_mutex_unlock(&mutex_segmentos_libres);
+	//pthread_mutex_unlock(&mutex_segmentos_libres);
 
-	uint32_t size2 = list_size(segmentos_libres);
-
-						log_info(log_memoria,"lista de segmenos libres actualizada: ");
-
-						for(int i=0;i<size2;i++){
-							segmento_t *segmento_b=(segmento_t*)list_get(segmentos_libres,i);
-							log_info(log_memoria,"segmento %d   ",segmento_b->id);
-							log_info(log_memoria,"PROCESO (PID) %d -  id: %d  BASE : %d, SIZE: %d \n",segmento_b->pid,segmento_b->id,segmento_b->direccion_Base,segmento_b->tamanio);
-						}
-
+	mostrar_tsl_actualizado(segmentos_libres,0);
+	mostrar_tsl_actualizado(segmentos_ocupados,1);
 
 	memoria_disponible += seg->tamanio;
 	log_info(log_memoria,"memoria disponible %d",memoria_disponible);
 
 	return true;
 }
-
-
 
 t_list* actualizar_tabla_kernel(t_list* tabla){
 		t_list* ts_kernel;
@@ -167,34 +172,6 @@ void unificar_huecos_tsl() {
 }
 
 
-
-
-segmento_t* proximo_hueco_best_fit(uint32_t tamanio){
-	tamanioStc= tamanio;
-	pthread_mutex_lock(&mutex_segmentos_libres);
-	t_list* huecos_disponibles = list_filter(segmentos_libres,&segmento_entra);
-	pthread_mutex_unlock(&mutex_segmentos_libres);
-	segmento_t *seg = (segmento_t*)list_get_minimum(huecos_disponibles,(void*)&hueco_menor);
-	return seg;
-}
-
-segmento_t* proximo_hueco_worst_fit(uint32_t tamanio){
-	tamanioStc= tamanio;
-	pthread_mutex_lock(&mutex_segmentos_libres);
-	t_list* huecos_disponibles = list_filter(segmentos_libres,&segmento_entra);
-	pthread_mutex_unlock(&mutex_segmentos_libres);
-	segmento_t *seg = (segmento_t*)list_get_maximum(huecos_disponibles,(void*)&hueco_mayor);
-	return seg;
-}
-
-
-segmento_t* proximo_hueco_first_fit(uint32_t tamanio){
-	tamanioStc = tamanio;
-	pthread_mutex_lock(&mutex_segmentos_libres);
-	segmento_t *seg = (segmento_t*) list_find(segmentos_libres,&segmento_entra); // se castea porque me devuelve un void *
-	pthread_mutex_unlock(&mutex_segmentos_libres);
-	return seg;
-}
 
 bool compactar(uint32_t iteracion){
 	segmento_t* segmento = get_en_lso(iteracion);

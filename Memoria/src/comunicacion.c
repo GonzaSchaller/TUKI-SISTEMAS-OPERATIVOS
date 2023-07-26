@@ -53,11 +53,9 @@ void procesar_conexionn(void* void_args){
 			case INICIAR_ESTRUCTURAS:{
 				uint32_t pid;
 
-
-
 				recv_PID(cliente_socket, &pid);
 				uint32_t *pid_copy = malloc(sizeof(uint32_t));
-								 *pid_copy = pid;
+				*pid_copy = pid;
 
 				list_add(lista_de_pids,pid_copy);
 
@@ -148,6 +146,9 @@ void procesar_conexionn(void* void_args){
 						}
 						uint32_t base = segmento->direccion_Base;
 						send_BASE_SEGMENTO(cliente_socket,base);
+						//0 libres
+						mostrar_tsl_actualizado(segmentos_libres,0);
+						mostrar_tsl_actualizado(segmentos_ocupados,1);
 
 						}
 				break;
@@ -179,6 +180,9 @@ void procesar_conexionn(void* void_args){
 				send_TABLA_SEGMENTOS(cliente_socket,ts_kernel);
 				list_destroy_and_destroy_elements(ts_kernel, (void*) free);
 
+				mostrar_tsl_actualizado(segmentos_ocupados,1);
+				mostrar_tsl_actualizado(segmentos_libres,0);
+
 
 				break;
 			}
@@ -201,6 +205,7 @@ void procesar_conexionn(void* void_args){
 					borrar_segmento(seg->direccion_Base,pid);
 				}
 				}
+				log_info(log_memoria,"memoria disponible despues de finalizar estructuras: %d",memoria_disponible);
 
 
 				eliminar_pid_lista_pids(pid);

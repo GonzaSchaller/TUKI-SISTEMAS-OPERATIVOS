@@ -47,6 +47,6 @@ t_list* filtrar_lista_por_pid(uint32_t pid);
 void ordenar_lista_pid_por_pid();
 
 void eliminar_pid_lista_pids(uint32_t pid);
-
+void mostrar_tsl_actualizado(t_list*lista,uint32_t cual_es);
 
 #endif
