@@ -40,8 +40,8 @@ static void* hueco_menor(void* h1, void* h2) {
 }
 //devuelve la direccion del hueco que es mayor
 static void* hueco_mayor(void * h1,void*h2){
-	segmento_t* hueco1 = (segmento_t*) hueco1;
-	segmento_t* hueco2 = (segmento_t*) hueco2;
+	segmento_t* hueco1 = (segmento_t*) h1;
+	segmento_t* hueco2 = (segmento_t*) h2;
 	return hueco1->tamanio > hueco2->tamanio ? h1 : h2;
 }
 
@@ -140,7 +140,7 @@ bool borrar_segmento(uint32_t base,uint32_t pid){
 	//pthread_mutex_unlock(&mutex_segmentos_libres);
 
 	mostrar_tsl_actualizado(segmentos_libres,0);
-	mostrar_tsl_actualizado(segmentos_ocupados,1);
+	//mostrar_tsl_actualizado(segmentos_ocupados,1);
 
 	memoria_disponible += seg->tamanio;
 	log_info(log_memoria,"memoria disponible %d",memoria_disponible);
