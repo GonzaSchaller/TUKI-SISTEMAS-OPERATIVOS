@@ -81,7 +81,7 @@ void segmentation_fault(pcb_cpu* pcb_proceso, uint32_t segmento, uint32_t offset
 
 char* recibir_de_memoria(uint32_t df,uint32_t size,uint32_t pid){
 	char*valor = malloc(sizeof(registros_cpu));; ;
-	if(!send_READ(conexion_memoria,df,size)){log_error(logger, "error mandando read a memoria");} // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
+	if(!send_READ_CPU(conexion_memoria,df,size)){log_error(logger, "error mandando read a memoria");} // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
 	if(!send_PID(conexion_memoria, pid)){log_error(logger, "error mandando PID a memoria");}
 	if(!send_LEER_CONTENIDO_CPU(conexion_memoria)){
 		log_error(logger, "error mandando PID a memoria");
@@ -194,7 +194,7 @@ int ejecutar_MOV_IN(pcb_cpu* pcb_proceso, uint32_t registro, uint32_t dir_logica
 void enviar_a_memoria(char*valor,uint32_t df,uint32_t size,uint32_t pid){
 
 	uint32_t estado;
-	if(!send_WRITE(conexion_memoria,df,valor)){log_error(logger,"error mandando write a memoria");}
+	if(!send_WRITE_CPU(conexion_memoria,df,valor)){log_error(logger,"error mandando write a memoria");}
 	if(!send_cant_bytes(conexion_memoria,size)){log_error(logger,"error mandando la cantidad de bytes a memoria");}
 	if(!send_PID(conexion_memoria,pid)){log_error(logger,"error mandando el pid a memoria");}
 
