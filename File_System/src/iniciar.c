@@ -54,16 +54,11 @@ void cargar_superbloque(){
 		        log_error(logger, "no se encontro el archivo del superbloque");
 
 		    }
-
-
 	superbloque->block_size = (uint32_t) strtol(config_get_string_value(cnf_fs, "BLOCK_SIZE"), NULL, 10);
 
 	superbloque->block_count = (uint32_t) strtol(config_get_string_value(cnf_fs, "BLOCK_COUNT"), NULL, 10);
 
 	log_info(logger,"levante superbloque ok");
-
-
-
 
 	free(cnf_fs);
 
@@ -93,44 +88,18 @@ void cargar_bitmap(){
 	uint32_t cant = bitarray_get_max_bit(bitarray);
 	log_info(logger,"bits %d",cant);
 
-	fclose(f_bitmap);
+	//fclose(f_bitmap); //todo ver cuando cerrar
 	free(path);
 }
 
 void cargar_bloque(){
 	char*path = strdup(c->bloques);
-	f_bloques = fopen(path,"rb+");
+	f_bloques = fopen(path,"wb+");
 	if(f_bloques!=NULL){
 		log_info(logger,"Bloques.dat abierto");}
 	else log_error(logger,"error");
-
-	uint32_t tam_bloque = 2;
-	uint32_t cant_bytes = 7;
-	uint32_t cant_bloques;
-
-	int cociente = cant_bytes / tam_bloque;
-	    int resto = cant_bytes% tam_bloque;
-
-	    uint32_t resultado;
-
-	    if (resto > 0) {
-	        cant_bloques = cociente + 1;
-	    } else {
-	        cant_bloques = cociente;
-	    }
-
-	    log_info(logger,"Cantidad de bloques %d",cant_bloques);
-
-
-
-	uint32_t ubicacion = 0 * tam_bloque;
-
-	fseek(f_bloques, sizeof(uint32_t) * ubicacion, SEEK_SET);
-	char* contenido_leido = malloc(tam_bloque * cant_bloques);
-	size_t elementos_leidos = fread(contenido_leido, tam_bloque,cant_bloques, f_bloques);
-
-	log_info(logger, "Contenido: %s, cantidad de bloques %d", contenido_leido,elementos_leidos);
-
+	//uint32_t* bloque = 3;
+	//fwrite(bloque, sizeof(uint32_t),1, f_bloques);
 }
 
 void terminar_fs(){
