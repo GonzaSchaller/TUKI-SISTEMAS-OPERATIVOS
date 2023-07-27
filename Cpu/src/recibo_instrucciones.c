@@ -71,7 +71,7 @@ void procesar_instrucciones(int socket_cliente, t_log* logger ){
 	pcb_proceso->TSegmento = contexto .TSegmento;
 	//segmento_t *segmento = list_get(pcb_proceso->TSegmento, 0);
 	//log_error(logger, "segmento: %d %d %d %d", segmento->direccion_Base, segmento->id, segmento->pid, segmento->tamanio);
-	log_debug(logger, "Se paso el contexto de ejecucion al PCB del proceso <%d>", contexto.PID);
+	//log_debug(logger, "Se paso el contexto de ejecucion al PCB del proceso <%d>", contexto.PID);
 	while(pcb_proceso -> PC < list_size(pcb_proceso -> instrucciones)){
 		instruccion* instruccion_en_execute = fetch(pcb_proceso);
 		if(decode_execute(socket_cliente, pcb_proceso, instruccion_en_execute, logger))

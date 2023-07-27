@@ -521,7 +521,7 @@ int ejecutar_F_READ(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, ui
 		//log_error(logger, "Error al recibir el code");
 		}
 		seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
-		return 0; //no corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
+		return seguir_ejecutando; //no corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 }
 
@@ -566,7 +566,7 @@ int ejecutar_F_WRITE(pcb_cpu* pcb_proceso, char* archivo, uint32_t dir_logica, u
 	}
 	seguir_ejecutando=recv_seguir_ejecutando(socket_cliente_kernel);
 
-		return 0; //no corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
+		return seguir_ejecutando; //no corta la ejecucion de las instrucciones (se usa en execute_decode en recibo_instrucciones.c)
 	}
 
 }

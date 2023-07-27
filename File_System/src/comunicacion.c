@@ -70,7 +70,7 @@ static void procesar_conexionn(void* void_args){
 			char* nombre_archivo;
 			uint32_t df; // la DF
 			uint32_t cant_bytes; // cant bytes
-			char* contenido;
+			char* contenido = "";
 			uint32_t puntero = 0;
 			uint32_t estadok;
 			uint32_t pid;
@@ -87,9 +87,11 @@ static void procesar_conexionn(void* void_args){
 			//aca recibo el contenido que le pediu a memoria
 			recv_contenido_leido(fd_memoria,&contenido);
 
-			if(escribir_contenido(nombre_archivo,contenido,puntero,cant_bytes))
+			if(escribir_contenido(nombre_archivo,contenido,puntero,cant_bytes)){
 				log_info(logger,"todo ok escribiendo el archivo");
-
+				extra_code ok = FINALIZAR;
+				send_OK_CODE(cliente_socket, ok);
+			}
 			else
 				log_error(logger, "No se pudo escribir en el archivo");
 			break;
@@ -114,8 +116,8 @@ static void procesar_conexionn(void* void_args){
 				send_WRITE(fd_memoria,df,contenidor);
 				recv_OK_CODE(fd_memoria,&estado_memoria);
 				if(estado_memoria == EXITOSO){
-					estado_kernel = EXITOSO;
-					send_OK_CODE(cliente_socket,estado_kernel);
+					extra_code ok = FINALIZAR;
+					send_OK_CODE(cliente_socket, ok);
 				}
 			}
 			log_error(logger, "Error al abrir el archivo por que no se pudo obtener el contenido del mismo");
@@ -147,11 +149,11 @@ static void procesar_conexionn(void* void_args){
 			if(tamanio_a_truncar > fcb->tamanio_archivo){
 				aumentar_tamanio_archivo(tamanio_a_truncar, cuantos_bloques_venia_usando , fcb, archivo);
 			}
-
 			else if(tamanio_a_truncar < fcb->tamanio_archivo){ //tengo que quitar bloques al archivo
 				reducir_tamanio_archivo(tamanio_a_truncar, cuantos_bloques_venia_usando, fcb, archivo);
 			} //ftruncate, linea 124
-			extra_code ok = CORRECTO;
+
+			extra_code ok = FINALIZAR;
 			send_OK_CODE(cliente_socket, ok);
 			break;
 		}
@@ -186,6 +188,7 @@ void aumentar_tamanio_archivo(uint32_t tamanio_a_truncar, uint32_t cuantos_bloqu
 			fwrite(&bloque, sizeof(uint32_t),1, f_bloques); //REVISAR que bloque al ser ahora puntero funcione igual el fwrite
 			//logs: // AGREGAR LOGS
 	}
+
 	config_save(archivo);//llave del for
 }
 

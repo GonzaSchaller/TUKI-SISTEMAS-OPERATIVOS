@@ -113,14 +113,14 @@ t_list* bloque_del_archivo (fcb_t* fcb,uint32_t bloque_estoy,uint32_t cant_bloqu
 	//uint32_t cant_bloques_archivo = ceil_casero(fcb->tamanio_archivo , superbloque->block_size);
 
 	for(int i=0;i<cant_bloques_a_leer;i++){
-		if(bloque_estoy == fcb->puntero_directo){
-			list_add(bloques,(void*)0);
+		if(bloque_estoy <= 1){
+			list_add(bloques,(void*)1);
 			list_add(bloques_fs,(void*)fcb->puntero_directo);
 			}
 		else{
 			//entro en el bloque indirecto
 			uint32_t nro_bloque_leido;
-			fseek(f_bloques,fcb->puntero_indirecto * superbloque->block_size, SEEK_SET);
+			fseek(f_bloques,fcb->puntero_indirecto * superbloque->block_size+sizeof(uint32_t)*i, SEEK_SET);
 			size_t bloque_leido = fread(&nro_bloque_leido,sizeof(uint32_t),1,bloques); //leo los bloques
 			list_add(bloques,(void*)bloque_leido);
 			list_add(bloques_fs,nro_bloque_leido);
@@ -241,11 +241,11 @@ bool escribir_contenido(char*name,char* contenido,uint32_t puntero,uint32_t cant
 		uint32_t tam_bloque = superbloque->block_size;
 		uint32_t cant_bloques; //cant de bloques a leer
 		cant_bloques = ceil_casero(cant_bytes,tam_bloque);
-
 		uint32_t enquebloqueestoy = ceil_casero(puntero,tam_bloque);
+		if(puntero%tam_bloque == 0){
+			enquebloqueestoy++;
+		}
 
-		t_list* lista_bloques_fs = list_create();
-		t_list* lista_de_bloques = bloque_del_archivo (fcb,enquebloqueestoy,cant_bloques,puntero, &lista_bloques_fs);
 
 		if(enquebloqueestoy <= 1){
 			fseek(f_bloques,fcb->puntero_directo * tam_bloque, SEEK_SET);
@@ -261,13 +261,15 @@ bool escribir_contenido(char*name,char* contenido,uint32_t puntero,uint32_t cant
 		else if(enquebloqueestoy > 1) //estoy en el indirecto
 				escribir_en_bloque(fcb, puntero, cant_bytes, contenido);
 
-		uint32_t tamanio = list_size(lista_de_bloques);
-
-		for(int i=0;i<tamanio;i++){
-		uint32_t* nro_bloque = list_get(lista_de_bloques,i);
-	    uint32_t* nro_bloque_fs = list_get(lista_bloques_fs,i);
-		log_info(logger,"Acceso a Bloque: Acceso Bloque - Archivo: <%s> - Bloque Archivo: <%d> - Bloque File System <%d>",name,*nro_bloque,*nro_bloque_fs);
-		}
+		//t_list* lista_bloques_fs = list_create();
+		//t_list* lista_de_bloques = bloque_del_archivo (fcb,enquebloqueestoy,cant_bloques,puntero, &lista_bloques_fs);
+//		uint32_t tamanio = list_size(lista_de_bloques);
+//
+//		for(int i=0;i<tamanio;i++){
+//		uint32_t* nro_bloque = list_get(lista_de_bloques,i);
+//	    uint32_t* nro_bloque_fs = list_get(lista_bloques_fs,i);
+//		log_info(logger,"Acceso a Bloque: Acceso Bloque - Archivo: <%s> - Bloque Archivo: <%d> - Bloque File System <%d>",name,*nro_bloque,*nro_bloque_fs);
+//		}
 
 		free(fcb);
 

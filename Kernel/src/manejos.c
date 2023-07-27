@@ -17,31 +17,28 @@ void bloquear_procesoPorIO(void* arg) {
 void bloquear_procesoPorArchivo(void* argumentos) {
     // Obtén el PCB del proceso a bloquear desde el argumento pasado al hilo
     extra_code codigo;
-    pcb_t* pcb_siguiente;
     arg_archivo_bloqueado* arg = (arg_archivo_bloqueado*)argumentos;
     pcb_t* pcb_bloqueado = arg->pcb;
     fcb_kernel* archivo = arg->archivo;
 	int nombre_instruccion = arg->nombre_instruccion;
 	free(arg);
-    pcb_bloqueado->state_anterior = pcb_bloqueado->state;
-    pcb_bloqueado->state = BLOCK;
-
+	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_bloqueado->contexto.PID,estado_pcb_a_string(pcb_bloqueado->state_anterior),estado_pcb_a_string(pcb_bloqueado->state));
     log_info(log_kernel,"PID: <%d> - Bloqueado por: <%s>",pcb_bloqueado->contexto.PID, archivo->nombreArchivo);
 
     if(nombre_instruccion == F_TRUNCATE){
 		pthread_mutex_lock(&mutexHiloTruncate);
 		recv_OK_CODE(conexion_fileSystem,&codigo);// ok code?
 		if(codigo == FINALIZAR){
-			pcb_siguiente =list_remove(archivo->colaBloqueados,list_size(archivo->colaBloqueados)-1);
+			pcb_bloqueado =list_remove(archivo->colaBloqueados,list_size(archivo->colaBloqueados)-1);
 		}
 		pthread_mutex_unlock(&mutexHiloTruncate);
 	}
-    else if(nombre_instruccion == FINALIZAR){
+    else if(nombre_instruccion == F_READ){
     	pthread_mutex_lock(&mutexHiloRead);
     	recv_OK_CODE(conexion_fileSystem, &codigo);
     	if(codigo == FINALIZAR){
 			pcb_bloqueado = list_remove(archivo->colaBloqueados,list_size(archivo->colaBloqueados)-1);
-
+			sem_post(&semFRead);
 		}
         pthread_mutex_unlock(&mutexHiloRead);
 
@@ -51,10 +48,11 @@ void bloquear_procesoPorArchivo(void* argumentos) {
     	recv_OK_CODE(conexion_fileSystem,&codigo);
     	if(codigo == FINALIZAR){
 			pcb_bloqueado = list_remove(archivo->colaBloqueados,list_size(archivo->colaBloqueados)-1);
+			sem_post(&semFWrite);
 		}
         pthread_mutex_unlock(&mutexHiloWrite);
     }
-	agregarAReady(pcb_siguiente);
+	agregarAReady(pcb_bloqueado);
     pthread_exit(NULL);
 }
 void eliminarArchivoDeTablaGlobal(char* nombreArchivo, t_list* listaArchivos) {
@@ -381,20 +379,22 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,ui
 			archivo->tamanio = tamanio;
 			list_add(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
 
-			log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
+		//	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
 
 			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
+			pcb_siguiente->state_anterior = pcb_siguiente->state;
+			pcb_siguiente->state = BLOCK;
 			args->pcb = pcb_siguiente;
 			args->archivo = archivo;
 			args->nombre_instruccion = F_TRUNCATE;
 
 			log_info(log_kernel,"PID: <%d> - Archivo: <%s> - Tamaño: <%d>", pcb_siguiente->contexto.PID, archivo->nombreArchivo,archivo->tamanio);
-			bloquear_procesoPorArchivo(args);
+			pthread_t hilo_archivo;
 
-			send_seguir_ejecutando(conexion_cpu,0);
+			pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
+			pthread_detach(hilo_archivo);
+			send_seguir_ejecutando(conexion_cpu,1);
 			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
-
-
 		}
 	}
 	else if(cop ==F_READ){
@@ -419,16 +419,20 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,ui
 			}
 			fcb_kernel* archivo_para_args = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
+			pcb_siguiente->state_anterior = pcb_siguiente->state;
+			pcb_siguiente->state = BLOCK;
 			args->pcb = pcb_siguiente;
 			args->archivo = archivo_para_args;
 			args->nombre_instruccion = F_READ;
 
 			log_info(log_kernel,"PID: <%d> - Leer Archivo: <%s> - Puntero <%d> - Dirección Memoria <%d> - Tamaño <%d>", pcb_siguiente->contexto.PID, archivo->nombreArchivo,archivo->puntero, direccion_fisica,archivo_para_args->tamanio);
-			bloquear_procesoPorArchivo(args);
-			send_seguir_ejecutando(conexion_cpu,0);
+			pthread_t hilo_archivo;
+			pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
+			pthread_detach(hilo_archivo);
+
+			send_seguir_ejecutando(conexion_cpu,1);
 			recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 		}
-		sem_post(&semFRead);
 	}
 
 
@@ -454,15 +458,20 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,ui
 				}
 				fcb_kernel* archivoTabla = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 				arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
+				pcb_siguiente->state_anterior = pcb_siguiente->state;
+				pcb_siguiente->state = BLOCK;
 				args->pcb = pcb_siguiente;
 				args->archivo = archivoTabla;
 				args->nombre_instruccion = F_WRITE;
 				log_info(log_kernel,"PID: <%d> - Escribir Archivo: <%s> - Puntero <%d> - Dirección Memoria <%d> - Tamaño <%d>",pcb_siguiente->contexto.PID, archivo->nombreArchivo,archivo->puntero, direccion_fisica,archivoTabla->tamanio);
-				bloquear_procesoPorArchivo(args);
-				send_seguir_ejecutando(conexion_cpu,0);
+				pthread_t hilo_archivo;
+
+				pthread_create(&hilo_archivo, NULL, (void*)bloquear_procesoPorArchivo,(void*)args);
+				pthread_detach(hilo_archivo);
+
+				send_seguir_ejecutando(conexion_cpu,1);
 				recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 		}
-		sem_post(&semFWrite);
 	}
 }
 void manejar_recursos(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,uint32_t* seguir_ejecutando){
