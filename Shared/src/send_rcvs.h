@@ -131,14 +131,29 @@ bool recv_FINALIZAR_READ(int,uint32_t*);
 bool send_FINALIZAR_WRITE(int,uint32_t );
 bool recv_FINALIZAR_WRITE(int,uint32_t* );
 
-bool recv_READ2(int ,uint32_t* ,char** );
-bool send_READ2(int ,uint32_t  , char* ); //////Dddd
+//bool recv_READ2(int ,uint32_t* ,char** );
+//bool send_READ2(int ,uint32_t  , char* ); //////Dddd
 
-bool recv_READ(int , uint32_t* ,uint32_t* );
-bool send_READ(int , uint32_t  ,uint32_t  );
+//bool recv_READ(int , uint32_t* ,uint32_t* );
+//bool send_READ(int , uint32_t  ,uint32_t  );
 
-bool recv_WRITE(int ,uint32_t* ,char** );
-bool send_WRITE(int ,uint32_t  , char* );
+//bool recv_WRITE(int ,uint32_t* ,char** );
+//bool send_WRITE(int ,uint32_t  , char* );
+bool send_WRITE_CPU(int fd,uint32_t parametro1 , char* parametro2);
+bool recv_WRITE_CPU(int fd,uint32_t* parametro1,char** parametro2);
+
+
+bool send_WRITE_FS(int fd,uint32_t parametro1 , char* parametro2);
+bool recv_WRITE_FS(int fd,uint32_t* parametro1,char** parametro2);
+
+bool send_READ_CPU(int socket_cliente, uint32_t  parametro1,uint32_t  parametro2);
+bool recv_READ_CPU(int socket_cliente, uint32_t* parametro1,uint32_t* parametro2);
+
+bool send_READ_FS(int socket_cliente, uint32_t  parametro1,uint32_t  parametro2);
+bool recv_READ_FS(int socket_cliente, uint32_t* parametro1,uint32_t* parametro2);
+
+
+
 
 bool recv_direccion_fisica(int , uint32_t* );
 bool send_direccion_fisica (int , uint32_t  );

@@ -12,6 +12,7 @@ int main(){
 	signal(SIGINT,sighandler);
 
 
+
 	cargar_configuracion("memoria.config");
 	cargar_memoria();
 

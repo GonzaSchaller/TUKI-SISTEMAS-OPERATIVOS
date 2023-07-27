@@ -128,8 +128,12 @@ typedef enum{ 	//parametros // a partir del numero 100, son instrucciones
 	EXISTE_ARCHIVO,
 	INICIAR_ESTRUCTURAS,
 	FINALIZAR_ESTRUCTURAS,
-	READ, //pa q memoria escriba lo que manda cpu y fs
+	READ_CPU, //pa q memoria escriba lo que manda cpu y fs
+	WRITE_CPU,
+	READ,
 	WRITE,
+	READ_FS,
+	WRITE_FS,
 	ERROR,
 	LEER_CPU,//segmentation fault
 	SEGUI_EJECUTANDO // PARA VOS CPU
