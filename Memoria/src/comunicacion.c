@@ -26,6 +26,7 @@ void procesar_conexionn(void* void_args){
 
 	op_code cop;
 		while(cliente_socket!=-1){
+
 			if(recv(cliente_socket,&cop,sizeof(op_code),0) == 0){
 				log_info(log_memoria,"DISCONECT!");
 				return;
@@ -125,11 +126,9 @@ void procesar_conexionn(void* void_args){
 									segmento_t* segmento = list_get(list_proceso_i,u);
 									log_info(log_memoria,"PID <%d> - Segmento <%d> - Base <%d> - Tamanio <%d> ",segmento->pid,segmento->id,segmento->direccion_Base,segmento->tamanio);
 									log_info(log_memoria,"\n");
-																}
-
+								}
 
 								send_TABLA_SEGMENTOS(cliente_socket,list_proceso_i);
-
 
 							}//for
 						}
@@ -213,40 +212,39 @@ void procesar_conexionn(void* void_args){
 
 				break;
 			}
-			case READ: {
+			case READ_CPU: {
 				char*contenido = NULL;
 				uint32_t pid; //nice
 				uint32_t direccion_fisica;//nice
 				uint32_t tamanio;
 				//extra_code estado;
                 //uint32_t cop;
-                pthread_mutex_lock(&mutex_read_write);
-                recv_READ(cliente_socket,&direccion_fisica,&tamanio); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
+
+                recv_READ_CPU(cliente_socket,&direccion_fisica,&tamanio); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
 				recv_PID(cliente_socket, &pid);
 				usleep(cfg->RETARDO_MEMORIA * 1000);
 
                 contenido = leer_contenido(direccion_fisica,tamanio);
 				send_contenido_leido(cliente_socket,contenido);
 
-				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <%d> - Origen: <%s>",pid,direccion_fisica,tamanio,server_name);
-				pthread_mutex_unlock(&mutex_read_write);
+				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <%d> - Origen: <CPU>",pid,direccion_fisica,tamanio);
+
 			}
 
 			break;
 
-			case WRITE:{
+			case WRITE_CPU:{
 				uint32_t pid;
 				uint32_t tamanio;
 				uint32_t direccion_fisica;
 				extra_code estado;
 				char*contenido;
 
-				pthread_mutex_lock(&mutex_read_write);
-				recv_WRITE(cliente_socket,&direccion_fisica,&contenido);
+				recv_WRITE_CPU(cliente_socket,&direccion_fisica,&contenido);
 				recv_cant_bytes(cliente_socket,&tamanio);
 				recv_PID(cliente_socket, &pid);
 
-				log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <%d> - Origen: <%s>",pid,direccion_fisica,tamanio,server_name);
+				log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <%d> - Origen: <CPU>",pid,direccion_fisica,tamanio);
 
 				usleep(cfg->RETARDO_MEMORIA * 1000);
 
@@ -254,9 +252,52 @@ void procesar_conexionn(void* void_args){
 					estado = EXITOSO;
 					send_OK_CODE(cliente_socket,estado);
 				}
-				pthread_mutex_unlock(&mutex_read_write);
+
 				break;
-			}//write
+				}//write
+
+			case READ_FS:{
+				char*contenido = NULL;
+				uint32_t pid; //nice
+				uint32_t direccion_fisica;//nice
+				uint32_t tamanio;
+				//extra_code estado;
+				//uint32_t cop;
+
+				recv_READ_CPU(cliente_socket,&direccion_fisica,&tamanio); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
+				recv_PID(cliente_socket, &pid);
+				usleep(cfg->RETARDO_MEMORIA * 1000);
+
+				contenido = leer_contenido(direccion_fisica,tamanio);
+				send_contenido_leido(cliente_socket,contenido);
+
+				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <%d> - Origen: <FILE_SYSTEM>",pid,direccion_fisica,tamanio);
+
+				break;
+			}
+			case WRITE_FS:{
+				uint32_t pid;
+				uint32_t tamanio;
+				uint32_t direccion_fisica;
+				extra_code estado;
+				char*contenido;
+
+				recv_WRITE_FS(cliente_socket,&direccion_fisica,&contenido);
+				recv_cant_bytes(cliente_socket,&tamanio);
+				recv_PID(cliente_socket, &pid);
+
+				log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <%d> - Origen: <FILE_SYSTEM>",pid,direccion_fisica,tamanio);
+
+				usleep(cfg->RETARDO_MEMORIA * 1000);
+
+				if(escribir_contenido((void*)contenido,direccion_fisica,tamanio)){
+					estado = EXITOSO;
+					send_OK_CODE(cliente_socket,estado);
+				}
+
+				break;
+				}
+
 				}
 				}//while
 		log_warning(log_memoria,"cliente %s desconectado ",server_name);
