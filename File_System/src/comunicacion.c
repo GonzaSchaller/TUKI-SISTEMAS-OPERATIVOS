@@ -81,7 +81,7 @@ static void procesar_conexionn(void* void_args){
 			log_info(logger,"Escribir Archivo: <%s> - Puntero: <%d> - Memoria <%d> - Tamanio: <%d>",nombre_archivo,puntero,df,cant_bytes);
 
 			//solicito a memoria lo que hay en la direccion logica mandada
-			send_READ(fd_memoria,df,cant_bytes); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
+			send_READ_FS(fd_memoria,df,cant_bytes); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
 			send_PID(fd_memoria,pid);
 			//fcb_t* fcb = busacr_fcb(nombre_archivo);
 			//aca recibo el contenido que le pediu a memoria
@@ -113,7 +113,7 @@ static void procesar_conexionn(void* void_args){
 
 			//le mando a memoria lo que tiene que escribir
 			if(contenidor != NULL){
-				send_WRITE(fd_memoria,df,contenidor);
+				send_WRITE_FS(fd_memoria,df,contenidor);
 				recv_OK_CODE(fd_memoria,&estado_memoria);
 				if(estado_memoria == EXITOSO){
 					extra_code ok = FINALIZAR;

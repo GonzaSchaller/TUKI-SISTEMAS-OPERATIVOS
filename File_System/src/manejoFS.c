@@ -129,16 +129,53 @@ t_list* bloque_del_archivo (fcb_t* fcb,uint32_t bloque_estoy,uint32_t cant_bloqu
 	}
 	return bloques;
 }
+void leer_por_bloque(fcb_t* fcb, uint32_t puntero, uint32_t cant_bytes, char** contenido) {
+	 	uint32_t tam_bloque = superbloque->block_size;
+	    uint32_t enquebloqueestoy = ceil_casero(puntero, tam_bloque);
+	    fseek(f_bloques, fcb->puntero_indirecto * tam_bloque, SEEK_SET);
+	    fseek(f_bloques, (enquebloqueestoy - 1) * sizeof(uint32_t), SEEK_CUR);
+	    uint32_t bloque_fs;
+	    fread(&bloque_fs, sizeof(uint32_t), 1, f_bloques);
+	    fseek(f_bloques, bloque_fs * tam_bloque, SEEK_SET);
+	    uint32_t tamanio_restante = tam_bloque - puntero;
+	    fseek(f_bloques, puntero%tam_bloque, SEEK_CUR);
+	    char* contenido_leido;
+	    if (tamanio_restante >= cant_bytes) { // Puedo leer sin salirme del bloque
+	        fread(&contenido_leido, cant_bytes, 1,f_bloques);
+	        strcat(*contenido, contenido_leido);
+	    } else { // Me paso del bloque
+	        uint32_t cant_a_leer_en_bloque_total = cant_bytes + tamanio_restante;
+	        while (cant_a_leer_en_bloque_total > 0) {
+	            uint32_t cuantos_bloques_venia_usando = ceil_casero(fcb->tamanio_archivo, superbloque->block_size);
+	            t_list* lista_bloque_indirectos = cant_bloques_puntero_indirecto(fcb->puntero_indirecto, cuantos_bloques_venia_usando - 1);
+	            uint32_t cant_bloques = list_size(lista_bloque_indirectos);
+
+	                int posicion_actual = -1; // Inicializar la posición actual a un valor inválido
+
+	                for (int i = 0; i < cant_bloques; i++) {
+	                    uint32_t unbloque = *(uint32_t*)list_get(lista_bloque_indirectos, i);
+	                    if (unbloque == enquebloqueestoy) {
+	                        posicion_actual = i;
+	                        break; // Salimos del bucle una vez que encontramos la posición actual
+	                    }
+	                }
+
+	                if (posicion_actual != -1) {
+	                    uint32_t bloque_siguiente = *(uint32_t*)list_get(lista_bloque_indirectos, posicion_actual + 1); // Agarro el siguiente bloque
+	                    fseek(f_bloques, bloque_siguiente * tam_bloque, SEEK_SET);
+	        	        fread(&contenido_leido, cant_bytes, 1,f_bloques);
+	        	        strcat(*contenido, contenido_leido);
+	                    cant_a_leer_en_bloque_total -= tam_bloque;
+	                }
+	        }
+	    }
+
+}
 char* buscar_contenido(char*name,uint32_t puntero,uint32_t cant_bytes){
 		uint32_t tam_bloque = superbloque->block_size;
 		uint32_t cant_bloques; //cant de bloques a leer
 
 		cant_bloques = ceil_casero(cant_bytes,tam_bloque);
-		    //la ubicacion esta en el puntero.
-
-	//	uint32_t ubicacion = puntero;
-		uint32_t enquebloqueestoy = ceil_casero(puntero,tam_bloque); //donde arranca // ese seria el bloque dentro del fs
-
 		char*path = concat(name);
 		t_config* archivo = config_create(path);
 
@@ -153,24 +190,41 @@ char* buscar_contenido(char*name,uint32_t puntero,uint32_t cant_bytes){
 		fcb->puntero_directo= config_get_int_value(archivo,"PUNTERO_DIRECTO");
 		fcb->puntero_indirecto = config_get_int_value(archivo,"PUNTERO_INDIRECTO");
 
-		t_list* lista_bloques_fs;
-		t_list* lista_de_bloques = bloque_del_archivo (fcb,enquebloqueestoy,cant_bloques,puntero,lista_bloques_fs);
-
-
-		uint32_t tamanio = list_size(lista_de_bloques);
-
-			for(int i=0;i<tamanio;i++){
-				uint32_t nro_bloque = list_get(lista_de_bloques,i);
-				uint32_t nro_bloque_fs = list_get(lista_bloques_fs,i);
-				log_info(logger,"Acceso a Bloque: Acceso Bloque - Archivo: <%s> - Bloque Archivo: <%d> - Bloque File System <%d>",name,nro_bloque,nro_bloque_fs);
+		uint32_t enquebloqueestoy = ceil_casero(puntero,tam_bloque); //donde arranca // ese seria el bloque dentro del fs
+		if(puntero%tam_bloque == 0){
+			enquebloqueestoy++;
+		}
+		char* contenido_leido;
+		if(enquebloqueestoy<=1){ //estoy en el directo
+			fseek(f_bloques,fcb->puntero_directo * tam_bloque, SEEK_SET);
+			fseek(f_bloques, puntero%tam_bloque, SEEK_CUR);
+			uint32_t tamanio_restante = tam_bloque - puntero;
+			if(tamanio_restante >= cant_bytes){
+				fread(&contenido_leido,cant_bytes,1,f_bloques);
 			}
-		//supongo que es unu for por cada bloque.
+			else{
+				uint32_t cantidad_lectura_de_bloque = cant_bytes - tamanio_restante;
+				fread(&contenido_leido,cantidad_lectura_de_bloque,1,f_bloques);
+				leer_por_bloque(fcb, puntero, cant_bytes, &contenido_leido);
+				//y me tengo que mvoer al sig bloque
+			}
+		}
+		else if(enquebloqueestoy>1){
+			leer_por_bloque(fcb,  puntero,  cant_bytes, &contenido_leido);
+		}
 
-		fseek(f_bloques, cant_bytes, SEEK_SET);
-		char* contenido_leido = malloc(cant_bytes);
-		fread(contenido_leido, 1,cant_bytes, f_bloques);
 		free(fcb);
 
+		t_list* lista_bloques_fs;
+		t_list* lista_de_bloques = bloque_del_archivo (fcb,enquebloqueestoy,cant_bloques,puntero,lista_bloques_fs);
+		uint32_t tamanio = list_size(lista_de_bloques);
+
+					for(int i=0;i<tamanio;i++){
+						uint32_t nro_bloque = list_get(lista_de_bloques,i);
+						uint32_t nro_bloque_fs = list_get(lista_bloques_fs,i);
+						log_info(logger,"Acceso a Bloque: Acceso Bloque - Archivo: <%s> - Bloque Archivo: <%d> - Bloque File System <%d>",name,nro_bloque,nro_bloque_fs);
+					}
+				//supongo que es unu for por cada bloque.
 	return contenido_leido;
 }
 
@@ -184,10 +238,10 @@ void escribir_en_bloque(fcb_t* fcb, uint32_t puntero, uint32_t cant_bytes, char*
     fread(&bloque_fs, sizeof(uint32_t), 1, f_bloques);
     fseek(f_bloques, bloque_fs * tam_bloque, SEEK_SET);
     uint32_t tamanio_restante = tam_bloque - puntero;
-    fseek(f_bloques, puntero, SEEK_CUR);
+    fseek(f_bloques, puntero%tam_bloque, SEEK_CUR);
 
     if (tamanio_restante >= cant_bytes) { // Puedo escribir sin salirme del bloque
-        fwrite(contenido, 1, cant_bytes, f_bloques);
+        fwrite(contenido, cant_bytes, 1,f_bloques);
     } else { // Me paso del bloque
         uint32_t cant_a_escribir_en_bloque_total = cant_bytes + tamanio_restante;
 
@@ -196,10 +250,6 @@ void escribir_en_bloque(fcb_t* fcb, uint32_t puntero, uint32_t cant_bytes, char*
             t_list* lista_bloque_indirectos = cant_bloques_puntero_indirecto(fcb->puntero_indirecto, cuantos_bloques_venia_usando - 1);
             uint32_t cant_bloques = list_size(lista_bloque_indirectos);
 
-            if (cant_a_escribir_en_bloque_total > 0) {
-                fwrite(contenido, cant_a_escribir_en_bloque_total, 1, f_bloques);
-                cant_a_escribir_en_bloque_total = 0;
-            } else {
                 int posicion_actual = -1; // Inicializar la posición actual a un valor inválido
 
                 for (int i = 0; i < cant_bloques; i++) {
@@ -209,14 +259,12 @@ void escribir_en_bloque(fcb_t* fcb, uint32_t puntero, uint32_t cant_bytes, char*
                         break; // Salimos del bucle una vez que encontramos la posición actual
                     }
                 }
-
                 if (posicion_actual != -1) {
                     uint32_t bloque_siguiente = *(uint32_t*)list_get(lista_bloque_indirectos, posicion_actual + 1); // Agarro el siguiente bloque
                     fseek(f_bloques, bloque_siguiente * tam_bloque, SEEK_SET);
                     fwrite(contenido, tam_bloque, 1, f_bloques);
                     cant_a_escribir_en_bloque_total -= tam_bloque;
                 }
-            }
         }
     }
 }
@@ -246,15 +294,17 @@ bool escribir_contenido(char*name,char* contenido,uint32_t puntero,uint32_t cant
 			enquebloqueestoy++;
 		}
 
-
 		if(enquebloqueestoy <= 1){
 			fseek(f_bloques,fcb->puntero_directo * tam_bloque, SEEK_SET);
-			fseek(f_bloques, 1*sizeof(uint32_t), SEEK_CUR);
+
 			uint32_t tamanio_restante = tam_bloque - puntero;
 			if(tamanio_restante >= cant_bytes){ //puedo escribir sin salirme del bloque
+				fseek(f_bloques, puntero%tam_bloque, SEEK_CUR);
 				fwrite(contenido, 1,cant_bytes, f_bloques);
 			}
 			else{
+				uint32_t cantidad_escritura_de_bloque = cant_bytes - tamanio_restante;
+				fread(contenido,cantidad_escritura_de_bloque,1,f_bloques);
 				escribir_en_bloque(fcb, puntero, cant_bytes, contenido);
 			}
 		}
@@ -308,21 +358,6 @@ t_list * buscar_bloques_libres(int cant_bloques_a_agregar){
 		*bloque = buscar_bloque_libre();
 		list_add(bloques, bloque);
 	}
-//	uint32_t bloques_totales_fs = bitarray_get_max_bit(bitarray);
-//	for(int i = 0; i < bloques_totales_fs; i++){ //recorro el bitarray en busca de bloques libres, necesito solo cant_bloques_Agregar
-//		uint32_t tamanio= list_size(bloques);
-//		int* a = &i; //para arreglar el warning: cast to pointer from integer of different size
-//
-//		if(tamanio == cant_bloques_a_agregar)
-//			break;
-//		else {
-//			bool valor = bitarray_test_bit(bitarray,i);
-//			if(!valor)
-//			list_add(bloques, a);
-//		}
-//		if((i == (bloques_totales_fs - 1)) && tamanio!= cant_bloques_a_agregar)
-//			log_error(logger,"NO HAY MAS BLOQUES DISPONIBLES PARA AGRANDAR EL TAMANIO DEL ARCHIVO");
-//	}	//SALGO DEL FOR CON LA LISTA DE LOS BLOQUES A AGREGAR, si termine antes es que no habia bloques :(
 		return bloques;
 }
 
