@@ -2,7 +2,7 @@
 #Compilar e instalar las commons
 
 #Compilar e instalar las shared
-#(cd Shared/Debug && make install)
+(cd Shared/Debug && make install)
 
 #Compilar resto de los proyectos
 (cd Kernel/ && make build) 
