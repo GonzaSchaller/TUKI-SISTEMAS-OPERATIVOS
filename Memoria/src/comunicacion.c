@@ -179,20 +179,9 @@ void procesar_conexionn(void* void_args){
 				recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
 				recv_PID(cliente_socket,&pid);
 
-			//	log_info(log_memoria,"Entraste a delete segment, pid %d",pid);
-				// me devuelve la tabla de ese segmento.
-
-
-			//	t_list * tsegmentos_pid = list_create();
-			//	tsegmentos_pid = filtrar_lista_por_pid(pid);
-
-
-
 				uint32_t base = buscar_en_lista_por_id_devolver_base(ts_kernel,id); //busco la base del id a eliminar.
 				//elimino por base
 				borrar_segmento(base,pid);
-
-
 
 				list_remove_and_destroy_by_condition(ts_kernel,&seg_con_id_igual,free);
 
@@ -248,7 +237,6 @@ void procesar_conexionn(void* void_args){
 				send_contenido_leido(cliente_socket,contenido);
 
 				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <%d> - Origen: <CPU>",pid,direccion_fisica,tamanio);
-
 			}
 
 			break;
@@ -289,7 +277,6 @@ void procesar_conexionn(void* void_args){
 
 				contenido = leer_contenido(direccion_fisica,tamanio);
 				send_contenido_leido(cliente_socket,contenido);
-
 				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <%d> - Origen: <FILE_SYSTEM>",pid,direccion_fisica,tamanio);
 
 				break;

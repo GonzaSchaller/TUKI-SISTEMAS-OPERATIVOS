@@ -92,7 +92,7 @@ void cargar_bitmap(){
 
 void cargar_bloque(){
 	char*path = strdup(c->bloques);
-	f_bloques = fopen(path,"wb+");
+	f_bloques = fopen(path,"rb+");
 	if(f_bloques!=NULL){
 		log_info(logger,"Bloques.dat abierto");}
 	else log_error(logger,"error");

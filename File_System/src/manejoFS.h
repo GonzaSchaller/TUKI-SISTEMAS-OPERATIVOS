@@ -30,7 +30,7 @@ bool existe_y_abrir(char*nombre_archivo);
 bool crear_archivo(char*nombre,uint32_t tamanio);
 char* buscar_contenido(char*nombre,uint32_t puntero,uint32_t cb);
 char* leer_en_bloque(fcb_t* fcb, uint32_t puntero, uint32_t cant_bytes, uint32_t enquebloquestoy);
-bool escribir_contenido(char*name,char* contenido,uint32_t puntero,uint32_t cant_bytes);
+void escribir_en_bloque(fcb_t* fcb, uint32_t puntero, uint32_t cant_bytes, uint32_t enquebloquestoy, char* contenido);
 uint32_t ceil_casero(uint32_t nro1,uint32_t nro2);
 t_list* bloque_del_archivo (fcb_t* fcb,uint32_t bloque_estoy,uint32_t cant_bloques_a_leer,uint32_t puntero,t_list** bloques_fs);
 char* concat(char*nombre_archivo);

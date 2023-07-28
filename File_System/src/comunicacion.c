@@ -24,7 +24,6 @@ static void procesar_conexionn(void* void_args){
 			return;
 		}
 
-
 		switch(cop){
 		// DEFINIR: ver como pasar los datos nombre archivo y tamanio porque despues lo usamos en config_set_value que sólo usa punteros
 
@@ -88,7 +87,7 @@ static void procesar_conexionn(void* void_args){
 			}
 
 			if(escribir_contenido(nombre_archivo,contenido,puntero,cant_bytes)){
-				log_info(logger,"todo ok escribiendo el archivo");
+				log_info(logger,"Todo ok escribiendo el archivo");
 				extra_code ok = FINALIZAR;
 				send_OK_CODE(cliente_socket, ok);
 			}
@@ -104,9 +103,10 @@ static void procesar_conexionn(void* void_args){
 			uint32_t df;
 			uint32_t cant_bytes;
 			uint32_t puntero = 0;
-
+			uint32_t pid;
 			recv_F_READ(cliente_socket,&nombre_archivo,&df,&cant_bytes);
 			recv_PUNTERO_FS(cliente_socket,&puntero);
+			recv_PID(cliente_socket, &pid);
 
 			log_info(logger,"Leer: Archivo: <%s> - Puntero: <%d>  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivo,puntero,df,cant_bytes);
 			char*contenidor = buscar_contenido(nombre_archivo,puntero,cant_bytes);
@@ -114,13 +114,14 @@ static void procesar_conexionn(void* void_args){
 			//le mando a memoria lo que tiene que escribir
 			if(contenidor != NULL){
 				send_WRITE_FS(fd_memoria,df,contenidor);
-				recv_OK_CODE(fd_memoria,&estado_memoria);
+				send_cant_bytes(fd_memoria, cant_bytes);
+				send_PID(fd_memoria, pid);
+ 				recv_OK_CODE(fd_memoria,&estado_memoria);
 				if(estado_memoria == EXITOSO){
 					extra_code ok = FINALIZAR;
 					send_OK_CODE(cliente_socket, ok);
 				}
 			}
-			log_error(logger, "Error al abrir el archivo por que no se pudo obtener el contenido del mismo");
 
 			break;
 		}
