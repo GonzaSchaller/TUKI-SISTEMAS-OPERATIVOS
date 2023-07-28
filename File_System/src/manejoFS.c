@@ -142,6 +142,7 @@ char* leer_en_bloque(fcb_t* fcb, uint32_t puntero, uint32_t cant_bytes, uint32_t
     uint32_t tam_bloque = superbloque->block_size;
 
     fseek(f_bloques, fcb->puntero_indirecto * tam_bloque, SEEK_SET);
+
     fseek(f_bloques, (enquebloquestoy - 2) * sizeof(uint32_t), SEEK_CUR);
     uint32_t bloque_fs;
     fread(&bloque_fs, sizeof(uint32_t), 1, f_bloques);
@@ -191,6 +192,10 @@ char* leer_en_bloque(fcb_t* fcb, uint32_t puntero, uint32_t cant_bytes, uint32_t
 
 // Función para leer el contenido de un archivo en el sistema de archivos
 char* buscar_contenido(char* name, uint32_t puntero, uint32_t cant_bytes) {
+
+	t_list*bloques_de_archivo = list_create();
+	t_list*bloque_fs = list_create();
+
     char* path = concat(name);
     t_config* archivo = config_create(path);
 
@@ -209,12 +214,23 @@ char* buscar_contenido(char* name, uint32_t puntero, uint32_t cant_bytes) {
 
     uint32_t cant_bloques = ceil_casero(cant_bytes, tam_bloque);
     uint32_t enquebloqueestoy = ceil_casero((puntero + tam_bloque - 1), tam_bloque);
+
+    list_add(bloques_de_archivo,enquebloqueestoy);
+
+    //enquebloqueestoy puede ir de 1 a 16
+
     char* contenido_leido;
     char* contenido;
+
+
     if (enquebloqueestoy <= 1) {
         fseek(f_bloques, fcb->puntero_directo * tam_bloque, SEEK_SET);
 
         uint32_t tamanio_restante = tam_bloque - (puntero % tam_bloque);
+
+
+
+
         if (tamanio_restante >= cant_bytes) {
             fseek(f_bloques, puntero % tam_bloque, SEEK_CUR);
             fread(contenido, cant_bytes, 1 , f_bloques);
@@ -229,6 +245,8 @@ char* buscar_contenido(char* name, uint32_t puntero, uint32_t cant_bytes) {
     else if (enquebloqueestoy > 1) { // Estoy en el indirecto
     	contenido_leido = leer_en_bloque(fcb, puntero, cant_bytes, enquebloqueestoy);
     }
+
+
 
     free(fcb);
     return contenido_leido;

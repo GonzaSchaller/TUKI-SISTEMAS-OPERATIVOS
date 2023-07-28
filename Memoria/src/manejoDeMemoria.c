@@ -155,10 +155,9 @@ t_list* actualizar_tabla_kernel(t_list* tabla){
 }
 
 void unificar_huecos_tsl() {
-
     uint32_t size = list_size(segmentos_libres); // saco el lenght a la lista de segmentos libres.
     for (int i=0; i<size; ++i) { //la recorro.
-        if (i==size-1) break;
+        if (i == size-1) break;
         segmento_t* hueco = list_get(segmentos_libres, i);
         segmento_t* hueco_next = list_get(segmentos_libres, i+1);
         if (hueco->direccion_Base + hueco->tamanio == hueco_next->direccion_Base) {
@@ -168,7 +167,6 @@ void unificar_huecos_tsl() {
             --size;
         }
     }
-
 }
 
 

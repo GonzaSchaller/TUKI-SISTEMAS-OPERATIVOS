@@ -56,12 +56,14 @@ void cargar_memoria(){
 
 
 	  if (memoria_principal == NULL) log_error(log_memoria, "Fallo en el malloc a memoria_principal"); else log_info(log_memoria,"cargue memoria principal");
+
 	  memset(memoria_principal,0,cfg->TAMANIO_MEMORIA);
 
 	  segmentos_ocupados = list_create();
 	  segmentos_libres = list_create();
 
 	  segmento_0 = new_segmento(0,0,cfg->TAMANIO_SEGMENTO_0,POZO);
+
 	  segmento_t* hueco = new_segmento(0,cfg->TAMANIO_SEGMENTO_0,cfg->TAMANIO_MEMORIA-cfg->TAMANIO_SEGMENTO_0,POZO); // primero creo el hueco.
 
 	  if (hueco == NULL) {

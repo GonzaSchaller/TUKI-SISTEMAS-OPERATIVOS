@@ -1,5 +1,6 @@
 #include "comunicacion.h"
 #include <send_rcvs.h>
+#define POZO 9999
 
 extern t_log*log_memoria;
 extern segmento_t *segmento_0;
@@ -75,6 +76,8 @@ void procesar_conexionn(void* void_args){
 
 				send_TABLA_SEGMENTOS(cliente_socket,tabla_de_segmentos);
 
+				segmento_0->pid = POZO;
+
 				break;
 			}
 
@@ -100,18 +103,30 @@ void procesar_conexionn(void* void_args){
 
 					send(cliente_socket,&estado,sizeof(uint32_t),0);
 
+				//	recv_PID(cliente_socket, &pid);
+				//	uint32_t *pid_copy = malloc(sizeof(uint32_t));
+				//	*pid_copy = pid;
+
+				//	list_add(lista_de_pids,pid_copy);
+
 					recv(cliente_socket, &confirmacion, sizeof(confirmacion), 0);
 
 					if(confirmacion == COMPACTAR){
 						log_info(log_memoria,"Inicio de compactacion");
 						if(compactar_memoria()){
 							usleep(cfg->RETARDO_COMPACTACION * 1000); /////////EL RETARDO
+
 							ordenar_lista_pid_por_pid();
+
 							uint32_t tamanio_list_pid = list_size(lista_de_pids);
+
 							log_info(log_memoria,"hay una cantidad de %d procesos",tamanio_list_pid);
+
 							for(int i = 0;i<tamanio_list_pid;i++){
+
 								uint32_t* pid_s = list_get(lista_de_pids,i);
 								log_info(log_memoria,"Proceso NUMERO %u ",*pid_s);
+
 								t_list*list_proceso_i = filtrar_lista_por_pid(*pid_s);
 
 
@@ -146,8 +161,8 @@ void procesar_conexionn(void* void_args){
 						uint32_t base = segmento->direccion_Base;
 						send_BASE_SEGMENTO(cliente_socket,base);
 						//0 libres
-						mostrar_tsl_actualizado(segmentos_libres,0);
-						//mostrar_tsl_actualizado(segmentos_ocupados,1);
+						mostrar_tsl_actualizado(segmentos_libres,0);//	eliminar TODO
+						//mostrar_tsl_actualizado(segmentos_ocupados,1); //eliminar
 
 						}
 				break;
@@ -166,9 +181,14 @@ void procesar_conexionn(void* void_args){
 
 			//	log_info(log_memoria,"Entraste a delete segment, pid %d",pid);
 				// me devuelve la tabla de ese segmento.
-				t_list * tsegmentos_pid = list_create();
-				tsegmentos_pid = filtrar_lista_por_pid(pid);
-				uint32_t base = buscar_en_lista_por_id_devolver_base(tsegmentos_pid,id); //busco la base del id a eliminar.
+
+
+			//	t_list * tsegmentos_pid = list_create();
+			//	tsegmentos_pid = filtrar_lista_por_pid(pid);
+
+
+
+				uint32_t base = buscar_en_lista_por_id_devolver_base(ts_kernel,id); //busco la base del id a eliminar.
 				//elimino por base
 				borrar_segmento(base,pid);
 
@@ -179,7 +199,7 @@ void procesar_conexionn(void* void_args){
 				send_TABLA_SEGMENTOS(cliente_socket,ts_kernel);
 				list_destroy_and_destroy_elements(ts_kernel, (void*) free);
 
-				//mostrar_tsl_actualizado(segmentos_ocupados,1);
+				//mostrar_tsl_actualizado(segmentos_ocupados,1); //ELIMINAR TODO
 				mostrar_tsl_actualizado(segmentos_libres,0);
 
 
