@@ -16,8 +16,6 @@ static void procesar_conexionn(void* void_args){
 	int cliente_socket = args->fd;
 	char*server_name = args->server_name;
 	free(args);
-
-
 	op_code cop;
 
 	while(cliente_socket!=-1) {
@@ -85,7 +83,9 @@ static void procesar_conexionn(void* void_args){
 			send_PID(fd_memoria,pid);
 			//fcb_t* fcb = busacr_fcb(nombre_archivo);
 			//aca recibo el contenido que le pediu a memoria
-			recv_contenido_leido(fd_memoria,&contenido);
+			if(!recv_contenido_leido(fd_memoria,&contenido)){
+				log_info(logger, "Fallo recibiendo contenido de memoria");
+			}
 
 			if(escribir_contenido(nombre_archivo,contenido,puntero,cant_bytes)){
 				log_info(logger,"todo ok escribiendo el archivo");
@@ -199,8 +199,7 @@ void reducir_tamanio_archivo(uint32_t tamanio_a_truncar, uint32_t cuantos_bloque
 
 					t_list* list_bloques = cant_bloques_puntero_indirecto(fcb->puntero_indirecto,  cuantos_bloques_venia_usando); //agarro los bloques indirectos
 					uint32_t cant_bloques_en_bloque_indirecto = list_size(list_bloques);
-					list_sort(list_bloques,reverse_compare); //doy vuelta la lista
-					list_add(list_bloques, fcb->puntero_directo);
+					cant_bloques_en_bloque_indirecto = add_and_reverse(cant_bloques_en_bloque_indirecto, fcb->puntero_indirecto);
 					bitarray_clean_bit(bitarray,fcb->puntero_indirecto);
 					for(int i=0;i < list_size(list_bloques);i++){
 						//borro la canridad de bloques del indirecto que es el bloque indirecto y seteo al bloque indirecto con -1
@@ -216,14 +215,8 @@ void reducir_tamanio_archivo(uint32_t tamanio_a_truncar, uint32_t cuantos_bloque
 }
 
 
-int generar_conexion_con_memoria(){
-	int conexion = crear_conexion(logger,"File system",c->ip_memoria, c->puerto_memoria);
-	uint8_t handshake =1;
-	uint8_t result;
-	send_handshake(conexion,handshake);
-	recv_handshake(conexion,&result);
-	if(result == 1) log_info(logger,"todo ok capo");
-	return conexion;
+void generar_conexion_con_memoria(){
+	fd_memoria = crear_conexion(logger,"File system",c->ip_memoria, c->puerto_memoria);
 }
 
 void conexion_kernel(t_log* log_memoria,char* server_name, int server_socket){

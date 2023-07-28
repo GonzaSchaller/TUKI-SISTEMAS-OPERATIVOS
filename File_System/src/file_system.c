@@ -2,7 +2,6 @@
 
 t_log* logger;
 int fd_fs;
-int fd_memoria;
 
 
 int main (){
@@ -13,7 +12,7 @@ int main (){
 	levantar_config();
 
 	fd_fs = iniciar_servidor(logger, "fileSystem", "127.0.0.1", c->puerto_escucha);
-	fd_memoria = generar_conexion_con_memoria();
+	generar_conexion_con_memoria();
 	
 	cargar_superbloque();
 	cargar_bitmap();

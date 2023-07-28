@@ -3,12 +3,10 @@ t_config_fs *c;
 extern t_log* logger;
 t_superbloque* superbloque;
 t_config* config;
-extern int fd_fs;
-extern int fd_memoria;
 FILE* f_bloques;
 FILE* f_bitmap;
 t_bitarray* bitarray;
-
+int fd_memoria;
 
 void inicializar() {
     c = malloc(sizeof(t_config_fs));
@@ -86,7 +84,7 @@ void cargar_bitmap(){
 	 bitarray = bitarray_create_with_mode(bitmap_de_bloques,size_bitmap, LSB_FIRST);
 
 	uint32_t cant = bitarray_get_max_bit(bitarray);
-	log_info(logger,"bits %d",cant);
+	log_info(logger,"bits de bitmap %d",cant);
 
 	//fclose(f_bitmap); //todo ver cuando cerrar
 	free(path);
@@ -104,7 +102,7 @@ void cargar_bloque(){
 
 void terminar_fs(){
 	log_destroy(logger);
-	fclose(f_bloques);
+	//fclose(f_bloques);
 
 	free(c);
 	free(superbloque);

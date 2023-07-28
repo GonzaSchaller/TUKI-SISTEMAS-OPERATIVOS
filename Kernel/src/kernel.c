@@ -74,6 +74,7 @@ void inicializar_listas(){
 	listaExe = list_create();
 	listaBlock = list_create();
 	tabla_ArchivosAbiertosGlobal = list_create();
+	lista_total_procesos = list_create();
 	//lista_recursos = list_create();
 	//lista_instrucciones_kernel = list_create();
 	//lista_pcb_en_memoria = list_create();
@@ -102,7 +103,7 @@ void destruir_semaforos_listas(){
     //list_destroy_and_destroy_elements(lista_instrucciones,free);
     //list_destroy_and_destroy_elements(lista_pcb_en_memoria,free);
     queue_destroy_and_destroy_elements(colaNew,free);
-
+	list_destroy(lista_total_procesos);
 
 
 	for(int i;i<list_size(tabla_ArchivosAbiertosGlobal);i++){
@@ -117,6 +118,7 @@ void destruir_semaforos_listas(){
 		free(recurso);
 	}
 	list_destroy(lista_recursos);
+
     pthread_mutex_destroy(&mutexNew);
     pthread_mutex_destroy(&mutexReady);
     pthread_mutex_destroy(&mutexExit);

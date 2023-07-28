@@ -23,7 +23,7 @@
 #include "manejoFS.h"
 
 
-int generar_conexion_con_memoria();
+void generar_conexion_con_memoria();
 void conexion_kernel();
 void procesar_peticiones(int cliente_socket);
 void conexion_kernel(t_log* log_memoria,char* server_name, int server_socket);

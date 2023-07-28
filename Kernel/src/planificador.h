@@ -48,7 +48,7 @@ extern t_list* listaExe;
 extern t_list* listaBlock;
 extern t_list* listaExit;
 extern t_list* tabla_ArchivosAbiertosGlobal;
-
+extern t_list* lista_total_procesos;
 extern pthread_mutex_t mutexNew;
 extern pthread_mutex_t mutexReady;
 extern pthread_mutex_t mutexBlock;

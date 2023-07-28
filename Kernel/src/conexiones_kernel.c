@@ -28,6 +28,7 @@ void procesar_conexion_consola(void *void_args)
                         contadorProcesos++;
                         inicializarPCB(contadorProcesos, lista_instrucciones, pcb, socket_cliente); // inicializamos el pcb que le vamos a mandar al cpu
                         agregarANew(pcb);
+                        list_add(lista_total_procesos, pcb); // para actualizar tablas
                         //list_destroy_and_destroy_elements(lista_instrucciones, free);// agregamos cada proceso a NEW
                          //log_info(log_kernel, "Numero de inst %d", list_siz);
                         recibo_instrucciones = false;

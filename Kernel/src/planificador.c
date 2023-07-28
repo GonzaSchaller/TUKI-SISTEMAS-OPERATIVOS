@@ -6,6 +6,7 @@ t_list* listaExe;
 t_list* listaBlock;
 t_list* listaExit;
 t_list* tabla_ArchivosAbiertosGlobal;
+t_list* lista_total_procesos;
 
 pthread_mutex_t mutexNew;
 pthread_mutex_t mutexReady;
@@ -182,11 +183,10 @@ void hiloReady_Execute(){
 		contexto_ejecucion contexto;
 		contexto.TSegmento = list_create();
 	//	segmento_t *segmento = list_get(pcb_siguiente->contexto.TSegmento, 0);
-		log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
-		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
 		pcb_siguiente->state_anterior = pcb_siguiente->state;
 		pcb_siguiente->state = EXEC;
-
+		log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
+		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
 		log_info(log_kernel, "--------Running PID: <%d>--------", pcb_siguiente->contexto.PID);
 		pcb_siguiente->horaDeIngresoAExe = ((float) time(NULL)) * 1000;
 		noSalePorIO = true;
@@ -220,7 +220,7 @@ void terminarEjecucion(pcb_t* pcb){
 	if(!send_PID(pcb->socket_consola, pcb->contexto.PID)){
 		log_info(log_kernel, "Error enviandole a consola exit");
 	};
-
+	list_remove_element(lista_total_procesos, pcb);
 	list_destroy_and_destroy_elements(pcb->tabla_archivosAbiertos, free);
 	list_destroy_and_destroy_elements(pcb->recursos_asignados, free);
 	list_destroy_and_destroy_elements(pcb->instrucciones, free);

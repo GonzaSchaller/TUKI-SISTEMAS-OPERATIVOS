@@ -263,8 +263,7 @@ void procesar_conexionn(void* void_args){
 				uint32_t tamanio;
 				//extra_code estado;
 				//uint32_t cop;
-
-				recv_READ_CPU(cliente_socket,&direccion_fisica,&tamanio); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
+				recv_READ_FS(cliente_socket,&direccion_fisica,&tamanio); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
 				recv_PID(cliente_socket, &pid);
 				usleep(cfg->RETARDO_MEMORIA * 1000);
 

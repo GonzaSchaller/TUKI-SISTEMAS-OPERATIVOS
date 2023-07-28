@@ -125,29 +125,24 @@ void recibir_actualizar_tablas_segmento(pcb_t* pcb_actual){
 	pcb_t* proceso_planificado= NULL;
 	t_list* tabla_nueva = NULL;
 	segmento_t* segmento = NULL;
-	bool buscandoPID = true;
-	pthread_mutex_lock(&mutexReady);
-	int t = list_size(listaReady);
-	//uint32_t pid = 0;
-	//t+1 porque hay uno ejecutando
-	for(int i = 0; i < t + 1; i++) { //para cada proceso enviamos la tabla que tiene y pedimo que memoria mande la nueva tabla
-		int j = 0;
-	//	recv_PID(conexion_memoria, &pid);
-		recv_TABLA_SEGMENTOS(conexion_memoria,&tabla_nueva);
 
-	    segmento = list_get(tabla_nueva, 0); //agarramos el primer segmento
-	    //pid = 2
-	    while(buscandoPID){
-	    	proceso_planificado = list_get(listaReady, j);
-	    	if(proceso_planificado->contexto.PID == segmento->pid){ //Todo descomentar cuando este el pid de segmento
-	    		proceso_planificado->contexto.TSegmento = tabla_nueva;
-	    		buscandoPID = false;
-	    	}
-	    	else if(pcb_actual->contexto.PID == segmento->pid){
-	    		pcb_actual->contexto.TSegmento = tabla_nueva;
-	    		buscandoPID = false;
-	    	}
-	    	j++;
+	pthread_mutex_lock(&mutexReady);
+	int t = list_size(lista_total_procesos)-1;
+
+	for (int i = 0; i < t + 1; i++) {
+	    bool buscandoPID = true;
+	    recv_TABLA_SEGMENTOS(conexion_memoria, &tabla_nueva);
+
+	    segmento = list_get(tabla_nueva, 0);
+
+	    int j = 0;
+	    while (buscandoPID && j < list_size(lista_total_procesos)) {
+	        proceso_planificado = list_get(lista_total_procesos, j);
+	        if (proceso_planificado->contexto.PID == segmento->pid) {
+	            proceso_planificado->contexto.TSegmento = tabla_nueva;
+	            buscandoPID = false;
+	        }
+	        j++;
 	    }
 	}
 	 	 pthread_mutex_unlock(&mutexReady);
@@ -377,8 +372,8 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,ui
 			send_F_TRUNCATE(conexion_fileSystem,nombre_archivo,tamanio);
 			fcb_kernel* archivo = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
 			archivo->tamanio = tamanio;
-			list_add(archivo->colaBloqueados, pcb_siguiente ); // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
-
+			 // cola de bloqueados del archivo, el pid del proceso que quiere usarlo
+			list_add(archivo->colaBloqueados, pcb_siguiente );
 		//	log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
 
 			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
@@ -418,6 +413,7 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,ui
 				log_error(log_kernel, "Fallo enviando PID a FS");
 			}
 			fcb_kernel* archivo_para_args = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+			list_add(archivo_para_args->colaBloqueados, pcb_siguiente );
 			arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
 			pcb_siguiente->state_anterior = pcb_siguiente->state;
 			pcb_siguiente->state = BLOCK;
@@ -457,6 +453,8 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,ui
 					log_error(log_kernel, "Fallo enviando PID a FS");
 				}
 				fcb_kernel* archivoTabla = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+				fcb_kernel* archivo_para_args = encontrar_archivoTablaGlobal(tabla_ArchivosAbiertosGlobal,nombre_archivo);
+				list_add(archivo_para_args->colaBloqueados, pcb_siguiente );
 				arg_archivo_bloqueado* args = malloc(sizeof(arg_archivo_bloqueado));
 				pcb_siguiente->state_anterior = pcb_siguiente->state;
 				pcb_siguiente->state = BLOCK;
