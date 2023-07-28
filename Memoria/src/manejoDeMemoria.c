@@ -95,6 +95,7 @@ bool actualizar_segmentos_libres (segmento_t* seg, uint32_t size){
 	return 0;
 }
 segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
+	log_info(log_memoria,"\n");
 
 	segmento_t * seg_a_segmentar = (*proximo_hueco)(size);
 	if(seg_a_segmentar==NULL){
@@ -102,7 +103,7 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 	}
 	uint32_t base = seg_a_segmentar ->direccion_Base;
 
-	log_info(log_memoria,"“PID: %d - Crear Segmento: %d - TAMAÑO: %d",pid,id,size);
+	log_info(log_memoria,"“PID: %d - Crear Segmento: %d - TAMAÑO: %d --------------------------------------------",pid,id,size);
 
 	segmento_t* nuevo_segmento_ocupado = new_segmento(id,base,size,pid);
 
@@ -121,9 +122,10 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 }
 
 bool borrar_segmento(uint32_t base,uint32_t pid){
+	log_info(log_memoria,"\n");
 	segmento_t* seg = encontrar_base_tso(base);
 	if(seg == NULL) return false;
-	log_info(log_memoria,"PID: %d - Eliminar Segmento: %d  - Base: %d - Tamanio %d \n",pid,seg->id,seg->direccion_Base,seg->tamanio);
+	log_info(log_memoria,"PID: %d - Eliminar Segmento: %d  - Base: %d - Tamanio %d \n --------------------------------------------",pid,seg->id,seg->direccion_Base,seg->tamanio);
 
 	segmento_t* new_hueco_libre = new_segmento(POZO,seg->direccion_Base,seg->tamanio,POZO);
 
