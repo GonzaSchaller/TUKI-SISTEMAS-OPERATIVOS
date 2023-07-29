@@ -7,7 +7,7 @@ FILE* f_bloques;
 FILE* f_bitmap;
 t_bitarray* bitarray;
 int fd_memoria;
-
+char* ip;
 void inicializar() {
     c = malloc(sizeof(t_config_fs));
     c->bitmap= NULL;

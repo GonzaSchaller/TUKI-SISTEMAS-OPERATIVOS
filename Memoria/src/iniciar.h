@@ -24,7 +24,6 @@
 #include "funcionesAuxiliares.h"
 #include "manejoDeMemoria.h"
 
-char* ip;
 extern t_list* lista_de_pids;
 extern t_list* segmentos_libres;
 extern t_list* segmentos_ocupados;

@@ -29,7 +29,7 @@ typedef struct{
 	char* fcb; //path
 	uint32_t retardo_acceso_bloque;
 } t_config_fs;
-char* ip;
+
 typedef struct {
 	uint32_t block_size;
 	uint32_t block_count;
