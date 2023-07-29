@@ -40,7 +40,7 @@ void procesar_conexionn(void* void_args){
 					break;
 				}
 				if(handshake == 1){
-					log_info(log_memoria,"conexion creada con %s",server_name);
+					log_info(log_memoria,"Conexion creada con %s",server_name);
 					send_PC(cliente_socket,resultOk);
 				}
 				break;
@@ -82,12 +82,12 @@ void procesar_conexionn(void* void_args){
 				uint32_t pid;
 
 				if(!recv_CREATE_SEGMENT(cliente_socket, & id, &size)) {
-					log_error(log_memoria,"error recibiendo CREATE_SEGMENT"); break;}
+					log_error(log_memoria,"Error recibiendo CREATE_SEGMENT"); break;}
 
 				recv_PID(cliente_socket, &pid);
 
 				if(!entra_en_memoria(size)){
-					log_error(log_memoria,"no entra en mp");
+					log_error(log_memoria,"No entra en memoria principal");
 					estado = FALLIDO;
 					send(cliente_socket,&estado,sizeof(uint32_t),0);
 				}
@@ -110,7 +110,7 @@ void procesar_conexionn(void* void_args){
 
 							for(int i = 0;i<tamanio_list_pid;i++){
 								uint32_t* pid_s = list_get(lista_de_pids,i);
-								log_info(log_memoria,"Proceso NUMERO %u ",*pid_s);
+								log_info(log_memoria,"Proceso numero %u ",*pid_s);
 								t_list*list_proceso_i = filtrar_lista_por_pid(*pid_s);
 								segmento_0->pid = *pid_s;
 								list_add(list_proceso_i,segmento_0);
@@ -128,7 +128,7 @@ void procesar_conexionn(void* void_args){
 					}
 					} else{
 						estado = EXITOSO;
-						log_info(log_memoria,"hay espacio disponible... creando segmento. \n");
+						log_info(log_memoria,"Hay espacio disponible... creando segmento. \n");
 						send(cliente_socket,&estado,sizeof(uint32_t),0);
 
 						segmento_t* segmento = crear_segmento(id,size,pid);
