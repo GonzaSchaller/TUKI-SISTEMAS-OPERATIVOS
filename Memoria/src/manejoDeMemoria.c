@@ -1,25 +1,11 @@
 #include "manejoDeMemoria.h"
-//log
 extern t_log*log_memoria;
-
-//estructuras auxiliares
 extern t_list* segmentos_libres;
 extern t_list* segmentos_ocupados;
 extern int memoria_disponible;
-
-//extern void* memoria_principal;
-
-//funcion Algortimo de asignacion
 extern segmento_t* (*proximo_hueco)(uint32_t);
-
-//static
 static uint32_t tamanio_alg_asignacion = 0;
 #define POZO 9999
-
-//semaforos
-//extern pthread_mutex_t mutex_segmentos_usados;
-extern pthread_mutex_t mutex_segmentos_libres;
-//extern pthread_mutex_t mutex_memoria_ocupada;
 
 bool entra_en_memoria(uint32_t size){
 	return memoria_disponible >= size;
@@ -57,22 +43,17 @@ segmento_t* proximo_hueco_best_fit(uint32_t tamanio){
 
 segmento_t* proximo_hueco_worst_fit(uint32_t tamanio){
 	tamanio_alg_asignacion = tamanio;
-	//pthread_mutex_lock(&mutex_segmentos_libres);
 	t_list* huecos_disponibles = list_filter(segmentos_libres,&segmento_entra);
 	mostrar_tsl_actualizado(huecos_disponibles,6);
-	//pthread_mutex_unlock(&mutex_segmentos_libres);
 	segmento_t *seg = (segmento_t*)list_get_maximum(huecos_disponibles,(void*)&hueco_mayor);
-	log_info(log_memoria,"segmetno agarrado con worst: BASE %d SIZE %d",seg->direccion_Base,seg->tamanio);
+	//log_info(log_memoria,"segmetno agarrado con worst: BASE %d SIZE %d",seg->direccion_Base,seg->tamanio);
 	return seg;
 }
 
 segmento_t* proximo_hueco_first_fit(uint32_t tamanio){
 	tamanio_alg_asignacion = tamanio;
-
-	//pthread_mutex_lock(&mutex_segmentos_libres);
 	segmento_t *seg = (segmento_t*) list_find(segmentos_libres,&segmento_entra); // se castea porque me devuelve un void *
-	log_info(log_memoria,"segmetno agarrado con first: BASE %d SIZE %d",seg->direccion_Base,seg->tamanio);
-	//pthread_mutex_unlock(&mutex_segmentos_libres);
+	//log_info(log_memoria,"segmetno agarrado con first: BASE %d SIZE %d",seg->direccion_Base,seg->tamanio);
 	return seg;
 }
 segmento_t* new_segmento(uint32_t id, uint32_t direccion_base,uint32_t tamanio,uint32_t pid){
@@ -96,28 +77,20 @@ bool actualizar_segmentos_libres (segmento_t* seg, uint32_t size){
 }
 segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 	log_info(log_memoria,"\n");
-
 	segmento_t * seg_a_segmentar = (*proximo_hueco)(size);
 	if(seg_a_segmentar==NULL){
 		log_error(log_memoria,"no pude agarrar el hueco");
 	}
 	uint32_t base = seg_a_segmentar ->direccion_Base;
-
 	log_info(log_memoria,"“PID: %d - Crear Segmento: %d - TAMAÑO: %d --------------------------------------------",pid,id,size);
-
 	segmento_t* nuevo_segmento_ocupado = new_segmento(id,base,size,pid);
-
 	insertar_segmento_entso(nuevo_segmento_ocupado);
-
 	//actualizar los huecos libres y el tamanio del seg maximo.
 	if(actualizar_segmentos_libres(seg_a_segmentar,size)){
 		log_info(log_memoria,"si se pudo actualizar");
 	}
-
-
 	memoria_disponible -= size;
 	log_info(log_memoria,"cant memoria disponible %d \n",memoria_disponible);
-
 	return nuevo_segmento_ocupado;
 }
 
@@ -126,27 +99,14 @@ bool borrar_segmento(uint32_t base,uint32_t pid){
 	segmento_t* seg = encontrar_base_tso(base);
 	if(seg == NULL) return false;
 	log_info(log_memoria,"PID: %d - Eliminar Segmento: %d  - Base: %d - Tamanio %d \n --------------------------------------------",pid,seg->id,seg->direccion_Base,seg->tamanio);
-
 	segmento_t* new_hueco_libre = new_segmento(POZO,seg->direccion_Base,seg->tamanio,POZO);
-
 	insertar_segmento_entsl(new_hueco_libre);
-
 	memsetear_mp(seg->direccion_Base,seg->tamanio,0);
-
-
 	remover_segmento_entso(seg->direccion_Base);
-
-
-	//pthread_mutex_lock(&mutex_segmentos_libres);
-	unificar_huecos_tsl();
-	//pthread_mutex_unlock(&mutex_segmentos_libres);
-
+	unificar();
 	mostrar_tsl_actualizado(segmentos_libres,0);
-	//mostrar_tsl_actualizado(segmentos_ocupados,1);
-
 	memoria_disponible += seg->tamanio;
 	log_info(log_memoria,"memoria disponible %d",memoria_disponible);
-
 	return true;
 }
 
@@ -156,14 +116,14 @@ t_list* actualizar_tabla_kernel(t_list* tabla){
 		return ts_kernel;
 }
 
-void unificar_huecos_tsl() {
+void unificar() {
     uint32_t size = list_size(segmentos_libres); // saco el lenght a la lista de segmentos libres.
     for (int i=0; i<size; ++i) { //la recorro.
         if (i == size-1) break;
         segmento_t* hueco = list_get(segmentos_libres, i);
-        segmento_t* hueco_next = list_get(segmentos_libres, i+1);
-        if (hueco->direccion_Base + hueco->tamanio == hueco_next->direccion_Base) {
-            hueco->tamanio += hueco_next->tamanio;
+        segmento_t* siguiente_hueco = list_get(segmentos_libres, i+1);
+        if (hueco->direccion_Base + hueco->tamanio == siguiente_hueco->direccion_Base) {
+            hueco->tamanio += siguiente_hueco->tamanio;
             list_remove_and_destroy_element(segmentos_libres, i+1, (void*) free);
             i--;
             --size;
@@ -171,10 +131,8 @@ void unificar_huecos_tsl() {
     }
 }
 
-
-
-bool compactar(uint32_t iteracion){
-	segmento_t* segmento = get_en_lso(iteracion);
+bool compactar(uint32_t pos){
+	segmento_t* segmento = list_get(segmentos_ocupados,pos);
 	if(segmento ==NULL) return false;
 	if(segmento->direccion_Base == 0) return true;
 
@@ -185,9 +143,7 @@ bool compactar(uint32_t iteracion){
 	uint32_t base_nueva = hueco->direccion_Base;
 
 	segmento->direccion_Base = base_nueva;
-
 	hueco->direccion_Base = base_nueva + segmento->tamanio;
-
 	ordenar_listalsl_por_base();
 
 	segmento_t* hueco2 = encontrar_en_tsl_hueco_con_rango(hueco->direccion_Base+hueco->tamanio); // si encuentra un hueco con la misma base que su limite.
@@ -195,14 +151,12 @@ bool compactar(uint32_t iteracion){
 		hueco->tamanio += hueco2->tamanio;
 		remove_segmento_tsl(hueco2->direccion_Base);
 	}
-
 	actualizar_memoria_principal(base_actual,base_nueva,segmento->tamanio);
 	return true;
 }
 
-
 bool compactar_memoria(){
-	uint32_t size = size_tso();
+	uint32_t size = list_size(segmentos_ocupados);
 	for(int i=0;i<size;i++){
 		if(!compactar(i)){
 			return false;
@@ -210,14 +164,12 @@ bool compactar_memoria(){
 	}
 	return true;
 }
-
 //delegacion innecesaria? quizas
 char *leer_contenido(uint32_t direccion, uint32_t tamanio){
 	char*contenido = (char*)get_contenido(direccion,tamanio);
 	contenido[tamanio] = '\0';  // Agregar un carácter nulo al final
 	return contenido;
 }
-
 
 bool escribir_contenido(void*contenido,uint32_t offset,uint32_t size){
 	set_contenido(contenido, offset, size);

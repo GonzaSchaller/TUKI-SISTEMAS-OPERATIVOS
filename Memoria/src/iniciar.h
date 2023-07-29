@@ -20,15 +20,15 @@
 
 
 #include <estructuras_compartidas.h>
+
+#include "funcionesAuxiliares.h"
 #include "manejoDeMemoria.h"
-#include "sem.h"
 
 extern t_list* lista_de_pids;
 extern t_list* segmentos_libres;
 extern t_list* segmentos_ocupados;
 extern segmento_t* segmento_0;
 extern void* memoria_principal;
-extern int tam_hueco_mas_grande;
 extern int memoria_disponible;
 extern segmento_t* (*proximo_hueco) (uint32_t);
 

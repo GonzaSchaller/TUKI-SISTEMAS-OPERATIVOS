@@ -1,15 +1,12 @@
 #include "comunicacion.h"
 #include <send_rcvs.h>
 #define POZO 9999
-
 extern t_log*log_memoria;
 extern segmento_t *segmento_0;
-//extern t_list*segmentos_ocupados;
-
 uint32_t cant_procesos = 0;
 t_list* procesos;
 extern t_list*lista_de_pids;
-extern t_config_memoria *cfg;
+extern t_config_memoria *c;
 
 typedef struct{
 	int fd;
@@ -37,7 +34,6 @@ void procesar_conexionn(void* void_args){
 			case HANDSHAKE:{
 				uint32_t handshake;
 				uint32_t resultOk = 0;
-				//uint32_t resultError = -1;
 
 				if(!recv_handshake(cliente_socket,&handshake)){
 					log_error(log_memoria,"Fallo recibiendo el handshake");
@@ -47,10 +43,8 @@ void procesar_conexionn(void* void_args){
 					log_info(log_memoria,"conexion creada con %s",server_name);
 					send_PC(cliente_socket,resultOk);
 				}
-
 				break;
 			}
-
 
 			case INICIAR_ESTRUCTURAS:{
 				uint32_t pid;
@@ -92,63 +86,47 @@ void procesar_conexionn(void* void_args){
 
 				recv_PID(cliente_socket, &pid);
 
-				if(!entra_en_memoria(size)){  //no entra ni en mp
+				if(!entra_en_memoria(size)){
 					log_error(log_memoria,"no entra en mp");
 					estado = FALLIDO;
 					send(cliente_socket,&estado,sizeof(uint32_t),0);
 				}
-				else if(!entra_en_hueco_mas_grande(size)){ //si entra en el hueco mas grande no hay que compactar :)
+				else if(!entra_en_hueco_mas_grande(size)){
 					estado = COMPACTAR;
 					uint32_t confirmacion;
 
 					send(cliente_socket,&estado,sizeof(uint32_t),0);
-
-				//	recv_PID(cliente_socket, &pid);
-				//	uint32_t *pid_copy = malloc(sizeof(uint32_t));
-				//	*pid_copy = pid;
-
-				//	list_add(lista_de_pids,pid_copy);
-
 					recv(cliente_socket, &confirmacion, sizeof(confirmacion), 0);
 
 					if(confirmacion == COMPACTAR){
 						log_info(log_memoria,"Inicio de compactacion");
+
 						if(compactar_memoria()){
-							usleep(cfg->RETARDO_COMPACTACION * 1000); /////////EL RETARDO
 
+							usleep(c->RETARDO_COMPACTACION * 1000);
 							ordenar_lista_pid_por_pid();
-
 							uint32_t tamanio_list_pid = list_size(lista_de_pids);
-
-							log_info(log_memoria,"hay una cantidad de %d procesos",tamanio_list_pid);
+							//log_info(log_memoria,"hay una cantidad de %d procesos",tamanio_list_pid);
 
 							for(int i = 0;i<tamanio_list_pid;i++){
-
 								uint32_t* pid_s = list_get(lista_de_pids,i);
 								log_info(log_memoria,"Proceso NUMERO %u ",*pid_s);
-
 								t_list*list_proceso_i = filtrar_lista_por_pid(*pid_s);
-
-
 								segmento_0->pid = *pid_s;
-
 								list_add(list_proceso_i,segmento_0);
 								ordenar_lista_por_ids(list_proceso_i);
-
-								//send_PID(cliente_socket, *pid_s);
 								uint32_t cant_segmentos_por_proceso = list_size(list_proceso_i);
+
 								for(int u=0;u<cant_segmentos_por_proceso;u++){
 									segmento_t* segmento = list_get(list_proceso_i,u);
 									log_info(log_memoria,"PID <%d> - Segmento <%d> - Base <%d> - Tamanio <%d> ",segmento->pid,segmento->id,segmento->direccion_Base,segmento->tamanio);
 									log_info(log_memoria,"\n");
 								}
-
 								send_TABLA_SEGMENTOS(cliente_socket,list_proceso_i);
-
 							}//for
 						}
 					}
-					} else{ //hay espacio entonces se crea.
+					} else{
 						estado = EXITOSO;
 						log_info(log_memoria,"hay espacio disponible... creando segmento. \n");
 						send(cliente_socket,&estado,sizeof(uint32_t),0);
@@ -160,37 +138,25 @@ void procesar_conexionn(void* void_args){
 						}
 						uint32_t base = segmento->direccion_Base;
 						send_BASE_SEGMENTO(cliente_socket,base);
-						//0 libres
-						mostrar_tsl_actualizado(segmentos_libres,0);//	eliminar TODO
-						//mostrar_tsl_actualizado(segmentos_ocupados,1); //eliminar
 
 						}
 				break;
 			}
 
 			case DELETE_SEGMENT: {
-
 				uint32_t id;
 				t_list* ts_kernel = list_create();
 				uint32_t pid;
-
 
 				recv_ID_SEGMENTO(cliente_socket, &id);
 				recv_TABLA_SEGMENTOS(cliente_socket,&ts_kernel);
 				recv_PID(cliente_socket,&pid);
 
 				uint32_t base = buscar_en_lista_por_id_devolver_base(ts_kernel,id); //busco la base del id a eliminar.
-				//elimino por base
 				borrar_segmento(base,pid);
-
 				list_remove_and_destroy_by_condition(ts_kernel,&seg_con_id_igual,free);
-
 				send_TABLA_SEGMENTOS(cliente_socket,ts_kernel);
 				list_destroy_and_destroy_elements(ts_kernel, (void*) free);
-
-				//mostrar_tsl_actualizado(segmentos_ocupados,1); //ELIMINAR TODO
-				mostrar_tsl_actualizado(segmentos_libres,0);
-
 
 				break;
 			}
@@ -203,22 +169,15 @@ void procesar_conexionn(void* void_args){
 				recv_TABLA_SEGMENTOS(cliente_socket,&ts);
 
 				log_info(log_memoria,"Eliminación de Proceso PID: %d",pid);
-
 				uint32_t lenght = list_size(ts);
-				//log_info(log_memoria,"Afuera de lenght, size %d",lenght);
 				if(lenght > 1){
 					for(int i=1;i<lenght;i++){
-				///	log_info(log_memoria,"Entre a lenght");
 					segmento_t* seg = list_get(ts, i);
 					borrar_segmento(seg->direccion_Base,pid);
-				}
+					}
 				}
 				log_info(log_memoria,"Memoria disponible despues de finalizar estructuras: %d",memoria_disponible);
-
-
 				eliminar_pid_lista_pids(pid);
-
-
 				break;
 			}
 			case READ_CPU: {
@@ -231,15 +190,14 @@ void procesar_conexionn(void* void_args){
 
                 recv_READ_CPU(cliente_socket,&direccion_fisica,&tamanio); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
 				recv_PID(cliente_socket, &pid);
-				usleep(cfg->RETARDO_MEMORIA * 1000);
+				usleep(c->RETARDO_MEMORIA * 1000);
 
                 contenido = leer_contenido(direccion_fisica,tamanio);
 				send_contenido_leido(cliente_socket,contenido);
 
 				log_info(log_memoria,"PID: %d - Acción: Leer - Dirección física: %d - Tamaño: <%d> - Origen: <CPU>",pid,direccion_fisica,tamanio);
+				break;
 			}
-
-			break;
 
 			case WRITE_CPU:{
 				uint32_t pid;
@@ -254,7 +212,7 @@ void procesar_conexionn(void* void_args){
 
 				log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <%d> - Origen: <CPU>",pid,direccion_fisica,tamanio);
 
-				usleep(cfg->RETARDO_MEMORIA * 1000);
+				usleep(c->RETARDO_MEMORIA * 1000);
 
 				if(escribir_contenido((void*)contenido,direccion_fisica,tamanio)){
 					estado = EXITOSO;
@@ -262,18 +220,17 @@ void procesar_conexionn(void* void_args){
 				}
 
 				break;
-				}//write
+				}
 
 			case READ_FS:{
 				char*contenido = NULL;
 				uint32_t pid; //nice
 				uint32_t direccion_fisica;//nice
 				uint32_t tamanio;
-				//extra_code estado;
-				//uint32_t cop;
+
 				recv_READ_FS(cliente_socket,&direccion_fisica,&tamanio); // en caso de cpu seran tamanios de 4,8,16 bytes, en caso de filesystem no se sabe
 				recv_PID(cliente_socket, &pid);
-				usleep(cfg->RETARDO_MEMORIA * 1000);
+				usleep(c->RETARDO_MEMORIA * 1000);
 
 				contenido = leer_contenido(direccion_fisica,tamanio);
 				send_contenido_leido(cliente_socket,contenido);
@@ -294,7 +251,7 @@ void procesar_conexionn(void* void_args){
 
 				log_info(log_memoria,"PID: %d - Acción: Escribir - Dirección física: %d - Tamaño: <%d> - Origen: <FILE_SYSTEM>",pid,direccion_fisica,tamanio);
 
-				usleep(cfg->RETARDO_MEMORIA * 1000);
+				usleep(c->RETARDO_MEMORIA * 1000);
 
 				if(escribir_contenido((void*)contenido,direccion_fisica,tamanio)){
 					estado = EXITOSO;
@@ -305,7 +262,7 @@ void procesar_conexionn(void* void_args){
 				}
 
 				}
-				}//while
+				}
 		log_warning(log_memoria,"cliente %s desconectado ",server_name);
 		return;
 }

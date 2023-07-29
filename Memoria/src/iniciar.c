@@ -2,7 +2,7 @@
 #define POZO 9999
 
 t_log*log_memoria;
-t_config_memoria *cfg;
+t_config_memoria *c;
 
 void* memoria_principal;
 int memoria_disponible;
@@ -15,7 +15,7 @@ segmento_t* segmento_0;
 t_list* lista_de_pids;
 
 void cargar_configuracion(char*path){
-	cfg = malloc(sizeof(t_config_memoria));
+	c = malloc(sizeof(t_config_memoria));
 	log_memoria = log_create("memoria.log", "MEMORIA", 1, LOG_LEVEL_INFO);
 	//log_info(log_memoria,"cree el log");
 
@@ -26,24 +26,24 @@ void cargar_configuracion(char*path){
 	        log_error(log_memoria, "No se encontro memoria.config");
 	    }
 
-		cfg->TAMANIO_MEMORIA = config_get_int_value(config_memoria, "TAM_MEMORIA");
-	    cfg->TAMANIO_SEGMENTO_0 = config_get_int_value(config_memoria, "TAM_SEGMENTO_0");
-	    cfg->CANT_SEGMENTOS = config_get_int_value(config_memoria, "CANT_SEGMENTOS");
-	    cfg->RETARDO_MEMORIA = config_get_int_value(config_memoria, "RETARDO_MEMORIA");
-	    cfg->RETARDO_COMPACTACION = config_get_int_value(config_memoria, "RETARDO_COMPACTACION");
+		c->TAMANIO_MEMORIA = config_get_int_value(config_memoria, "TAM_MEMORIA");
+	    c->TAMANIO_SEGMENTO_0 = config_get_int_value(config_memoria, "TAM_SEGMENTO_0");
+	    c->CANT_SEGMENTOS = config_get_int_value(config_memoria, "CANT_SEGMENTOS");
+	    c->RETARDO_MEMORIA = config_get_int_value(config_memoria, "RETARDO_MEMORIA");
+	    c->RETARDO_COMPACTACION = config_get_int_value(config_memoria, "RETARDO_COMPACTACION");
 
-	    cfg->ALGORITMO_ASIGNACION = strdup(config_get_string_value(config_memoria, "ALGORITMO_ASIGNACION"));
-	    cfg->PUERTO_ESCUCHA = strdup(config_get_string_value(config_memoria, "PUERTO_ESCUCHA"));
+	    c->ALGORITMO_ASIGNACION = strdup(config_get_string_value(config_memoria, "ALGORITMO_ASIGNACION"));
+	    c->PUERTO_ESCUCHA = strdup(config_get_string_value(config_memoria, "PUERTO_ESCUCHA"));
 
-	    if(strcmp(cfg->ALGORITMO_ASIGNACION,"BEST") == 0){
+	    if(strcmp(c->ALGORITMO_ASIGNACION,"BEST") == 0){
 	    	proximo_hueco = &proximo_hueco_best_fit;
-	    	log_info(log_memoria,"%s",cfg->ALGORITMO_ASIGNACION);
-	    }else if(strcmp(cfg->ALGORITMO_ASIGNACION,"FIRST")==0){
+	    	log_info(log_memoria,"%s",c->ALGORITMO_ASIGNACION);
+	    }else if(strcmp(c->ALGORITMO_ASIGNACION,"FIRST")==0){
 	    	proximo_hueco = &proximo_hueco_first_fit;
-	    	log_info(log_memoria,"%s",cfg->ALGORITMO_ASIGNACION);
-	    } else if (strcmp(cfg->ALGORITMO_ASIGNACION,"WORST")==0){
+	    	log_info(log_memoria,"%s",c->ALGORITMO_ASIGNACION);
+	    } else if (strcmp(c->ALGORITMO_ASIGNACION,"WORST")==0){
 	    	proximo_hueco = &proximo_hueco_worst_fit;
-	    	log_info(log_memoria,"%s",cfg->ALGORITMO_ASIGNACION);
+	    	log_info(log_memoria,"%s",c->ALGORITMO_ASIGNACION);
 	    }
 
 
@@ -52,19 +52,19 @@ void cargar_configuracion(char*path){
 
 
 void cargar_memoria(){
-	  memoria_principal = malloc(cfg->TAMANIO_MEMORIA);
+	  memoria_principal = malloc(c->TAMANIO_MEMORIA);
 
 
 	  if (memoria_principal == NULL) log_error(log_memoria, "Fallo en el malloc a memoria_principal"); else log_info(log_memoria,"cargue memoria principal");
 
-	  memset(memoria_principal,0,cfg->TAMANIO_MEMORIA);
+	  memset(memoria_principal,0,c->TAMANIO_MEMORIA);
 
 	  segmentos_ocupados = list_create();
 	  segmentos_libres = list_create();
 
-	  segmento_0 = new_segmento(0,0,cfg->TAMANIO_SEGMENTO_0,POZO);
+	  segmento_0 = new_segmento(0,0,c->TAMANIO_SEGMENTO_0,POZO);
 
-	  segmento_t* hueco = new_segmento(0,cfg->TAMANIO_SEGMENTO_0,cfg->TAMANIO_MEMORIA-cfg->TAMANIO_SEGMENTO_0,POZO); // primero creo el hueco.
+	  segmento_t* hueco = new_segmento(0,c->TAMANIO_SEGMENTO_0,c->TAMANIO_MEMORIA-c->TAMANIO_SEGMENTO_0,POZO); // primero creo el hueco.
 
 	  if (hueco == NULL) {
 	        log_error(log_memoria, "falle creando el hueco libre de tamanio de memoria inicial");
@@ -72,7 +72,7 @@ void cargar_memoria(){
 	  }
 	   list_add(segmentos_libres, (void*) hueco);
 
-	   memoria_disponible = cfg->TAMANIO_MEMORIA - cfg->TAMANIO_SEGMENTO_0;
+	   memoria_disponible = c->TAMANIO_MEMORIA - c->TAMANIO_SEGMENTO_0;
 
 	   lista_de_pids = list_create();
 
@@ -88,7 +88,7 @@ void terminar_memoria(){
 
 		list_destroy_and_destroy_elements(lista_de_pids, (void*) free);
 
-	    free(cfg);
+	    free(c);
 	    free(memoria_principal);
 	    finalizar_mutex();
 

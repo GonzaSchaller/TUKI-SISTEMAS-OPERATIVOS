@@ -13,8 +13,9 @@
 #include <commons/collections/list.h>//
 
 #include <send_rcvs.h>
+
+#include "funcionesAuxiliares.h"
 #include "manejoDeMemoria.h"
-#include "sem.h"
 
 
 
