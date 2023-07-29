@@ -9,7 +9,7 @@ void sighandler(int s){
 
 void establecer_conexion_kernel(){
 	// genera el servidor de cpu
-	int server_fd = iniciar_servidor(logger, "Cpu", "192.168.1.21", puerto_cpu);
+	int server_fd = iniciar_servidor(logger, "Cpu", "192.168.1.35", puerto_cpu);
 	log_info(logger, "Servidor listo para recibir cliente");
 
 	// almacena el socket_cliente (kernel)
