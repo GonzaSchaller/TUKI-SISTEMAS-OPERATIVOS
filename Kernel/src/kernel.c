@@ -198,7 +198,7 @@ int main (){
 	 	config_kernel = config_create("kernel.config");
 		iniciar_config(config_kernel);
 
-		server_kernel = iniciar_servidor(log_kernel, "Kernel", ip, puerto_escucha);
+		server_kernel = iniciar_servidor(log_kernel, "Kernel","192.168.1.21" , puerto_escucha);
 		log_info(log_kernel , "Servidor listo para recibir cliente");
 
 
