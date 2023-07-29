@@ -40,7 +40,7 @@ void procesar_conexionn(void* void_args){
 					break;
 				}
 				if(handshake == 1){
-					log_info(log_memoria,"Conexion creada con %s",server_name);
+					//log_info(log_memoria,"Conexion creada con %s",server_name);
 					send_PC(cliente_socket,resultOk);
 				}
 				break;
@@ -58,7 +58,7 @@ void procesar_conexionn(void* void_args){
 				uint32_t size = list_size(lista_de_pids);
 				for(int i=0;i<size;i++){
 					uint32_t *p= list_get(lista_de_pids,i);
-					log_info(log_memoria,"proceso %u ",*p);
+					//log_info(log_memoria,"proceso %u ",*p);
 				}
 
 				log_info(log_memoria,"Creación de Proceso PID: %d",pid);
@@ -110,7 +110,7 @@ void procesar_conexionn(void* void_args){
 
 							for(int i = 0;i<tamanio_list_pid;i++){
 								uint32_t* pid_s = list_get(lista_de_pids,i);
-								log_info(log_memoria,"Proceso numero %u ",*pid_s);
+								//log_info(log_memoria,"Proceso numero %u ",*pid_s);
 								t_list*list_proceso_i = filtrar_lista_por_pid(*pid_s);
 								segmento_0->pid = *pid_s;
 								list_add(list_proceso_i,segmento_0);
@@ -176,7 +176,7 @@ void procesar_conexionn(void* void_args){
 					borrar_segmento(seg->direccion_Base,pid);
 					}
 				}
-				log_info(log_memoria,"Memoria disponible despues de finalizar estructuras: %d",memoria_disponible);
+				//log_info(log_memoria,"Memoria disponible despues de finalizar estructuras: %d",memoria_disponible);
 				eliminar_pid_lista_pids(pid);
 				break;
 			}

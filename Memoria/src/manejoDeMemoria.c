@@ -87,10 +87,10 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 	insertar_segmento_entso(nuevo_segmento_ocupado);
 	//actualizar los huecos libres y el tamanio del seg maximo.
 	if(actualizar_segmentos_libres(seg_a_segmentar,size)){
-		log_info(log_memoria,"Se actualizaron los segmentos libresr");
+		log_info(log_memoria,"Se actualizaron los segmentos libres");
 	}
 	memoria_disponible -= size;
-	log_info(log_memoria,"Cantidad de memoria disponible %d \n",memoria_disponible);
+	log_info(log_memoria,"Cantidad de memoria disponible %d \n",memoria_disponible);// todo
 	return nuevo_segmento_ocupado;
 }
 

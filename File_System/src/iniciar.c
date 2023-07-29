@@ -34,7 +34,7 @@ void levantar_config(){
 	c->bloques = strdup(config_get_string_value(config,"PATH_BLOQUES"));
 	c->fcb = strdup(config_get_string_value(config,"PATH_FCB"));
 	c->retardo_acceso_bloque = config_get_int_value(config, "RETARDO_ACCESO_BLOQUE");
-	log_info(logger,"levante config ok");
+	//log_info(logger,"levante config ok");
 	config_destroy(config);
 
 }
@@ -56,7 +56,7 @@ void cargar_superbloque(){
 
 	superbloque->block_count = (uint32_t) strtol(config_get_string_value(cnf_fs, "BLOCK_COUNT"), NULL, 10);
 
-	log_info(logger,"levante superbloque ok");
+	log_info(logger,"Se levanto correctamente el superbloque");
 
 	free(cnf_fs);
 
@@ -71,8 +71,8 @@ void cargar_bitmap(){
 	if(f_bitmap==NULL) log_error(logger,"error abriendo archivo de bitmap");
 	int fd = fileno(f_bitmap);
 	uint32_t size_bitmap = ceil(superbloque->block_count / 8);
-	off_t result = lseek(fd, superbloque->block_count - 1, SEEK_SET);
-	result = write(fd, "", 1);
+	lseek(fd, superbloque->block_count - 1, SEEK_SET);
+	write(fd, "", 1);
 	char *bitmap_de_bloques = mmap(NULL,size_bitmap, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
 
 	if (bitmap_de_bloques == MAP_FAILED) {
@@ -84,7 +84,7 @@ void cargar_bitmap(){
 	 bitarray = bitarray_create_with_mode(bitmap_de_bloques,size_bitmap, LSB_FIRST);
 
 	uint32_t cant = bitarray_get_max_bit(bitarray);
-	log_info(logger,"bits de bitmap %d",cant);
+	log_info(logger,"Bitmap.dat abierto. Bits: %d",cant);
 
 	//fclose(f_bitmap); //todo ver cuando cerrar
 	free(path);
@@ -94,7 +94,7 @@ void cargar_bloque(){
 	char*path = strdup(c->bloques);
 	f_bloques = fopen(path,"rb+");
 	if(f_bloques!=NULL){
-		log_info(logger,"Bloques.dat abierto");}
+	log_info(logger,"Bloques.dat abierto");}
 	else log_error(logger,"error");
 	//uint32_t* bloque = 3;
 	//fwrite(bloque, sizeof(uint32_t),1, f_bloques);

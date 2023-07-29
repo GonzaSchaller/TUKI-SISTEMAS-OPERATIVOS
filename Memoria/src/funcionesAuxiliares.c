@@ -66,7 +66,7 @@ bool seg_con_base_igual(void* segmento){
 segmento_t* encontrar_base_tso(uint32_t base){
 	base_a_buscar = base;
 	segmento_t* seg = (segmento_t*) list_find(segmentos_ocupados,&seg_con_base_igual);
-	log_info(log_memoria,"Segmento encontrado : base %d , id %d , tamanio %d ", seg->direccion_Base,seg->id,seg->tamanio);
+//	log_info(log_memoria,"Segmento encontrado : base %d , id %d , tamanio %d ", seg->direccion_Base,seg->id,seg->tamanio);
 	return seg;
 }
 void remover_segmento_entso(uint32_t id){
@@ -151,11 +151,11 @@ void eliminar_pid_lista_pids(uint32_t pid){
 	pid_a_buscar = pid;
 	list_remove_and_destroy_by_condition(lista_de_pids,&pid_igual,free);
 	uint32_t size = list_size(lista_de_pids);
-	log_info(log_memoria,"Size lista pids %d",size);
-	for(int i =0;i<size;i++){
-		uint32_t *pid = list_get(lista_de_pids,i);
-		log_info(log_memoria,"pid %u",*pid);
-	}
+	//log_info(log_memoria,"Size lista pids %d",size);
+	//for(int i =0;i<size;i++){
+		//uint32_t *pid = list_get(lista_de_pids,i);
+		//log_info(log_memoria,"pid %u",*pid);
+	// }
 }
 //0 libres, 1 ocupados
 void mostrar_tsl_actualizado(t_list*lista,uint32_t cual_es){
@@ -167,33 +167,7 @@ void mostrar_tsl_actualizado(t_list*lista,uint32_t cual_es){
 
 	for(int i=0;i<size;i++){
 		segmento_t*seg = (segmento_t*)list_get(lista,i);
-		log_info(log_memoria,"BASE %d, SIZE %d",seg->direccion_Base,seg->tamanio);
+		//log_info(log_memoria,"BASE %d, SIZE %d",seg->direccion_Base,seg->tamanio);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

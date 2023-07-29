@@ -74,8 +74,8 @@ void segmentation_fault(pcb_cpu* pcb_proceso, uint32_t segmento, uint32_t offset
     send_ERROR(socket_cliente_kernel);
 
     log_error(logger,"PID: <%d> - Error SEG_FAULT- Segmento: <%d> - Offset: <%d> - Tamanio: <%d>", pcb_proceso -> PID, segmento, offset, tamanio);
-    if(SF_por_tam_valor)
-        log_error(logger, "Lo que se esta intentando guardar en la memoria sobrepasa su tamanio");
+   // if(SF_por_tam_valor)
+        //log_error(logger, "Lo que se esta intentando guardar en la memoria sobrepasa su tamanio");
 }
 
 
@@ -200,7 +200,7 @@ void enviar_a_memoria(char*valor,uint32_t df,uint32_t size,uint32_t pid){
 
 	if(!recv_OK_CODE(conexion_memoria,&estado))log_error(logger,"error recibiendo ok_code de memoria");
 	if(estado == EXITOSO){
-		log_info(logger,"memoria escribio correctamente");
+		log_info(logger,"Memoria escribio correctamente");
 	}
 }
 

@@ -58,7 +58,7 @@ static void procesar_conexionn(void* void_args){
 			else {
 				estado = CORRECTO;
 				send_OK_CODE(cliente_socket, estado);
-				log_info(logger,"El archivo <%s> existe", nombre_archivo);
+				//log_info(logger,"El archivo <%s> existe", nombre_archivo);
 			}
 			break;
 		}
@@ -87,7 +87,7 @@ static void procesar_conexionn(void* void_args){
 			}
 
 			if(escribir_contenido(nombre_archivo,contenido,puntero,cant_bytes)){
-				log_info(logger,"Todo ok escribiendo el archivo");
+				//log_info(logger,"Todo ok escribiendo el archivo");
 				extra_code ok = FINALIZAR;
 				send_OK_CODE(cliente_socket, ok);
 			}

@@ -57,7 +57,7 @@ bool existe_y_abrir(char*nombre_archivo){
 	t_config* archivo = config_create(path);
 
 	if(archivo == NULL) {
-		log_info(logger,"El archivo <%s> NO existe", nombre_archivo);
+		//log_info(logger,"El archivo <%s> NO existe", nombre_archivo);
 		return false;
 	}
 
@@ -74,11 +74,11 @@ bool existe_y_abrir(char*nombre_archivo){
 }
 
 bool crear_archivo(char*nombre,uint32_t tamanio){
-	log_debug(logger,"Se empieza a crear el archivo");
+	//log_debug(logger,"Se empieza a crear el archivo");
 	t_config* config = malloc(sizeof(t_config));
 	config->path = concat(nombre);
 	config->properties = dictionary_create();
-	log_debug(logger,"Se termino de crear el config");
+	//log_debug(logger,"Se termino de crear el config");
 
 	 char tamanio_str[20];
 	    sprintf(tamanio_str, "%d", tamanio);
@@ -87,7 +87,7 @@ bool crear_archivo(char*nombre,uint32_t tamanio){
 	config_set_value(config,"TAMANIO_ARCHIVO",tamanio_str);
 	config_set_value(config,"PUNTERO_DIRECTO",""); //la verdad que no dice nada de esto asi q -1 para no asociarle bloques.
 	config_set_value(config,"PUNTERO_INDIRECTO","");
-	log_debug(logger,"Termino de setear el config, (nombre, tamanio y punteros)");
+	//log_debug(logger,"Termino de setear el config, (nombre, tamanio y punteros)");
 
 	int guardar = config_save(config);
 	if (guardar != -1)
@@ -166,7 +166,7 @@ char* buscar_contenido(char* name, uint32_t puntero, uint32_t cant_bytes) {
     t_config* archivo = config_create(path);
 
     if (archivo == NULL) {
-        log_error(logger, "Se está intentando leer un archivo que NO existe, no se abrió previamente");
+        //log_error(logger, "Se está intentando leer un archivo que NO existe, no se abrió previamente");
         return false;
     }
 
@@ -310,7 +310,7 @@ uint32_t buscar_bloque_libre(){
 			return i;
 		}
 	}
-	log_error(logger,"No hay bloques libres");
+	//log_error(logger,"No hay bloques libres");
 	return 0;
 }
 
