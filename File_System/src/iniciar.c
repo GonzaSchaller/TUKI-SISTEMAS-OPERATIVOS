@@ -25,7 +25,7 @@ void levantar_config(){
 
 	config = config_create("fileSystem.config");
 	if(config ==NULL) log_error(logger,"no se encontro el config");
-
+	ip = config_get_string_value(config, "IP");
 	c->ip_memoria  = strdup(config_get_string_value(config,"IP_MEMORIA"));
 	c->puerto_memoria = strdup(config_get_string_value(config,"PUERTO_MEMORIA"));
 	c->puerto_escucha = strdup(config_get_string_value(config,"PUERTO_ESCUCHA"));
