@@ -108,7 +108,7 @@ static void procesar_conexionn(void* void_args){
 			recv_PUNTERO_FS(cliente_socket,&puntero);
 			recv_PID(cliente_socket, &pid);
 
-			log_info(logger,"Leer: Archivo: <%s> - Puntero: <%d>  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivo,puntero,df,cant_bytes);
+			log_info(logger,"Leer Archivo: <%s> - Puntero: <%d>  - Memoria: <%d>  - Tamanio: <%d>",nombre_archivo,puntero,df,cant_bytes);
 			char*contenidor = buscar_contenido(nombre_archivo,puntero,cant_bytes);
 
 			//le mando a memoria lo que tiene que escribir
