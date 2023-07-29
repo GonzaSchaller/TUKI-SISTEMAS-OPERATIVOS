@@ -36,7 +36,7 @@ segmento_t* proximo_hueco_best_fit(uint32_t tamanio){
 	t_list* huecos_disponibles = list_filter(segmentos_libres,&segmento_entra);
 	mostrar_tsl_actualizado(huecos_disponibles,6);
 	segmento_t *seg = (segmento_t*)list_get_minimum(huecos_disponibles,(void*)&hueco_menor);
-	log_info(log_memoria,"segmetno agarrado con best: BASE %d SIZE %d",seg->direccion_Base,seg->tamanio);
+	//log_info(log_memoria,"segmetno agarrado con best: BASE %d SIZE %d",seg->direccion_Base,seg->tamanio);
 	list_destroy(huecos_disponibles);
 	return seg;
 }
@@ -87,7 +87,7 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 	insertar_segmento_entso(nuevo_segmento_ocupado);
 	//actualizar los huecos libres y el tamanio del seg maximo.
 	if(actualizar_segmentos_libres(seg_a_segmentar,size)){
-		log_info(log_memoria,"si se pudo actualizar");
+		log_info(log_memoria,"Se actualizaron los segmentos libresr");
 	}
 	memoria_disponible -= size;
 	log_info(log_memoria,"Cantidad de memoria disponible %d \n",memoria_disponible);
@@ -106,7 +106,7 @@ bool borrar_segmento(uint32_t base,uint32_t pid){
 	unificar();
 	mostrar_tsl_actualizado(segmentos_libres,0);
 	memoria_disponible += seg->tamanio;
-	log_info(log_memoria,"memoria disponible %d",memoria_disponible);
+	log_info(log_memoria,"Memoria disponible: %d",memoria_disponible);
 	return true;
 }
 
