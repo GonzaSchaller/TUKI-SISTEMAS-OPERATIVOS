@@ -125,11 +125,11 @@ bool recv_CREAR_ARCHIVO(int, char**,uint32_t*);
 bool send_FINALIZAR_TRUNCATE(int);
 bool recv_FINALIZAR_TRUNCATE(int);
 
-bool send_FINALIZAR_READ(int,);
+bool send_FINALIZAR_READ(int);
 bool recv_FINALIZAR_READ(int);
 
 bool send_FINALIZAR_WRITE(int );
-bool recv_FINALIZAR_WRITE(int,);
+bool recv_FINALIZAR_WRITE(int);
 
 //bool recv_READ2(int ,uint32_t* ,char** );
 //bool send_READ2(int ,uint32_t  , char* ); //////Dddd
