@@ -64,7 +64,7 @@ void cargar_memoria(){
 	  segmento_t* hueco = new_segmento(0,c->TAMANIO_SEGMENTO_0,c->TAMANIO_MEMORIA-c->TAMANIO_SEGMENTO_0,POZO); // primero creo el hueco.
 
 	  if(hueco == NULL) {
-	        log_error(log_memoria, "falle creando el hueco libre de tamanio de memoria inicial");
+	        log_error(log_memoria, "Fallo creando el hueco libre de tamanio de memoria inicial");
 	        list_destroy(segmentos_libres);
 	  }
 
