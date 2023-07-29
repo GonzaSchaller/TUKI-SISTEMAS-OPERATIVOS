@@ -23,6 +23,6 @@
 #include "manejoDeMemoria.h"
 #include "comunicacion.h" //solo pa prueba
 #include "funcionesAuxiliares.h"
-
+extern char* ip;
 
 #endif
