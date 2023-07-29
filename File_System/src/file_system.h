@@ -24,6 +24,7 @@
 
 extern int fd_fs;
 extern int fd_memoria;
+extern char* ip;
 
 t_log* iniciar_logger(void);
 t_config* iniciar_config(void);
