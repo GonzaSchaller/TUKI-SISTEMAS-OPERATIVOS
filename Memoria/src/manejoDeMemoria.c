@@ -82,7 +82,7 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 		log_error(log_memoria,"no pude agarrar el hueco");
 	}
 	uint32_t base = seg_a_segmentar ->direccion_Base;
-	log_info(log_memoria,"“PID: %d - Crear Segmento: %d - TAMAÑO: %d --------------------------------------------",pid,id,size);
+	log_info(log_memoria,"“PID: %d - Crear Segmento: %d - TAMAÑO: %d - BASE: %d --------------------------------------------",pid,id,size,base);
 	segmento_t* nuevo_segmento_ocupado = new_segmento(id,base,size,pid);
 	insertar_segmento_entso(nuevo_segmento_ocupado);
 	//actualizar los huecos libres y el tamanio del seg maximo.
