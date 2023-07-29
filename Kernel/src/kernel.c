@@ -28,7 +28,7 @@ char* estado_pcb_a_string(uint32_t estado_int){// CAMBIE
 
 //lee el archivo config
 void iniciar_config(t_config* config){
-	ip = "172.20.10.6";
+	ip = config_get_string_value(config, "IP");;
 	puerto_escucha = config_get_string_value(config, "PUERTO_ESCUCHA");
 	ip_memoria = config_get_string_value(config,"IP_MEMORIA");
 	puerto_memoria = config_get_string_value(config,"PUERTO_MEMORIA");
