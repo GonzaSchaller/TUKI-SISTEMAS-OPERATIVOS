@@ -27,8 +27,6 @@ void establecer_conexion_memoria(){
     uint32_t result;
     send_handshake(conexion_memoria,handshake);
     recv_PC(conexion_memoria,&result);
-    if(result == 0) log_info(logger,"todo ok capo");
-
 }
 
 void establecer_conexiones(){
