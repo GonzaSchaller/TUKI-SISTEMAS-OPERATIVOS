@@ -22,7 +22,7 @@ void establecer_conexion_kernel(){
 }
 
 void establecer_conexion_memoria(){
-    conexion_memoria = crear_conexion(logger,"Memoria", ip, puerto_memoria);
+    conexion_memoria = crear_conexion(logger,"Memoria", ip_memoria, puerto_memoria);
     uint32_t handshake =1;
     uint32_t result;
     send_handshake(conexion_memoria,handshake);
