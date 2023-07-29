@@ -25,7 +25,7 @@ void cargar_configuracion(char*path){
 	  if(config_memoria == NULL) {
 	        log_error(log_memoria, "No se encontro memoria.config");
 	    }
-		ip = config_get_string_value(config, "IP");
+		ip = config_get_string_value(config_memoria, "IP");
 		c->TAMANIO_MEMORIA = config_get_int_value(config_memoria, "TAM_MEMORIA");
 	    c->TAMANIO_SEGMENTO_0 = config_get_int_value(config_memoria, "TAM_SEGMENTO_0");
 	    c->CANT_SEGMENTOS = config_get_int_value(config_memoria, "CANT_SEGMENTOS");
