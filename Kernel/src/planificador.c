@@ -187,7 +187,7 @@ void hiloReady_Execute(){
 		pcb_siguiente->state = EXEC;
 		log_info(log_kernel, "PID: <%d> - Estado Anterior: <%s> - Estado Actual: <%s>",pcb_siguiente->contexto.PID,estado_pcb_a_string(pcb_siguiente->state_anterior),estado_pcb_a_string(pcb_siguiente->state));
 		enviar_pcb_cpu(conexion_cpu, pcb_siguiente); // lo estamos mandando a exe
-		log_info(log_kernel, "--------Running PID: <%d>--------", pcb_siguiente->contexto.PID);
+		log_info(log_kernel, "-------- Running PID: <%d> --------", pcb_siguiente->contexto.PID);
 		pcb_siguiente->horaDeIngresoAExe = ((float) time(NULL)) * 1000;
 		noSalePorIO = true;
 		while(pcb_siguiente->state == EXEC && noSalePorIO){ //que ejecute cada instruccion hasta que cambie de estado
