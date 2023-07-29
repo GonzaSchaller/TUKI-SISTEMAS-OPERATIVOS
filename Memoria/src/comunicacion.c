@@ -125,6 +125,7 @@ void procesar_conexionn(void* void_args){
 								send_TABLA_SEGMENTOS(cliente_socket,list_proceso_i);
 							}//for
 						}
+						segmento_0->pid = POZO;
 					}
 					} else{
 						estado = EXITOSO;
