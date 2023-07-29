@@ -99,7 +99,7 @@ void procesar_conexionn(void* void_args){
 					recv(cliente_socket, &confirmacion, sizeof(confirmacion), 0);
 
 					if(confirmacion == COMPACTAR){
-						log_info(log_memoria,"Inicio de compactacion");
+						log_info(log_memoria,"Solicitud de Compactacion");
 
 						if(compactar_memoria()){
 
