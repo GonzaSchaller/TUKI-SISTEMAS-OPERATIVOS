@@ -1359,7 +1359,7 @@ bool recv_FINALIZAR_TRUNCATE(int socket_cliente,uint32_t* instruccion){
 	    free(stream);
 	    return true;
 }
-bool send_FINALIZAR_TRUNCATE(int socket_cliente){
+bool send_FINALIZAR_TRUNCATE(int socket_cliente, uint32_t){
    size_t size = sizeof(extra_code);
     void* stream = serializar_FINALIZAR_TRUNCATE();
     if (send(socket_cliente, stream, size, 0) != size) {
@@ -1389,7 +1389,7 @@ bool recv_FINALIZAR_READ(int socket_cliente, uint32_t* instruccion){
 	    free(stream);
 	    return true;
 }
-bool send_FINALIZAR_READ(int socket_cliente){
+bool send_FINALIZAR_READ(int socket_cliente, uint32_t){
    size_t size = sizeof(extra_code);
     void* stream = serializar_FINALIZAR_READ();
     if (send(socket_cliente, stream, size, 0) != size) {
@@ -1418,7 +1418,7 @@ bool recv_FINALIZAR_WRITE(int socket_cliente,uint32_t* instruccion){
 	    free(stream);
 	    return true;
 }
-bool send_FINALIZAR_WRITE(int socket_cliente){
+bool send_FINALIZAR_WRITE(int socket_cliente, uint32_t){
    size_t size = sizeof(extra_code);
     void* stream = serializar_FINALIZAR_WRITE();
     if (send(socket_cliente, stream, size, 0) != size) {
