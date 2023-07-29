@@ -90,7 +90,7 @@ segmento_t* crear_segmento(uint32_t id,uint32_t size,uint32_t pid){
 		log_info(log_memoria,"si se pudo actualizar");
 	}
 	memoria_disponible -= size;
-	log_info(log_memoria,"cant memoria disponible %d \n",memoria_disponible);
+	log_info(log_memoria,"Cantidad de memoria disponible %d \n",memoria_disponible);
 	return nuevo_segmento_ocupado;
 }
 
