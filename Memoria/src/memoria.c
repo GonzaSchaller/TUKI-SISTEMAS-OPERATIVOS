@@ -8,10 +8,8 @@ void sighandler(int s){
 	exit(0);
 }
 
-int main (int argc,char**argv){
-	if(argc > 2){
-		return EXIT_FAILURE;
-	}
+int main(){
+
 	signal(SIGINT,sighandler);
 	cargar_configuracion("memoria.config");
 	cargar_memoria();

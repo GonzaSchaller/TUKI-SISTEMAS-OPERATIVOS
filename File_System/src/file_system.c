@@ -4,12 +4,7 @@ t_log* logger;
 int fd_fs;
 
 
-int main (int argc,char**argv){
-	if(argc>2){
-		return EXIT_FAILURE;
-	}
-
-
+int main (){
 	// Issue 2967 es donde está la info de por qué definí las variables del .h en el .c también
 	logger = log_create("fileSystem.log","FileSystem",1, LOG_LEVEL_DEBUG);
 

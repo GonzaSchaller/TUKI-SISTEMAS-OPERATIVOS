@@ -191,10 +191,7 @@ int server_escuchar(int server_kernel){
 //	cerrar
 //}
 
-int main (int argc,char**argv){
-	if(argc > 2){
-		return EXIT_FAILURE;
-	}
+int main (){
 
 		signal(SIGINT,sighandler);
 	 	log_kernel = log_create("kernel.log", "Kernel", 1, LOG_LEVEL_DEBUG);
