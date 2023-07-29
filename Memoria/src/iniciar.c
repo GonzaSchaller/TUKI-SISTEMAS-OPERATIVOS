@@ -37,13 +37,13 @@ void cargar_configuracion(char*path){
 
 	    if(strcmp(c->ALGORITMO_ASIGNACION,"BEST") == 0){
 	    	proximo_hueco = &proximo_hueco_best_fit;
-	    	log_info(log_memoria,"%s",c->ALGORITMO_ASIGNACION);
+	    	log_info(log_memoria,"Algoritmo elegido: %s",c->ALGORITMO_ASIGNACION);
 	    }else if(strcmp(c->ALGORITMO_ASIGNACION,"FIRST")==0){
 	    	proximo_hueco = &proximo_hueco_first_fit;
-	    	log_info(log_memoria,"%s",c->ALGORITMO_ASIGNACION);
+	    	log_info(log_memoria,"Algoritmo elegido: %s",c->ALGORITMO_ASIGNACION);
 	    } else if (strcmp(c->ALGORITMO_ASIGNACION,"WORST")==0){
 	    	proximo_hueco = &proximo_hueco_worst_fit;
-	    	log_info(log_memoria,"%s",c->ALGORITMO_ASIGNACION);
+	    	log_info(log_memoria,"Algoritmo elegido: %s",c->ALGORITMO_ASIGNACION);
 	    }
 
 
