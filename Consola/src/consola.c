@@ -27,7 +27,7 @@ int main (int argc, char* argv[]){
 
 	obtener_instrucciones(path);
 
-	conexion_kernel = crear_conexion(log_consola,"Kernel", ip_kernel, puerto_kernel);
+	conexion_kernel = crear_conexion(log_consola,"Kernel", "172.20.10.6", puerto_kernel);
 	if(conexion_kernel == -1){
 		return EXIT_FAILURE;
 		terminar_programa(conexion_kernel, log_consola, config_consola);
