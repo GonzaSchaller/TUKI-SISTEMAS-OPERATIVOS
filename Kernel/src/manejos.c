@@ -296,6 +296,7 @@ void manejar_fileSystem(pcb_t* pcb_siguiente, uint32_t cop, float tiempoDeFin,ui
 							recalcular_rafagas_HRRN(pcb_siguiente, tiempoDeFin);
 				        }
 				        else{
+						log_info(log_kernel,"PID: <%d> - Abrir Archivo: <%s>", pcb_siguiente->contexto.PID, nombre_archivo);
 							if(!send_EXISTE_ARCHIVO(conexion_fileSystem, nombre_archivo)){
 								log_error(log_kernel, "Fallo enviado existe_archivo a FILESYSTEM");
 							}
