@@ -46,7 +46,11 @@ void establecer_conexiones(){
 	pthread_join(hilo_memoria, NULL);
 }
 
-int main (){
+int main (int argc,char**argv){
+	if(argc > 2){
+		return EXIT_FAILURE;
+	}
+
 	signal(SIGINT,sighandler);
 	logger = log_create("cpu.log","Cpu",1,LOG_LEVEL_DEBUG);
 	config = config_create("cpu.config");
