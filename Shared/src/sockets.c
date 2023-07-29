@@ -22,7 +22,7 @@ int socket_servidor;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
     //establece la ip y el puerto
-	getaddrinfo(NULL, puerto, &hints, &servinfo);
+	getaddrinfo(ip, puerto, &hints, &servinfo);
 
 	// Creamos el socket de escucha del servidor
 	socket_servidor = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
